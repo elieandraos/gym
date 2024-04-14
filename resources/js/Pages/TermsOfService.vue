@@ -1,12 +1,3 @@
-<script setup>
-import { Head } from '@inertiajs/vue3'
-import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue'
-
-defineProps({
-    terms: String,
-})
-</script>
-
 <template>
     <Head title="Terms of Service" />
 
@@ -22,3 +13,13 @@ defineProps({
         </div>
     </div>
 </template>
+
+<script setup>
+import { Head } from '@inertiajs/vue3'
+
+import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue'
+
+defineProps({
+    terms: String,
+})
+</script>

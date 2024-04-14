@@ -1,19 +1,3 @@
-<script setup>
-import { ref, watchEffect } from 'vue'
-import { usePage } from '@inertiajs/vue3'
-
-const page = usePage()
-const show = ref(true)
-const style = ref('success')
-const message = ref('')
-
-watchEffect(async () => {
-    style.value = page.props.jetstream.flash?.bannerStyle || 'success'
-    message.value = page.props.jetstream.flash?.banner || ''
-    show.value = true
-})
-</script>
-
 <template>
     <div>
         <div v-if="show && message" :class="{ 'bg-indigo-500': style == 'success', 'bg-red-700': style == 'danger' }">
@@ -52,3 +36,19 @@ watchEffect(async () => {
         </div>
     </div>
 </template>
+
+<script setup>
+import { usePage } from '@inertiajs/vue3'
+import { ref, watchEffect } from 'vue'
+
+const page = usePage()
+const show = ref(true)
+const style = ref('success')
+const message = ref('')
+
+watchEffect(async () => {
+    style.value = page.props.jetstream.flash?.bannerStyle || 'success'
+    message.value = page.props.jetstream.flash?.banner || ''
+    show.value = true
+})
+</script>

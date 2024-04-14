@@ -1,14 +1,3 @@
-<script setup>
-import ApiTokenManager from '@/Pages/API/Partials/ApiTokenManager.vue'
-import AppLayout from '@/Layouts/AppLayout.vue'
-
-defineProps({
-    tokens: Array,
-    availablePermissions: Array,
-    defaultPermissions: Array,
-})
-</script>
-
 <template>
     <AppLayout title="API Tokens">
         <template #header>
@@ -27,3 +16,14 @@ defineProps({
         </div>
     </AppLayout>
 </template>
+
+<script setup>
+import AppLayout from '@/Layouts/AppLayout.vue'
+import ApiTokenManager from '@/Pages/API/Partials/ApiTokenManager.vue'
+
+defineProps({
+    tokens: Array,
+    availablePermissions: Array,
+    defaultPermissions: Array,
+})
+</script>

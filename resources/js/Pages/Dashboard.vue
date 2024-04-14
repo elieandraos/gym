@@ -1,8 +1,3 @@
-<script setup>
-import AppLayout from '@/Layouts/AppLayout.vue'
-import Welcome from '@/Components/Welcome.vue'
-</script>
-
 <template>
     <AppLayout title="Dashboard">
         <template #header>
@@ -20,3 +15,8 @@ import Welcome from '@/Components/Welcome.vue'
         </div>
     </AppLayout>
 </template>
+
+<script setup>
+import Welcome from '@/Components/Welcome.vue'
+import AppLayout from '@/Layouts/AppLayout.vue'
+</script>

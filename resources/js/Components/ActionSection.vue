@@ -1,7 +1,3 @@
-<script setup>
-import SectionTitle from './SectionTitle.vue'
-</script>
-
 <template>
     <div>
         <SectionTitle>
@@ -20,3 +16,7 @@ import SectionTitle from './SectionTitle.vue'
         </div>
     </div>
 </template>
+
+<script setup>
+import SectionTitle from './SectionTitle.vue'
+</script>

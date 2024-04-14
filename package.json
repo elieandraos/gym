@@ -4,7 +4,7 @@
     "scripts": {
         "dev": "vite",
         "build": "vite build",
-        "lint": "eslint resources/js tailwind.config.js --fix"
+        "lint": "eslint resources/js tailwind.config.js eslint.config.js --fix"
     },
     "devDependencies": {
         "@eslint/eslintrc": "^3.0.2",

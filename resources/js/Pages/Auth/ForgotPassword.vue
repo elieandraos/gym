@@ -1,27 +1,3 @@
-<script setup>
-import { Head, useForm } from '@inertiajs/vue3'
-import AuthenticationCard from '@/Components/AuthenticationCard.vue'
-import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue'
-import InputError from '@/Components/InputError.vue'
-import InputLabel from '@/Components/InputLabel.vue'
-import PrimaryButton from '@/Components/PrimaryButton.vue'
-import TextInput from '@/Components/TextInput.vue'
-
-defineProps({
-    status: String,
-})
-
-const { route } = window
-
-const form = useForm({
-    email: '',
-})
-
-const submit = () => {
-    form.post(route('password.email'))
-}
-</script>
-
 <template>
     <Head title="Forgot Password" />
 
@@ -60,3 +36,28 @@ const submit = () => {
         </form>
     </AuthenticationCard>
 </template>
+
+<script setup>
+import { Head, useForm } from '@inertiajs/vue3'
+
+import AuthenticationCard from '@/Components/AuthenticationCard.vue'
+import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue'
+import InputError from '@/Components/InputError.vue'
+import InputLabel from '@/Components/InputLabel.vue'
+import PrimaryButton from '@/Components/PrimaryButton.vue'
+import TextInput from '@/Components/TextInput.vue'
+
+defineProps({
+    status: String,
+})
+
+const { route } = window
+
+const form = useForm({
+    email: '',
+})
+
+const submit = () => {
+    form.post(route('password.email'))
+}
+</script>
