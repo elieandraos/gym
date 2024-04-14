@@ -1,78 +1,80 @@
 <script setup>
-import { ref } from 'vue';
-import { Link, router, useForm } from '@inertiajs/vue3';
-import ActionMessage from '@/Components/ActionMessage.vue';
-import FormSection from '@/Components/FormSection.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
+import { ref } from 'vue'
+import { Link, router, useForm } from '@inertiajs/vue3'
+import ActionMessage from '@/Components/ActionMessage.vue'
+import FormSection from '@/Components/FormSection.vue'
+import InputError from '@/Components/InputError.vue'
+import InputLabel from '@/Components/InputLabel.vue'
+import PrimaryButton from '@/Components/PrimaryButton.vue'
+import SecondaryButton from '@/Components/SecondaryButton.vue'
+import TextInput from '@/Components/TextInput.vue'
 
 const props = defineProps({
     user: Object,
-});
+})
+
+const { route } = window
 
 const form = useForm({
     _method: 'PUT',
     name: props.user.name,
     email: props.user.email,
     photo: null,
-});
+})
 
-const verificationLinkSent = ref(null);
-const photoPreview = ref(null);
-const photoInput = ref(null);
+const verificationLinkSent = ref(null)
+const photoPreview = ref(null)
+const photoInput = ref(null)
+
+const clearPhotoFileInput = () => {
+    if (photoInput.value?.value) {
+        photoInput.value.value = null
+    }
+}
 
 const updateProfileInformation = () => {
     if (photoInput.value) {
-        form.photo = photoInput.value.files[0];
+        form.photo = photoInput.value.files[0]
     }
 
     form.post(route('user-profile-information.update'), {
         errorBag: 'updateProfileInformation',
         preserveScroll: true,
         onSuccess: () => clearPhotoFileInput(),
-    });
-};
+    })
+}
 
 const sendEmailVerification = () => {
-    verificationLinkSent.value = true;
-};
+    verificationLinkSent.value = true
+}
 
 const selectNewPhoto = () => {
-    photoInput.value.click();
-};
+    photoInput.value.click()
+}
 
 const updatePhotoPreview = () => {
-    const photo = photoInput.value.files[0];
+    const photo = photoInput.value.files[0]
 
-    if (! photo) return;
+    if (!photo) return
 
-    const reader = new FileReader();
+    const reader = new FileReader()
 
     reader.onload = (e) => {
-        photoPreview.value = e.target.result;
-    };
+        photoPreview.value = e.target.result
+    }
 
-    reader.readAsDataURL(photo);
-};
+    reader.readAsDataURL(photo)
+}
 
 const deletePhoto = () => {
     router.delete(route('current-user-photo.destroy'), {
         preserveScroll: true,
         onSuccess: () => {
-            photoPreview.value = null;
-            clearPhotoFileInput();
+            photoPreview.value = null
+            clearPhotoFileInput()
         },
-    });
-};
-
-const clearPhotoFileInput = () => {
-    if (photoInput.value?.value) {
-        photoInput.value.value = null;
-    }
-};
+    })
+}
 </script>
 
 <template>
@@ -94,8 +96,7 @@ const clearPhotoFileInput = () => {
                     ref="photoInput"
                     type="file"
                     class="hidden"
-                    @change="updatePhotoPreview"
-                >
+                    @change="updatePhotoPreview">
 
                 <InputLabel for="photo" value="Photo" />
 
@@ -108,8 +109,7 @@ const clearPhotoFileInput = () => {
                 <div v-show="photoPreview" class="mt-2">
                     <span
                         class="block rounded-full w-20 h-20 bg-cover bg-no-repeat bg-center"
-                        :style="'background-image: url(\'' + photoPreview + '\');'"
-                    />
+                        :style="'background-image: url(\'' + photoPreview + '\');'"/>
                 </div>
 
                 <SecondaryButton class="mt-2 me-2" type="button" @click.prevent="selectNewPhoto">
@@ -120,8 +120,7 @@ const clearPhotoFileInput = () => {
                     v-if="user.profile_photo_path"
                     type="button"
                     class="mt-2"
-                    @click.prevent="deletePhoto"
-                >
+                    @click.prevent="deletePhoto">
                     Remove Photo
                 </SecondaryButton>
 
@@ -137,8 +136,7 @@ const clearPhotoFileInput = () => {
                     type="text"
                     class="mt-1 block w-full"
                     required
-                    autocomplete="name"
-                />
+                    autocomplete="name"/>
                 <InputError :message="form.errors.name" class="mt-2" />
             </div>
 
@@ -151,8 +149,7 @@ const clearPhotoFileInput = () => {
                     type="email"
                     class="mt-1 block w-full"
                     required
-                    autocomplete="username"
-                />
+                    autocomplete="username"/>
                 <InputError :message="form.errors.email" class="mt-2" />
 
                 <div v-if="$page.props.jetstream.hasEmailVerification && user.email_verified_at === null">
@@ -164,8 +161,7 @@ const clearPhotoFileInput = () => {
                             method="post"
                             as="button"
                             class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                            @click.prevent="sendEmailVerification"
-                        >
+                            @click.prevent="sendEmailVerification">
                             Click here to re-send the verification email.
                         </Link>
                     </p>

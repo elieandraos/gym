@@ -1,12 +1,12 @@
 <script setup>
-import ApiTokenManager from '@/Pages/API/Partials/ApiTokenManager.vue';
-import AppLayout from '@/Layouts/AppLayout.vue';
+import ApiTokenManager from '@/Pages/API/Partials/ApiTokenManager.vue'
+import AppLayout from '@/Layouts/AppLayout.vue'
 
 defineProps({
     tokens: Array,
     availablePermissions: Array,
     defaultPermissions: Array,
-});
+})
 </script>
 
 <template>
@@ -22,8 +22,7 @@ defineProps({
                 <ApiTokenManager
                     :tokens="tokens"
                     :available-permissions="availablePermissions"
-                    :default-permissions="defaultPermissions"
-                />
+                    :default-permissions="defaultPermissions"/>
             </div>
         </div>
     </AppLayout>

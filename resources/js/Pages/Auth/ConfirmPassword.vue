@@ -1,28 +1,30 @@
 <script setup>
-import { ref } from 'vue';
-import { Head, useForm } from '@inertiajs/vue3';
-import AuthenticationCard from '@/Components/AuthenticationCard.vue';
-import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
+import { ref } from 'vue'
+import { Head, useForm } from '@inertiajs/vue3'
+import AuthenticationCard from '@/Components/AuthenticationCard.vue'
+import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue'
+import InputError from '@/Components/InputError.vue'
+import InputLabel from '@/Components/InputLabel.vue'
+import PrimaryButton from '@/Components/PrimaryButton.vue'
+import TextInput from '@/Components/TextInput.vue'
 
 const form = useForm({
     password: '',
-});
+})
 
-const passwordInput = ref(null);
+const { route } = window
+
+const passwordInput = ref(null)
 
 const submit = () => {
     form.post(route('password.confirm'), {
         onFinish: () => {
-            form.reset();
+            form.reset()
 
-            passwordInput.value.focus();
+            passwordInput.value.focus()
         },
-    });
-};
+    })
+}
 </script>
 
 <template>
@@ -48,8 +50,7 @@ const submit = () => {
                     class="mt-1 block w-full"
                     required
                     autocomplete="current-password"
-                    autofocus
-                />
+                    autofocus/>
                 <InputError class="mt-2" :message="form.errors.password" />
             </div>
 

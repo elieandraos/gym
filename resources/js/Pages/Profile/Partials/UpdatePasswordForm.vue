@@ -1,21 +1,23 @@
 <script setup>
-import { ref } from 'vue';
-import { useForm } from '@inertiajs/vue3';
-import ActionMessage from '@/Components/ActionMessage.vue';
-import FormSection from '@/Components/FormSection.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
+import { ref } from 'vue'
+import { useForm } from '@inertiajs/vue3'
+import ActionMessage from '@/Components/ActionMessage.vue'
+import FormSection from '@/Components/FormSection.vue'
+import InputError from '@/Components/InputError.vue'
+import InputLabel from '@/Components/InputLabel.vue'
+import PrimaryButton from '@/Components/PrimaryButton.vue'
+import TextInput from '@/Components/TextInput.vue'
 
-const passwordInput = ref(null);
-const currentPasswordInput = ref(null);
+const { route } = window
+
+const passwordInput = ref(null)
+const currentPasswordInput = ref(null)
 
 const form = useForm({
     current_password: '',
     password: '',
     password_confirmation: '',
-});
+})
 
 const updatePassword = () => {
     form.put(route('user-password.update'), {
@@ -24,17 +26,17 @@ const updatePassword = () => {
         onSuccess: () => form.reset(),
         onError: () => {
             if (form.errors.password) {
-                form.reset('password', 'password_confirmation');
-                passwordInput.value.focus();
+                form.reset('password', 'password_confirmation')
+                passwordInput.value.focus()
             }
 
             if (form.errors.current_password) {
-                form.reset('current_password');
-                currentPasswordInput.value.focus();
+                form.reset('current_password')
+                currentPasswordInput.value.focus()
             }
         },
-    });
-};
+    })
+}
 </script>
 
 <template>
@@ -56,8 +58,7 @@ const updatePassword = () => {
                     v-model="form.current_password"
                     type="password"
                     class="mt-1 block w-full"
-                    autocomplete="current-password"
-                />
+                    autocomplete="current-password"/>
                 <InputError :message="form.errors.current_password" class="mt-2" />
             </div>
 
@@ -69,8 +70,7 @@ const updatePassword = () => {
                     v-model="form.password"
                     type="password"
                     class="mt-1 block w-full"
-                    autocomplete="new-password"
-                />
+                    autocomplete="new-password"/>
                 <InputError :message="form.errors.password" class="mt-2" />
             </div>
 
@@ -81,8 +81,7 @@ const updatePassword = () => {
                     v-model="form.password_confirmation"
                     type="password"
                     class="mt-1 block w-full"
-                    autocomplete="new-password"
-                />
+                    autocomplete="new-password"/>
                 <InputError :message="form.errors.password_confirmation" class="mt-2" />
             </div>
         </template>

@@ -1,17 +1,17 @@
 <script setup>
-import { ref, watchEffect } from 'vue';
-import { usePage } from '@inertiajs/vue3';
+import { ref, watchEffect } from 'vue'
+import { usePage } from '@inertiajs/vue3'
 
-const page = usePage();
-const show = ref(true);
-const style = ref('success');
-const message = ref('');
+const page = usePage()
+const show = ref(true)
+const style = ref('success')
+const message = ref('')
 
 watchEffect(async () => {
-    style.value = page.props.jetstream.flash?.bannerStyle || 'success';
-    message.value = page.props.jetstream.flash?.banner || '';
-    show.value = true;
-});
+    style.value = page.props.jetstream.flash?.bannerStyle || 'success'
+    message.value = page.props.jetstream.flash?.banner || ''
+    show.value = true
+})
 </script>
 
 <template>
@@ -21,7 +21,7 @@ watchEffect(async () => {
                 <div class="flex items-center justify-between flex-wrap">
                     <div class="w-0 flex-1 flex items-center min-w-0">
                         <span class="flex p-2 rounded-lg" :class="{ 'bg-indigo-600': style == 'success', 'bg-red-600': style == 'danger' }">
-                            <svg v-if="style == 'success'" class="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <svg v-if="style === 'success'" class="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
 
@@ -41,8 +41,7 @@ watchEffect(async () => {
                             class="-me-1 flex p-2 rounded-md focus:outline-none sm:-me-2 transition"
                             :class="{ 'hover:bg-indigo-600 focus:bg-indigo-600': style == 'success', 'hover:bg-red-600 focus:bg-red-600': style == 'danger' }"
                             aria-label="Dismiss"
-                            @click.prevent="show = false"
-                        >
+                            @click.prevent="show = false">
                             <svg class="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                             </svg>

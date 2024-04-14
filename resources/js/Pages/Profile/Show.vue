@@ -1,4 +1,5 @@
 <script setup>
+import { usePage } from '@inertiajs/vue3'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import DeleteUserForm from '@/Pages/Profile/Partials/DeleteUserForm.vue'
 import LogoutOtherBrowserSessionsForm from '@/Pages/Profile/Partials/LogoutOtherBrowserSessionsForm.vue'
@@ -6,7 +7,6 @@ import SectionBorder from '@/Components/SectionBorder.vue'
 import TwoFactorAuthenticationForm from '@/Pages/Profile/Partials/TwoFactorAuthenticationForm.vue'
 import UpdatePasswordForm from '@/Pages/Profile/Partials/UpdatePasswordForm.vue'
 import UpdateProfileInformationForm from '@/Pages/Profile/Partials/UpdateProfileInformationForm.vue'
-import { usePage } from '@inertiajs/vue3'
 
 defineProps({
     confirmsTwoFactorAuthentication: Boolean,
@@ -14,7 +14,9 @@ defineProps({
 })
 
 const page = usePage()
-const { canUpdateProfileInformation, canUpdatePassword, canManageTwoFactorAuthentication, hasAccountDeletionFeatures } = page.props.jetstream
+const {
+    canUpdateProfileInformation, canUpdatePassword, canManageTwoFactorAuthentication, hasAccountDeletionFeatures,
+} = page.props.jetstream
 </script>
 
 <template>
@@ -42,8 +44,7 @@ const { canUpdateProfileInformation, canUpdatePassword, canManageTwoFactorAuthen
                 <div v-if="canManageTwoFactorAuthentication">
                     <TwoFactorAuthenticationForm
                         :requires-confirmation="confirmsTwoFactorAuthentication"
-                        class="mt-10 sm:mt-0"
-                    />
+                        class="mt-10 sm:mt-0"/>
 
                     <SectionBorder />
                 </div>

@@ -1,40 +1,42 @@
 <script setup>
-import { nextTick, ref } from 'vue';
-import { Head, useForm } from '@inertiajs/vue3';
-import AuthenticationCard from '@/Components/AuthenticationCard.vue';
-import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
+import { nextTick, ref } from 'vue'
+import { Head, useForm } from '@inertiajs/vue3'
+import AuthenticationCard from '@/Components/AuthenticationCard.vue'
+import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue'
+import InputError from '@/Components/InputError.vue'
+import InputLabel from '@/Components/InputLabel.vue'
+import PrimaryButton from '@/Components/PrimaryButton.vue'
+import TextInput from '@/Components/TextInput.vue'
 
-const recovery = ref(false);
+const { route } = window
+
+const recovery = ref(false)
 
 const form = useForm({
     code: '',
     recovery_code: '',
-});
+})
 
-const recoveryCodeInput = ref(null);
-const codeInput = ref(null);
+const recoveryCodeInput = ref(null)
+const codeInput = ref(null)
 
 const toggleRecovery = async () => {
-    recovery.value ^= true;
+    recovery.value = !recovery.value
 
-    await nextTick();
+    await nextTick()
 
     if (recovery.value) {
-        recoveryCodeInput.value.focus();
-        form.code = '';
+        recoveryCodeInput.value.focus()
+        form.code = ''
     } else {
-        codeInput.value.focus();
-        form.recovery_code = '';
+        codeInput.value.focus()
+        form.recovery_code = ''
     }
-};
+}
 
 const submit = () => {
-    form.post(route('two-factor.login'));
-};
+    form.post(route('two-factor.login'))
+}
 </script>
 
 <template>
@@ -66,8 +68,7 @@ const submit = () => {
                     inputmode="numeric"
                     class="mt-1 block w-full"
                     autofocus
-                    autocomplete="one-time-code"
-                />
+                    autocomplete="one-time-code"/>
                 <InputError class="mt-2" :message="form.errors.code" />
             </div>
 
@@ -79,8 +80,7 @@ const submit = () => {
                     v-model="form.recovery_code"
                     type="text"
                     class="mt-1 block w-full"
-                    autocomplete="one-time-code"
-                />
+                    autocomplete="one-time-code"/>
                 <InputError class="mt-2" :message="form.errors.recovery_code" />
             </div>
 

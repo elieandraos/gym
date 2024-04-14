@@ -1,12 +1,14 @@
 <script setup>
-import { Head, Link, useForm } from '@inertiajs/vue3';
-import AuthenticationCard from '@/Components/AuthenticationCard.vue';
-import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue';
-import Checkbox from '@/Components/Checkbox.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
+import { Head, Link, useForm } from '@inertiajs/vue3'
+import AuthenticationCard from '@/Components/AuthenticationCard.vue'
+import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue'
+import Checkbox from '@/Components/Checkbox.vue'
+import InputError from '@/Components/InputError.vue'
+import InputLabel from '@/Components/InputLabel.vue'
+import PrimaryButton from '@/Components/PrimaryButton.vue'
+import TextInput from '@/Components/TextInput.vue'
+
+const { route } = window
 
 const form = useForm({
     name: '',
@@ -14,13 +16,13 @@ const form = useForm({
     password: '',
     password_confirmation: '',
     terms: false,
-});
+})
 
 const submit = () => {
     form.post(route('register'), {
         onFinish: () => form.reset('password', 'password_confirmation'),
-    });
-};
+    })
+}
 </script>
 
 <template>
@@ -41,8 +43,7 @@ const submit = () => {
                     class="mt-1 block w-full"
                     required
                     autofocus
-                    autocomplete="name"
-                />
+                    autocomplete="name"/>
                 <InputError class="mt-2" :message="form.errors.name" />
             </div>
 
@@ -54,8 +55,7 @@ const submit = () => {
                     type="email"
                     class="mt-1 block w-full"
                     required
-                    autocomplete="username"
-                />
+                    autocomplete="username"/>
                 <InputError class="mt-2" :message="form.errors.email" />
             </div>
 
@@ -67,8 +67,7 @@ const submit = () => {
                     type="password"
                     class="mt-1 block w-full"
                     required
-                    autocomplete="new-password"
-                />
+                    autocomplete="new-password"/>
                 <InputError class="mt-2" :message="form.errors.password" />
             </div>
 
@@ -80,8 +79,7 @@ const submit = () => {
                     type="password"
                     class="mt-1 block w-full"
                     required
-                    autocomplete="new-password"
-                />
+                    autocomplete="new-password"/>
                 <InputError class="mt-2" :message="form.errors.password_confirmation" />
             </div>
 

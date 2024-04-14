@@ -1,30 +1,38 @@
 <script setup>
-import { ref } from 'vue';
-import { useForm } from '@inertiajs/vue3';
-import ActionMessage from '@/Components/ActionMessage.vue';
-import ActionSection from '@/Components/ActionSection.vue';
-import DialogModal from '@/Components/DialogModal.vue';
-import InputError from '@/Components/InputError.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
+import { ref } from 'vue'
+import { useForm } from '@inertiajs/vue3'
+import ActionMessage from '@/Components/ActionMessage.vue'
+import ActionSection from '@/Components/ActionSection.vue'
+import DialogModal from '@/Components/DialogModal.vue'
+import InputError from '@/Components/InputError.vue'
+import PrimaryButton from '@/Components/PrimaryButton.vue'
+import SecondaryButton from '@/Components/SecondaryButton.vue'
+import TextInput from '@/Components/TextInput.vue'
 
 defineProps({
     sessions: Array,
-});
+})
 
-const confirmingLogout = ref(false);
-const passwordInput = ref(null);
+const { route } = window
+
+const confirmingLogout = ref(false)
+const passwordInput = ref(null)
 
 const form = useForm({
     password: '',
-});
+})
 
 const confirmLogout = () => {
-    confirmingLogout.value = true;
+    confirmingLogout.value = true
 
-    setTimeout(() => passwordInput.value.focus(), 250);
-};
+    setTimeout(() => passwordInput.value.focus(), 250)
+}
+
+const closeModal = () => {
+    confirmingLogout.value = false
+
+    form.reset()
+}
 
 const logoutOtherBrowserSessions = () => {
     form.delete(route('other-browser-sessions.destroy'), {
@@ -32,14 +40,8 @@ const logoutOtherBrowserSessions = () => {
         onSuccess: () => closeModal(),
         onError: () => passwordInput.value.focus(),
         onFinish: () => form.reset(),
-    });
-};
-
-const closeModal = () => {
-    confirmingLogout.value = false;
-
-    form.reset();
-};
+    })
+}
 </script>
 
 <template>
@@ -114,8 +116,7 @@ const closeModal = () => {
                             class="mt-1 block w-3/4"
                             placeholder="Password"
                             autocomplete="current-password"
-                            @keyup.enter="logoutOtherBrowserSessions"
-                        />
+                            @keyup.enter="logoutOtherBrowserSessions"/>
 
                         <InputError :message="form.errors.password" class="mt-2" />
                     </div>
@@ -130,8 +131,7 @@ const closeModal = () => {
                         class="ms-3"
                         :class="{ 'opacity-25': form.processing }"
                         :disabled="form.processing"
-                        @click="logoutOtherBrowserSessions"
-                    >
+                        @click="logoutOtherBrowserSessions">
                         Log Out Other Browser Sessions
                     </PrimaryButton>
                 </template>
