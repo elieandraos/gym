@@ -1,7 +1,13 @@
 
 ## Tech Stack
 
-- Laravel 11 with Jetstream Inertia and Vue 3 starter kit
+- Laravel 11 with Jetstream and Inertia Vue 3 starter kit
+- Jetstream disabled features
+  - API support
+  - Account deletion
+  - Email verification
+  - Registration
+  - Two-factor Authentication
 - Coding style
-    - [Pint](https://laravel.com/docs/11.x/pint) for php & Laravel.  
-    - [Prettier, Es-lint](https://vueschool.io/articles/vuejs-tutorials/eslint-and-prettier-with-vite-and-vue-js-3/) for Javascript and Vue.
+  - [Pint](https://laravel.com/docs/11.x/pint) for php & Laravel.  
+  - [Es-lint](https://eslint.org/docs/latest/use/getting-started#quick-start) for Javascript and Vue.
