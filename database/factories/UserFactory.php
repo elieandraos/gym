@@ -26,6 +26,8 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $gender = fake()->randomElement(['Female', 'Male']);
+
         return [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
@@ -36,37 +38,18 @@ class UserFactory extends Factory
             'remember_token' => Str::random(10),
             'profile_photo_path' => null,
             'current_team_id' => null,
+
+            'registration_date' => fake()->dateTimeBetween('-2 years'),
+            'in_house' => fake()->boolean(),
+            'gender' => $gender,
+            'weight' => fake()->numberBetween(50, 120),
+            'height' => fake()->numberBetween(150, 210),
+            'birthdate' => fake()->dateTimeBetween('-50 years', '-20 years'),
+            'blood_type' => fake()->randomElement(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']),
+            'phone_number' => fake()->phoneNumber(),
+            'instagram_handle' => fake()->userName(),
+            'address' => fake()->address(),
+            'emergency_contact' => fake()->name($gender)
         ];
-    }
-
-    /**
-     * Indicate that the model's email address should be unverified.
-     */
-    public function unverified(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'email_verified_at' => null,
-        ]);
-    }
-
-    /**
-     * Indicate that the user should have a personal team.
-     */
-    public function withPersonalTeam(?callable $callback = null): static
-    {
-        if (! Features::hasTeamFeatures()) {
-            return $this->state([]);
-        }
-
-        return $this->has(
-            Team::factory()
-                ->state(fn (array $attributes, User $user) => [
-                    'name' => $user->name.'\'s Team',
-                    'user_id' => $user->id,
-                    'personal_team' => true,
-                ])
-                ->when(is_callable($callback), $callback),
-            'ownedTeams'
-        );
     }
 }

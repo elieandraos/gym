@@ -17,9 +17,22 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->rememberToken();
             $table->foreignId('current_team_id')->nullable();
             $table->string('profile_photo_path', 2048)->nullable();
+            $table->rememberToken();
+
+            $table->date('registration_date')->nullable();
+            $table->boolean('in_house')->default(true);
+            $table->enum('gender', ['Female', 'Male'])->nullable();
+            $table->integer('weight')->nullable();
+            $table->integer('height')->nullable();
+            $table->date('birthdate')->nullable();
+            $table->enum('blood_type', ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])->nullable();
+            $table->string('phone_number')->nullable();
+            $table->string('instagram_handle')->nullable();
+            $table->text('address')->nullable();
+            $table->text('emergency_contact')->nullable();
+
             $table->timestamps();
         });
 
