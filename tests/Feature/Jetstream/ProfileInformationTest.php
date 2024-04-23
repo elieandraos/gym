@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use Illuminate\Http\UploadedFile;
 
 test('profile information can be updated', function () {
     $user = User::factory()->create();
@@ -11,8 +12,8 @@ test('profile information can be updated', function () {
             'email' => 'test@example.com',
             'height' => 180,
             'weight' => 72,
+            'gender' => 'Female',
             'birthdate' => '2001-04-10',
-            'registration_date' => '2024-02-25',
         ]);
 
     $response->assertSessionHasNoErrors();
@@ -25,6 +26,39 @@ test('profile information can be updated', function () {
     expect($user->email)->toEqual('test@example.com');
     expect($user->height)->toEqual(180);
     expect($user->weight)->toEqual(72);
+    expect($user->gender)->toEqual('Female');
     expect($user->birthdate)->toEqual('2001-04-10');
-    expect($user->registration_date)->toEqual('2024-02-25');
+});
+
+test('profile information are validated before update', function () {
+    $user = User::factory()->create();
+    $otherUser = User::factory()->create(['email' => 'existing@example.com']);
+
+    $response = $this->actingAs($user)
+        ->put('/user/profile-information', [
+            'name' => '', // Required field
+            'email' => 'invalid-email', // Invalid email format
+            'photo' => UploadedFile::fake()->create('document.pdf', 2000), // Invalid photo
+            'gender' => 'Unknown', // Invalid gender
+            'blood_type' => 'XX', // Invalid blood type
+            'birthdate' => 'not-a-date', // Invalid date format
+        ]);
+
+    $response->assertSessionHasErrors([
+        'name',
+        'email',
+        'photo',
+        'gender',
+        'blood_type',
+        'birthdate'
+    ]);
+
+    // Test email uniqueness
+    $response = $this->actingAs($user)
+        ->put('/user/profile-information', [
+            'name' => 'Test Name',
+            'email' => $otherUser->email,
+        ]);
+
+    $response->assertSessionHasErrors(['email']);
 });

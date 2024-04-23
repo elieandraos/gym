@@ -25,7 +25,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             'birthdate' => ['nullable', 'date'],
             'gender' => ['nullable', Rule::in(Gender::cases())],
             'blood_type' => ['nullable', Rule::in(BloodType::cases())],
-        ])->validateWithBag('updateProfileInformation');
+        ])->validate();
 
         if (isset($input['photo'])) {
             $user->updateProfilePhoto($input['photo']);
@@ -34,7 +34,6 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
         $user->forceFill([
             'name' => $input['name'] ?? $user->name,
             'email' => $input['email'] ?? $user->email,
-            'registration_date' => $input['registration_date'] ?? $user->registration_date,
             'in_house' => $input['in_house'] ?? $user->in_house,
             'gender' => $input['gender'] ?? $user->gender,
             'weight' => $input['weight'] ?? $user->weight,
