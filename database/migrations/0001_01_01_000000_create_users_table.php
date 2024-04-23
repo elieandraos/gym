@@ -1,5 +1,7 @@
 <?php
 
+use App\Enums\BloodType;
+use App\Enums\Gender;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -11,7 +13,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        $bloodTypes = collect(BloodType::cases())->map(fn ($case) => $case->value)->toArray();
+        $genders = collect(Gender::cases())->map(fn ($case) => $case->value)->toArray();
+
+        Schema::create('users', function (Blueprint $table) use ($bloodTypes, $genders) {
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
@@ -23,11 +28,11 @@ return new class extends Migration
 
             $table->date('registration_date')->nullable();
             $table->boolean('in_house')->default(true);
-            $table->enum('gender', ['Female', 'Male'])->nullable();
+            $table->enum('gender', $genders)->nullable();
             $table->integer('weight')->nullable();
             $table->integer('height')->nullable();
             $table->date('birthdate')->nullable();
-            $table->enum('blood_type', ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])->nullable();
+            $table->enum('blood_type', $bloodTypes)->nullable();
             $table->string('phone_number')->nullable();
             $table->string('instagram_handle')->nullable();
             $table->text('address')->nullable();

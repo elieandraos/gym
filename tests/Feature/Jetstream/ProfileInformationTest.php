@@ -5,7 +5,7 @@ use App\Models\User;
 test('profile information can be updated', function () {
     $user = User::factory()->create();
 
-    $response =$this->actingAs($user)
+    $response = $this->actingAs($user)
         ->put('/user/profile-information', [
             'name' => 'Test Name',
             'email' => 'test@example.com',

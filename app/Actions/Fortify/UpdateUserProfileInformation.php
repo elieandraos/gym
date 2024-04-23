@@ -2,6 +2,8 @@
 
 namespace App\Actions\Fortify;
 
+use App\Enums\BloodType;
+use App\Enums\Gender;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -22,12 +24,13 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             'weight' => ['nullable', 'integer'],
             'height' => ['nullable', 'integer'],
             'birthdate' => ['nullable', 'date'],
-            'blood_type' => ['nullable', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
+            'gender' => ['nullable', Rule::in(Gender::cases())],
+            'blood_type' => ['nullable', Rule::in(BloodType::cases())],
         ])->validateWithBag('updateProfileInformation');
 
-
-        if (isset($input['photo']))
+        if (isset($input['photo'])) {
             $user->updateProfilePhoto($input['photo']);
+        }
 
         $user->forceFill([
             'name' => $input['name'],

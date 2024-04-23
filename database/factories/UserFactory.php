@@ -2,12 +2,11 @@
 
 namespace Database\Factories;
 
-use App\Models\Team;
-use App\Models\User;
+use App\Enums\BloodType;
+use App\Enums\Gender;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-use Laravel\Jetstream\Features;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
@@ -26,7 +25,7 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
-        $gender = fake()->randomElement(['Female', 'Male']);
+        $gender = fake()->randomElement(Gender::cases());
 
         return [
             'name' => fake()->name(),
@@ -45,11 +44,11 @@ class UserFactory extends Factory
             'weight' => fake()->numberBetween(50, 120),
             'height' => fake()->numberBetween(150, 210),
             'birthdate' => fake()->dateTimeBetween('-50 years', '-20 years'),
-            'blood_type' => fake()->randomElement(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']),
+            'blood_type' => fake()->randomElement(BloodType::cases()),
             'phone_number' => fake()->phoneNumber(),
             'instagram_handle' => fake()->userName(),
             'address' => fake()->address(),
-            'emergency_contact' => fake()->name($gender)
+            'emergency_contact' => fake()->name($gender),
         ];
     }
 }
