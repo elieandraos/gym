@@ -13,21 +13,14 @@ use Illuminate\Support\Str;
  */
 class UserFactory extends Factory
 {
-    /**
-     * The current password being used by the factory.
-     */
     protected static ?string $password;
 
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         $gender = fake()->randomElement(Gender::cases());
 
         return [
+            // jetstream defaults
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
@@ -37,7 +30,7 @@ class UserFactory extends Factory
             'remember_token' => Str::random(10),
             'profile_photo_path' => null,
             'current_team_id' => null,
-
+            // custom fields
             'registration_date' => fake()->dateTimeBetween('-2 years'),
             'in_house' => fake()->boolean(),
             'gender' => $gender,
