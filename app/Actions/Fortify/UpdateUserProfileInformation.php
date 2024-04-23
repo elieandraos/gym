@@ -19,7 +19,6 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
         Validator::make($input, [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
-            'registration_date' => ['required', 'date'],
             'photo' => ['nullable', 'mimes:jpg,jpeg,png', 'max:1024'],
             'weight' => ['nullable', 'integer'],
             'height' => ['nullable', 'integer'],
@@ -33,19 +32,19 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
         }
 
         $user->forceFill([
-            'name' => $input['name'],
-            'email' => $input['email'],
-            'registration_date' => $input['registration_date'],
-            'in_house' => $input['in_house'] ?? null,
-            'gender' => $input['gender'] ?? null,
-            'weight' => $input['weight'] ?? null,
-            'height' => $input['height'] ?? null,
-            'birthdate' => $input['birthdate'] ?? null,
-            'blood_type' => $input['blood_type'] ?? null,
-            'phone_number' => $input['phone_number'] ?? null,
-            'instagram_handle' => $input['instagram_handle'] ?? null,
-            'address' => $input['address'] ?? null,
-            'emergency_contact' => $input['emergency_contact'] ?? null,
+            'name' => $input['name'] ?? $user->name,
+            'email' => $input['email'] ?? $user->email,
+            'registration_date' => $input['registration_date'] ?? $user->registration_date,
+            'in_house' => $input['in_house'] ?? $user->in_house,
+            'gender' => $input['gender'] ?? $user->gender,
+            'weight' => $input['weight'] ?? $user->weight,
+            'height' => $input['height'] ?? $user->height,
+            'birthdate' => $input['birthdate'] ?? $user->birthdate,
+            'blood_type' => $input['blood_type'] ?? $user->blood_type,
+            'phone_number' => $input['phone_number'] ?? $user->phone_number,
+            'instagram_handle' => $input['instagram_handle'] ?? $user->instagram_handle,
+            'address' => $input['address'] ?? $user->address,
+            'emergency_contact' => $input['emergency_contact'] ?? $user->emergency_contact,
         ])->save();
     }
 }
