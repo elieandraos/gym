@@ -2,21 +2,20 @@
 
 use App\Enums\BloodType;
 use App\Enums\Gender;
+use App\Enums\Role;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         $bloodTypes = collect(BloodType::cases())->map(fn ($case) => $case->value)->toArray();
         $genders = collect(Gender::cases())->map(fn ($case) => $case->value)->toArray();
+        $roles = collect(Role::cases())->map(fn ($case) => $case->value)->toArray();
 
-        Schema::create('users', function (Blueprint $table) use ($bloodTypes, $genders) {
+        Schema::create('users', function (Blueprint $table) use ($bloodTypes, $genders, $roles) {
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
@@ -37,7 +36,7 @@ return new class extends Migration
             $table->string('instagram_handle')->nullable();
             $table->text('address')->nullable();
             $table->text('emergency_contact')->nullable();
-
+            $table->enum('role', $roles)->default(Role::Member);
             $table->timestamps();
         });
 
