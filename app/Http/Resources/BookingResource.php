@@ -15,8 +15,9 @@ class BookingResource extends JsonResource
             'nb_sessions' => $this->nb_sessions,
             'start_date' => $this->start_date,
             'end_date' => $this->end_date,
-            'member_id' => $this->member_id,
-            'trainer_id' => $this->trainer_id,
+            'member' => new UserResource($this->whenLoaded('member')),
+            'trainer' => new UserResource($this->whenLoaded('trainer')),
+            'bookingSlots' => BookingSlotResource::collection($this->whenLoaded('bookingSlots')),
         ];
     }
 }

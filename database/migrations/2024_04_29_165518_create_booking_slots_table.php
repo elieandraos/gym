@@ -1,6 +1,5 @@
 <?php
 
-use App\Enums\Gender;
 use App\Enums\Status;
 use App\Models\Booking;
 use Illuminate\Database\Migrations\Migration;
@@ -13,7 +12,7 @@ return new class extends Migration
     {
         $statuses = collect(Status::cases())->map(fn ($case) => $case->value)->toArray();
 
-        Schema::create('booking_slots', function (Blueprint $table) use($statuses) {
+        Schema::create('booking_slots', function (Blueprint $table) use ($statuses) {
             $table->id();
             $table->foreignIdFor(Booking::class);
             $table->dateTime('start_time');

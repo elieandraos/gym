@@ -43,7 +43,7 @@ class UserFactory extends Factory
             'instagram_handle' => fake()->userName(),
             'address' => fake()->address(),
             'emergency_contact' => fake()->name(),
-            'role' => fake()->randomElement(Role::cases())
+            'role' => fake()->randomElement(Role::cases()),
         ];
     }
 }

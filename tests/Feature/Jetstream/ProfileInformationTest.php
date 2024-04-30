@@ -50,7 +50,7 @@ test('profile information are validated before update', function () {
         'photo',
         'gender',
         'blood_type',
-        'birthdate'
+        'birthdate',
     ]);
 
     // Test email uniqueness

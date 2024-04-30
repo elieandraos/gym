@@ -16,7 +16,7 @@ class Booking extends Model
         'member_id',
         'trainer_id',
         'start_date',
-        'end_date'
+        'end_date',
     ];
 
     protected function casts(): array
@@ -37,7 +37,7 @@ class Booking extends Model
         return $this->belongsTo(User::class, 'trainer_id');
     }
 
-    public function bookingSlots() : HasMany
+    public function bookingSlots(): HasMany
     {
         return $this->hasMany(BookingSlot::class);
     }

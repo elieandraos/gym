@@ -33,7 +33,7 @@ class User extends Authenticatable
         'instagram_handle',
         'address',
         'emergency_contact',
-        'role'
+        'role',
     ];
 
     protected $hidden = [
@@ -55,9 +55,13 @@ class User extends Authenticatable
         ];
     }
 
-    public function bookings() : HasMany
+    public function memberBookings(): HasMany
     {
-        return $this->hasMany(Booking::class);
+        return $this->hasMany(Booking::class, 'member_id');
     }
 
+    public function trainerBookings(): HasMany
+    {
+        return $this->hasMany(Booking::class, 'trainer_id');
+    }
 }

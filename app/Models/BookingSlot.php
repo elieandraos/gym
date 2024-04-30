@@ -14,7 +14,7 @@ class BookingSlot extends Model
         'booking_id',
         'start_time',
         'end_time',
-        'status'
+        'status',
     ];
 
     protected function casts(): array

@@ -16,10 +16,10 @@ class DatabaseSeeder extends Seeder
         $members = User::factory(10)->create();
 
         $trainers = User::factory(3)->create([
-            'role' => Role::Trainer
+            'role' => Role::Trainer,
         ]);
 
-        $members->each(function ($user) use( $trainers) {
+        $members->each(function ($user) use ($trainers) {
             $booking = Booking::factory()->create([
                 'member_id' => $user->id,
                 'trainer_id' => $trainers->random()->id,
@@ -35,7 +35,7 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
-            'role' => 'Admin'
+            'role' => 'Admin',
         ]);
     }
 }

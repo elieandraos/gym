@@ -17,8 +17,8 @@ class BookingSlotFactory extends Factory
         return [
             'start_time' => Carbon::now(),
             'end_time' => Carbon::now()->addMinutes(60),
-            'status' =>  Status::Upcoming,
-            'booking_id' => Booking::factory()
+            'status' => Status::Upcoming,
+            'booking_id' => Booking::factory(),
         ];
     }
 
