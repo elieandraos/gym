@@ -1,7 +1,6 @@
 <?php
 
-use App\Http\Resources\UserResource;
-use App\Models\User;
+use App\Http\Controllers\Admin\UsersController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -23,10 +22,8 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
+
+    Route::get('/users', [UsersController::class, 'index'])->name('admin.users.index');
 });
 
-Route::get('/test', function () {
-    $users = User::with(['memberBookings', 'memberBookings.trainer', 'memberBookings.bookingSlots', 'trainerBookings', 'trainerBookings.member', 'trainerBookings.bookingSlots'])->get();
-
-    return UserResource::collection($users);
-})->name('test');
+////$users = Users::with(['memberBookings', 'memberBookings.trainer', 'memberBookings.bookingSlots', 'trainerBookings', 'trainerBookings.member', 'trainerBookings.bookingSlots'])->get();

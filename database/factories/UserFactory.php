@@ -32,8 +32,8 @@ class UserFactory extends Factory
             'profile_photo_path' => null,
             'current_team_id' => null,
             // custom fields
-            'registration_date' => fake()->dateTimeBetween('-2 years'),
-            'in_house' => fake()->boolean(),
+            'registration_date' => fake()->dateTimeBetween('-2 years', '-3 months'),
+            'in_house' => fake()->randomElement([0, 1]),
             'gender' => $gender,
             'weight' => fake()->numberBetween(50, 120),
             'height' => fake()->numberBetween(150, 210),

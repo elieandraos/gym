@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\Role;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -65,5 +67,15 @@ class User extends Authenticatable
     public function trainerBookings(): HasMany
     {
         return $this->hasMany(Booking::class, 'trainer_id');
+    }
+
+    public function scopeMembers(Builder $query)
+    {
+        return $query->where('role', '=', Role::Member);
+    }
+
+    public function scopeTrainers(Builder $query)
+    {
+        return $query->where('role', '=', Role::Trainer);
     }
 }

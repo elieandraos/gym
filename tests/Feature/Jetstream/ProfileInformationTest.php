@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\UploadedFile;
 
 test('profile information can be updated', function () {
@@ -27,7 +28,7 @@ test('profile information can be updated', function () {
     expect($user->height)->toEqual(180);
     expect($user->weight)->toEqual(72);
     expect($user->gender)->toEqual('Female');
-    expect($user->birthdate)->toEqual('2001-04-10');
+    expect($user->birthdate)->toEqual(Carbon::parse('2001-04-10'));
 });
 
 test('profile information are validated before update', function () {
