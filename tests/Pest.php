@@ -1,5 +1,7 @@
 <?php
 
+use App\Enums\Role;
+use App\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Tests\TestCase;
 
@@ -42,7 +44,8 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function something()
+function actingAsAdmin()
 {
-    // ..
+    $admin = User::factory()->create(['role' => Role::Admin]);
+    return test()->actingAs($admin);
 }
