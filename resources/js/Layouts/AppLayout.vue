@@ -19,9 +19,11 @@
 
                             <!-- Navigation Links -->
                             <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                                    Dashboard
-                                </NavLink>
+                                <template v-for="item in menu" :key="item.name">
+                                    <NavLink :href="item.url" :active="$page.props.url === item.url">
+                                        {{  item.name }}
+                                    </NavLink>
+                                </template>
                             </div>
                         </div>
 
@@ -153,7 +155,7 @@
 </template>
 
 <script setup>
-import { Head, Link, router } from '@inertiajs/vue3'
+import {Head, Link, router, usePage} from '@inertiajs/vue3'
 import { ref } from 'vue'
 
 import ApplicationMark from '@/Components/ApplicationMark.vue'
@@ -171,6 +173,23 @@ const { route } = window
 
 const showingNavigationDropdown = ref(false)
 
+const menu = [
+    {
+        name: 'Dashboard',
+        url: route('dashboard'),
+        when: () => usePage().props.auth.user
+    },
+    {
+        name: 'Members',
+        url: route('admin.users.index', { role: 'Member' }),
+        when: () => usePage().props.auth.user
+    },
+    {
+        name: 'Trainers',
+        url: route('admin.users.index', { role: 'Trainer' }),
+        when: () => usePage().props.auth.user
+    },
+]
 const logout = () => {
     router.post(route('logout'))
 }
