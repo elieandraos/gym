@@ -69,12 +69,12 @@ class User extends Authenticatable
         return $this->hasMany(Booking::class, 'trainer_id');
     }
 
-    public function scopeMembers(Builder $query)
+    public function scopeMembers(Builder $query): Builder
     {
         return $query->where('role', '=', Role::Member);
     }
 
-    public function scopeTrainers(Builder $query)
+    public function scopeTrainers(Builder $query): Builder
     {
         return $query->where('role', '=', Role::Trainer);
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\Role;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\Models\User;
@@ -15,10 +16,10 @@ class UsersController extends Controller
         $role = $request->query('role');
 
         $users = User::query()
-            ->when($role == 'Member', function ($query) {
+            ->when($role === Role::Member->value, function ($query) {
                 return $query->members();
             }, function ($query) use ($role) {
-                return $role == 'Trainer' ? $query->trainers() : $query;
+                return $role === Role::Trainer->value ? $query->trainers() : $query;
             })
             ->paginate();
 

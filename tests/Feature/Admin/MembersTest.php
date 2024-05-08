@@ -15,6 +15,7 @@ test('it lists all members', function () {
     actingAsAdmin()
         ->get(route('admin.users.index', [ 'role' => Role::Member]))
         ->assertHasPaginatedResource('users', UserResource::collection($users))
+        ->assertHasComponent('Admin/Users/Index')
         ->assertStatus(200);
 });
 
@@ -24,5 +25,6 @@ test('it lists all trainers', function () {
     actingAsAdmin()
         ->get(route('admin.users.index', [ 'role' => Role::Trainer]))
         ->assertHasPaginatedResource('users', UserResource::collection($users))
+        ->assertHasComponent('Admin/Users/Index')
         ->assertStatus(200);
 });
