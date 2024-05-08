@@ -1,7 +1,7 @@
 <template>
     <AppLayout title="Profile">
-        <div>
-            <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
+
+            <Container>
                 <div v-if="canUpdateProfileInformation">
                     <UpdateProfileInformationForm :user="$page.props.auth.user" />
 
@@ -29,12 +29,12 @@
 
                     <DeleteUserForm class="mt-10 sm:mt-0" />
                 </template>
-            </div>
-        </div>
+            </Container>
     </AppLayout>
 </template>
 
 <script setup>
+import Container from '@/Components/Container.vue'
 import { usePage } from '@inertiajs/vue3'
 
 import SectionBorder from '@/Components/SectionBorder.vue'
