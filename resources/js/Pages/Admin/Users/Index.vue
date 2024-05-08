@@ -1,7 +1,7 @@
 <template>
     <div>users list</div>
 
-    {{ users }}
+    <pre>{{ users }}</pre>
 </template>
 
 <script setup>
