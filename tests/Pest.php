@@ -47,5 +47,6 @@ expect()->extend('toBeOne', function () {
 function actingAsAdmin()
 {
     $admin = User::factory()->create(['role' => Role::Admin]);
+
     return test()->actingAs($admin);
 }

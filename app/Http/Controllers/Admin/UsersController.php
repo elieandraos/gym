@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Enums\Role;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\UserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -24,13 +25,20 @@ class UsersController extends Controller
             ->paginate();
 
         return Inertia::render('Admin/Users/Index', [
-            'users' => UserResource::collection($users)
+            'users' => UserResource::collection($users),
         ]);
     }
 
-    public function show(User $user) {
+    public function show(User $user)
+    {
         return Inertia::render('Admin/Users/Show', [
-            'user' => UserResource::make($user)
+            'user' => UserResource::make($user),
         ]);
+    }
+
+    public function store(UserRequest $request): void
+    {
+        $user = User::create($request->validated());
+        dd($user->toArray());
     }
 }

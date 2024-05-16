@@ -24,6 +24,7 @@ Route::middleware([
     })->name('dashboard');
 
     Route::get('/users', [UsersController::class, 'index'])->name('admin.users.index');
+    Route::post('/users/store', [UsersController::class, 'store'])->name('admin.users.store');
 });
 
 ////$users = Users::with(['memberBookings', 'memberBookings.trainer', 'memberBookings.bookingSlots', 'trainerBookings', 'trainerBookings.member', 'trainerBookings.bookingSlots'])->get();
