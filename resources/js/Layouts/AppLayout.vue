@@ -1,16 +1,18 @@
 <template>
     <div>
-        <Head :title="title" />
+        <Head :title="title" ><title>{{ title }}</title></Head>
 
         <Banner />
 
-        <div class="min-h-screen bg-stone-100 text-black relative">
+        <div class="bg-stone-100 text-black relative">
             <div class="flex">
                 <div class="h-screen w-60 hidden lg:block">
                     <sidebar :menu="menu"></sidebar>
                 </div>
-                <div class="grow bg-white rounded-t-lg lg:mt-3">
-                    <slot />
+                <div class="h-screen lg:pt-3 grow">
+                    <main class="h-full overflow-y-scroll bg-white rounded-t-lg">
+                        <slot />
+                    </main>
                 </div>
             </div>
             <floating-sidebar :menu="menu"></floating-sidebar>

@@ -36,6 +36,41 @@ test('it lists all trainers', function () {
         ->assertStatus(200);
 });
 
+test('it validates request before creating user', function () {
+    $data = [
+        'name' => null,
+        'email' => 'elie',
+        'registration_date' => null,
+        'in_house' => null,
+        'gender' => null,
+        'weight' => null,
+        'height' => null,
+        'birthdate' => null,
+        'blood_type' => null,
+        'phone_number' => null,
+        'instagram_handle' => '',
+        'address' => '',
+        'emergency_contact' => '',
+        'role' => null,
+    ];
+
+    actingAsAdmin()
+        ->post(route('admin.users.store'), $data)
+        ->assertSessionHasErrors([
+            'name',
+            'email',
+            'registration_date',
+            'in_house',
+            'gender',
+            'weight',
+            'height',
+            'birthdate',
+            'blood_type',
+            'role',
+        ])
+        ->assertStatus(302);
+});
+
 test('it creates a user', function () {
     $data = [
         'name' => 'Elie A',
@@ -55,7 +90,9 @@ test('it creates a user', function () {
     ];
 
     actingAsAdmin()
-        ->post(route('admin.users.store'), $data);
+        ->post(route('admin.users.store'), $data)
+        ->assertSessionHasNoErrors()
+        ->assertRedirect(route('admin.users.index', ['role' => Role::Member->value]));
 
     $this->assertDatabaseHas(User::class, $data);
 });

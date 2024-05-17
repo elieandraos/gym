@@ -13,7 +13,9 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        $members = User::factory(10)->create();
+        $members = User::factory(10)->create([
+            'role' => Role::Member,
+        ]);
 
         $trainers = User::factory(3)->create([
             'role' => Role::Trainer,
@@ -33,7 +35,7 @@ class DatabaseSeeder extends Seeder
         });
 
         User::factory()->create([
-            'name' => 'Test Users',
+            'name' => 'Admin',
             'email' => 'test@example.com',
             'role' => 'Admin',
         ]);

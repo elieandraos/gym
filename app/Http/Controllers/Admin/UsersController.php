@@ -8,6 +8,7 @@ use App\Http\Requests\Admin\UserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 
 class UsersController extends Controller
@@ -17,12 +18,10 @@ class UsersController extends Controller
         $role = $request->query('role');
 
         $users = User::query()
-            ->when($role === Role::Member->value, function ($query) {
-                return $query->members();
-            }, function ($query) use ($role) {
-                return $role === Role::Trainer->value ? $query->trainers() : $query;
-            })
-            ->paginate();
+            ->byRole($role)
+            ->orderBy('registration_date', 'DESC')
+            ->paginate(5)
+            ->appends(request()->only(['role']));
 
         return Inertia::render('Admin/Users/Index', [
             'users' => UserResource::collection($users),
@@ -36,9 +35,11 @@ class UsersController extends Controller
         ]);
     }
 
-    public function store(UserRequest $request): void
+    public function store(UserRequest $request)
     {
-        $user = User::create($request->validated());
-        dd($user->toArray());
+        $request->merge(['password' => Hash::make('password'), 'role' => Role::Member->value]);
+        User::create($request->all());
+
+        return redirect(route('admin.users.index', ['role' => Role::Member->value]));
     }
 }

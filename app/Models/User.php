@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\Role;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -47,6 +48,7 @@ class User extends Authenticatable
 
     protected $appends = [
         'profile_photo_url',
+        'age',
     ];
 
     protected function casts(): array
@@ -71,11 +73,32 @@ class User extends Authenticatable
 
     public function scopeMembers(Builder $query): Builder
     {
-        return $query->where('role', '=', Role::Member);
+        return $query->where('role', '=', Role::Member->value);
     }
 
     public function scopeTrainers(Builder $query): Builder
     {
-        return $query->where('role', '=', Role::Trainer);
+        return $query->where('role', '=', Role::Trainer->value);
+    }
+
+    public function scopeByRole(Builder $query, string $role): Builder
+    {
+        return $query->when($role === Role::Member->value, function ($query) {
+            return $query->members();
+        }, function ($query) use ($role) {
+            return $role === Role::Trainer->value ? $query->trainers() : $query;
+        });
+    }
+
+    public function getAgeAttribute(): ?string
+    {
+        $birthdate = Carbon::parse($this->birthdate);
+
+        return $birthdate->diff(Carbon::now())->format('%y');
+    }
+
+    public function getSinceAttribute(): string
+    {
+        return Carbon::parse($this->registration_date)->format('M j, Y');
     }
 }
