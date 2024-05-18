@@ -1,7 +1,7 @@
 <template>
     <AppLayout title="Profile">
         <Container>
-            <h1 class="text-zinc-900 font-medium text-lg lg:text-xl capitalize pt-12 mb-4 md:pt-5 md:mb-8">{{ role }}s list</h1>
+            <page-title>{{ role }}s list</page-title>
             <users-list :data="data" :headers="headers" :links="meta.links"></users-list>
         </Container>
     </AppLayout>
@@ -10,6 +10,7 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue'
 import Container from '@/Components/Container.vue'
+import PageTitle from '@/Components/PageTitle.vue'
 import UsersList from '@/Pages/Admin/Users/Partials/UsersList.vue'
 
 const props = defineProps({

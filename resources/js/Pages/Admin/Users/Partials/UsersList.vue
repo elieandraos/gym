@@ -38,7 +38,7 @@
                 <div class="text-sm space-y-1">
                     <div class="font-medium">{{ name }}</div>
                     <div class="text-xs">{{ age }} years old</div>
-                    <div class="text-zinc-500 text-xs">{{ since }}</div>
+                    <div class="text-zinc-500 text-xs">started on {{ since }}</div>
                 </div>
             </div>
         </li>
