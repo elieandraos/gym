@@ -96,3 +96,13 @@ test('it creates a user', function () {
 
     $this->assertDatabaseHas(User::class, $data);
 });
+
+test('it shows user information', function () {
+    $user = User::query()->members()->first();
+
+    actingAsAdmin()
+        ->get(route('admin.users.show', $user))
+        ->assertHasResource('user', UserResource::make($user))
+        ->assertHasComponent('Admin/Users/Show')
+        ->assertStatus(200);
+});

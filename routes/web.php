@@ -25,6 +25,7 @@ Route::middleware([
 
     Route::get('/users', [UsersController::class, 'index'])->name('admin.users.index');
     Route::post('/users/store', [UsersController::class, 'store'])->name('admin.users.store');
+    Route::get('/users/{user}', [UsersController::class, 'show'])->name('admin.users.show');
 });
 
 ////$users = Users::with(['memberBookings', 'memberBookings.trainer', 'memberBookings.bookingSlots', 'trainerBookings', 'trainerBookings.member', 'trainerBookings.bookingSlots'])->get();

@@ -15,16 +15,15 @@ class UsersController extends Controller
 {
     public function index(Request $request)
     {
-        $role = $request->query('role');
-
         $users = User::query()
-            ->byRole($role)
+            ->byRole($request->query('role'))
             ->orderBy('registration_date', 'DESC')
             ->paginate(5)
             ->appends(request()->only(['role']));
 
         return Inertia::render('Admin/Users/Index', [
             'users' => UserResource::collection($users),
+            'role' => $request->query('role')
         ]);
     }
 
