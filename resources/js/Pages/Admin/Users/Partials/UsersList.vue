@@ -31,8 +31,7 @@
             v-for="{ id, since, name, profile_photo_url, age } in data"
             :key="id"
             class="block p-4 rounded-lg border bg-stone-50 border-stone-100 hover:border-stone-200 cursor-pointer"
-            @click="goToUser(id)"
-        >
+            @click="goToUser(id)">
             <div class="flex items-center gap-4">
                 <img class="h-12 w-12 rounded-full object-cover" :src="profile_photo_url" :alt="name">
                 <div class="text-sm space-y-1">
@@ -48,14 +47,17 @@
 </template>
 
 <script setup>
-import Pagination from '@/Components/Pagination.vue'
 import { router } from '@inertiajs/vue3'
 
+import Pagination from '@/Components/Pagination.vue'
+
+const { route } = window
+
 defineProps({
-    headers:{ type: Array, required: true },
-    data:{ type: Array, required: true },
-    links:{ type: Array, required: true },
+    headers: { type: Array, required: true },
+    data: { type: Array, required: true },
+    links: { type: Array, required: true },
 })
 
-const goToUser = (id) => router.visit( route('admin.users.show', id))
+const goToUser = (id) => router.visit(route('admin.users.show', id))
 </script>

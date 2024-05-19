@@ -33,8 +33,10 @@
 
 <script setup>
 const props = defineProps({
-    user: { type: Object, required: true }
+    user: { type: Object, required: true },
 })
 
-const { name, gender, age, since, birthdate, weight, height, blood_type } = props.user
+const {
+    name, gender, age, since, birthdate, weight, height, blood_type,
+} = props.user
 </script>

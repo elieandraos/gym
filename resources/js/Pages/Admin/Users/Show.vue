@@ -8,9 +8,7 @@
                     <user-contact :user="user"></user-contact>
                 </div>
                 <div class="lg:w-3/5">
-                    <div class="p-4 rounded-lg bg-lime-400/20 text-lime-700">
-                        currently training
-                    </div>
+                    <member-training-status :user="user"></member-training-status>
                 </div>
             </div>
         </Container>
@@ -21,12 +19,13 @@
 import Container from '@/Components/Container.vue'
 import PageBackButton from '@/Components/PageBackButton.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
+import MemberTrainingStatus from '@/Pages/Admin/Users/Partials/MemberTrainingStatus.vue'
 import UserContact from '@/Pages/Admin/Users/Partials/UserContact.vue'
 import UserProfile from '@/Pages/Admin/Users/Partials/UserProfile.vue'
 
 const props = defineProps({
-    user: { type: Object, required: true }
+    user: { type: Object, required: true },
 })
 
-const { name, role } = props.user
+const { name, role, profile_photo_url } = props.user
 </script>

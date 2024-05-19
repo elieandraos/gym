@@ -11,11 +11,11 @@
 
 <script setup>
 import { ChevronLeftIcon } from '@heroicons/vue/24/solid'
-import {router} from '@inertiajs/vue3'
+import { router } from '@inertiajs/vue3'
 
 const props = defineProps({
-    url: { type: String, required: false }
+    url: { type: String, required: false },
 })
 
-const goTo = () => props.url ? router.visit(props.url) : history.back()
+const goTo = () => (props.url ? router.visit(props.url) : history.back())
 </script>

@@ -8,9 +8,9 @@
 </template>
 
 <script setup>
-import AppLayout from '@/Layouts/AppLayout.vue'
 import Container from '@/Components/Container.vue'
 import PageTitle from '@/Components/PageTitle.vue'
+import AppLayout from '@/Layouts/AppLayout.vue'
 import UsersList from '@/Pages/Admin/Users/Partials/UsersList.vue'
 
 const props = defineProps({

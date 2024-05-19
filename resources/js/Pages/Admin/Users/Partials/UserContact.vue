@@ -11,12 +11,10 @@
                 <td class="font-medium">{{ phone_number }}</td>
             </tr>
             <tr>
-                <td class="text-zinc-400 w-32 lg:w-48 pt-2.5">Address</td>
-                <td class="font-medium">{{ address }}</td>
-            </tr>
-            <tr>
                 <td class="text-zinc-400 w-32 lg:w-48 pt-2.5">Instagram handle</td>
-                <td class="font-medium">{{ instagram_handle }}</td>
+                <td class="font-medium">
+                    <a :href="instagram_url" class="text-pink-500 hover:text-blue-700" target="_blank">@{{ instagram_handle }}</a>
+                </td>
             </tr>
             <tr>
                 <td class="text-zinc-400 w-32 lg:w-48 pt-2.5">Emergency contact</td>
@@ -28,8 +26,10 @@
 
 <script setup>
 const props = defineProps({
-    user: { type: Object, required: true }
+    user: { type: Object, required: true },
 })
 
-const { email, phone_number, instagram_handle, address, emergency_contact } = props.user
+const {
+    email, phone_number, instagram_handle, instagram_url, address, emergency_contact,
+} = props.user
 </script>

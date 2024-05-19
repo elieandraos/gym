@@ -38,7 +38,7 @@
 </template>
 
 <script setup>
-import {Link, router, usePage} from '@inertiajs/vue3'
+import { Link, router, usePage } from '@inertiajs/vue3'
 
 import ApplicationMark from '@/Components/ApplicationMark.vue'
 import NavLink from '@/Components/NavLink.vue'

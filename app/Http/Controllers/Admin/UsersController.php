@@ -23,7 +23,7 @@ class UsersController extends Controller
 
         return Inertia::render('Admin/Users/Index', [
             'users' => UserResource::collection($users),
-            'role' => $request->query('role')
+            'role' => $request->query('role'),
         ]);
     }
 

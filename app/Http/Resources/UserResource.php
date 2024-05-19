@@ -27,6 +27,7 @@ class UserResource extends JsonResource
             'blood_type' => $this->blood_type,
             'phone_number' => $this->phone_number,
             'instagram_handle' => $this->instagram_handle,
+            'instagram_url' => 'https://www.instagram.com/'.$this->instagram_handle,
             'address' => $this->address,
             'emergency_contact' => $this->emergency_contact,
             'role' => $this->role,
