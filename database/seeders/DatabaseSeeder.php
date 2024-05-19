@@ -13,7 +13,7 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        $members = User::factory(10)->create([
+        $members = User::factory(25)->create([
             'role' => Role::Member,
         ]);
 

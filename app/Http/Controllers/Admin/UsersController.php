@@ -18,7 +18,7 @@ class UsersController extends Controller
         $users = User::query()
             ->byRole($request->query('role'))
             ->orderBy('registration_date', 'DESC')
-            ->paginate(5)
+            ->paginate(7)
             ->appends(request()->only(['role']));
 
         return Inertia::render('Admin/Users/Index', [
