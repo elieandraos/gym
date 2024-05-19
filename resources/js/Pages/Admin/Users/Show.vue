@@ -16,8 +16,8 @@
 </template>
 
 <script setup>
-import Container from '@/Components/Container.vue'
-import PageBackButton from '@/Components/PageBackButton.vue'
+import Container from '@/Components/Layout/Container.vue'
+import PageBackButton from '@/Components/Layout/PageBackButton.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import MemberTrainingStatus from '@/Pages/Admin/Users/Partials/MemberTrainingStatus.vue'
 import UserContact from '@/Pages/Admin/Users/Partials/UserContact.vue'

@@ -36,7 +36,7 @@
 <script setup>
 import { usePage } from '@inertiajs/vue3'
 
-import Container from '@/Components/Container.vue'
+import Container from '@/Components/Layout/Container.vue'
 import SectionBorder from '@/Components/SectionBorder.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import DeleteUserForm from '@/Pages/Profile/Partials/DeleteUserForm.vue'

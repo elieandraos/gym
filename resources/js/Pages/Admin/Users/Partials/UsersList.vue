@@ -49,7 +49,7 @@
 <script setup>
 import { router } from '@inertiajs/vue3'
 
-import Pagination from '@/Components/Pagination.vue'
+import Pagination from '@/Components/Layout/Pagination.vue'
 
 const { route } = window
 
