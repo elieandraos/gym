@@ -11,6 +11,7 @@
                 </div>
                 <div class="h-screen lg:pt-3 grow">
                     <main class="h-full overflow-y-scroll bg-white rounded-t-lg">
+                        <div class="h-12 sm:hidden md:hidden lg:hidden"></div>
                         <slot />
                     </main>
                 </div>

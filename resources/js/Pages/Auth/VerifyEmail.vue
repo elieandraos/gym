@@ -45,7 +45,7 @@ import { computed } from 'vue'
 
 import AuthenticationCard from '@/Components/AuthenticationCard.vue'
 import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue'
-import PrimaryButton from '@/Components/PrimaryButton.vue'
+import PrimaryButton from '@/Components/Layout/PrimaryButton.vue'
 
 const props = defineProps({
     status: String,

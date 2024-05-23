@@ -147,11 +147,11 @@ import { ref, computed, watch } from 'vue'
 import ActionSection from '@/Components/ActionSection.vue'
 import ConfirmsPassword from '@/Components/ConfirmsPassword.vue'
 import DangerButton from '@/Components/DangerButton.vue'
-import InputError from '@/Components/InputError.vue'
-import InputLabel from '@/Components/InputLabel.vue'
-import PrimaryButton from '@/Components/PrimaryButton.vue'
-import SecondaryButton from '@/Components/SecondaryButton.vue'
-import TextInput from '@/Components/TextInput.vue'
+import InputError from '@/Components/Form/InputError.vue'
+import InputLabel from '@/Components/Form/InputLabel.vue'
+import TextInput from '@/Components/Form/TextInput.vue'
+import PrimaryButton from '@/Components/Layout/PrimaryButton.vue'
+import SecondaryButton from '@/Components/Layout/SecondaryButton.vue'
 
 const props = defineProps({
     requiresConfirmation: Boolean,

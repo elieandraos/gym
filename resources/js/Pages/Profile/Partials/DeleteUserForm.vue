@@ -67,9 +67,9 @@ import { ref } from 'vue'
 import ActionSection from '@/Components/ActionSection.vue'
 import DangerButton from '@/Components/DangerButton.vue'
 import DialogModal from '@/Components/DialogModal.vue'
-import InputError from '@/Components/InputError.vue'
-import SecondaryButton from '@/Components/SecondaryButton.vue'
-import TextInput from '@/Components/TextInput.vue'
+import InputError from '@/Components/Form/InputError.vue'
+import TextInput from '@/Components/Form/TextInput.vue'
+import SecondaryButton from '@/Components/Layout/SecondaryButton.vue'
 
 const { route } = window
 

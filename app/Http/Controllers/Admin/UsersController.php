@@ -2,18 +2,23 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\BloodType;
+use App\Enums\Gender;
 use App\Enums\Role;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\UserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class UsersController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request) : Response
     {
         $users = User::query()
             ->byRole($request->query('role'))
@@ -27,14 +32,23 @@ class UsersController extends Controller
         ]);
     }
 
-    public function show(User $user)
+    public function show(User $user) : Response
     {
         return Inertia::render('Admin/Users/Show', [
             'user' => UserResource::make($user),
         ]);
     }
 
-    public function store(UserRequest $request)
+    public function create(Request $request) : Response
+    {
+        return Inertia::render('Admin/Users/Create', [
+            'bloodTypes' => BloodType::values(),
+            'genders' => Gender::values(),
+            'role' => in_array($request->query('role'), [Role::Member->value, Role::Trainer->value]) ? $request->query('role') : Role::Member->value
+        ]);
+    }
+
+    public function store(UserRequest $request) : RedirectResponse
     {
         $request->merge(['password' => Hash::make('password'), 'role' => Role::Member->value]);
         User::create($request->all());

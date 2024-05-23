@@ -9,7 +9,7 @@
             </div>
 
             <!-- menu items -->
-            <div class="space-y-2">
+            <div class="space-y-2 uppercase text-sm/relaxed">
                 <div v-for="item in menu" :key="item.name">
                     <NavLink :href="item.url" :active="urlWithQuerystring($page.props.url, 'role') === item.url">
                         <component :is="item.icon" :class="[urlWithQuerystring($page.props.url, 'role') === item.url ? 'text-zinc-900' : 'text-zinc-400', 'w-5 h-5 group-hover:text-zinc-900 mr-2']"></component>

@@ -1,9 +1,10 @@
 <template>
     <input
         ref="input"
-        class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+        class="w-full min-w-36 lg:min-w-52 border-zinc-300 focus:border-zinc-500 focus:ring-zinc-500 rounded-lg text-sm"
         :value="modelValue"
-        @input="$emit('update:modelValue', $event.target.value)">
+        @input="$emit('update:modelValue', $event.target.value)"
+    />
 </template>
 
 <script setup>

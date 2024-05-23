@@ -12,4 +12,10 @@ enum BloodType: string
     case ABMinus = 'AB-';
     case OPlus = 'O+';
     case OMinus = 'O-';
+
+    public static function values(): array
+    {
+        return collect(self::cases())->map(fn($case) => $case->value)->toArray();
+    }
+
 }
