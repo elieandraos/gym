@@ -5,3 +5,19 @@
 [x-cloak] {
     display: none;
 }
+
+/* date picker styles overriding */
+div.vuejs3-datepicker {
+    width: 100%;
+}
+section.vuejs3-datepicker__calendar-topbar {
+    display: none;
+}
+div#calendar-div div.vuejs3-datepicker__value
+{
+    padding: 0.5rem 0.75rem;
+    min-width: 13rem;
+    border-radius: 0.5rem;
+    width: 100%;
+    border-color: #d4d4d8;
+}

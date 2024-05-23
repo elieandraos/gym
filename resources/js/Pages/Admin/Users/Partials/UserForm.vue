@@ -1,6 +1,21 @@
 <template>
     <div class="space-y-12">
         <div>
+            <page-section-title>Membership info</page-section-title>
+            <div class="grid grid-cols-2 hap-4 lg:grid-cols-4 lg:gap-8 my-4">
+                <div>
+                    <InputLabel for="email" value="In-house member" />
+                    <TextInput id="email" v-model="form.email" type="text"/>
+                    <InputError :message="form.errors.email" />
+                </div>
+                <div>
+                    <InputLabel for="registration_date" value="Registration date" />
+                    <datepicker v-model="form.registration_date" :monday-first="true" icon-color="#d4d4d8" icon-width="19" icon-height="19" ></datepicker>
+                    <InputError :message="form.errors.registration_date" />
+                </div>
+            </div>
+        </div>
+        <div>
             <page-section-title>Profile info</page-section-title>
             <div class="grid grid-cols-2 hap-4 lg:grid-cols-4 lg:gap-8 my-4">
                 <div>
@@ -61,28 +76,13 @@
                 </div>
             </div>
         </div>
-
-        <div>
-            <page-section-title>Membership info</page-section-title>
-            <div class="grid grid-cols-2 hap-4 lg:grid-cols-4 lg:gap-8 my-4">
-                <div>
-                    <InputLabel for="email" value="In-house member" />
-                    <TextInput id="email" v-model="form.email" type="text"/>
-                    <InputError :message="form.errors.email" />
-                </div>
-                <div>
-                    <InputLabel for="phone_number" value="Registration date" />
-                    <TextInput id="email" v-model="form.phone_number" type="text"/>
-                    <InputError :message="form.errors.phone_number" />
-                </div>
-            </div>
-        </div>
     </div>
 </template>
 
 <script setup>
 import PageSectionTitle from '@/Components/Layout/PageSectionTitle.vue'
 import { inject } from 'vue'
+import Datepicker from 'vuejs3-datepicker'
 
 import InputError from '@/Components/Form/InputError.vue'
 import InputLabel from '@/Components/Form/InputLabel.vue'

@@ -38,7 +38,7 @@ const form = useForm({
     address: null,
     emergency_contact: null,
     in_house: true,
-    registration_date: null,
+    registration_date: new Date(),
 })
 
 provide('form', form)
