@@ -50,9 +50,9 @@ class UsersController extends Controller
 
     public function store(UserRequest $request) : RedirectResponse
     {
-        $request->merge(['password' => Hash::make('password'), 'role' => Role::Member->value]);
+        $request->merge(['password' => Hash::make('password')]);
         User::create($request->all());
 
-        return redirect(route('admin.users.index', ['role' => Role::Member->value]));
+        return redirect(route('admin.users.index', ['role' => $request->input('role')]));
     }
 }

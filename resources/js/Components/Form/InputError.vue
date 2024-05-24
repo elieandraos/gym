@@ -1,6 +1,6 @@
 <template>
     <div v-show="message">
-        <p class="text-sm text-red-600">
+        <p class="inline-block bg-red-50 text-red-500 mt-1 p-1 text-xs">
             {{ message }}
         </p>
     </div>

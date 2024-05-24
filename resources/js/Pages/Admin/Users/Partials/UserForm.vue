@@ -2,22 +2,22 @@
     <div class="space-y-12">
         <div>
             <page-section-title>Membership info</page-section-title>
-            <div class="grid grid-cols-2 hap-4 lg:grid-cols-4 lg:gap-8 my-4">
+            <div class="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-3 my-4">
                 <div>
-                    <InputLabel for="email" value="In-house member" />
-                    <TextInput id="email" v-model="form.email" type="text"/>
-                    <InputError :message="form.errors.email" />
+                    <InputLabel for="in_house" value="In-house member" />
+                    <div class="mt-2"><SwitchInput v-model="form.in_house" /></div>
+                    <InputError :message="form.errors.registration_date" />
                 </div>
                 <div>
-                    <InputLabel for="registration_date" value="Registration date" />
-                    <datepicker v-model="form.registration_date" :monday-first="true" icon-color="#d4d4d8" icon-width="19" icon-height="19" ></datepicker>
+                    <InputLabel for="registration_date" value="Start date" />
+                    <DatepickerInput v-model="form.registration_date"></DatepickerInput>
                     <InputError :message="form.errors.registration_date" />
                 </div>
             </div>
         </div>
         <div>
             <page-section-title>Profile info</page-section-title>
-            <div class="grid grid-cols-2 hap-4 lg:grid-cols-4 lg:gap-8 my-4">
+            <div class="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-8 my-4">
                 <div>
                     <InputLabel for="name" value="Name" />
                     <TextInput id="name" v-model="form.name" type="text" autofocus/>
@@ -27,6 +27,11 @@
                     <InputLabel for="gender" value="Gender" />
                     <SelectInput v-model="form.gender" id="gender" :options="genders" />
                     <InputError :message="form.errors.gender" />
+                </div>
+                <div>
+                    <InputLabel for="birthdate" value="Birthdate" />
+                    <DatepickerInput v-model="form.birthdate"></DatepickerInput>
+                    <InputError :message="form.errors.birthdate" />
                 </div>
                 <div>
                     <InputLabel for="height" value="Height" />
@@ -48,7 +53,7 @@
 
         <div>
             <page-section-title>Contact info</page-section-title>
-            <div class="grid grid-cols-2 hap-4 lg:grid-cols-4 lg:gap-8 my-4">
+            <div class="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-8 my-4">
                 <div>
                     <InputLabel for="email" value="Email" />
                     <TextInput id="email" v-model="form.email" type="text"/>
@@ -76,18 +81,24 @@
                 </div>
             </div>
         </div>
+
+        <div>
+            <primary-button @click="saveUser">Save {{ form.role }}</primary-button>
+        </div>
     </div>
 </template>
 
 <script setup>
-import PageSectionTitle from '@/Components/Layout/PageSectionTitle.vue'
 import { inject } from 'vue'
-import Datepicker from 'vuejs3-datepicker'
 
 import InputError from '@/Components/Form/InputError.vue'
 import InputLabel from '@/Components/Form/InputLabel.vue'
 import SelectInput from '@/Components/Form/SelectInput.vue'
+import SwitchInput from '@/Components/Form/SwitchInput.vue'
 import TextInput from '@/Components/Form/TextInput.vue'
+import DatepickerInput from '@/Components/Form/DatepickerInput.vue'
+import PageSectionTitle from '@/Components/Layout/PageSectionTitle.vue'
+import PrimaryButton from '@/Components/Layout/PrimaryButton.vue'
 
 const form = inject('form')
 
@@ -95,4 +106,6 @@ defineProps({
     bloodTypes: { type: Array, required: true },
     genders: { type: Array, required: true },
 })
+
+const saveUser = () => form.post( route('admin.users.store'))
 </script>
