@@ -10,10 +10,14 @@
 div.vuejs3-datepicker {
     width: 100%;
 }
+div.vuejs3-datepicker__content {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+}
 section.vuejs3-datepicker__calendar-topbar {
     display: none;
 }
-div#calendar-div div.vuejs3-datepicker__value
+div.vuejs3-datepicker__value
 {
     padding: 0.5rem 0.75rem;
     min-width: 13rem;
