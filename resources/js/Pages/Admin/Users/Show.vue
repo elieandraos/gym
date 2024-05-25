@@ -2,6 +2,7 @@
     <AppLayout title="Profile">
         <Container>
             <page-back-button>{{ role }}s</page-back-button>
+
             <div class="flex flex-col lg:flex-row gap-8 lg:gap-16">
                 <div class="flex flex-col gap-12 lg:w-2/5">
                     <user-profile :user="user"></user-profile>

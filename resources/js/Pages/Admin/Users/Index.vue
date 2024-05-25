@@ -4,9 +4,11 @@
             <page-title>
                 {{ role }}s list
                 <template v-slot:buttons>
-                    <primary-button type="button" class="">
-                        <Link :href="route('admin.users.create', { role: role })">Add {{ role }}</Link>
-                    </primary-button>
+                    <Link :href="route('admin.users.create', { role: role })">
+                        <primary-button type="button" class="">
+                            Add {{ role }}
+                        </primary-button>
+                    </Link>
                 </template>
             </page-title>
 
