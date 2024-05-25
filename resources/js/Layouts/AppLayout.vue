@@ -27,7 +27,7 @@ import {
 } from '@heroicons/vue/24/solid'
 import { Head, usePage } from '@inertiajs/vue3'
 
-import Banner from '@/Components/Banner.vue'
+import Banner from '@/Components/Layout/Banner.vue'
 import FloatingSidebar from '@/Layouts/FloatingSidebar.vue'
 import Sidebar from '@/Layouts/Sidebar.vue'
 
