@@ -10,7 +10,7 @@
             {{  title  }}
         </li>
     </ul>
-    <div class="w-full p-4">
+    <div class="w-full">
         <slot />
     </div>
 </template>

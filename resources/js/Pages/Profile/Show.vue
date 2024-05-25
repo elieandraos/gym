@@ -5,7 +5,7 @@
                 <Tab title="Profile">
                     <UpdateProfileInformationForm :user="$page.props.auth.user" />
                 </Tab>
-                <Tab title="Password">
+                <Tab title="Change password">
                     <UpdatePasswordForm />
                 </Tab>
                 <Tab title="Security">
