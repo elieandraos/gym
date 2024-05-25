@@ -1,83 +1,84 @@
 <template>
-    <FormSection @submitted="updateProfileInformation">
-        <template #form>
-            <!-- Profile Photo -->
-            <div v-if="$page.props.jetstream.managesProfilePhotos" class="col-span-6 sm:col-span-4">
-                <!-- Profile Photo File Input -->
-                <input
-                    id="photo"
-                    ref="photoInput"
-                    type="file"
-                    class="hidden"
-                    @change="updatePhotoPreview">
+    <h3 class="font-medium">Manage profile</h3>
+    <div class="text-sm text-zinc-500">
+        Update your profile information.
+    </div>
 
-                <InputLabel for="photo" value="Photo" />
+    <div class="space-y-4 my-8 lg:w-1/2">
+        <!-- Profile Photo -->
+        <div v-if="$page.props.jetstream.managesProfilePhotos" class="col-span-6 sm:col-span-4">
+            <!-- Profile Photo File Input -->
+            <input
+                id="photo"
+                ref="photoInput"
+                type="file"
+                class="hidden"
+                @change="updatePhotoPreview">
 
-                <!-- Current Profile Photo -->
-                <div v-show="! photoPreview" class="mt-2">
-                    <img :src="user.profile_photo_url" :alt="user.name" class="rounded-full h-20 w-20 object-cover">
-                </div>
+            <InputLabel for="photo" value="Photo" />
 
-                <!-- New Profile Photo Preview -->
-                <div v-show="photoPreview" class="mt-2">
-                    <span
-                        class="block rounded-full w-20 h-20 bg-cover bg-no-repeat bg-center"
-                        :style="'background-image: url(\'' + photoPreview + '\');'"/>
-                </div>
-
-                <SecondaryButton class="mt-2 me-2" type="button" @click.prevent="selectNewPhoto">
-                    Select A New Photo
-                </SecondaryButton>
-
-                <SecondaryButton
-                    v-if="user.profile_photo_path"
-                    type="button"
-                    class="mt-2"
-                    @click.prevent="deletePhoto">
-                    Remove Photo
-                </SecondaryButton>
-
-                <InputError :message="form.errors.photo" class="mt-2" />
+            <!-- Current Profile Photo -->
+            <div v-show="! photoPreview" class="mt-2">
+                <img :src="user.profile_photo_url" :alt="user.name" class="rounded-full h-20 w-20 object-cover">
             </div>
 
-            <!-- Name -->
-            <div class="col-span-6 sm:col-span-4">
-                <InputLabel for="name" value="Name" />
-                <TextInput
-                    id="name"
-                    v-model="form.name"
-                    type="text"
-                    class="mt-1 block w-full"
-                    required
-                    autocomplete="name"/>
-                <InputError :message="form.errors.name" class="mt-2" />
+            <!-- New Profile Photo Preview -->
+            <div v-show="photoPreview" class="mt-2">
+                <span
+                    class="block rounded-full w-20 h-20 bg-cover bg-no-repeat bg-center"
+                    :style="'background-image: url(\'' + photoPreview + '\');'"/>
             </div>
 
-            <!-- Email -->
-            <div class="col-span-6 sm:col-span-4">
-                <InputLabel for="email" value="Email" />
-                <TextInput
-                    id="email"
-                    v-model="form.email"
-                    type="email"
-                    class="mt-1 block w-full"
-                    required
-                    autocomplete="username"/>
-                <InputError :message="form.errors.email" class="mt-2" />
+            <SecondaryButton class="mt-2 me-2" type="button" @click.prevent="selectNewPhoto">
+                Select A New Photo
+            </SecondaryButton>
 
-            </div>
-        </template>
+            <SecondaryButton
+                v-if="user.profile_photo_path"
+                type="button"
+                class="mt-2"
+                @click.prevent="deletePhoto">
+                Remove Photo
+            </SecondaryButton>
 
-        <template #actions>
-            <ActionMessage :on="form.recentlySuccessful" class="me-3">
-                Saved.
-            </ActionMessage>
+            <InputError :message="form.errors.photo" class="mt-2" />
+        </div>
+        <!-- Name -->
+        <div class="col-span-6 sm:col-span-4">
+            <InputLabel for="name" value="Name" />
+            <TextInput
+                id="name"
+                v-model="form.name"
+                type="text"
+                class="mt-1 block w-full"
+                required
+                autocomplete="name"/>
+            <InputError :message="form.errors.name" class="mt-2" />
+        </div>
+        <!-- Email -->
+        <div class="col-span-6 sm:col-span-4">
+            <InputLabel for="email" value="Email" />
+            <TextInput
+                id="email"
+                v-model="form.email"
+                type="email"
+                class="mt-1 block w-full"
+                required
+                autocomplete="username"/>
+            <InputError :message="form.errors.email" class="mt-2" />
 
-            <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                Save
-            </PrimaryButton>
-        </template>
-    </FormSection>
+        </div>
+    </div>
+
+    <div class="flex gap-4 items-center">
+        <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing" @click="updateProfileInformation">
+            Save
+        </PrimaryButton>
+
+        <ActionMessage :on="form.recentlySuccessful">
+            Saved.
+        </ActionMessage>
+    </div>
 </template>
 
 <script setup>

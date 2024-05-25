@@ -1,5 +1,5 @@
 <template>
-    <div class="flex justify-between items-center lg:pt-5 mb-8">
+    <div class="flex justify-between items-center lg:mt-8 mb-8">
         <h1 class="text-zinc-900 font-medium text-lg lg:text-xl capitalize">
             <slot></slot>
         </h1>
