@@ -4,7 +4,10 @@
         <table class="text-left text-sm/6">
             <tr>
                 <td class="text-zinc-400 w-32 lg:w-48 pt-2.5">About</td>
-                <td class="font-medium pt-2.5">{{ name }}, {{ gender }}</td>
+                <td class="font-medium pt-2.5">
+                    {{ name }}, {{ gender }}
+                    <check-badge-icon class="w-4 h-4 text-sky-500 inline" v-if="in_house"></check-badge-icon>
+                </td>
             </tr>
             <tr>
                 <td class="text-zinc-400 w-32 lg:w-48 pt-2.5">Birthdate</td>
@@ -32,11 +35,13 @@
 </template>
 
 <script setup>
+import { CheckBadgeIcon } from '@heroicons/vue/24/solid'
+
 const props = defineProps({
     user: { type: Object, required: true },
 })
 
 const {
-    name, gender, age, since, birthdate, weight, height, blood_type,
+    name, gender, age, since, birthdate, weight, height, blood_type, in_house
 } = props.user
 </script>
