@@ -1,5 +1,5 @@
 <template>
-    <ul class="flex justify-between items-center lg:justify-start lg:gap-8 bg-white my-8 capitalize cursor-pointer">
+    <ul class="flex justify-between items-center mb-8 lg:mt-8 lg:justify-start lg:gap-8 bg-white capitalize cursor-pointer">
         <li
             class="uppercase text-xs rounded-lg px-3 py-1.5 font-medium leading-relaxed"
             :class="title === selectedTitle ? 'bg-stone-200 text-zinc-900' : 'bg-stone-100 text-zinc-400 hover:bg-stone-200 hover:text-zinc-900'"
