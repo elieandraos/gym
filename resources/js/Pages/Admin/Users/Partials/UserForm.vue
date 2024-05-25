@@ -83,7 +83,7 @@
         </div>
 
         <div>
-            <primary-button @click="saveUser">Save {{ form.role }}</primary-button>
+            <primary-button @click="saveUser" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">Save {{ form.role }}</primary-button>
         </div>
     </div>
 </template>
@@ -107,5 +107,8 @@ defineProps({
     genders: { type: Array, required: true },
 })
 
-const saveUser = () => form.post( route('admin.users.store'))
+const saveUser = () => form.post( route('admin.users.store'), {
+    preserveScroll: true,
+    onFinish: () => form.reset(),
+})
 </script>
