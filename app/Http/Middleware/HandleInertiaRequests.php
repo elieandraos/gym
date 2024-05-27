@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Enums\BloodType;
+use App\Enums\Gender;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -37,6 +39,8 @@ class HandleInertiaRequests extends Middleware
     {
         return array_merge(parent::share($request), [
             'url' => $request->fullUrl(),
+            'bloodTypes' => BloodType::values(),
+            'genders' => Gender::values(),
         ]);
     }
 }

@@ -38,10 +38,10 @@
 
     <div class="flex gap-4 items-center">
         <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing" @click="updatePassword">
-            Save
+            Update password
         </PrimaryButton>
 
-        <ActionMessage :on="form.recentlySuccessful">Saved.</ActionMessage>
+        <ActionMessage :on="form.recentlySuccessful">Updated.</ActionMessage>
     </div>
 </template>
 

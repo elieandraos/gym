@@ -42,8 +42,6 @@ class UsersController extends Controller
     public function create(Request $request) : Response
     {
         return Inertia::render('Admin/Users/Create', [
-            'bloodTypes' => BloodType::values(),
-            'genders' => Gender::values(),
             'role' => in_array($request->query('role'), [Role::Member->value, Role::Trainer->value]) ? $request->query('role') : Role::Member->value
         ]);
     }

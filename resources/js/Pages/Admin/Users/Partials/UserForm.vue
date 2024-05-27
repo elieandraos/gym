@@ -25,7 +25,7 @@
                 </div>
                 <div>
                     <InputLabel for="gender" value="Gender" />
-                    <SelectInput v-model="form.gender" id="gender" :options="genders" />
+                    <SelectInput v-model="form.gender" id="gender" :options="$page.props.genders" />
                     <InputError :message="form.errors.gender" />
                 </div>
                 <div>
@@ -45,7 +45,7 @@
                 </div>
                 <div>
                     <InputLabel for="blood_type" value="Blood type" />
-                    <SelectInput v-model="form.blood_type" id="blood_type" :options="bloodTypes" />
+                    <SelectInput v-model="form.blood_type" id="blood_type" :options="$page.props.bloodTypes" />
                     <InputError :message="form.errors.blood_type" />
                 </div>
             </div>
@@ -101,11 +101,6 @@ import PageSectionTitle from '@/Components/Layout/PageSectionTitle.vue'
 import PrimaryButton from '@/Components/Layout/PrimaryButton.vue'
 
 const form = inject('form')
-
-defineProps({
-    bloodTypes: { type: Array, required: true },
-    genders: { type: Array, required: true },
-})
 
 const saveUser = () => form.post( route('admin.users.store'), {
     preserveScroll: true,

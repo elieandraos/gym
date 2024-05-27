@@ -4,12 +4,8 @@
         Manage and log out your active sessions on other browsers and devices.
     </div>
 
-    <div class="text-sm my-6 lg:w-1/2 text-zinc-900">
-        Some of your recent sessions are listed below; however, this list may not be exhaustive. If you feel your account has been compromised, you should also update your password.
-    </div>
-
     <!-- Other Browser Sessions -->
-    <div v-if="sessions.length > 0" class="mt-5 space-y-6">
+    <div v-if="sessions.length > 0" class="space-y-6 my-8">
         <div v-for="({ agent, ip_address, is_current_device, last_active }, i) in sessions" :key="i" class="flex items-center">
             <div>
                 <svg v-if="agent.is_desktop" class="w-8 h-8 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -48,7 +44,7 @@
         </ActionMessage>
     </div>
 
-    <!-- Log Out Other Devices Confirmation Modal -->
+<!--     Log Out Other Devices Confirmation Modal-->
     <DialogModal :show="confirmingLogout" @close="closeModal">
         <template #title>
             Log Out Other Browser Sessions
