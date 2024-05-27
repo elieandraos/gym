@@ -9,7 +9,6 @@ enum Gender: string
 
     public static function values(): array
     {
-        return collect(self::cases())->map(fn($case) => $case->value)->toArray();
+        return collect(self::cases())->map(fn ($case) => $case->value)->toArray();
     }
-
 }

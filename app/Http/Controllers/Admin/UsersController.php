@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Enums\BloodType;
-use App\Enums\Gender;
 use App\Enums\Role;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\UserRequest;
@@ -12,13 +10,12 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class UsersController extends Controller
 {
-    public function index(Request $request) : Response
+    public function index(Request $request): Response
     {
         $users = User::query()
             ->byRole($request->query('role'))
@@ -32,27 +29,27 @@ class UsersController extends Controller
         ]);
     }
 
-    public function show(User $user) : Response
+    public function show(User $user): Response
     {
         return Inertia::render('Admin/Users/Show', [
             'user' => UserResource::make($user),
         ]);
     }
 
-    public function create(Request $request) : Response
+    public function create(Request $request): Response
     {
         return Inertia::render('Admin/Users/Create', [
-            'role' => in_array($request->query('role'), [Role::Member->value, Role::Trainer->value]) ? $request->query('role') : Role::Member->value
+            'role' => in_array($request->query('role'), [Role::Member->value, Role::Trainer->value]) ? $request->query('role') : Role::Member->value,
         ]);
     }
 
-    public function store(UserRequest $request) : RedirectResponse
+    public function store(UserRequest $request): RedirectResponse
     {
         $request->merge(['password' => Hash::make('password')]);
         User::create($request->all());
 
         return redirect(route('admin.users.index', ['role' => $request->input('role')]))
-            ->with('flash.banner',  $request->input('role').' created successfully')
+            ->with('flash.banner', $request->input('role').' created successfully')
             ->with('flash.bannerStyle', 'success');
     }
 }
