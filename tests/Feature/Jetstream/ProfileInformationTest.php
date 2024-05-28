@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\BloodType;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\UploadedFile;
@@ -15,6 +16,8 @@ test('profile information can be updated', function () {
             'weight' => 72,
             'gender' => 'Female',
             'birthdate' => '2001-04-10',
+            'blood_type' => BloodType::ABPlus->value,
+            'phone_number' => '123456'
         ]);
 
     $response->assertSessionHasNoErrors();
@@ -37,12 +40,13 @@ test('profile information are validated before update', function () {
 
     $response = $this->actingAs($user)
         ->put('/user/profile-information', [
-            'name' => '', // Required field
-            'email' => 'invalid-email', // Invalid email format
+            'name' => '',
+            'email' => 'invalid-email',
             'photo' => UploadedFile::fake()->create('document.pdf', 2000), // Invalid photo
-            'gender' => 'Unknown', // Invalid gender
-            'blood_type' => 'XX', // Invalid blood type
-            'birthdate' => 'not-a-date', // Invalid date format
+            'gender' => 'Unknown',
+            'blood_type' => 'XX',
+            'birthdate' => 'not-a-date',
+            'phone_number' => '',
         ]);
 
     $response->assertSessionHasErrors([
@@ -52,6 +56,8 @@ test('profile information are validated before update', function () {
         'gender',
         'blood_type',
         'birthdate',
+        'blood_type',
+        'phone_number'
     ]);
 
     // Test email uniqueness

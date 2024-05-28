@@ -20,11 +20,12 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
             'photo' => ['nullable', 'mimes:jpg,jpeg,png', 'max:1024'],
-            'weight' => ['nullable', 'integer'],
-            'height' => ['nullable', 'integer'],
-            'birthdate' => ['nullable', 'date'],
-            'gender' => ['nullable', Rule::in(Gender::cases())],
-            'blood_type' => ['nullable', Rule::in(BloodType::cases())],
+            'weight' => ['required', 'integer'],
+            'height' => ['required', 'integer'],
+            'birthdate' => ['required', 'date'],
+            'phone_number' => ['required', 'string'],
+            'gender' => ['required', Rule::in(Gender::cases())],
+            'blood_type' => ['required', Rule::in(BloodType::cases())],
         ])->validate();
 
         if (isset($input['photo'])) {
