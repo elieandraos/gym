@@ -11,8 +11,8 @@
             <!-- menu items -->
             <div class="space-y-2 uppercase text-sm/relaxed">
                 <div v-for="item in menu" :key="item.name">
-                    <NavLink :href="item.url" :active="urlWithQuerystring($page.props.url, 'role') === item.url">
-                        <component :is="item.icon" :class="[urlWithQuerystring($page.props.url, 'role') === item.url ? 'text-zinc-900' : 'text-zinc-400', 'w-5 h-5 group-hover:text-zinc-900 mr-2']"></component>
+                    <NavLink :href="item.url" :active="isActive(item)">
+                        <component :is="item.icon" :class="[isActive(item) ? 'text-zinc-900' : 'text-zinc-400', 'w-5 h-5 group-hover:text-zinc-900 mr-2']"></component>
                         {{  item.name }}
                     </NavLink>
                 </div>
@@ -54,26 +54,5 @@ const logout = () => {
     router.post(route('logout'))
 }
 
-const urlWithQuerystring = (url, paramsToKeep) => {
-    try {
-        const urlObj = new URL(url)
-        const params = new URLSearchParams()
-
-        const paramsArray = typeof paramsToKeep === 'string' ? [paramsToKeep] : paramsToKeep
-
-        paramsArray.forEach((param) => {
-            const value = urlObj.searchParams.get(param)
-            if (value !== null) {
-                params.append(param, value)
-            }
-        })
-
-        const baseUrl = `${urlObj.origin}${urlObj.pathname}`
-        const newQueryString = params.toString()
-
-        return newQueryString ? `${baseUrl}?${newQueryString}` : baseUrl
-    } catch (error) {
-        throw error.message
-    }
-}
+const isActive = item => route().current(item.activeRoute)
 </script>
