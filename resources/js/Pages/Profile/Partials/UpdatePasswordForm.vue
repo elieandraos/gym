@@ -1,7 +1,7 @@
 <template>
     <h3 class="font-medium">Update password</h3>
     <div class="text-sm text-zinc-500">
-        Ensure your account is using a long, random password to stay secure.
+        Ensure your account is using a strong password to stay secure.
     </div>
 
     <div class="space-y-4 my-8 lg:w-1/2">

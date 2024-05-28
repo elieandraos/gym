@@ -2,7 +2,7 @@
     <AppLayout>
         <Container>
             <page-back-button :url="route('admin.users.index', {'role' : role })">{{ role }}s</page-back-button>
-            <user-form :blood-types="bloodTypes" :genders="genders"></user-form>
+            <user-form></user-form>
         </Container>
     </AppLayout>
 </template>
@@ -20,8 +20,6 @@ const { route } = window
 
 const props = defineProps({
     role: { type: String, default: 'Member', required: false },
-    bloodTypes: { type: Array, required: true },
-    genders: { type: Array, required: true },
 })
 
 const form = useForm({

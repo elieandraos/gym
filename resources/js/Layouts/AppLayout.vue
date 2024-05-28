@@ -50,6 +50,7 @@ const menu = [
         url: route('admin.users.index', { role: 'Member' }),
         icon: UserIcon,
         activeRoute: 'admin.users.*',
+        for: 'Member',
         when: () => usePage().props.auth.user,
     },
     {
@@ -57,6 +58,7 @@ const menu = [
         url: route('admin.users.index', { role: 'Trainer' }),
         icon: UsersIcon,
         activeRoute: 'admin.users.*',
+        for: 'Trainer',
         when: () => usePage().props.auth.user,
     },
     {

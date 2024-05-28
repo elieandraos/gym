@@ -23,10 +23,10 @@ Route::middleware([
         return Inertia::render('Dashboard');
     })->name('dashboard');
 
-    Route::get('/users', [UsersController::class, 'index'])->name('admin.users.index');
-    Route::get('/users/create', [UsersController::class, 'create'])->name('admin.users.create');
+    Route::get('/users/list/{role}', [UsersController::class, 'index'])->name('admin.users.index');
+    Route::get('/users/create/{role}', [UsersController::class, 'create'])->name('admin.users.create');
     Route::post('/users/store', [UsersController::class, 'store'])->name('admin.users.store');
-    Route::get('/users/{user}', [UsersController::class, 'show'])->name('admin.users.show');
+    Route::get('/users/{user}/{role}', [UsersController::class, 'show'])->name('admin.users.show');
 });
 
 ////$users = Users::with(['memberBookings', 'memberBookings.trainer', 'memberBookings.bookingSlots', 'trainerBookings', 'trainerBookings.member', 'trainerBookings.bookingSlots'])->get();

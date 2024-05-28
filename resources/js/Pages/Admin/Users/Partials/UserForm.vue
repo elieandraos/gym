@@ -1,9 +1,9 @@
 <template>
     <div class="space-y-12">
         <div>
-            <page-section-title>Membership info</page-section-title>
+            <page-section-title v-if="form.role === 'Member'">Membership info</page-section-title>
             <div class="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-3 my-4">
-                <div>
+                <div v-if="form.role === 'Member'">
                     <InputLabel for="in_house" value="In-house member" />
                     <div class="mt-2"><SwitchInput v-model="form.in_house" /></div>
                     <InputError :message="form.errors.registration_date" />

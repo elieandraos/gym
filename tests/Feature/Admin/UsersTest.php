@@ -12,7 +12,7 @@ beforeEach(function () {
 });
 
 test('it requires authentication', function () {
-    $this->get(route('admin.users.index'))->assertRedirect(route('login'));
+    $this->get(route('admin.users.index', Role::Member->value))->assertRedirect(route('login'));
     $this->post(route('admin.users.store'))->assertRedirect(route('login'));
 });
 
@@ -101,7 +101,7 @@ test('it shows user information', function () {
     $user = User::query()->members()->first();
 
     actingAsAdmin()
-        ->get(route('admin.users.show', $user))
+        ->get(route('admin.users.show', [$user, $user->role]))
         ->assertHasResource('user', UserResource::make($user))
         ->assertHasComponent('Admin/Users/Show')
         ->assertStatus(200);
