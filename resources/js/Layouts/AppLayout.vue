@@ -42,24 +42,28 @@ const menu = [
         name: 'Dashboard',
         url: route('dashboard'),
         icon: HomeIcon,
+        activeRoute: 'dashboard',
         when: () => usePage().props.auth.user,
     },
     {
         name: 'Members',
         url: route('admin.users.index', { role: 'Member' }),
         icon: UserIcon,
+        activeRoute: 'admin.users.*',
         when: () => usePage().props.auth.user,
     },
     {
         name: 'Trainers',
         url: route('admin.users.index', { role: 'Trainer' }),
         icon: UsersIcon,
+        activeRoute: 'admin.users.*',
         when: () => usePage().props.auth.user,
     },
     {
         name: 'Account',
         url: route('profile.show'),
         icon: Cog6ToothIcon,
+        activeRoute: 'profile.show',
         when: () => usePage().props.auth.user,
     },
 ]

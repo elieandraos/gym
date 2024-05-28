@@ -104,6 +104,8 @@ const form = inject('form')
 
 const saveUser = () => form.post( route('admin.users.store'), {
     preserveScroll: true,
-    onFinish: () => form.reset(),
+    onFinish: () => {
+        //form.reset()
+    },
 })
 </script>
