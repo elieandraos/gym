@@ -17,9 +17,9 @@ class TestingServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        if (! $this->app->runningUnitTests()) {
-            return;
-        }
+//        if (! $this->app->runningUnitTests()) {
+//            return;
+//        }
 
         AssertableInertia::macro('hasResource', function (string $key, JsonResource $resource) {
             $this->has($key);
