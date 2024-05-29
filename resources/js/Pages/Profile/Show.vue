@@ -8,7 +8,7 @@
                 <Tab title="Contact">
                     <UpdateContactInformation @save-user-info="saveUser"/>
                 </Tab>
-                <Tab title="Change password">
+                <Tab title="Password">
                     <UpdatePasswordForm />
                 </Tab>
                 <Tab title="Security">
