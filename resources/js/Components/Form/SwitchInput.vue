@@ -1,31 +1,14 @@
 <template>
-    <div class="px-1 py-0.5 w-10 bg-zinc-100 border border-zinc-200 rounded-full cursor-pointer" @click="toggle">
+    <div class="px-1 py-0.5 w-10 bg-zinc-100 border border-zinc-200 rounded-full cursor-pointer" @click="model = !model">
         <div
-            :class="{'translate-x-5 bg-zinc-800': modelValue, 'bg-white': !modelValue}"
+            :class="{'translate-x-5 bg-zinc-800': model, 'bg-white': !model}"
             class="transform transition-transform w-4 h-4 rounded-full">
         </div>
     </div>
 </template>
 
 <script setup>
-import { defineProps, defineEmits, ref, watch } from 'vue';
-
-const props = defineProps({
-    modelValue: Boolean
-});
-
-const emit = defineEmits(['update:modelValue']);
-
-const localValue = ref(props.modelValue);
-
-watch(() => props.modelValue, (newValue) => {
-    localValue.value = newValue;
-});
-
-const toggle = () => {
-    localValue.value = !localValue.value;
-    emit('update:modelValue', localValue.value);
-};
+const model = defineModel()
 </script>
 
 <style scoped>

@@ -20,7 +20,7 @@
             <div class="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-8 my-4">
                 <div>
                     <InputLabel for="name" value="Name" />
-                    <TextInput id="name" v-model="form.name" type="text" autofocus/>
+                    <TextInput id="name" v-model="form.name" type="text"/>
                     <InputError :message="form.errors.name" />
                 </div>
                 <div>
