@@ -5,7 +5,6 @@ use App\Enums\Gender;
 use App\Enums\Role;
 use App\Http\Resources\UserResource;
 use App\Models\User;
-use Inertia\Testing\AssertableInertia;
 
 beforeEach(function () {
     User::factory()->count(1)->create(['role' => Role::Member]);
@@ -50,9 +49,9 @@ test('it renders the user create page', function() {
 
     actingAsAdmin()
         ->get(route('admin.users.create', ['role' => $role]))
-        ->assertStatus(200)
         ->assertHasComponent('Admin/Users/Create')
-        ->assertHasProp('role', $role);
+        ->assertHasProp('role', $role)
+        ->assertStatus(200);
 });
 
 test('it creates a user', function () {
@@ -121,7 +120,7 @@ test('it shows user information', function () {
 
     actingAsAdmin()
         ->get(route('admin.users.show', [$user, $user->role]))
-        ->assertHasResource('user', UserResource::make($user))
         ->assertHasComponent('Admin/Users/Show')
+        ->assertHasResource('user', UserResource::make($user))
         ->assertStatus(200);
 });
