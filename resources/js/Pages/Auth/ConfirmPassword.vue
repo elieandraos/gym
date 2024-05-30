@@ -21,7 +21,7 @@
                     class="mt-1 block w-full"
                     required
                     autocomplete="current-password"
-                    autofocus/>
+                />
                 <InputError class="mt-2" :message="form.errors.password" />
             </div>
 
