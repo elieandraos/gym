@@ -21,7 +21,7 @@ test('it requires authentication', function () {
     $this->get(route('admin.users.show', [$user, $user->role]))->assertRedirect(route('login'));
 });
 
-test('it lists all members', function () {
+test('it lists all the users that are members', function () {
     $users = User::query()->members()->paginate();
     $role = Role::Member->value;
 
@@ -33,7 +33,7 @@ test('it lists all members', function () {
         ->assertStatus(200);
 });
 
-test('it lists all trainers', function () {
+test('it lists all users that are trainers', function () {
     $users = User::query()->trainers()->paginate();
     $role = Role::Trainer->value;
 
@@ -45,7 +45,7 @@ test('it lists all trainers', function () {
         ->assertStatus(200);
 });
 
-test('it renders the create user page with the correct role', function() {
+test('it renders the user create page', function() {
     $role = Role::Member->value;
 
     actingAsAdmin()
