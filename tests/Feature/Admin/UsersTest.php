@@ -5,6 +5,7 @@ use App\Enums\Gender;
 use App\Enums\Role;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use Inertia\Testing\AssertableInertia;
 
 beforeEach(function () {
     User::factory()->count(1)->create(['role' => Role::Member]);
@@ -12,28 +13,72 @@ beforeEach(function () {
 });
 
 test('it requires authentication', function () {
+    $user = User::query()->members()->first();
+
     $this->get(route('admin.users.index', Role::Member->value))->assertRedirect(route('login'));
+    $this->get(route('admin.users.create', Role::Member->value))->assertRedirect(route('login'));
     $this->post(route('admin.users.store'))->assertRedirect(route('login'));
+    $this->get(route('admin.users.show', [$user, $user->role]))->assertRedirect(route('login'));
 });
 
 test('it lists all members', function () {
     $users = User::query()->members()->paginate();
+    $role = Role::Member->value;
 
     actingAsAdmin()
-        ->get(route('admin.users.index', ['role' => Role::Member]))
-        ->assertHasPaginatedResource('users', UserResource::collection($users))
+        ->get(route('admin.users.index', ['role' => $role]))
         ->assertHasComponent('Admin/Users/Index')
+        ->assertHasPaginatedResource('users', UserResource::collection($users))
+        ->assertHasProp('role', $role)
         ->assertStatus(200);
 });
 
 test('it lists all trainers', function () {
     $users = User::query()->trainers()->paginate();
+    $role = Role::Trainer->value;
 
     actingAsAdmin()
-        ->get(route('admin.users.index', ['role' => Role::Trainer]))
-        ->assertHasPaginatedResource('users', UserResource::collection($users))
+        ->get(route('admin.users.index', ['role' => $role]))
         ->assertHasComponent('Admin/Users/Index')
+        ->assertHasPaginatedResource('users', UserResource::collection($users))
+        ->assertHasProp('role', $role)
         ->assertStatus(200);
+});
+
+test('it renders the create user page with the correct role', function() {
+    $role = Role::Member->value;
+
+    actingAsAdmin()
+        ->get(route('admin.users.create', ['role' => $role]))
+        ->assertStatus(200)
+        ->assertHasComponent('Admin/Users/Create')
+        ->assertHasProp('role', $role);
+});
+
+test('it creates a user', function () {
+    $data = [
+        'name' => 'Elie A',
+        'email' => 'elie@liftstation.fitness',
+        'registration_date' => '2024-01-05',
+        'in_house' => 1,
+        'gender' => Gender::Male->value,
+        'weight' => 75,
+        'height' => 185,
+        'birthdate' => '1985-10-31',
+        'blood_type' => BloodType::OPlus->value,
+        'phone_number' => '00961 3 140 625',
+        'instagram_handle' => 'elieandraos',
+        'address' => 'aa',
+        'emergency_contact' => 'dd',
+        'role' => Role::Member->value,
+    ];
+
+    actingAsAdmin()
+        ->post(route('admin.users.store'), $data)
+        ->assertSessionHasNoErrors()
+        ->assertRedirect(route('admin.users.index', ['role' => Role::Member->value]));
+
+    $this->assertDatabaseHas(User::class, $data);
 });
 
 test('it validates request before creating user', function () {
@@ -69,32 +114,6 @@ test('it validates request before creating user', function () {
             'role',
         ])
         ->assertStatus(302);
-});
-
-test('it creates a user', function () {
-    $data = [
-        'name' => 'Elie A',
-        'email' => 'elie@liftstation.fitness',
-        'registration_date' => '2024-01-05',
-        'in_house' => 1,
-        'gender' => Gender::Male->value,
-        'weight' => 75,
-        'height' => 185,
-        'birthdate' => '1985-10-31',
-        'blood_type' => BloodType::OPlus->value,
-        'phone_number' => '00961 3 140 625',
-        'instagram_handle' => 'elieandraos',
-        'address' => 'aa',
-        'emergency_contact' => 'dd',
-        'role' => Role::Member->value,
-    ];
-
-    actingAsAdmin()
-        ->post(route('admin.users.store'), $data)
-        ->assertSessionHasNoErrors()
-        ->assertRedirect(route('admin.users.index', ['role' => Role::Member->value]));
-
-    $this->assertDatabaseHas(User::class, $data);
 });
 
 test('it shows user information', function () {
