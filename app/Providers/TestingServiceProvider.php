@@ -17,9 +17,9 @@ class TestingServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-//        if (! $this->app->runningUnitTests()) {
-//            return;
-//        }
+        if (! $this->app->runningUnitTests()) {
+            return;
+        }
 
         AssertableInertia::macro('hasResource', function (string $key, JsonResource $resource) {
             $this->has($key);
@@ -51,6 +51,12 @@ class TestingServiceProvider extends ServiceProvider
         TestResponse::macro('assertHasComponent', function (string $key) {
             return $this->assertInertia(function (AssertableInertia $inertia) use ($key) {
                 $inertia->component($key, true);
+            });
+        });
+
+        TestResponse::macro('assertHasProp', function (string $key, mixed $value) {
+            return $this->assertInertia(function (AssertableInertia $inertia) use ($key, $value) {
+                $inertia->where($key, $value);
             });
         });
     }
