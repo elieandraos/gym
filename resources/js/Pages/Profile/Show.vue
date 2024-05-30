@@ -20,25 +20,23 @@
 </template>
 
 <script setup>
-import Tab from '@/Components/Layout/Tab.vue'
-import Tabs from '@/Components/Layout/Tabs.vue'
-import { usePage } from '@inertiajs/vue3'
+import { usePage, useForm } from '@inertiajs/vue3'
 import { provide } from 'vue'
 
 import Container from '@/Components/Layout/Container.vue'
+import Tab from '@/Components/Layout/Tab.vue'
+import Tabs from '@/Components/Layout/Tabs.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import LogoutOtherBrowserSessionsForm from '@/Pages/Profile/Partials/LogoutOtherBrowserSessionsForm.vue'
+import UpdateContactInformation from '@/Pages/Profile/Partials/UpdateContactInformation.vue'
 import UpdatePasswordForm from '@/Pages/Profile/Partials/UpdatePasswordForm.vue'
 import UpdateProfileInformationForm from '@/Pages/Profile/Partials/UpdateProfileInformationForm.vue'
-import UpdateContactInformation from '@/Pages/Profile/Partials/UpdateContactInformation.vue'
 
 defineProps({
     sessions: Array,
 })
 
 const page = usePage()
-
-import { useForm } from '@inertiajs/vue3'
 
 const { route } = window
 
@@ -61,9 +59,8 @@ const form = useForm({
 provide('form', form)
 
 const saveUser = () => {
-        // if (photoInput.value) {
-        // form.photo = photoInput.value.files[0]
-
+    // if (photoInput.value) {
+    // form.photo = photoInput.value.files[0]
 
     form.put(route('user-profile-information.update'), {
         preserveScroll: true,
@@ -72,7 +69,7 @@ const saveUser = () => {
             setTimeout(() => {
                 form.recentlySuccessful = false
             }, 2000)
-        }
+        },
     })
 }
 </script>

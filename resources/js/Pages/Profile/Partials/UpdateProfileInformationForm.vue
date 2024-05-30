@@ -8,7 +8,7 @@
         <div class="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-8 my-4">
             <div>
                 <InputLabel for="name" value="Name" />
-                <TextInput id="name" v-model="form.name" type="text" autofocus/>
+                <TextInput id="name" v-model="form.name" type="text"/>
                 <InputError :message="form.errors.name" />
             </div>
             <div>
@@ -38,7 +38,6 @@
             </div>
         </div>
     </div>
-
 
 <!--    <div class="space-y-4 my-8 lg:w-1/2">-->
 <!--        &lt;!&ndash; Profile Photo &ndash;&gt;-->
@@ -93,25 +92,24 @@
 </template>
 
 <script setup>
-//import { router } from '@inertiajs/vue3'
-import { defineEmits, inject, ref } from 'vue'
-import DatepickerInput from '@/Components/Form/DatepickerInput.vue'
-import SelectInput from '@/Components/Form/SelectInput.vue'
+// import { router } from '@inertiajs/vue3'
+import { defineEmits, inject } from 'vue'
 
 import ActionMessage from '@/Components/ActionMessage.vue'
+import DatepickerInput from '@/Components/Form/DatepickerInput.vue'
 import InputError from '@/Components/Form/InputError.vue'
 import InputLabel from '@/Components/Form/InputLabel.vue'
+import SelectInput from '@/Components/Form/SelectInput.vue'
 import TextInput from '@/Components/Form/TextInput.vue'
 import PrimaryButton from '@/Components/Layout/PrimaryButton.vue'
-
 
 const form = inject('form')
 const emits = defineEmits(['save-user-info'])
 
-//const { route } = window
+// const { route } = window
 
-//const photoPreview = ref(null)
-const photoInput = ref(null)
+// const photoPreview = ref(null)
+// const photoInput = ref(null)
 
 // const clearPhotoFileInput = () => {
 //     if (photoInput.value?.value) {

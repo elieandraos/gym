@@ -10,8 +10,7 @@
             <TextInput
                 id="current_password"
                 v-model="form.current_password"
-                type="password"
-            />
+                type="password"/>
             <InputError :message="form.errors.current_password" class="mt-2" />
         </div>
 
@@ -20,8 +19,7 @@
             <TextInput
                 id="password"
                 v-model="form.password"
-                type="password"
-            />
+                type="password"/>
             <InputError :message="form.errors.password" class="mt-2" />
         </div>
 
@@ -30,8 +28,7 @@
             <TextInput
                 id="password_confirmation"
                 v-model="form.password_confirmation"
-                type="password"
-              />
+                type="password"/>
             <InputError :message="form.errors.password_confirmation" class="mt-2" />
         </div>
     </div>

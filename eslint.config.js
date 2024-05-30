@@ -29,6 +29,7 @@ export default [
             indent: ['error', 4], // Set indentation to 4 spaces
             semi: ['error', 'never'], // Disable semicolons
             quotes: ['error', 'single', { avoidEscape: true, allowTemplateLiterals: false }], // Enforce single quotes
+            camelcase: 'off', // Allow variables not in camel case
             'object-curly-spacing': ['error', 'always'], // Ensure spaces inside braces
             'comma-dangle': ['error', {
                 arrays: 'always-multiline',

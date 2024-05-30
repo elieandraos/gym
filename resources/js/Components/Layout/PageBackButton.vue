@@ -17,5 +17,5 @@ const props = defineProps({
     url: { type: String, required: false },
 })
 
-const goTo = () => (props.url ? router.visit(props.url) : history.back())
+const goTo = () => (props.url ? router.visit(props.url) : window.history.back())
 </script>

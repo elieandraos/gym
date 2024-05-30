@@ -11,6 +11,10 @@
                 <td class="font-medium pt-2.5">{{ phone_number }}</td>
             </tr>
             <tr>
+                <td class="text-zinc-400 w-32 lg:w-48 pt-2.5">Address</td>
+                <td class="font-medium pt-2.5">{{ address }}</td>
+            </tr>
+            <tr>
                 <td class="text-zinc-400 w-32 lg:w-48 pt-2.5">Instagram handle</td>
                 <td class="font-medium pt-2.5">
                     <a :href="instagram_url" class="text-pink-500 hover:text-blue-700" target="_blank" v-if="instagram_handle ">@{{ instagram_handle }}</a>

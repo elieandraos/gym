@@ -5,8 +5,7 @@
             :class="title === selectedTitle ? 'bg-stone-200 text-zinc-900' : 'bg-stone-100 text-zinc-400 hover:bg-stone-200 hover:text-zinc-900'"
             v-for="title in tabTitles"
             :key="title"
-            @click="selectTab(title)"
-        >
+            @click="selectTab(title)">
             {{  title  }}
         </li>
     </ul>
@@ -16,14 +15,16 @@
 </template>
 
 <script setup>
-import { onMounted, ref, useSlots, provide } from 'vue'
+import {
+    onMounted, ref, useSlots, provide,
+} from 'vue'
 
 const props = defineProps({
     selected: { type: String, require: false, default: '' },
 })
 
 const emit = defineEmits([
-    'onTabSelected'
+    'onTabSelected',
 ])
 
 const slots = useSlots()
@@ -37,8 +38,7 @@ const selectTab = (title) => {
     selectedTitle.value = title
 }
 
-onMounted( () => {
-    if(!selectedTitle.value)
-        selectedTitle.value = tabTitles.value[0]
+onMounted(() => {
+    if (!selectedTitle.value) selectedTitle.value = tabTitles.value[0]
 })
 </script>

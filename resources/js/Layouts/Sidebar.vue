@@ -55,11 +55,9 @@ const logout = () => {
 }
 
 const isActive = (item) => {
-    let currentRoute = route().current(item.activeRoute)
+    const currentRoute = route().current(item.activeRoute)
 
-    if(currentRoute && item.for && route().params['role'])
-        if(route().params['role'] !== item.for)
-            return false
+    if (currentRoute && item.for && route().params.role) if (route().params.role !== item.for) return false
 
     return currentRoute
 }

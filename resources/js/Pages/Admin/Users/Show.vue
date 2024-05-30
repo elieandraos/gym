@@ -10,6 +10,7 @@
                 </div>
                 <div class="lg:w-3/5">
                     <member-training-status :user="user"></member-training-status>
+                    {{ trainer_bookings }}
                 </div>
             </div>
         </Container>
@@ -28,5 +29,7 @@ const props = defineProps({
     user: { type: Object, required: true },
 })
 
-const { name, role, profile_photo_url } = props.user
+const {
+    role, trainer_bookings,
+} = props.user
 </script>

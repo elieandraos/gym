@@ -7,9 +7,9 @@
 <script setup>
 import { inject } from 'vue'
 
-const props = defineProps({
-    title: { type: String }
+defineProps({
+    title: { type: String },
 })
 
-const selectedTitle = inject("selectedTitle")
+const selectedTitle = inject('selectedTitle')
 </script>

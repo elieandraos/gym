@@ -91,21 +91,23 @@
 <script setup>
 import { inject } from 'vue'
 
+import DatepickerInput from '@/Components/Form/DatepickerInput.vue'
 import InputError from '@/Components/Form/InputError.vue'
 import InputLabel from '@/Components/Form/InputLabel.vue'
 import SelectInput from '@/Components/Form/SelectInput.vue'
 import SwitchInput from '@/Components/Form/SwitchInput.vue'
 import TextInput from '@/Components/Form/TextInput.vue'
-import DatepickerInput from '@/Components/Form/DatepickerInput.vue'
 import PageSectionTitle from '@/Components/Layout/PageSectionTitle.vue'
 import PrimaryButton from '@/Components/Layout/PrimaryButton.vue'
 
 const form = inject('form')
 
-const saveUser = () => form.post( route('admin.users.store'), {
+const { route } = window
+
+const saveUser = () => form.post(route('admin.users.store'), {
     preserveScroll: true,
     onFinish: () => {
-        //form.reset()
+        // form.reset()
     },
 })
 </script>

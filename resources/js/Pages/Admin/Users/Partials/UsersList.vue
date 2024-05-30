@@ -10,8 +10,7 @@
         <tbody>
         <tr v-for="{ id, since, name, profile_photo_url, age, phone_number, role} in data"
             :key="id" class="border-b border-zinc-200 hover:bg-stone-100 hover:cursor-pointer"
-            @click="goToUser(id, role)"
-        >
+            @click="goToUser(id, role)">
             <td class="text-zinc-900 font-medium p-4 relative flex gap-2 items-center">
                 <img class="h-8 w-8 rounded-full object-cover" :src="profile_photo_url" :alt="name">
                 {{ name }}

@@ -4,8 +4,7 @@
         :monday-first="true"
         icon-color="#d4d4d8"
         icon-width="19"
-        icon-height="19"
-    />
+        icon-height="19"/>
 </template>
 
 <script setup>

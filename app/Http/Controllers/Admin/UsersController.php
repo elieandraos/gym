@@ -28,6 +28,7 @@ class UsersController extends Controller
 
     public function show(User $user, string $role): Response
     {
+        //$user->load('trainerBookings');
         return Inertia::render('Admin/Users/Show', [
             'user' => UserResource::make($user),
         ]);
