@@ -21,7 +21,7 @@
 
 <script setup>
 import { usePage, useForm } from '@inertiajs/vue3'
-import { provide } from 'vue'
+import { provide, ref } from 'vue'
 
 import Container from '@/Components/Layout/Container.vue'
 import Tab from '@/Components/Layout/Tab.vue'
@@ -36,9 +36,8 @@ defineProps({
     sessions: Array,
 })
 
-const page = usePage()
-
 const { route } = window
+const page = usePage()
 
 const form = useForm({
     _method: 'PUT',
@@ -59,10 +58,7 @@ const form = useForm({
 provide('form', form)
 
 const saveUser = () => {
-    // if (photoInput.value) {
-    // form.photo = photoInput.value.files[0]
-
-    form.put(route('user-profile-information.update'), {
+    form.post(route('user-profile-information.update'), {
         preserveScroll: true,
         onSuccess: () => {
             form.recentlySuccessful = true
