@@ -20,8 +20,8 @@
 </template>
 
 <script setup>
-import { usePage, useForm } from '@inertiajs/vue3'
-import { provide, ref } from 'vue'
+import {usePage, useForm, router} from '@inertiajs/vue3'
+import { provide } from 'vue'
 
 import Container from '@/Components/Layout/Container.vue'
 import Tab from '@/Components/Layout/Tab.vue'
@@ -62,9 +62,8 @@ const saveUser = () => {
         preserveScroll: true,
         onSuccess: () => {
             form.recentlySuccessful = true
-            setTimeout(() => {
-                form.recentlySuccessful = false
-            }, 2000)
+            router.reload({ only: ['auth'] })
+            setTimeout(() => form.recentlySuccessful = false, 2000)
         },
     })
 }

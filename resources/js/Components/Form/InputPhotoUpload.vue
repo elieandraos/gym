@@ -10,7 +10,7 @@
 
         <!-- Current Profile Photo -->
         <div v-show="! photoPreview" class="mt-2">
-            <img :src="profile_photo_url" class="rounded-full h-20 w-20 object-cover" alt="">
+            <img :src="photo_url" class="rounded-full h-20 w-20 object-cover" alt="">
         </div>
 
         <!-- New Profile Photo Preview -->
@@ -25,13 +25,13 @@
             Select A New Photo
         </SecondaryButton>
 
-        <!-- <SecondaryButton
-            v-if="user.profile_photo_path"
+        <SecondaryButton
+            v-if="photo_path"
             type="button"
             class="mt-2"
-            @click.prevent="deletePhoto">
+            @click.prevent="remove">
             Remove Photo
-        </SecondaryButton> -->
+        </SecondaryButton>
     </div>
 </template>
 
@@ -39,10 +39,11 @@
 import SecondaryButton from '@/Components/Layout/SecondaryButton.vue'
 import { ref, defineEmits } from 'vue'
 
-const emits = defineEmits(['upload'])
+const emits = defineEmits(['upload', 'remove'])
 
 defineProps({
-    profile_photo_url: { type: [String, null ], required: false, default: '' }
+    photo_url: { type: [String, null ], required: false, default: '' },
+    photo_path: { type: [String, null ], required: false, default: '' },
 })
 
 const photoPreview = ref(null)
@@ -69,5 +70,11 @@ const clearPhotoFileInput = () => {
     if (photoInput.value?.value) {
         photoInput.value.value = null
     }
+}
+
+const remove = () => {
+    photoPreview.value = null
+    clearPhotoFileInput()
+    emits('remove')
 }
 </script>

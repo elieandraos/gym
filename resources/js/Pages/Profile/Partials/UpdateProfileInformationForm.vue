@@ -42,7 +42,13 @@
 
         <div class="space-y-4 my-8 lg:w-1/2">
             <InputLabel for="photo" value="Photo" />
-            <InputPhotoUpload @upload="handleUpload" :profile_photo_url="user.profile_photo_url"></InputPhotoUpload>
+            <InputPhotoUpload
+                @upload="handleUpload"
+                @remove="deletePhoto"
+                :photo_url="$page.props.auth.user.profile_photo_url"
+                :photo_path="$page.props.auth.user.profile_photo_path"
+            >
+            </InputPhotoUpload>
             <InputError :message="form.errors.photo" />
         </div>
 
@@ -60,7 +66,7 @@
 
 <script setup>
 import InputPhotoUpload from '@/Components/Form/InputPhotoUpload.vue'
-import  { usePage } from '@inertiajs/vue3'
+import { router } from '@inertiajs/vue3'
 
 import { defineEmits, inject } from 'vue'
 
@@ -72,22 +78,19 @@ import SelectInput from '@/Components/Form/SelectInput.vue'
 import TextInput from '@/Components/Form/TextInput.vue'
 import PrimaryButton from '@/Components/Layout/PrimaryButton.vue'
 
-const user = usePage().props.auth.user
 const form = inject('form')
 const emits = defineEmits(['save-user-info'])
 
 const handleUpload = (payload) => {
     form.photo = payload
 }
-// const { route } = window
 
-// const deletePhoto = () => {
-//     router.delete(route('current-user-photo.destroy'), {
-//         preserveScroll: true,
-//         onSuccess: () => {
-//             photoPreview.value = null
-//             clearPhotoFileInput()
-//         },
-//     })
-// }
+const { route } = window
+
+const deletePhoto = () => {
+    router.delete(route('current-user-photo.destroy'), {
+        preserveScroll: true,
+        onSuccess: () => router.reload({ only: ['auth'] })
+    })
+}
 </script>
