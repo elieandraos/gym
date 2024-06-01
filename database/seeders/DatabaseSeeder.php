@@ -7,31 +7,24 @@ use App\Models\Booking;
 use App\Models\BookingSlot;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        $members = User::factory(25)->create([
-            'role' => Role::Member,
-        ]);
-
         $trainers = User::factory(3)->create([
             'role' => Role::Trainer,
         ]);
 
-        $members->each(function ($user) use ($trainers) {
-            $booking = Booking::factory()->create([
-                'member_id' => $user->id,
-                'trainer_id' => $trainers->random()->id,
-            ]);
+        $members = User::factory(25)->create([
+            'role' => Role::Member,
+        ]);
 
-            BookingSlot::factory($booking->nb_sessions)
-                ->forBooking($booking)
-                ->create([
-                    'booking_id' => $booking->id,
-                ]);
+        $members->each(function ($user) use ($trainers) {
+           $this->addActiveBooking($user, $trainers);
+           $this->addPreviousBookings($user, $trainers, array_rand([0,1,2,3]));
         });
 
         User::factory()->create([
@@ -39,5 +32,36 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
             'role' => 'Admin',
         ]);
+    }
+
+    protected function addActiveBooking(User $user, Collection $trainers) : void
+    {
+        $booking = Booking::factory()
+            ->active()
+            ->create([
+                'member_id' => $user->id,
+                'trainer_id' => $trainers->random()->id,
+            ]);
+
+        BookingSlot::factory($booking->nb_sessions)
+            ->forBooking($booking)
+            ->create();
+    }
+
+    protected function addPreviousBookings(User $user, Collection $trainers, int $nbMonthsAgo) : void
+    {
+        if($nbMonthsAgo <= 0)
+            return;
+
+        $booking = Booking::factory()
+            ->completed($nbMonthsAgo)
+            ->create([
+                'member_id' => $user->id,
+                'trainer_id' => $trainers->random()->id,
+            ]);
+
+        BookingSlot::factory($booking->nb_sessions)
+            ->forBooking($booking)
+            ->create();
     }
 }

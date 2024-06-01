@@ -42,6 +42,8 @@ class BookingSlotFactory extends Factory
             return [
                 'start_time' => $startDateTime,
                 'end_time' => $endDateTime,
+                'booking_id' => $booking->id,
+                'status' => $endDateTime < Carbon::now() ? Status::Complete : Status::Upcoming,
             ];
         });
     }
