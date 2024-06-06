@@ -15,11 +15,11 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $trainers = User::factory(3)->create([
-            'role' => Role::Trainer,
+            'role' => Role::Trainer->value,
         ]);
 
-        $members = User::factory(25)->create([
-            'role' => Role::Member,
+        $members = User::factory(50)->create([
+            'role' => Role::Member->value,
         ]);
 
         $members->each(function ($user) use ($trainers) {

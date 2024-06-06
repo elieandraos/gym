@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -41,4 +43,22 @@ class Booking extends Model
     {
         return $this->hasMany(BookingSlot::class);
     }
+
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query->where('start_date', '<=', Carbon::today())
+            ->where('end_date', '>=', Carbon::today());
+    }
+
+    public function scopeHistory(Builder $query): Builder
+    {
+        return $query->where('end_date', '<', Carbon::today())
+            ->orderBy('start_date', 'ASC');
+    }
+
+    public function scopeScheduled(Builder $query): Builder
+    {
+        return $query->where('start_date', '>', Carbon::now());
+    }
+
 }

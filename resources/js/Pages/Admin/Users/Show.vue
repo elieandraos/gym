@@ -9,8 +9,12 @@
                     <user-contact :user="user"></user-contact>
                 </div>
                 <div class="lg:w-3/5">
-                    <member-training-status :user="user"></member-training-status>
-                    {{ trainer_bookings }}
+                    <div v-if="role === 'Member'">
+                        <member-training-status :user="user"></member-training-status>
+                    </div>
+                    <div v-else>
+                        <trainer-bookings :bookings="bookings" :user="user" v-if="role === 'Trainer'"></trainer-bookings>
+                    </div>
                 </div>
             </div>
         </Container>
@@ -22,6 +26,7 @@ import Container from '@/Components/Layout/Container.vue'
 import PageBackButton from '@/Components/Layout/PageBackButton.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import MemberTrainingStatus from '@/Pages/Admin/Users/Partials/MemberTrainingStatus.vue'
+import TrainerBookings from '@/Pages/Admin/Users/Partials/TrainerBookings.vue'
 import UserContact from '@/Pages/Admin/Users/Partials/UserContact.vue'
 import UserProfile from '@/Pages/Admin/Users/Partials/UserProfile.vue'
 
@@ -30,6 +35,6 @@ const props = defineProps({
 })
 
 const {
-    role, trainer_bookings,
+    role, bookings,
 } = props.user
 </script>

@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources;
 
+use App\Enums\Status;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -10,6 +12,14 @@ class BookingResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
+        $upcomingSlot = $this->bookingSlots
+            ->sortBy('start_time')
+            ->firstWhere('status', Status::Upcoming->value);
+
+        $completedSessionsCount = $this->bookingSlots
+            ->where('status', Status::Complete->value)
+            ->count();
+
         return [
             'id' => $this->id,
             'nb_sessions' => $this->nb_sessions,
@@ -18,6 +28,9 @@ class BookingResource extends JsonResource
             'member' => new UserResource($this->whenLoaded('member')),
             'trainer' => new UserResource($this->whenLoaded('trainer')),
             'bookingSlots' => BookingSlotResource::collection($this->whenLoaded('bookingSlots')),
+            'upcoming_session' => $upcomingSlot ? Carbon::parse($upcomingSlot->start_time)->isoFormat('ddd MMM Do, h[h]mma') : null,
+            'nb_completed_sessions' => $completedSessionsCount,
+            'nb_remaining_sessions' => $this->nb_sessions - $completedSessionsCount,
         ];
     }
 }

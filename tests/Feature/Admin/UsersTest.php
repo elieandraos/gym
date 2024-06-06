@@ -4,11 +4,23 @@ use App\Enums\BloodType;
 use App\Enums\Gender;
 use App\Enums\Role;
 use App\Http\Resources\UserResource;
+use App\Models\Booking;
+use App\Models\BookingSlot;
 use App\Models\User;
 
 beforeEach(function () {
-    User::factory()->count(1)->create(['role' => Role::Member]);
-    User::factory()->count(1)->create(['role' => Role::Trainer]);
+    $members = User::factory()->count(1)->create(['role' => Role::Member]);
+    $trainers = User::factory()->count(1)->create(['role' => Role::Trainer]);
+
+    $members->each(function ($user) use ($trainers) {
+        // Create active booking
+        $booking = Booking::factory()->active()->create([
+            'member_id' => $user->id,
+            'trainer_id' => $trainers->random()->id,
+        ]);
+
+        BookingSlot::factory($booking->nb_sessions)->forBooking($booking)->create();
+    });
 });
 
 test('it requires authentication', function () {
@@ -20,7 +32,7 @@ test('it requires authentication', function () {
     $this->get(route('admin.users.show', [$user, $user->role]))->assertRedirect(route('login'));
 });
 
-test('it lists all the users that are members', function () {
+test('it lists all the members', function () {
     $users = User::query()->members()->paginate();
     $role = Role::Member->value;
 
@@ -32,7 +44,7 @@ test('it lists all the users that are members', function () {
         ->assertStatus(200);
 });
 
-test('it lists all users that are trainers', function () {
+test('it lists all the trainers', function () {
     $users = User::query()->trainers()->paginate();
     $role = Role::Trainer->value;
 
@@ -44,7 +56,7 @@ test('it lists all users that are trainers', function () {
         ->assertStatus(200);
 });
 
-test('it renders the user create page', function() {
+test('it renders the member or trainer create page', function() {
     $role = Role::Member->value;
 
     actingAsAdmin()
@@ -54,7 +66,7 @@ test('it renders the user create page', function() {
         ->assertStatus(200);
 });
 
-test('it creates a user', function () {
+test('it creates a member or trainer', function () {
     $data = [
         'name' => 'Elie A',
         'email' => 'elie@liftstation.fitness',
@@ -80,7 +92,7 @@ test('it creates a user', function () {
     $this->assertDatabaseHas(User::class, $data);
 });
 
-test('it validates request before creating user', function () {
+test('it validates request before creating member or trainer', function () {
     $data = [
         'name' => null,
         'email' => 'elie',
@@ -115,12 +127,24 @@ test('it validates request before creating user', function () {
         ->assertStatus(302);
 });
 
-test('it shows user information', function () {
-    $user = User::query()->members()->first();
+test('it shows trainer information', function () {
+    $trainer = User::query()->trainers()->first();
+    $trainer->loadActiveBookingsWithSlots();
 
     actingAsAdmin()
-        ->get(route('admin.users.show', [$user, $user->role]))
+        ->get(route('admin.users.show', [$trainer, Role::Trainer->value]))
         ->assertHasComponent('Admin/Users/Show')
-        ->assertHasResource('user', UserResource::make($user))
+        ->assertHasResource('user', UserResource::make($trainer))
+        ->assertStatus(200);
+});
+
+test('it shows member information', function () {
+    $member = User::query()->members()->first();
+    $member->loadActiveBookingsWithSlots();
+
+    actingAsAdmin()
+        ->get(route('admin.users.show', [$member, Role::Member->value]))
+        ->assertHasComponent('Admin/Users/Show')
+        ->assertHasResource('user', UserResource::make($member))
         ->assertStatus(200);
 });

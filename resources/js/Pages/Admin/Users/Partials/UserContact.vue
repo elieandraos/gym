@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h3 class="font-medium pb-2 border-b border-b-zinc-200">Contact information</h3>
+        <h3 class="font-medium pb-2 mb-2 border-b border-b-zinc-200">Contact information</h3>
         <table class="text-left text-sm/6">
             <tr>
                 <td class="text-zinc-400 w-32 lg:w-48 pt-2.5">Email</td>

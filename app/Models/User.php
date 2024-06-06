@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use InvalidArgumentException;
 use Laravel\Jetstream\HasProfilePhoto;
 
 class User extends Authenticatable
@@ -57,9 +58,14 @@ class User extends Authenticatable
         ];
     }
 
-    public function bookings(): HasMany
+    public function memberBookings(): HasMany
     {
-        return $this->role === Role::Member->value ? $this->hasMany(Booking::class, 'member_id') : $this->hasMany(Booking::class, 'trainer_id');
+        return $this->hasMany(Booking::class, 'member_id');
+    }
+
+    public function trainerBookings(): HasMany
+    {
+        return $this->hasMany(Booking::class, 'trainer_id');
     }
 
     public function scopeMembers(Builder $query): Builder
@@ -91,5 +97,33 @@ class User extends Authenticatable
     public function getSinceAttribute(): string
     {
         return Carbon::parse($this->registration_date)->format('M j, Y');
+    }
+
+    public function loadActiveBookingsWithSlots(): User
+    {
+        $bookingsRelation = match ($this->role) {
+            Role::Member->value => 'memberBookings',
+            Role::Trainer->value => 'trainerBookings',
+            default => throw new InvalidArgumentException('Invalid role provided.'),
+        };
+
+        $memberOrTrainerRelation = match ($this->role) {
+            Role::Member->value => 'trainer',
+            Role::Trainer->value => 'member',
+            default => throw new InvalidArgumentException('Invalid role provided.'),
+        };
+
+        return $this->load([
+            $bookingsRelation => function ($query) use ($memberOrTrainerRelation) {
+                $query->active()->with([
+                    $memberOrTrainerRelation,
+                    'bookingSlots' => function ($query) {
+                        $query->orderBy('start_time');
+                    }
+                ]);
+            }
+        ]);
+
+//        dd($this->toArray());
     }
 }

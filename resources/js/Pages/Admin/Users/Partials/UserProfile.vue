@@ -1,12 +1,14 @@
 <template>
     <div>
-        <h3 class="font-medium pb-2 border-b border-b-zinc-200">Profile summary</h3>
+        <h3 class="font-medium pb-2 mb-2 border-b border-b-zinc-200 flex items-center gap-2">
+            {{ name }}
+            <check-badge-icon class="w-4 h-4 text-sky-500 inline" v-if="in_house"></check-badge-icon>
+        </h3>
         <table class="text-left text-sm/6">
             <tr>
-                <td class="text-zinc-400 w-32 lg:w-48 pt-2.5">About</td>
+                <td class="text-zinc-400 w-32 lg:w-48 pt-2.5">Gender</td>
                 <td class="font-medium pt-2.5">
-                    {{ name }}, {{ gender }}
-                    <check-badge-icon class="w-4 h-4 text-sky-500 inline" v-if="in_house"></check-badge-icon>
+                    {{ gender }}
                 </td>
             </tr>
             <tr>
@@ -42,6 +44,6 @@ const props = defineProps({
 })
 
 const {
-    name, gender, age, since, birthdate, weight, height, blood_type, in_house,
+    name, gender, age, since, birthdate, weight, height, blood_type, in_house, profile_photo_url
 } = props.user
 </script>
