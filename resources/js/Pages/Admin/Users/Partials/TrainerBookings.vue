@@ -8,7 +8,7 @@
             <li
                 v-for="{ id, member, upcoming_session, nb_remaining_sessions } in bookings"
                 :key="id"
-                class="py-4 flex border-b border-zinc-200 last:border-0 hover:bg-stone-100 cursor-pointer"
+                class="py-4 pl-1 pr-2 flex rounded-lg hover:bg-stone-100 cursor-pointer"
                 @click="goToBooking(id)"
             >
                 <div class="flex items-center justify-between gap-2 w-full">

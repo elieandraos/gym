@@ -18,7 +18,7 @@ class UsersController extends Controller
         $users = User::query()
             ->byRole($role)
             ->orderBy('registration_date', 'DESC')
-            ->paginate(7);
+            ->paginate(10);
 
         return Inertia::render('Admin/Users/Index', [
             'users' => UserResource::collection($users),

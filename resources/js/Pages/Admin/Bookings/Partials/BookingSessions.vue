@@ -33,7 +33,7 @@ defineProps({
     bookingSlots: { type: Array, required: true }
 })
 
-const headers = ['Date', 'Start Time', 'End Time', 'Status', '']
+const headers = ['Date', 'Start Time', 'End Time', 'Status']
 
 const statusBadgeType = (status) => {
     let type
