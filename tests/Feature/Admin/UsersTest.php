@@ -4,23 +4,10 @@ use App\Enums\BloodType;
 use App\Enums\Gender;
 use App\Enums\Role;
 use App\Http\Resources\UserResource;
-use App\Models\Booking;
-use App\Models\BookingSlot;
 use App\Models\User;
 
 beforeEach(function () {
-    $members = User::factory()->count(1)->create(['role' => Role::Member]);
-    $trainers = User::factory()->count(1)->create(['role' => Role::Trainer]);
-
-    $members->each(function ($user) use ($trainers) {
-        // Create active booking
-        $booking = Booking::factory()->active()->create([
-            'member_id' => $user->id,
-            'trainer_id' => $trainers->random()->id,
-        ]);
-
-        BookingSlot::factory($booking->nb_sessions)->forBooking($booking)->create();
-    });
+    setupUsersAndBookings();
 });
 
 test('it requires authentication', function () {
