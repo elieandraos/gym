@@ -30,10 +30,9 @@
                     </div>
                 </div>
 
-                <div>
-                    https://catalyst-demo.tailwindui.com/events/1000
-                    <pre>{{ booking.bookingSlots}}</pre>
-                </div>
+                <h3 class="font-medium mt-16 mb-4">sessions information</h3>
+                <BookingSessions :booking-slots="bookingSlots"></BookingSessions>
+
             </div>
         </Container>
     </AppLayout>
@@ -43,10 +42,11 @@
 import Container from '@/Components/Layout/Container.vue'
 import PageBackButton from '@/Components/Layout/PageBackButton.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
+import BookingSessions from '@/Pages/Admin/Bookings/Partials/BookingSessions.vue'
 
 const props = defineProps({
     booking: { type: Object, required: true },
 })
 
-const { member, trainer, nb_sessions, nb_remaining_sessions} = props.booking
+const { member, trainer, nb_sessions, nb_remaining_sessions, bookingSlots} = props.booking
 </script>

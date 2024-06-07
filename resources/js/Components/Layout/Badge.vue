@@ -20,6 +20,12 @@ const classList = computed(() => {
     case 'error':
         str = 'bg-red-400/20 text-red-700'
         break
+    case 'warning':
+        str = 'bg-amber-400/20 text-amber-700'
+        break
+    case 'info':
+            str = 'bg-indigo-400/20 text-indigo-700'
+            break
     case 'success': default:
         str = 'bg-lime-400/20 text-lime-700'
         break

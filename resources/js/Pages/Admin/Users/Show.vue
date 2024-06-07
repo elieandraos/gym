@@ -11,6 +11,7 @@
                 <div class="lg:w-3/5">
                     <div v-if="role === 'Member'">
                         <member-training-status :user="user"></member-training-status>
+                        <booking-sessions :booking-slots="bookings[0].bookingSlots" class="mt-8"></booking-sessions>
                     </div>
                     <div v-else>
                         <trainer-bookings :bookings="bookings" :user="user" v-if="role === 'Trainer'"></trainer-bookings>
@@ -25,6 +26,7 @@
 import Container from '@/Components/Layout/Container.vue'
 import PageBackButton from '@/Components/Layout/PageBackButton.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
+import BookingSessions from '@/Pages/Admin/Bookings/Partials/BookingSessions.vue'
 import MemberTrainingStatus from '@/Pages/Admin/Users/Partials/MemberTrainingStatus.vue'
 import TrainerBookings from '@/Pages/Admin/Users/Partials/TrainerBookings.vue'
 import UserContact from '@/Pages/Admin/Users/Partials/UserContact.vue'

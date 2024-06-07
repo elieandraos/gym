@@ -29,7 +29,7 @@ class BookingsController extends Controller
             $query->orderBy('start_time');
         }]);
 
-        return Inertia::render('Admin/Booking/Show', [
+        return Inertia::render('Admin/Bookings/Show', [
             'booking' => BookingResource::make($booking)
         ]);
     }

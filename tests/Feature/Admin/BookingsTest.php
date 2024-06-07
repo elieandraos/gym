@@ -21,7 +21,7 @@ test('it shows booking information', function () {
 
     actingAsAdmin()
         ->get(route('admin.bookings.show', $booking))
-        ->assertHasComponent('Admin/Booking/Show')
+        ->assertHasComponent('Admin/Bookings/Show')
         ->assertHasResource('booking', BookingResource::make($booking))
         ->assertStatus(200);
 });
