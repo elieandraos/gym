@@ -119,11 +119,9 @@ class User extends Authenticatable
                     $memberOrTrainerRelation,
                     'bookingSlots' => function ($query) {
                         $query->orderBy('start_time');
-                    }
+                    },
                 ]);
-            }
+            },
         ]);
-
-//        dd($this->toArray());
     }
 }

@@ -4,7 +4,7 @@ use App\Http\Controllers\Admin\UsersController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', fn() => redirect(route('dashboard')));
+Route::get('/', fn () => redirect(route('dashboard')));
 
 Route::middleware([
     'auth:sanctum',

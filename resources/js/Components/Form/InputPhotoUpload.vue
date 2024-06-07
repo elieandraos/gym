@@ -17,8 +17,7 @@
         <div v-show="photoPreview" class="mt-2">
             <span
                 class="block rounded-full w-20 h-20 bg-cover bg-no-repeat bg-center"
-                :style="'background-image: url(\'' + photoPreview + '\');'"
-            />
+                :style="'background-image: url(\'' + photoPreview + '\');'"/>
         </div>
 
         <SecondaryButton class="mt-2 me-2" type="button" @click.prevent="selectNewPhoto">
@@ -36,14 +35,15 @@
 </template>
 
 <script setup>
-import SecondaryButton from '@/Components/Layout/SecondaryButton.vue'
 import { ref, defineEmits } from 'vue'
+
+import SecondaryButton from '@/Components/Layout/SecondaryButton.vue'
 
 const emits = defineEmits(['upload', 'remove'])
 
 defineProps({
-    photo_url: { type: [String, null ], required: false, default: '' },
-    photo_path: { type: [String, null ], required: false, default: '' },
+    photo_url: { type: [String, null], required: false, default: '' },
+    photo_path: { type: [String, null], required: false, default: '' },
 })
 
 const photoPreview = ref(null)

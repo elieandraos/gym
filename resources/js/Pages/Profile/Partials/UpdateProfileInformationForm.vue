@@ -46,8 +46,7 @@
                 @upload="handleUpload"
                 @remove="deletePhoto"
                 :photo_url="$page.props.auth.user.profile_photo_url"
-                :photo_path="$page.props.auth.user.profile_photo_path"
-            >
+                :photo_path="$page.props.auth.user.profile_photo_path">
             </InputPhotoUpload>
             <InputError :message="form.errors.photo" />
         </div>
@@ -65,15 +64,14 @@
 </template>
 
 <script setup>
-import InputPhotoUpload from '@/Components/Form/InputPhotoUpload.vue'
 import { router } from '@inertiajs/vue3'
-
 import { defineEmits, inject } from 'vue'
 
 import ActionMessage from '@/Components/ActionMessage.vue'
 import DatepickerInput from '@/Components/Form/DatepickerInput.vue'
 import InputError from '@/Components/Form/InputError.vue'
 import InputLabel from '@/Components/Form/InputLabel.vue'
+import InputPhotoUpload from '@/Components/Form/InputPhotoUpload.vue'
 import SelectInput from '@/Components/Form/SelectInput.vue'
 import TextInput from '@/Components/Form/TextInput.vue'
 import PrimaryButton from '@/Components/Layout/PrimaryButton.vue'
@@ -90,7 +88,7 @@ const { route } = window
 const deletePhoto = () => {
     router.delete(route('current-user-photo.destroy'), {
         preserveScroll: true,
-        onSuccess: () => router.reload({ only: ['auth'] })
+        onSuccess: () => router.reload({ only: ['auth'] }),
     })
 }
 </script>

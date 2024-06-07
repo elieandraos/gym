@@ -4,7 +4,6 @@ namespace App\Http\Middleware;
 
 use App\Enums\BloodType;
 use App\Enums\Gender;
-use App\Enums\Role;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 

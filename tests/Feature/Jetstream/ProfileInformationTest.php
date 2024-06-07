@@ -17,7 +17,7 @@ test('profile information can be updated', function () {
             'gender' => 'Female',
             'birthdate' => '2001-04-10',
             'blood_type' => BloodType::ABPlus->value,
-            'phone_number' => '123456'
+            'phone_number' => '123456',
         ]);
 
     $response->assertSessionHasNoErrors();
@@ -57,7 +57,7 @@ test('profile information are validated before update', function () {
         'blood_type',
         'birthdate',
         'blood_type',
-        'phone_number'
+        'phone_number',
     ]);
 
     // Test email uniqueness

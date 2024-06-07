@@ -20,7 +20,7 @@
 </template>
 
 <script setup>
-import {usePage, useForm, router} from '@inertiajs/vue3'
+import { usePage, useForm, router } from '@inertiajs/vue3'
 import { provide } from 'vue'
 
 import Container from '@/Components/Layout/Container.vue'

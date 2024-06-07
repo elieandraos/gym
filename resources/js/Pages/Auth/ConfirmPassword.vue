@@ -20,8 +20,7 @@
                     type="password"
                     class="mt-1 block w-full"
                     required
-                    autocomplete="current-password"
-                />
+                    autocomplete="current-password"/>
                 <InputError class="mt-2" :message="form.errors.password" />
             </div>
 

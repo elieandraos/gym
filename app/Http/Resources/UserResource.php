@@ -16,7 +16,7 @@ class UserResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'first_name' => explode(" ",$this->name)[0],
+            'first_name' => explode(' ', $this->name)[0],
             'email' => $this->email,
             'registration_date' => $this->registration_date,
             'since' => $this->since,
@@ -42,6 +42,6 @@ class UserResource extends JsonResource
     {
         return $this->role === Role::Member->value ?
             BookingResource::collection($this->whenLoaded('memberBookings')) :
-            BookingResource::collection($this->whenLoaded('trainerBookings')) ;
+            BookingResource::collection($this->whenLoaded('trainerBookings'));
     }
 }

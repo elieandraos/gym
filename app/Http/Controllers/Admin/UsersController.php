@@ -47,7 +47,7 @@ class UsersController extends Controller
         $request->merge(['password' => Hash::make('password')]);
         User::create($request->all());
 
-        return redirect(route('admin.users.index',$request->input('role')))
+        return redirect(route('admin.users.index', $request->input('role')))
             ->with('flash.banner', $request->input('role').' created successfully')
             ->with('flash.bannerStyle', 'success');
     }

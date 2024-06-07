@@ -56,7 +56,7 @@ test('it lists all the trainers', function () {
         ->assertStatus(200);
 });
 
-test('it renders the member or trainer create page', function() {
+test('it renders the member or trainer create page', function () {
     $role = Role::Member->value;
 
     actingAsAdmin()

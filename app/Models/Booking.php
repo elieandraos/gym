@@ -60,5 +60,4 @@ class Booking extends Model
     {
         return $query->where('start_date', '>', Carbon::now());
     }
-
 }

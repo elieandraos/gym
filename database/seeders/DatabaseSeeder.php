@@ -23,8 +23,8 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $members->each(function ($user) use ($trainers) {
-           $this->addActiveBooking($user, $trainers);
-           $this->addPreviousBookings($user, $trainers, array_rand([0,1,2,3]));
+            $this->addActiveBooking($user, $trainers);
+            $this->addPreviousBookings($user, $trainers, array_rand([0, 1, 2, 3, 4, 5, 6]));
         });
 
         User::factory()->create([
@@ -34,7 +34,7 @@ class DatabaseSeeder extends Seeder
         ]);
     }
 
-    protected function addActiveBooking(User $user, Collection $trainers) : void
+    protected function addActiveBooking(User $user, Collection $trainers): void
     {
         $booking = Booking::factory()
             ->active()
@@ -48,10 +48,11 @@ class DatabaseSeeder extends Seeder
             ->create();
     }
 
-    protected function addPreviousBookings(User $user, Collection $trainers, int $nbMonthsAgo) : void
+    protected function addPreviousBookings(User $user, Collection $trainers, int $nbMonthsAgo): void
     {
-        if($nbMonthsAgo <= 0)
+        if ($nbMonthsAgo <= 0) {
             return;
+        }
 
         $booking = Booking::factory()
             ->completed($nbMonthsAgo)

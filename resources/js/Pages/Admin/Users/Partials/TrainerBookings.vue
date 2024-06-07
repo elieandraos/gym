@@ -5,7 +5,7 @@
             members training with {{ first_name }}
         </h3>
         <ul class="h-[550px] overflow-y-scroll">
-            <li v-for="{ member, upcoming_session, nb_remaining_sessions } in bookings" class="py-4 flex border-b border-zinc-200 last:border-0">
+            <li v-for="{ id, member, upcoming_session, nb_remaining_sessions } in bookings" :key="id" class="py-4 flex border-b border-zinc-200 last:border-0">
                 <div class="flex items-center justify-between gap-2 w-full">
                     <img :src="member.profile_photo_url"  :alt="member.name" class="rounded-full w-10"/>
                     <div>
@@ -26,12 +26,13 @@
 </template>
 
 <script setup>
-import Badge from '@/Components/Layout/Badge.vue'
 import { CalendarIcon } from '@heroicons/vue/24/outline'
+
+import Badge from '@/Components/Layout/Badge.vue'
 
 const props = defineProps({
     user: { type: Object, required: true },
-    bookings: { type: Array, required: true }
+    bookings: { type: Array, required: true },
 })
 
 const { first_name } = props.user
