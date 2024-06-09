@@ -19,7 +19,7 @@ class BookingsController extends Controller
 
     public function store(Request $request)
     {
-        //
+        // create the booking
     }
 
 
@@ -33,18 +33,6 @@ class BookingsController extends Controller
             'booking' => BookingResource::make($booking)
         ]);
     }
-
-    public function edit(string $id)
-    {
-        //
-    }
-
-
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
 
     public function destroy(string $id)
     {

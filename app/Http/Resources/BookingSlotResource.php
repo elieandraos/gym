@@ -42,6 +42,7 @@ class BookingSlotResource extends JsonResource
                     return 'rd';
             }
         }
+
         return 'th';
     }
 }

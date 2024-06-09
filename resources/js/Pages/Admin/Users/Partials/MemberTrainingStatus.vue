@@ -12,7 +12,9 @@
             <div class="flex gap-4">
                 <div class="text-sm flex items-center gap-1">
                     <calendar-icon class="h-4 w-4 text-lime-600"></calendar-icon>
-                    <span class="text-zinc-700 font-medium">{{ upcoming_session }}</span>
+                    <span class="text-zinc-700 font-medium">{{ upcoming_session_date }}</span>
+                    <clock-icon class="ml-4 h-4 w-4 text-lime-600"></clock-icon>
+                    <span class="text-zinc-700 font-medium">{{ upcoming_session_time }}</span>
                 </div>
             </div>
         </div>
@@ -27,7 +29,7 @@
 </template>
 
 <script setup>
-import { CalendarIcon } from '@heroicons/vue/24/outline'
+import { CalendarIcon, ClockIcon } from '@heroicons/vue/24/outline'
 
 const props = defineProps({
     user: { type: Object, required: true },
@@ -35,6 +37,6 @@ const props = defineProps({
 
 const { profile_photo_url, name, bookings } = props.user
 const {
-    nb_sessions, nb_remaining_sessions, trainer, upcoming_session,
+    nb_sessions, nb_remaining_sessions, trainer, upcoming_session_date, upcoming_session_time
 } = bookings[0]
 </script>

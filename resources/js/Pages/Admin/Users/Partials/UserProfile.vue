@@ -7,29 +7,29 @@
         <table class="text-left text-sm/6">
             <tr>
                 <td class="text-zinc-400 w-32 lg:w-48 pt-2.5">Gender</td>
-                <td class="font-medium pt-2.5">
+                <td class="pt-2.5">
                     {{ gender }}
                 </td>
             </tr>
             <tr>
                 <td class="text-zinc-400 w-32 lg:w-48 pt-2.5">Birthdate</td>
-                <td class="font-medium pt-2.5">{{ birthdate }} ({{ age }} years old)</td>
+                <td class="pt-2.5">{{ birthdate }} ({{ age }} years old)</td>
             </tr>
             <tr>
                 <td class="text-zinc-400 w-32 lg:w-48 pt-2.5">Weight</td>
-                <td class="font-medium pt-2.5">{{ weight }}kg</td>
+                <td class="pt-2.5">{{ weight }}kg</td>
             </tr>
             <tr>
                 <td class="text-zinc-400 w-32 lg:w-48 pt-2.5">Height</td>
-                <td class="font-medium pt-2.5">{{ height }}cm</td>
+                <td class="pt-2.5">{{ height }}cm</td>
             </tr>
             <tr>
                 <td class="text-zinc-400 w-32 lg:w-48 pt-2.5">Blood type</td>
-                <td class="font-medium pt-2.5">{{ blood_type }}</td>
+                <td class="pt-2.5">{{ blood_type }}</td>
             </tr>
             <tr>
                 <td class="text-zinc-400 w-32 lg:w-48 pt-2.5">Start date</td>
-                <td class="font-medium pt-2.5">{{ since }}</td>
+                <td class="pt-2.5">{{ since }}</td>
             </tr>
 
         </table>

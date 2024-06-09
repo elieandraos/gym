@@ -28,7 +28,8 @@ class BookingResource extends JsonResource
             'member' => new UserResource($this->whenLoaded('member')),
             'trainer' => new UserResource($this->whenLoaded('trainer')),
             'bookingSlots' => BookingSlotResource::collection($this->whenLoaded('bookingSlots')),
-            'upcoming_session' => $upcomingSlot ? Carbon::parse($upcomingSlot->start_time)->isoFormat('ddd MMM Do, h[h]mma') : null,
+            'upcoming_session_date' => $upcomingSlot ? Carbon::parse($upcomingSlot->start_time)->isoFormat('ddd MMM Do') : null,
+            'upcoming_session_time' => $upcomingSlot ? Carbon::parse($upcomingSlot->start_time)->isoFormat('h[h]mma') : null,
             'nb_completed_sessions' => $completedSessionsCount,
             'nb_remaining_sessions' => $this->nb_sessions - $completedSessionsCount,
         ];
