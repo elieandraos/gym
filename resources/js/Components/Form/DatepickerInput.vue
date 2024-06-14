@@ -1,10 +1,15 @@
 <template>
-    <datepicker
-        v-model="model"
-        :monday-first="true"
-        icon-color="#d4d4d8"
-        icon-width="19"
-        icon-height="19"/>
+    <div class="p-2.5 border border-zinc-300 rounded-lg text-sm flex items-center">
+        <datepicker
+            v-model="model"
+            :monday-first="true"
+            icon-color="#d4d4d8"
+            icon-width="18"
+            icon-height="18"
+            v-bind="$attrs"
+            class="mt-0.5"
+        />
+    </div>
 </template>
 
 <script setup>
