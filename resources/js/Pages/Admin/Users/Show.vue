@@ -9,12 +9,12 @@
                     <user-contact :user="user"></user-contact>
                 </div>
                 <div class="lg:w-3/5">
-                    <div v-if="role === 'Member'">
+                    <div v-if="role === 'Member' && bookings.length">
                         <member-training-status :user="user"></member-training-status>
                         <booking-sessions :booking-slots="bookings[0].bookingSlots" class="mt-8"></booking-sessions>
                     </div>
-                    <div v-else>
-                        <trainer-bookings :bookings="bookings" :user="user" v-if="role === 'Trainer'"></trainer-bookings>
+                    <div v-if="role === 'Trainer' && bookings.length">
+                        <trainer-bookings :bookings="bookings"  :user="user" v-if="role === 'Trainer'"></trainer-bookings>
                     </div>
                 </div>
             </div>
