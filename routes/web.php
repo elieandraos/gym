@@ -17,5 +17,7 @@ Route::middleware([ 'auth:sanctum', config('jetstream.auth_session'), 'verified'
     Route::get('/users/{user}/{role}', [UsersController::class, 'show'])->name('admin.users.show');
 
     // bookings
+    Route::get('/bookings/create', [BookingsController::class, 'create'])->name('admin.bookings.create');
+    Route::post('/bookings/store', [BookingsController::class, 'store'])->name('admin.bookings.store');
     Route::get('/bookings/{booking}', [BookingsController::class, 'show'])->name('admin.bookings.show');
 });

@@ -10,10 +10,9 @@ class BookingRequest extends FormRequest
     {
         return [
             'nb_sessions' => ['required', 'integer'],
-            'member_id' => ['required', 'exists:users'],
-            'trainer_id' => ['required', 'exists:users'],
+            'member_id' => ['required', 'exists:users,id'],
+            'trainer_id' => ['required', 'exists:users,id'],
             'start_date' => ['required', 'date'],
-            'end_date' => ['required', 'date'],
         ];
     }
 

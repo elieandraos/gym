@@ -1,10 +1,6 @@
 <?php
 
-use App\Enums\BloodType;
-use App\Enums\Gender;
-use App\Enums\Role;
 use App\Http\Resources\BookingResource;
-use App\Http\Resources\UserResource;
 use App\Models\Booking;
 use App\Models\User;
 use Carbon\Carbon;
@@ -44,7 +40,6 @@ test('it validates request before creating a booking', function () {
         ])
         ->assertStatus(302);
 });
-
 
 test('it shows booking information', function () {
     $booking = Booking::query()->first();

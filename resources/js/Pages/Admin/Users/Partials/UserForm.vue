@@ -2,13 +2,13 @@
     <div class="space-y-12">
         <div>
             <page-section-title v-if="form.role === 'Member'">Membership info</page-section-title>
-            <div class="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-3 my-4">
-                <div v-if="form.role === 'Member'">
+            <div class="flex gap-12 items-center my-4">
+                <div v-if="form.role === 'Member'" class="flex gap-4">
                     <InputLabel for="in_house" value="In-house member" />
-                    <div class="mt-2"><SwitchInput v-model="form.in_house" /></div>
+                    <SwitchInput v-model="form.in_house" />
                     <InputError :message="form.errors.registration_date" />
                 </div>
-                <div>
+                <div class="flex gap-4 items-center">
                     <InputLabel for="registration_date" value="Start date" />
                     <DatepickerInput v-model="form.registration_date"></DatepickerInput>
                     <InputError :message="form.errors.registration_date" />
@@ -17,7 +17,7 @@
         </div>
         <div>
             <page-section-title>Profile info</page-section-title>
-            <div class="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-8 my-4">
+            <div class="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-x-12 lg:gap-y-6 my-4">
                 <div>
                     <InputLabel for="name" value="Name" />
                     <TextInput id="name" v-model="form.name" type="text"/>
@@ -53,7 +53,7 @@
 
         <div>
             <page-section-title>Contact info</page-section-title>
-            <div class="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-8 my-4">
+            <div class="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-x-12 lg:gap-y-6 my-4">
                 <div>
                     <InputLabel for="email" value="Email" />
                     <TextInput id="email" v-model="form.email" type="text"/>

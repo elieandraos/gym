@@ -23,7 +23,7 @@
 
 <script setup>
 import {
-    HomeIcon, UserIcon, UsersIcon, Cog6ToothIcon,
+    HomeIcon, UserIcon, UsersIcon, Cog6ToothIcon, PlusIcon,
 } from '@heroicons/vue/24/solid'
 import { Head, usePage } from '@inertiajs/vue3'
 
@@ -43,6 +43,13 @@ const menu = [
         url: route('dashboard'),
         icon: HomeIcon,
         activeRoute: 'dashboard',
+        when: () => usePage().props.auth.user,
+    },
+    {
+        name: 'New Training',
+        url: route('admin.bookings.create'),
+        icon: PlusIcon,
+        activeRoute: 'admin.bookings.create',
         when: () => usePage().props.auth.user,
     },
     {
