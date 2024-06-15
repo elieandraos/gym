@@ -81,7 +81,8 @@ const form = useForm({
     member_id: null,
     trainer_id: null,
     start_date: new Date(),
-    nb_sessions: 12
+    nb_sessions: 12,
+    days: []
 })
 
 provide('form', form)

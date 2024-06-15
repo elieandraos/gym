@@ -3,13 +3,14 @@
         <div class="mt-12 text-sm flex items-center gap-3">
             <p class="font-medium">Plan the schedule for the upcoming weeks</p>
             <SecondaryButton @click="addRepeatableDay">Add day</SecondaryButton>
+            <InputError :message="form.errors.days" />
         </div>
 
-        <div v-if="scheduleInfo" class="my-8 space-y-4">
+        <div v-if="form.days" class="my-8 space-y-4">
             <repeatable-scheduler
-                v-for="(item, index) in scheduleInfo"
+                v-for="(item, index) in form.days"
                 :key="index"
-                v-model="scheduleInfo[index]"
+                v-model="form.days[index]"
                 @remove="removeRepeatableDay(item)"
             ></repeatable-scheduler>
         </div>
@@ -17,25 +18,24 @@
 </template>
 
 <script setup>
+import InputError from '@/Components/Form/InputError.vue'
 import SecondaryButton from '@/Components/Layout/SecondaryButton.vue'
 import RepeatableScheduler from '@/Pages/Admin/Bookings/Partials/RepeatableScheduler.vue'
 
-import { inject, ref } from 'vue'
+import { inject } from 'vue'
 
 const form = inject('form')
 
-const scheduleInfo = ref([])
-
 const addRepeatableDay = () => {
-    scheduleInfo.value.push({
+    form.days.push({
         day: 'Monday',
         time: '07:00 am'
     })
 }
 
 const removeRepeatableDay = (item) => {
-    const index = scheduleInfo.value.indexOf(item)
+    const index = form.days.indexOf(item)
     if (index !== -1)
-        scheduleInfo.value.splice(index, 1)
+        form.days.splice(index, 1)
 }
 </script>

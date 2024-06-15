@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
+use function App\Helpers\generateRepeatableDates;
 
 class BookingRequest extends FormRequest
 {
@@ -13,11 +15,36 @@ class BookingRequest extends FormRequest
             'member_id' => ['required', 'exists:users,id'],
             'trainer_id' => ['required', 'exists:users,id'],
             'start_date' => ['required', 'date'],
+            'days' => ['required'],
+            'days.*.day' => ['required', 'string'],
+            'days.*.time' => ['required', 'string'],
         ];
     }
 
     public function authorize(): bool
     {
         return true;
+    }
+
+    protected function passedValidation() : void
+    {
+        $startDate = Carbon::parse($this->input('start_date'));
+        $nbSessions = $this->input('nb_sessions');
+        $days = $this->input('days');
+
+        $bookingSlotsDates = generateRepeatableDates($startDate, $nbSessions, $days);
+
+        $this->merge([
+            'booking_slots_dates' => $bookingSlotsDates,
+            'end_date' => end($bookingSlotsDates)
+        ]);
+    }
+
+    public function messages(): array
+    {
+        return [
+            'days.*.day.required' => 'Each day entry must have a day.',
+            'days.*.time.required' => 'Each day entry must have a time.',
+        ];
     }
 }
