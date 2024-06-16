@@ -1,10 +1,10 @@
 <template>
     <div>
         <h3 class="font-medium pb-2 mb-2 border-b border-b-zinc-200 -mt-1">
-            <span class="w-7 h-7 rounded-full bg-stone-200 inline-flex justify-center items-center text-base">{{ bookings.length }}</span>
+            <span>{{ bookings.length }}</span>
             members training with {{ first_name }}
         </h3>
-        <ul class="h-[550px] overflow-y-scroll">
+        <ul>
             <li
                 v-for="{ id, member, upcoming_session_date, upcoming_session_time, nb_remaining_sessions } in bookings"
                 :key="id"

@@ -1,28 +1,32 @@
 <template>
-    <div class="p-4 text-zinc-900 flex justify-between items-start">
-        <div class="flex flex-col items-center gap-1.5">
-            <span class="text-xs text-zinc-500 lowercase">training with</span>
-            <div class="text-sm flex items-center">
-                <img class="h-8 w-8 mr-1 rounded-full object-cover hidden lg:block" :src="profile_photo_url" :alt="name">
-                <span class="text-zinc-700 font-medium text-base">{{ trainer.name }}</span>
-            </div>
-        </div>
-        <div class="flex flex-col items-center gap-1.5">
-            <span class="text-xs text-zinc-500 lowercase">upcoming session</span>
-            <div class="flex gap-4">
-                <div class="text-base flex items-center gap-1">
-                    <calendar-icon class="h-4 w-4 text-zinc-400"></calendar-icon>
-                    <span class="text-zinc-700 font-medium ">{{ upcoming_session_date }}</span>
-                    <clock-icon class="ml-4 h-4 w-4 text-zinc-400"></clock-icon>
-                    <span class="text-zinc-700 font-medium">{{ upcoming_session_time }}</span>
+    <div>
+        <div class="mt-8 flex flex-col gap-8 sm:flex-row md:justify-between md:gap-16">
+            <div class="grow">
+                <hr class="w-full border-t border-zinc-200">
+                <div class="mt-3 text-sm font-medium text-zinc-400 capitalize">Trainer</div>
+                <div class="mt-2 text-lg font-medium flex gap-2 items-center">
+                    <img class="h-8 w-8 rounded-full object-cover" :src="trainer.profile_photo_url" :alt="name">
+                    <span>{{ trainer.name }}</span>
                 </div>
             </div>
-        </div>
-        <div class="flex flex-col items-center gap-1.5">
-            <span class="text-xs text-zinc-500 lowercase">remaining</span>
-            <div class="text-base">
-                <span class="tracking-wide text-zinc-700 font-medium">{{ nb_remaining_sessions}}</span>
-                <span class="text-zinc-400 tracking-wide text-xs"> / {{ nb_sessions }}</span>
+            <div class="grow">
+                <hr class="w-full border-t border-zinc-200">
+                <div class="mt-3 text-sm font-medium text-zinc-400 capitalize">upcoming session</div>
+                <div class="mt-2 text-lg font-medium flex gap-2 items-center">
+                    <div class="text-base flex items-center gap-1">
+                        <calendar-icon class="h-4 w-4 text-zinc-400"></calendar-icon>
+                        <span class="text-zinc-700 font-medium ">{{ upcoming_session_date }}</span>
+                        <clock-icon class="ml-4 h-4 w-4 text-zinc-400"></clock-icon>
+                        <span class="text-zinc-700 font-medium">{{ upcoming_session_time }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="grow">
+                <hr class="w-full border-t border-zinc-200">
+                <div class="mt-3 text-sm font-medium text-zinc-400 capitalize">Sessions Remaining</div>
+                <div class="mt-2 text-lg font-medium">
+                    {{ nb_remaining_sessions }} <span class="text-xs text-zinc-500">/ {{ nb_sessions }}</span>
+                </div>
             </div>
         </div>
     </div>
