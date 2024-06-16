@@ -2,9 +2,7 @@
 
 use App\Helpers\DateHelper;
 use Carbon\Carbon;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
-uses(RefreshDatabase::class);
 uses(DateHelper::class);
 
 it('generates repeatable dates correctly', function () {
