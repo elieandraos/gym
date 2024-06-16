@@ -1,5 +1,5 @@
 <template>
-    <div class="fixed w-full z-50">
+    <div class="fixed w-64 z-50">
         <transition name="fade">
             <div v-if="show && message" :class="{ 'bg-lime-500': style === 'success', 'bg-red-700': style === 'danger' }">
                 <div class="max-w-screen-xl mx-auto py-2 px-3 sm:px-6 lg:px-8">

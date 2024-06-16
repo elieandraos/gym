@@ -2,7 +2,7 @@
     <AppLayout title="Profile">
         <Container>
             <page-back-button>{{ role }}s</page-back-button>
-            <div class="lg:my-12 lg:mx-auto" v-if="role === 'Member'">
+            <div class="lg:my-12 lg:mx-auto" v-if="isMember && isTraining">
                 <member-training-status :user="user"></member-training-status>
             </div>
             <div class="space-y-12 lg:space-y-0 lg:flex lg:gap-24 lg:justify-between">
@@ -10,12 +10,12 @@
                 <user-contact :user="user" class="lg:w-[45%]"></user-contact>
             </div>
             <div class="mt-12">
-                <div v-if="role === 'Member' && bookings.length">
+                <div v-if="isMember && isTraining">
                     <div class="font-medium text-sm/relaxed capitalize">Training schedule</div>
                     <booking-sessions :booking-slots="bookings[0].bookingSlots"></booking-sessions>
                 </div>
-                <div v-if="role === 'Trainer' && bookings.length">
-                    <trainer-bookings :bookings="bookings"  :user="user" v-if="role === 'Trainer'"></trainer-bookings>
+                <div v-if="isTrainer && isTraining">
+                    <trainer-bookings :bookings="bookings" :user="user"></trainer-bookings>
                 </div>
             </div>
         </Container>
@@ -32,6 +32,8 @@ import TrainerBookings from '@/Pages/Admin/Users/Partials/TrainerBookings.vue'
 import UserContact from '@/Pages/Admin/Users/Partials/UserContact.vue'
 import UserProfile from '@/Pages/Admin/Users/Partials/UserProfile.vue'
 
+import { computed } from 'vue'
+
 const props = defineProps({
     user: { type: Object, required: true },
 })
@@ -39,4 +41,8 @@ const props = defineProps({
 const {
     role, bookings,
 } = props.user
+
+const isMember = computed( () => role === 'Member')
+const isTrainer = computed( () => role === 'Trainer')
+const isTraining = computed( () => bookings.length)
 </script>
