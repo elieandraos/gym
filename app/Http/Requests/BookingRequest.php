@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Helpers\DateHelper;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
-use function App\Helpers\generateRepeatableDates;
 
 class BookingRequest extends FormRequest
 {
@@ -32,7 +32,7 @@ class BookingRequest extends FormRequest
         $nbSessions = $this->input('nb_sessions');
         $days = $this->input('days');
 
-        $bookingSlotsDates = generateRepeatableDates($startDate, $nbSessions, $days);
+        $bookingSlotsDates = DateHelper::generateRepeatableDates($startDate, $nbSessions, $days);
 
         $this->merge([
             'booking_slots_dates' => $bookingSlotsDates,

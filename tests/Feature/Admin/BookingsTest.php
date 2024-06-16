@@ -1,11 +1,11 @@
 <?php
 
+use App\Helpers\DateHelper;
 use App\Http\Resources\BookingResource;
 use App\Models\Booking;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
-use function App\Helpers\generateRepeatableDates;
 
 beforeEach(function () {
     setupUsersAndBookings();
@@ -58,7 +58,7 @@ test('it shows booking information', function () {
         ->assertStatus(200);
 });
 
-test('it creates a booking', function () {
+test('it creates a booking and its booking slots', function () {
     $member = User::members()->inRandomOrder()->first();
     $trainer = User::trainers()->inRandomOrder()->first();
 
@@ -88,7 +88,7 @@ test('it creates a booking', function () {
         ->firstOrFail();
 
     // Generate expected session dates
-    $expectedSessionDates = generateRepeatableDates($data['start_date'], $data['nb_sessions'], $data['days']);
+    $expectedSessionDates = DateHelper::generateRepeatableDates($data['start_date'], $data['nb_sessions'], $data['days']);
 
     // Check that each expected session date is in the database
     foreach ($expectedSessionDates as $sessionDate) {
