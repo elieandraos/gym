@@ -19,7 +19,7 @@ test('it requires authentication', function () {
 
 test('it renders the create booking page', function () {
     actingAsAdmin()
-        ->get(route('admin.bookings.create' ))
+        ->get(route('admin.bookings.create'))
         ->assertHasComponent('Admin/Bookings/Create')
         ->assertStatus(200);
 });
@@ -30,7 +30,7 @@ test('it validates request before creating a booking', function () {
         'trainer_id' => null,
         'start_date' => null,
         'nb_sessions' => null,
-        'days' => []
+        'days' => [],
     ];
 
     actingAsAdmin()
@@ -40,7 +40,7 @@ test('it validates request before creating a booking', function () {
             'trainer_id',
             'start_date',
             'nb_sessions',
-            'days'
+            'days',
         ])
         ->assertStatus(302);
 });
@@ -63,13 +63,13 @@ test('it creates a booking and its booking slots', function () {
     $trainer = User::trainers()->inRandomOrder()->first();
 
     $data = [
-        'start_date' => Carbon::today(),
+        'start_date' => Carbon::today()->addMonths(2),
         'member_id' => $member->id,
         'trainer_id' => $trainer->id,
         'nb_sessions' => 12,
-        "days" => [
-            [ "day" => "Monday", "time" => "07:00 am" ],
-            [ "day" => "Wednesday", "time" => "07:00 am"]
+        'days' => [
+            ['day' => 'Monday', 'time' => '07:00 am'],
+            ['day' => 'Wednesday', 'time' => '07:00 am'],
         ],
     ];
 
@@ -83,7 +83,7 @@ test('it creates a booking and its booking slots', function () {
     // fetch the booking created
     $booking = Booking::where('member_id', $member->id)
         ->where('trainer_id', $trainer->id)
-        ->whereDate('start_date', Carbon::today())
+        ->whereDate('start_date', Carbon::today()->addMonths(2))
         ->latest('created_at')
         ->firstOrFail();
 
@@ -94,7 +94,7 @@ test('it creates a booking and its booking slots', function () {
     foreach ($expectedSessionDates as $sessionDate) {
         $this->assertDatabaseHas('booking_slots', [
             'booking_id' => $booking->id,
-            'start_time' => Carbon::parse($sessionDate)->format('Y-m-d H:i:s')
+            'start_time' => Carbon::parse($sessionDate)->format('Y-m-d H:i:s'),
         ]);
     }
 });

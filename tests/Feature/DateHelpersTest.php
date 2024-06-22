@@ -3,14 +3,12 @@
 use App\Helpers\DateHelper;
 use Carbon\Carbon;
 
-uses(DateHelper::class);
-
 it('generates repeatable dates correctly', function () {
     $startDate = Carbon::parse('2023-06-01 10:00');
     $nb_dates = 5;
     $repeatableDayTime = [
         ['day' => 'Monday', 'time' => '10:00 AM'],
-        ['day' => 'Wednesday', 'time' => '02:00 PM']
+        ['day' => 'Wednesday', 'time' => '02:00 PM'],
     ];
 
     $result = DateHelper::generateRepeatableDates($startDate, $nb_dates, $repeatableDayTime);
@@ -27,7 +25,7 @@ it('throws an exception for invalid day', function () {
     $startDate = Carbon::parse('2023-06-01 10:00');
     $nb_dates = 5;
     $repeatableDayTime = [
-        ['day' => 'Fun day', 'time' => '10:00 AM']
+        ['day' => 'Fun day', 'time' => '10:00 AM'],
     ];
 
     DateHelper::generateRepeatableDates($startDate, $nb_dates, $repeatableDayTime);
@@ -37,7 +35,7 @@ it('throws an exception for invalid time format', function () {
     $startDate = Carbon::parse('2023-06-01 10:00');
     $nb_dates = 5;
     $repeatableDayTime = [
-        ['day' => 'Monday', 'time' => '25:00 AM']
+        ['day' => 'Monday', 'time' => '25:00 AM'],
     ];
 
     DateHelper::generateRepeatableDates($startDate, $nb_dates, $repeatableDayTime);

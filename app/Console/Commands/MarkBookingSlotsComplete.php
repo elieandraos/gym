@@ -13,12 +13,12 @@ class MarkBookingSlotsComplete extends Command
 
     protected $description = 'Updates past booking slots status to complete';
 
-    public function handle() : void
+    public function handle(): void
     {
         BookingSlot::where('end_time', '<', Carbon::today())
-            ->whereNotIn('status', [ Status::Complete, Status::Cancelled, Status::Frozen] )
+            ->whereNotIn('status', [Status::Complete, Status::Cancelled, Status::Frozen])
             ->update([
-                'status' => Status::Complete
+                'status' => Status::Complete,
             ]);
     }
 }

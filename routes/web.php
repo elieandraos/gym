@@ -7,8 +7,8 @@ use Inertia\Inertia;
 
 Route::get('/', fn () => redirect(route('dashboard')));
 
-Route::middleware([ 'auth:sanctum', config('jetstream.auth_session'), 'verified',])->group(function () {
-    Route::get('/dashboard', fn() => Inertia::render('Dashboard'))->name('dashboard');
+Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function () {
+    Route::get('/dashboard', fn () => Inertia::render('Dashboard'))->name('dashboard');
 
     // users
     Route::get('/users/list/{role}', [UsersController::class, 'index'])->name('admin.users.index');

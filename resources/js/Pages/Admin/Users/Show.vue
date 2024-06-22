@@ -2,9 +2,9 @@
     <AppLayout title="Profile">
         <Container>
             <page-back-button>{{ role }}s</page-back-button>
-            <div class="lg:my-12 lg:mx-auto" v-if="isMember && isTraining">
-                <member-training-status :user="user"></member-training-status>
-            </div>
+<!--            <div class="lg:my-12 lg:mx-auto" v-if="isMember && isTraining">-->
+<!--                <member-training-status :user="user"></member-training-status>-->
+<!--            </div>-->
             <div class="space-y-12 lg:space-y-0 lg:flex lg:gap-24 lg:justify-between">
                 <user-profile :user="user" class="lg:w-[45%]"></user-profile>
                 <user-contact :user="user" class="lg:w-[45%]"></user-contact>

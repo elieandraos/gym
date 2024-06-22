@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Helpers\DateHelper;
+use App\Rules\DoesNotOverlapWithOtherMemberBookings;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -14,7 +15,7 @@ class BookingRequest extends FormRequest
             'nb_sessions' => ['required', 'integer'],
             'member_id' => ['required', 'exists:users,id'],
             'trainer_id' => ['required', 'exists:users,id'],
-            'start_date' => ['required', 'date'],
+            'start_date' => ['required', 'date', new DoesNotOverlapWithOtherMemberBookings],
             'days' => ['required'],
             'days.*.day' => ['required', 'string'],
             'days.*.time' => ['required', 'string'],
@@ -26,7 +27,7 @@ class BookingRequest extends FormRequest
         return true;
     }
 
-    protected function passedValidation() : void
+    protected function passedValidation(): void
     {
         $startDate = Carbon::parse($this->input('start_date'));
         $nbSessions = $this->input('nb_sessions');
@@ -36,13 +37,15 @@ class BookingRequest extends FormRequest
 
         $this->merge([
             'booking_slots_dates' => $bookingSlotsDates,
-            'end_date' => end($bookingSlotsDates)
+            'end_date' => end($bookingSlotsDates),
         ]);
     }
 
     public function messages(): array
     {
         return [
+            'member_id.required' => 'The member field is required',
+            'trainer_id.required' => 'The trainer field is required',
             'days.*.day.required' => 'Each day entry must have a day.',
             'days.*.time.required' => 'Each day entry must have a time.',
         ];

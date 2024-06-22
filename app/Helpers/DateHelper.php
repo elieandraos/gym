@@ -10,10 +10,10 @@ class DateHelper
 {
     public static function generateRepeatableDates(Carbon $startDate, int $nb_dates, array $repeatableDayTime): array
     {
-        $validDaysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        $validDaysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
         foreach ($repeatableDayTime as $day) {
-            if (!in_array($day['day'], $validDaysOfWeek)) {
+            if (! in_array($day['day'], $validDaysOfWeek)) {
                 throw new InvalidArgumentException('Invalid day in days array.');
             }
 

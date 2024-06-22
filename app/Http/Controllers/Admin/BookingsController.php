@@ -28,19 +28,17 @@ class BookingsController extends Controller
         ]);
     }
 
-    public function store(BookingRequest $request) : RedirectResponse
+    public function store(BookingRequest $request): RedirectResponse
     {
         $booking = Booking::create($request->all());
         $bookingSlots = [];
 
-        foreach($request->input('booking_slots_dates') as $date)
-        {
+        foreach ($request->input('booking_slots_dates') as $date) {
             $startDate = Carbon::parse($date);
             $bookingSlots[] = new BookingSlot([
                 'start_time' => $startDate,
                 'end_time' => $startDate->clone()->addHour(),
-                'booking_id' => $booking->id,
-                'status' => $startDate < Carbon::now() ? Status::Complete->value : Status::Upcoming->value
+                'status' => $startDate < Carbon::now() ? Status::Complete->value : Status::Upcoming->value,
             ]);
         }
 
@@ -51,15 +49,14 @@ class BookingsController extends Controller
             ->with('flash.bannerStyle', 'success');
     }
 
-
-    public function show(Booking $booking) : Response
+    public function show(Booking $booking): Response
     {
         $booking->load(['member', 'trainer', 'bookingSlots' => function ($query) {
             $query->orderBy('start_time');
         }]);
 
         return Inertia::render('Admin/Bookings/Show', [
-            'booking' => BookingResource::make($booking)
+            'booking' => BookingResource::make($booking),
         ]);
     }
 }

@@ -9,14 +9,14 @@
         </thead>
         <tbody>
         <tr v-for="{ id, date, start_time, end_time, status} in bookingSlots" :key="id">
-            <td class="text-zinc-900 p-4">
+            <td class="text-zinc-400 p-4">
                 {{ date }}
             </td>
             <td class="text-zinc-900 p-4">
                 {{ start_time }}
             </td>
             <td class="text-zinc-900 p-4">
-                {{ end_time }}
+                --
             </td>
             <td class="text-zinc-900 p-4">
                 <Badge :type="statusBadgeType(status)">{{ status }}</Badge>
@@ -33,7 +33,7 @@ defineProps({
     bookingSlots: { type: Array, required: true }
 })
 
-const headers = ['Date', 'Start Time', 'End Time', 'Status']
+const headers = ['Date', 'Start Time', 'Trainer', 'Status']
 
 const statusBadgeType = (status) => {
     let type

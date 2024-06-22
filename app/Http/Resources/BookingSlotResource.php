@@ -27,12 +27,13 @@ class BookingSlotResource extends JsonResource
     {
         $day = $date->day;
         $suffix = $this->getDaySuffix($day);
-        return $date->format('M j') . $suffix;
+
+        return $date->format('D, M j').$suffix;
     }
 
     private function getDaySuffix(int $day): string
     {
-        if (!in_array(($day % 100), [11, 12, 13])) {
+        if (! in_array(($day % 100), [11, 12, 13])) {
             switch ($day % 10) {
                 case 1:
                     return 'st';

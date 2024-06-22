@@ -8,12 +8,12 @@ use Illuminate\Support\Facades\Artisan;
 it('marks past booking slots as complete', function () {
     $upcomingSlot = BookingSlot::factory()->create([
         'end_time' => Carbon::now()->addHour(),
-        'status' => Status::Upcoming
+        'status' => Status::Upcoming->value,
     ]);
 
     $cancelledSlot = BookingSlot::factory()->create([
         'end_time' => Carbon::now()->addHour(),
-        'status' => Status::Cancelled
+        'status' => Status::Cancelled->value,
     ]);
 
     // Travel in time to tomorrow and run the command
