@@ -31,7 +31,7 @@
                 </div>
 
                 <h3 class="font-medium mt-16 mb-4">sessions information</h3>
-                <BookingSessions :booking-slots="bookingSlots"></BookingSessions>
+                <BookingSessions :booking-slots="bookingSlots" :trainer="trainer"></BookingSessions>
 
             </div>
         </Container>

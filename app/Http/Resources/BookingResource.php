@@ -6,6 +6,7 @@ use App\Enums\Status;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Str;
 
 /** @mixin \App\Models\Booking */
 class BookingResource extends JsonResource
@@ -31,7 +32,7 @@ class BookingResource extends JsonResource
             'upcoming_session_date' => $upcomingSlot ? Carbon::parse($upcomingSlot->start_time)->isoFormat('ddd MMM Do') : null,
             'upcoming_session_time' => $upcomingSlot ? Carbon::parse($upcomingSlot->start_time)->isoFormat('h[h]mma') : null,
             'nb_completed_sessions' => $completedSessionsCount,
-            'nb_remaining_sessions' => $this->nb_sessions - $completedSessionsCount,
+            'nb_remaining_sessions' => $this->nb_sessions - $completedSessionsCount.' '.Str::plural('session', $this->nb_sessions - $completedSessionsCount),
         ];
     }
 }

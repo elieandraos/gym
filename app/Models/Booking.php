@@ -47,17 +47,19 @@ class Booking extends Model
     public function scopeActive(Builder $query): Builder
     {
         return $query->where('start_date', '<=', Carbon::today())
-            ->where('end_date', '>=', Carbon::today());
+            ->where('end_date', '>=', Carbon::today())
+            ->orderBy('start_date', 'ASC');
     }
 
     public function scopeHistory(Builder $query): Builder
     {
         return $query->where('end_date', '<', Carbon::today())
-            ->orderBy('start_date', 'ASC');
+            ->orderBy('start_date', 'DESC');
     }
 
     public function scopeScheduled(Builder $query): Builder
     {
-        return $query->where('start_date', '>', Carbon::now());
+        return $query->where('start_date', '>', Carbon::now())
+            ->orderBy('start_date', 'ASC');
     }
 }

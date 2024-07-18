@@ -5,14 +5,14 @@
 <!--            <div class="lg:my-12 lg:mx-auto" v-if="isMember && isTraining">-->
 <!--                <member-training-status :user="user"></member-training-status>-->
 <!--            </div>-->
-            <div class="space-y-12 lg:space-y-0 lg:flex lg:gap-24 lg:justify-between">
+            <div class="space-y-12 lg:space-y-0 lg:flex lg:flex-row lg:gap-24 lg:justify-between">
                 <user-profile :user="user" class="lg:w-[45%]"></user-profile>
                 <user-contact :user="user" class="lg:w-[45%]"></user-contact>
             </div>
             <div class="mt-12">
                 <div v-if="isMember && isTraining">
-                    <div class="font-medium text-sm/relaxed capitalize">Training schedule</div>
-                    <booking-sessions :booking-slots="bookings[0].bookingSlots"></booking-sessions>
+                    <div class="font-medium text-sm/relaxed capitalize mb-4">Training schedule</div>
+                    <booking-sessions :booking-slots="bookings[0].bookingSlots" :trainer="bookings[0].trainer"></booking-sessions>
                 </div>
                 <div v-if="isTrainer && isTraining">
                     <trainer-bookings :bookings="bookings" :user="user"></trainer-bookings>

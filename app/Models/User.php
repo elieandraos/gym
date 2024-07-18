@@ -118,7 +118,7 @@ class User extends Authenticatable
                 $query->active()->with([
                     $memberOrTrainerRelation,
                     'bookingSlots' => function ($query) {
-                        $query->orderBy('start_time');
+                        $query->orderBy('start_time', 'ASC');
                     },
                 ]);
             },
