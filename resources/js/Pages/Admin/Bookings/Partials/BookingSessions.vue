@@ -41,11 +41,23 @@
                 <td class="text-zinc-400 p-4">
                     {{ formatted_date }}
                 </td>
-                <td class="text-zinc-900 p-4">
+                <td class="text-zinc-900 p-4 font-medium">
                     {{ start_time }}
                 </td>
                 <td class="text-zinc-900 p-4">
                     <Badge :type="statusBadgeType(status)">{{ status }}</Badge>
+                </td>
+                <td>
+                    <Dropdown>
+                        <!-- Content slot content -->
+                        <template #content>
+                            <div class="p-4">
+                                <p>This is the dropdown content.</p>
+                                <a href="#" class="text-blue-500">Link 1</a><br>
+                                <a href="#" class="text-blue-500">Link 2</a>
+                            </div>
+                        </template>
+                    </Dropdown>
                 </td>
             </tr>
         </tbody>
@@ -53,15 +65,16 @@
 </template>
 
 <script setup>
+import Dropdown from '@/Components/Dropdown.vue'
 import Badge from '@/Components/Layout/Badge.vue'
-import {CalendarIcon, ClockIcon} from '@heroicons/vue/24/outline/index.js'
+import { CalendarIcon, ClockIcon } from '@heroicons/vue/24/outline/index.js'
 
 defineProps({
     bookingSlots: { type: Array, required: true },
     trainer: { type: Object, required: true },
 })
 
-const headers = ['Trainer', 'Date', 'Time', 'Status']
+const headers = ['Trainer', 'Date', 'Time', 'Status', '']
 
 const statusBadgeType = (status) => {
     let type

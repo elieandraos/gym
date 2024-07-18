@@ -15,6 +15,7 @@
                     <booking-sessions :booking-slots="bookings[0].bookingSlots" :trainer="bookings[0].trainer"></booking-sessions>
                 </div>
                 <div v-if="isTrainer && isTraining">
+                    <div class="font-medium text-sm/relaxed capitalize mb-4">Trainees list</div>
                     <trainer-bookings :bookings="bookings" :user="user"></trainer-bookings>
                 </div>
             </div>

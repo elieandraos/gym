@@ -17,10 +17,10 @@
                     <td class="text-zinc-400 p-4">
                         {{ upcoming_session_date }}
                     </td>
-                    <td class="text-zinc-900 p-4">
+                    <td class="text-zinc-900 p-4 font-medium">
                         {{ upcoming_session_time }}
                     </td>
-                    <td class="text-zinc-900 p-4">
+                    <td class="text-zinc-900 p-4 font-medium">
                         {{ nb_remaining_sessions }}
                     </td>
                 </tr>

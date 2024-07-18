@@ -1,7 +1,11 @@
 <template>
     <div class="relative">
         <div @click="open = ! open">
-            <slot name="trigger" />
+            <slot name="trigger">
+                <div class="flex justify-end pr-2">
+                    <EllipsisHorizontalIcon class="w-6 cursor-pointer text-zinc-400"></EllipsisHorizontalIcon>
+                </div>
+            </slot>
         </div>
 
         <!-- Full Screen Dropdown Overlay -->
@@ -16,7 +20,7 @@
             leave-to-class="transform opacity-0 scale-95">
             <div
                 v-show="open"
-                class="absolute z-50 mt-2 rounded-md shadow-lg"
+                class="absolute z-50 rounded-md shadow-lg"
                 :class="[widthClass, alignmentClasses]"
                 style="display: none;"
                 @click="open = false">
@@ -29,9 +33,8 @@
 </template>
 
 <script setup>
-import {
-    computed, onMounted, onUnmounted, ref,
-} from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { EllipsisHorizontalIcon } from '@heroicons/vue/24/outline/index.js'
 
 const props = defineProps({
     align: {
