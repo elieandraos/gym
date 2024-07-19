@@ -15,7 +15,7 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Inter', ...defaultTheme.fontFamily.sans],
+                sans: ['Quicksand', 'sans-serif', ...defaultTheme.fontFamily.serif],
                 serif: ['figtree', ...defaultTheme.fontFamily.serif],
             },
         },

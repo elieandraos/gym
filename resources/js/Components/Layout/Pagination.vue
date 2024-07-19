@@ -14,8 +14,8 @@
 
                 <div v-if="index > 0 && index < (links.length -1)">
                     <Link
-                        class="p-4 h-10 w-10 rounded-full text-zinc-400 bg-stone-100 hover:bg-stone-200 flex items-center justify-center"
-                        :class="{ 'text-zinc-500 bg-stone-200 hover:bg-stone-200': link.active }"
+                        class="p-4 h-10 w-10 rounded-full text-zinc-400 bg-zinc-100 hover:bg-zinc-200 flex items-center justify-center"
+                        :class="{ 'text-zinc-500 bg-zinc-200 hover:bg-zinc-200': link.active }"
                         :href="link.url">
                         {{ link.label }}
                     </Link>

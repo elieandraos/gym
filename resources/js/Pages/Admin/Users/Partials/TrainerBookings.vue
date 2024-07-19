@@ -1,15 +1,20 @@
 <template>
     <div class="hidden lg:block">
-        <table class="min-w-full text-left text-sm/6">
+        <table class="min-w-full text-left lg:table text-sm">
             <thead class="text-zinc-400">
                 <tr>
-                    <th class="border-b border-b-zinc-200 px-4 py-2 font-medium" v-for="header in headers" :key="header">
+                    <th class="border-b border-b-zinc-200 px-4 py-2 text-sm font-medium" v-for="header in headers" :key="header">
                         {{ header }}
                     </th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="{ id, member, upcoming_session_date, upcoming_session_time, nb_remaining_sessions } in bookings" :key="id">
+                <tr
+                    v-for="{ id, member, upcoming_session_date, upcoming_session_time, nb_remaining_sessions } in bookings"
+                    :key="id"
+                    class="border-b border-zinc-100 hover:bg-zinc-100 hover:cursor-pointer"
+                    @click="goToBooking(id)"
+                >
                     <td class="text-zinc-900 font-medium p-4 flex gap-2 items-center">
                         <img class="w-8 h-8 rounded-full" :src="member.profile_photo_url"  alt=""/>
                         {{ member.name }}

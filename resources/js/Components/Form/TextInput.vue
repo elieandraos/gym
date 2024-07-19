@@ -3,7 +3,7 @@
         ref="input"
         v-bind="$attrs"
 
-        class="w-full min-w-36 lg:min-w-52 p-3 border-zinc-300 focus:border-zinc-500 focus:ring-zinc-500 rounded-lg text-sm"
+        class="w-full min-w-36 lg:min-w-52 p-2 border-zinc-200 hover:border-zinc-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-lg text-sm"
         v-model="model"/>
 </template>
 

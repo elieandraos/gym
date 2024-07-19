@@ -4,20 +4,20 @@
 
         <div
             v-else
-            class="flex items-center justify-between w-full min-w-36 lg:min-w-52 border border-indigo-300 bg-indigo-50 text-indigo-900 font-medium rounded-lg text-sm p-3"
+            class="flex items-center justify-between w-full min-w-36 lg:min-w-52 border border-indigo-300 bg-indigo-50 text-indigo-900 font-medium rounded-lg text-sm p-2"
         >
             <span>{{ selectedOption.label }}</span>
             <x-mark-icon class="w-4 h-4 text-indigo-400 cursor-pointer" @click="clearSelection">x</x-mark-icon>
         </div>
 
-        <div v-if="showResults" class="absolute z-10 bg-white border border-zinc-300 rounded-lg mt-1 w-full shadow-sm">
+        <div v-if="showResults" class="absolute z-10 bg-white border border-zinc-200 rounded-lg mt-0.5 w-full shadow-sm">
             <ul>
                 <slot name="list-item-preview" :options="filteredOptions.slice(0, maxResults)" :selectOption="selectOption" :highlightSearch="highlightSearch" :searchString="model">
                     <li v-for="option in filteredOptions.slice(0, maxResults)" :key="option.value"
-                        class="cursor-pointer p-3 text-sm hover:bg-stone-200"
+                        class="cursor-pointer p-2 text-sm hover:bg-indigo-500"
                         @mousedown.prevent="selectOption(option)"
                     >
-                        <span v-html="highlightSearch(option.label, model)" class="text-zinc-700"></span>
+                        <span v-html="highlightSearch(option.label, model)" class="text-zinc-950"></span>
                     </li>
                 </slot>
             </ul>

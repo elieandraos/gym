@@ -1,5 +1,5 @@
 <template>
-    <Link :href="href" :class="classes" class="flex items-center px-3 py-2 font-medium transition duration-150 ease-in-out group">
+    <Link :href="href" :class="classes" class="flex items-center text-zinc-900 gap-1 px-3 py-2.5 transition duration-150 ease-in-out rounded-lg group hover:bg-zinc-200 hover:bg-opacity-80">
         <slot />
     </Link>
 </template>
@@ -14,6 +14,6 @@ const props = defineProps({
 })
 
 const classes = computed(() => (props.active
-    ? 'text-zinc-900'
-    : 'text-zinc-500  hover:text-zinc-900'))
+    ? 'bg-zinc-200 bg-opacity-80'
+    : 'hover:text-zinc-900'))
 </script>

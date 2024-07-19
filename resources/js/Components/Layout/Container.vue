@@ -1,5 +1,15 @@
 <template>
-    <div class="max-w-7xl mx-auto  px-4 pb-4 sm:px-6 lg:px-8 lg:pb-8">
+    <div class="p-6 lg:p-10" :class="classList">
         <slot></slot>
     </div>
 </template>
+
+<script setup>
+import {computed} from 'vue'
+
+const props = defineProps({
+    centered: { type: Boolean, required: false, default: false }
+})
+
+const classList = computed( () => props.centered === true ? 'max-w-4xl mx-auto' : 'max-w-7xl')
+</script>

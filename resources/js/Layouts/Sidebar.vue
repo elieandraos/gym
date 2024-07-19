@@ -9,10 +9,10 @@
             </div>
 
             <!-- menu items -->
-            <div class="space-y-2 uppercase text-sm/relaxed">
+            <div class="space-y-1 capitalize text-sm font-semibold">
                 <div v-for="item in menu" :key="item.name">
                     <NavLink :href="item.url" :active="isActive(item)">
-                        <component :is="item.icon" :class="[isActive(item) ? 'text-zinc-900' : 'text-zinc-400', 'w-5 h-5 group-hover:text-zinc-900 mr-2']"></component>
+                        <component :is="item.icon" :class="[isActive(item) ? 'text-zinc-900' : 'text-zinc-500', 'w-5 h-5 group-hover:text-zinc-900']"></component>
                         {{  item.name }}
                     </NavLink>
                 </div>
@@ -20,7 +20,7 @@
         </div>
 
         <!-- logout card -->
-        <div class="bg-stone-200 flex items-center px-4 py-2 rounded-lg">
+        <div class="bg-zinc-200 flex items-center px-4 py-2 rounded-lg">
             <div v-if="$page.props.auth.user" class="shrink-0 me-3">
                 <img class="h-10 w-10 rounded-full object-cover" :src="profile_photo_url" :alt="name">
             </div>

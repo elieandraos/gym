@@ -1,7 +1,6 @@
 <template>
     <div class="">
-        <div class="mt-12 text-sm flex items-center gap-3">
-            <p class="font-medium">Plan the schedule for the upcoming weeks</p>
+        <div class="text-sm flex items-center gap-3">
             <SecondaryButton @click="addRepeatableDay">Add day</SecondaryButton>
             <InputError :message="form.errors.days" />
         </div>

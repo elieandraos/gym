@@ -1,7 +1,7 @@
 <template>
     <AppLayout title="Dashboard">
         <Container>
-
+            <h2 class="text-2xl/8 font-medium text-zinc-950 sm:text-xl/8">Good afternoon, Erica</h2>
         </Container>
     </AppLayout>
 </template>

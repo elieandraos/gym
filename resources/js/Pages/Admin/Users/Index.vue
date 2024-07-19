@@ -32,5 +32,5 @@ const props = defineProps({
 })
 
 const { data, meta } = props.users
-const headers = ['Name', 'Start Date', 'Phone Number', 'Age']
+const headers = ['Name', 'Start date', 'Phone number', 'Age']
 </script>

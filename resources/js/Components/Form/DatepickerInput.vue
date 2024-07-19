@@ -1,5 +1,5 @@
 <template>
-    <div class="p-2.5 border border-zinc-300 rounded-lg text-sm flex items-center">
+    <div class="p-1.5 border border-zinc-200 hover:border-zinc-300 rounded-lg text-sm flex items-center">
         <datepicker
             v-model="model"
             :monday-first="true"

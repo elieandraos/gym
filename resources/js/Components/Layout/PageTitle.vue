@@ -1,10 +1,8 @@
 <template>
-    <div class="flex justify-between items-center lg:mt-8 mb-8">
-        <h1 class="text-zinc-900 font-medium text-lg lg:text-xl capitalize">
+    <div class="flex justify-between items-center mb-8">
+        <h2 class="text-2xl/8 font-bold text-zinc-950 sm:text-xl/8 grow capitalize">
             <slot></slot>
-        </h1>
-        <div>
-            <slot name="buttons"></slot>
-        </div>
+        </h2>
+        <slot name="buttons"></slot>
     </div>
 </template>

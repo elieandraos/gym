@@ -1,12 +1,11 @@
 <template>
     <div class="flex items-center justify-start gap-2 text-sm">
-        <span class="text-zinc-400">Every</span>
-        <SelectInput size="default" v-model="selectedDay" :options="days" @change="emit('update:modelValue', dayAndTime)"></SelectInput>
+        <SelectInput size="auto" v-model="selectedDay" :options="days" @change="emit('update:modelValue', dayAndTime)"></SelectInput>
         <span class="text-zinc-400">@</span>
-        <SelectInput size="default" v-model="selectedHour" :options="hours" @change="emit('update:modelValue', dayAndTime)"></SelectInput>
+        <SelectInput size="auto" v-model="selectedHour" :options="hours" @change="emit('update:modelValue', dayAndTime)"></SelectInput>
         <span class="text-zinc-400">:</span>
-        <SelectInput size="default" v-model="selectedMinute" :options="minutes" @change="emit('update:modelValue', dayAndTime)"></SelectInput>
-        <SelectInput size="default" v-model="selectedTime" :options="time" @change="emit('update:modelValue', dayAndTime)"></SelectInput>
+        <SelectInput size="auto" v-model="selectedMinute" :options="minutes" @change="emit('update:modelValue', dayAndTime)"></SelectInput>
+        <SelectInput size="auto" v-model="selectedTime" :options="time" @change="emit('update:modelValue', dayAndTime)"></SelectInput>
 
         <x-circle-icon class="w-6 h-6 text-zinc-400 hover:text-red-500 cursor-pointer" @click="emit('remove', dayAndTime)"></x-circle-icon>
     </div>

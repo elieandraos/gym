@@ -1,55 +1,55 @@
 <template>
     <AppLayout title="Create Booking">
-        <Container>
-            <page-back-button>Back</page-back-button>
+        <Container :centered="true">
+            <page-title>
+                <div class="pb-8 border-b border-zinc-200 w-full">Book new training</div>
+            </page-title>
 
-            <page-section-title class="mb-3">Training details</page-section-title>
-            <div class="grid grid-cols-1 gap-4 lg:grid-cols-4 lg:gap-x-12 lg:gap-y-6 my-4">
-                <div>
-                    <InputLabel value="Member" />
-                    <InputAutocomplete :options="membersList" v-model="form.member_id" placeholder="Choose member">
-                        <template #list-item-preview="{ options, selectOption, searchString, highlightSearch }">
-                            <li v-for="option in options" :key="option.value"
-                                class="flex items-center gap-4 cursor-pointer p-3 text-sm hover:bg-stone-200"
-                                @mousedown.prevent="selectOption(option)"
-                            >
-                                <img :src="option.profile_photo_url"  alt="" class="w-8 h-8 rounded-full"/>
-                                <span v-html="highlightSearch(option.label, searchString)" class="text-zinc-500"></span>
-                            </li>
-                        </template>
-                    </InputAutocomplete>
-                    <InputError :message="form.errors.member_id" />
-                </div>
-                <div>
-                    <InputLabel value="Trainer" />
-                    <InputAutocomplete :options="trainersList" v-model="form.trainer_id" placeholder="Choose trainer">
-                        <template #list-item-preview="{ options, selectOption, searchString, highlightSearch }">
-                            <li v-for="option in options" :key="option.value"
-                                class="flex items-center gap-4 cursor-pointer p-3 text-sm hover:bg-stone-200"
-                                @mousedown.prevent="selectOption(option)"
-                            >
-                                <img :src="option.profile_photo_url"  alt="" class="w-8 h-8 rounded-full"/>
-                                <span v-html="highlightSearch(option.label, searchString)" class="text-zinc-500"></span>
-                            </li>
-                        </template>
-                    </InputAutocomplete>
-                    <InputError :message="form.errors.trainer_id" />
-                </div>
-                <div>
-                    <InputLabel value="Start Date" />
-                    <DatepickerInput v-model="form.start_date"></DatepickerInput>
-                    <InputError :message="form.errors.start_date" />
-                </div>
-                <div>
-                    <InputLabel value="Number of sessions" />
-                    <TextInput v-model="form.nb_sessions"></TextInput>
-                    <InputError :message="form.errors.nb_sessions" />
-                </div>
-            </div>
+            <FormSection title="Member" description="Choose the member receiving the training.">
+                <InputAutocomplete :options="membersList" v-model="form.member_id" placeholder="Choose member">
+                    <template #list-item-preview="{ options, selectOption, searchString, highlightSearch }">
+                        <li v-for="option in options" :key="option.value"
+                            class="flex items-center gap-4 cursor-pointer p-2 text-sm hover:bg-indigo-200"
+                            @mousedown.prevent="selectOption(option)"
+                        >
+                            <img :src="option.profile_photo_url"  alt="" class="w-6 h-6 rounded-full"/>
+                            <span v-html="highlightSearch(option.label, searchString)" class="text-zinc-950"></span>
+                        </li>
+                    </template>
+                </InputAutocomplete>
+                <InputError :message="form.errors.member_id" />
+            </FormSection>
 
-            <booking-schedule></booking-schedule>
+            <FormSection title="Trainer" description="Choose the trainer giving the training.">
+                <InputAutocomplete :options="trainersList" v-model="form.trainer_id" placeholder="Choose trainer">
+                    <template #list-item-preview="{ options, selectOption, searchString, highlightSearch }">
+                        <li v-for="option in options" :key="option.value"
+                            class="flex items-center gap-4 cursor-pointer p-2 text-sm hover:bg-indigo-200"
+                            @mousedown.prevent="selectOption(option)"
+                        >
+                            <img :src="option.profile_photo_url"  alt="" class="w-6 h-6 text-indigo-700 rounded-full"/>
+                            <span v-html="highlightSearch(option.label, searchString)" class="text-zinc-950"></span>
+                        </li>
+                    </template>
+                </InputAutocomplete>
+                <InputError :message="form.errors.trainer_id" />
+            </FormSection>
 
-            <div>
+            <FormSection title="Start date" description="Enter the training starting date.">
+                <DatepickerInput v-model="form.start_date"></DatepickerInput>
+                <InputError :message="form.errors.trainer_id" />
+            </FormSection>
+
+            <FormSection title="# sessions" description="Enter the number of sessions for this training.">
+                <TextInput v-model="form.nb_sessions"></TextInput>
+                <InputError :message="form.errors.nb_sessions" />
+            </FormSection>
+
+            <FormSection title="Schedule" description="Plan the training days for the upcoming weeks.">
+                <booking-schedule></booking-schedule>
+            </FormSection>
+
+            <div class="text-right">
                 <primary-button @click="saveBooking" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">Save training</primary-button>
             </div>
         </Container>
@@ -58,14 +58,13 @@
 
 <script setup>
 import DatepickerInput from '@/Components/Form/DatepickerInput.vue'
+import FormSection from '@/Components/Form/FormSection.vue'
+import PageTitle from '@/Components/Layout/PageTitle.vue'
 import BookingSchedule from '@/Pages/Admin/Bookings/Partials/BookingSchedule.vue'
 import InputAutocomplete from '@/Components/Form/InputAutocomplete.vue'
 import InputError from '@/Components/Form/InputError.vue'
-import InputLabel from '@/Components/Form/InputLabel.vue'
 import TextInput from '@/Components/Form/TextInput.vue'
 import Container from '@/Components/Layout/Container.vue'
-import PageBackButton from '@/Components/Layout/PageBackButton.vue'
-import PageSectionTitle from '@/Components/Layout/PageSectionTitle.vue'
 import PrimaryButton from '@/Components/Layout/PrimaryButton.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
 

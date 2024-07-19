@@ -4,14 +4,14 @@
 
         <Banner />
 
-        <div class="bg-stone-100 text-black relative">
+        <div class="bg-zinc-100 text-black relative">
             <div class="flex">
-                <div class="h-screen w-60 hidden lg:block">
+                <div class="h-screen w-64 hidden lg:block">
                     <sidebar :menu="menu"></sidebar>
                 </div>
-                <div class="h-screen lg:pt-3 grow">
-                    <main class="h-full overflow-y-scroll bg-white rounded-t-lg">
-                        <div class="h-12 lg:hidden"></div>
+                <div class="h-screen lg:pt-2 grow">
+                    <main class="h-full overflow-y-scroll bg-white rounded-t-lg lg:ring-1 lg:ring-zinc-950/5 ">
+                        <div class="h-6 lg:hidden"></div>
                         <slot />
                     </main>
                 </div>
@@ -23,7 +23,7 @@
 
 <script setup>
 import {
-    HomeIcon, UserIcon, UsersIcon, Cog6ToothIcon, PlusIcon,
+    HomeIcon, UserIcon, UsersIcon, Cog6ToothIcon, PlusCircleIcon,
 } from '@heroicons/vue/24/solid'
 import { Head, usePage } from '@inertiajs/vue3'
 
@@ -39,16 +39,16 @@ const { route } = window
 
 const menu = [
     {
-        name: 'Dashboard',
+        name: 'Home',
         url: route('dashboard'),
         icon: HomeIcon,
         activeRoute: 'dashboard',
         when: () => usePage().props.auth.user,
     },
     {
-        name: 'New Training',
+        name: 'Booking',
         url: route('admin.bookings.create'),
-        icon: PlusIcon,
+        icon: PlusCircleIcon,
         activeRoute: 'admin.bookings.create',
         when: () => usePage().props.auth.user,
     },
