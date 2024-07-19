@@ -11,13 +11,14 @@
                             <h1 class="text-xl font-bold text-zinc-950">{{ name }}</h1>
                             <check-badge-icon class="w-6 h-6 text-sky-500 inline" v-if="in_house"></check-badge-icon>
                         </div>
-                        <div class="mt-1 text-sm text-zinc-500">Member since {{  since }}</div>
+                        <div class="mt-1 text-sm text-zinc-500">{{ age }} years old · Member since {{  since }}</div>
                     </div>
                 </div>
 
-                <div>
+                <div class="space-x-4">
+                    <SecondaryButton>View training history</SecondaryButton>
                     <Link :href="route('admin.bookings.show', bookings[0].id)" v-if="isMember && isTraining">
-                        <PrimaryButton>Manage training</PrimaryButton>
+                        <PrimaryButton>View active training</PrimaryButton>
                     </Link>
                 </div>
             </div>
@@ -41,6 +42,7 @@
 import Container from '@/Components/Layout/Container.vue'
 import PageBackButton from '@/Components/Layout/PageBackButton.vue'
 import PrimaryButton from '@/Components/Layout/PrimaryButton.vue'
+import SecondaryButton from '@/Components/Layout/SecondaryButton.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import TrainerBookings from '@/Pages/Admin/Users/Partials/TrainerBookings.vue'
 import UserContact from '@/Pages/Admin/Users/Partials/UserContact.vue'
@@ -54,7 +56,7 @@ const props = defineProps({
 })
 
 const {
-    role, bookings, name, since, profile_photo_url, in_house
+    role, bookings, name, since, profile_photo_url, in_house, age
 } = props.user
 
 const isMember = computed( () => role === 'Member')

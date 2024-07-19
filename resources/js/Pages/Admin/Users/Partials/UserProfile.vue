@@ -10,7 +10,7 @@
             </tr>
             <tr class="border-b border-zinc-100">
                 <td class="text-zinc-400 w-32 lg:w-48 py-2">Birthdate</td>
-                <td class="py-2">{{ birthdate }} ({{ age }} years old)</td>
+                <td class="py-2">{{ birthdate }}</td>
             </tr>
             <tr class="border-b border-zinc-100">
                 <td class="text-zinc-400 w-32 lg:w-48 py-2">Weight</td>
