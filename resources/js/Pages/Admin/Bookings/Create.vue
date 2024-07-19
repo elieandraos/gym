@@ -1,8 +1,8 @@
 <template>
-    <AppLayout title="Create Booking">
+    <AppLayout title="New Training">
         <Container :centered="true">
             <page-title>
-                <div class="pb-8 border-b border-zinc-200 w-full">Book new training</div>
+                <div class="pb-8 border-b border-zinc-200 w-full">New training</div>
             </page-title>
 
             <FormSection title="Member" description="Choose the member receiving the training.">

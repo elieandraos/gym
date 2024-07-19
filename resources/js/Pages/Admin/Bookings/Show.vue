@@ -30,7 +30,7 @@
                     </div>
                 </div>
 
-                <h3 class="font-bold text-sm pb-1 mb-1">Training schedule</h3>
+                <h3 class="font-bold text-sm pb-1 mb-1">Training sessions schedule</h3>
                 <BookingSessions :booking-slots="bookingSlots" :trainer="trainer"></BookingSessions>
             </div>
         </Container>
