@@ -18,5 +18,6 @@
     </head>
     <body class="font-sans antialiased text-zinc-950 font-medium">
         @inertia
+        <div id="modals"></div>
     </body>
 </html>
