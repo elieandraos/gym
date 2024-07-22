@@ -87,6 +87,8 @@ test('it creates a booking and its booking slots', function () {
         ->latest('created_at')
         ->firstOrFail();
 
+    $this->assertNotNull($booking);
+
     // Generate expected session dates
     $expectedSessionDates = DateHelper::generateRepeatableDates($data['start_date'], $data['nb_sessions'], $data['days']);
 
@@ -97,4 +99,9 @@ test('it creates a booking and its booking slots', function () {
             'start_time' => Carbon::parse($sessionDate)->format('Y-m-d H:i:s'),
         ]);
     }
+
+    // check that the booking end date is equal to the last booking slot date
+    $lastBookingSlot = $booking->bookingSlots()->orderBy('start_time', 'desc')->first();
+    $this->assertNotNull($lastBookingSlot);
+    $this->assertEquals($lastBookingSlot->start_time->toDateString(), $booking->end_date->toDateString());
 });

@@ -37,7 +37,7 @@
 
             <FormSection title="Start date" description="Enter the training starting date.">
                 <DatepickerInput v-model="form.start_date"></DatepickerInput>
-                <InputError :message="form.errors.trainer_id" />
+                <InputError :message="form.errors.start_date" />
             </FormSection>
 
             <FormSection title="# sessions" description="Enter the number of sessions for this training.">
@@ -98,10 +98,12 @@ const trainersList = computed( () => {
     })
 })
 
-const saveBooking = () => form.post(route('admin.bookings.store'), {
-    preserveScroll: true,
-    onError: (e) => {
-        console.log(e)
-    }
-})
+const saveBooking = () => {
+    form.post(route('admin.bookings.store'), {
+        preserveScroll: true,
+        onError: (e) => {
+            console.log(e)
+        }
+    })
+}
 </script>

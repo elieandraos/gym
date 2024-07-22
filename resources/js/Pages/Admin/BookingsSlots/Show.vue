@@ -6,13 +6,17 @@
             <div class="flex justify-between items-center pb-6 mb-12 border-b border-zinc-200">
                 <div class="grow">
                     <div class="flex gap-x-4">
-                        <h1 class="text-xl font-bold text-zinc-950">Training Session Details</h1>
+                        <h1 class="text-xl font-bold text-zinc-950">Session Details</h1>
                         <Badge :type="badge_type">{{ status }}</Badge>
                     </div>
                     <div class="flex gap-x-12 mt-3 text-sm text-zinc-500">
                         <div class="flex gap-x-2">
                             <UsersIcon class="w-4 text-zinc-500"></UsersIcon>
-                            <span>{{ booking.member.name}} · {{ booking.trainer.name }}</span>
+                            <span>
+                                <Link class="text-sky-500 hover:text-sky-700 font-medium text-sm" :href="route('admin.users.show', { user: booking.member.id, role: 'Member' })"> {{ booking.member.name}}</Link>
+                                ·
+                                <Link class="text-sky-500 hover:text-sky-700 font-medium text-sm" :href="route('admin.users.show', { user: booking.trainer.id, role: 'Trainer' })"> {{ booking.trainer.name}}</Link>
+                            </span>
                         </div>
                         <div class="flex gap-x-2">
                             <ClockIcon class="w-4 text-zinc-500"></ClockIcon>
@@ -51,6 +55,7 @@ import SecondaryButton from '@/Components/Layout/SecondaryButton.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import { UsersIcon, ClockIcon }  from '@heroicons/vue/24/solid/index.js'
 import { ref } from 'vue'
+import { Link } from '@inertiajs/vue3'
 
 const props = defineProps({
     bookingSlot: { type: Object, required: true }

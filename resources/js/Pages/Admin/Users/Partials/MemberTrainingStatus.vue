@@ -21,7 +21,7 @@
                     </div>
                 </div>
                 <div class="mt-2">
-                    <Link :href="upcoming_session_url" class="text-sky-700 hover:text-sky-900 text-sm underline" >
+                    <Link :href="upcoming_session_url" class="text-sky-500 hover:text-sky-700 font-medium text-sm" >
                         view session details
                     </Link>
                 </div>
@@ -33,7 +33,7 @@
                     {{ nb_remaining_sessions }} until {{ formatted_end_date }}
                 </div>
                 <div class="mt-2">
-                    <Link :href="route('admin.bookings.show', id)" class="text-sky-700 hover:text-sky-900 text-sm underline" >
+                    <Link :href="route('admin.bookings.show', id)" class="text-sky-500 hover:text-sky-700 font-medium text-sm" >
                         view all sessions
                     </Link>
                 </div>

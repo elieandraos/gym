@@ -43,9 +43,15 @@ class DatabaseSeeder extends Seeder
                 'trainer_id' => $trainers->random()->id,
             ]);
 
-        BookingSlot::factory($booking->nb_sessions)
+        $bookingSlots = BookingSlot::factory($booking->nb_sessions)
             ->forBooking($booking)
             ->create();
+
+        $lastBookingSlot = $bookingSlots->sortByDesc('start_time')->first();
+
+        $booking->update([
+            'end_date' => $lastBookingSlot->start_time->toDateString(),
+        ]);
     }
 
     protected function addPreviousBookings(User $user, Collection $trainers, int $nbMonthsAgo): void
@@ -61,8 +67,14 @@ class DatabaseSeeder extends Seeder
                 'trainer_id' => $trainers->random()->id,
             ]);
 
-        BookingSlot::factory($booking->nb_sessions)
+        $bookingSlots = BookingSlot::factory($booking->nb_sessions)
             ->forBooking($booking)
             ->create();
+
+        $lastBookingSlot = $bookingSlots->sortByDesc('start_time')->first();
+
+        $booking->update([
+            'end_date' => $lastBookingSlot->start_time->toDateString(),
+        ]);
     }
 }
