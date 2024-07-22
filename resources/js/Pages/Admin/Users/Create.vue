@@ -1,18 +1,20 @@
 <template>
     <AppLayout>
-        <Container>
-            <page-back-button :url="route('admin.users.index', {'role' : role })">{{ role }}s</page-back-button>
+        <Container :centered="true">
+            <page-title>
+                <div class="pb-8 border-b border-zinc-200 w-full">New {{ role }}</div>
+            </page-title>
             <user-form></user-form>
         </Container>
     </AppLayout>
 </template>
 
 <script setup>
+import PageTitle from '@/Components/Layout/PageTitle.vue'
 import { useForm } from '@inertiajs/vue3'
 import { provide } from 'vue'
 
 import Container from '@/Components/Layout/Container.vue'
-import PageBackButton from '@/Components/Layout/PageBackButton.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import UserForm from '@/Pages/Admin/Users/Partials/UserForm.vue'
 

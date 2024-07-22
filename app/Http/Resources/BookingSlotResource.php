@@ -16,17 +16,19 @@ class BookingSlotResource extends JsonResource
 
         return [
             'id' => $this->id,
+            'date' => $startTime->clone()->toDate(),
             'start_time' => $startTime->format('g\hi A'),
             'end_time' => $endTime->format('g\hi A'),
             'status' => $this->status,
+            'formatted_date' => $this->formatDateWithSuffix($startTime),
+            'booking' => new BookingResource($this->whenLoaded('booking')),
             'badge_type' => match($this->status) {
                 'upcoming' => 'warning',
                 'cancelled' => 'error',
                 'frozen' => 'info',
                 default => 'success',
             },
-            'formatted_date' => $this->formatDateWithSuffix($startTime),
-            'booking' => new BookingResource($this->whenLoaded('booking'))
+            ''
         ];
     }
 

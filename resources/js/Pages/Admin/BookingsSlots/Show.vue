@@ -22,30 +22,41 @@
                 </div>
 
                 <div class="space-x-4">
-                    <SecondaryButton>Change date</SecondaryButton>
+                    <SecondaryButton @click="showChangeDateModal = true">Change date</SecondaryButton>
                     <SecondaryButton>Mark as cancelled</SecondaryButton>
                     <PrimaryButton>Add workout</PrimaryButton>
                 </div>
             </div>
 
-            Workout details to follow (curren workout add/edit/remove and last 3 workout details)...
+            Workout details to follow ...
         </Container>
+
+        <teleport to="#modals">
+            <modal v-model="showChangeDateModal">
+                <DateInput v-model="date" class="mt-12"></DateInput>
+            </modal>
+        </teleport>
     </AppLayout>
 </template>
 
 <script setup>
 
+import DateInput from '@/Components/Form/DateInput.vue'
 import Badge from '@/Components/Layout/Badge.vue'
 import Container from '@/Components/Layout/Container.vue'
+import Modal from '@/Components/Layout/Modal.vue'
 import PageBackButton from '@/Components/Layout/PageBackButton.vue'
 import PrimaryButton from '@/Components/Layout/PrimaryButton.vue'
 import SecondaryButton from '@/Components/Layout/SecondaryButton.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import { UsersIcon, ClockIcon }  from '@heroicons/vue/24/solid/index.js'
+import { ref } from 'vue'
 
 const props = defineProps({
     bookingSlot: { type: Object, required: true }
 })
 
-const { booking, formatted_date , start_time, status, badge_type} = props.bookingSlot
+const { booking, formatted_date , start_time, status, badge_type, date} = props.bookingSlot
+
+const showChangeDateModal = ref(false)
 </script>

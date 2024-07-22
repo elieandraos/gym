@@ -1,14 +1,14 @@
 <template>
     <div class="flex space-x-2 custom-date-select">
-        <SelectInput v-model="selectedDay" :options="days" placeholder="DD"></SelectInput>
-        <SelectInput v-model="selectedMonth" :options="months" placeholder="MM"></SelectInput>
-        <SelectInput v-model="selectedYear" :options="years" placeholder="YYYY"></SelectInput>
+        <SelectInput size="auto" v-model="selectedDay" :options="days" placeholder="Day"></SelectInput>
+        <SelectInput size="auto" v-model="selectedMonth" :options="months" placeholder="Month"></SelectInput>
+        <SelectInput size="auto" v-model="selectedYear" :options="years" placeholder="Year"></SelectInput>
     </div>
 </template>
 
 <script setup>
 import SelectInput from '@/Components/Form/SelectInput.vue'
-import { ref, watch, computed, onMounted, onBeforeMount } from 'vue'
+import { ref, watch, computed, onBeforeMount } from 'vue'
 
 const props = defineProps({
     modelValue: {
@@ -22,7 +22,7 @@ const props = defineProps({
     },
     yearRange: {
         type: Array,
-        default: () => [1900, new Date().getFullYear()],
+        default: () => [1950, new Date().getFullYear()],
         required: false
     },
 })

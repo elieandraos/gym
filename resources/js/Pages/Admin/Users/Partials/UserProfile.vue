@@ -1,28 +1,28 @@
 <template>
-    <div>
-        <h3 class="font-bold text-sm pb-1 mb-1">Summary</h3>
-        <table class="text-left text-sm/6">
+    <div class="w-full">
+        <h3 class="font-semibold text-sm pb-1 mb-1">Summary</h3>
+        <table class="text-left text-sm w-full">
             <tr class="border-b border-zinc-100">
-                <td class="text-zinc-400 w-32 lg:w-48 py-2">Gender</td>
-                <td class="py-2">
+                <td class="text-zinc-400 w-32 lg:w-48 py-4">Gender</td>
+                <td class="py-4">
                     {{ gender }}
                 </td>
             </tr>
             <tr class="border-b border-zinc-100">
-                <td class="text-zinc-400 w-32 lg:w-48 py-2">Birthdate</td>
-                <td class="py-2">{{ birthdate }}</td>
+                <td class="text-zinc-400 w-32 lg:w-48 py-4">Birthdate</td>
+                <td class="py-4">{{ birthdate }}</td>
             </tr>
             <tr class="border-b border-zinc-100">
-                <td class="text-zinc-400 w-32 lg:w-48 py-2">Weight</td>
-                <td class="py-2">{{ weight }} kg</td>
+                <td class="text-zinc-400 w-32 lg:w-48 py-4">Weight</td>
+                <td class="py-4">{{ weight }} kg</td>
             </tr>
             <tr class="border-b border-zinc-100">
-                <td class="text-zinc-400 w-32 lg:w-48 py-2">Height</td>
-                <td class="py-2">{{ height }} cm</td>
+                <td class="text-zinc-400 w-32 lg:w-48 py-4">Height</td>
+                <td class="py-4">{{ height }} cm</td>
             </tr>
             <tr>
-                <td class="text-zinc-400 w-32 lg:w-48 py-2">Blood type</td>
-                <td class="py-2">{{ blood_type }}</td>
+                <td class="text-zinc-400 w-32 lg:w-48 py-4">Blood type</td>
+                <td class="py-4">{{ blood_type }}</td>
             </tr>
         </table>
     </div>

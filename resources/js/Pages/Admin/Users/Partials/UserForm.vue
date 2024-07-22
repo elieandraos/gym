@@ -1,103 +1,94 @@
 <template>
-    <div class="space-y-12">
-        <div>
-            <page-section-title v-if="form.role === 'Member'">Membership info</page-section-title>
-            <div class="flex gap-12 items-center my-4">
-                <div v-if="form.role === 'Member'" class="flex gap-4">
-                    <InputLabel for="in_house" value="In-house member" />
-                    <SwitchInput v-model="form.in_house" />
-                    <InputError :message="form.errors.registration_date" />
-                </div>
-                <div class="flex gap-4 items-center">
-                    <InputLabel for="registration_date" value="Start date" />
-                    <DatepickerInput v-model="form.registration_date"></DatepickerInput>
-                    <InputError :message="form.errors.registration_date" />
-                </div>
-            </div>
-        </div>
-        <div>
-            <page-section-title>Profile info</page-section-title>
-            <div class="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-x-12 lg:gap-y-6 my-4">
+    <div class="">
+        <FormSection title="In-house" description="Is the member a direct lift station customer?" v-if="form.role === 'Member'">
+            <SwitchInput v-model="form.in_house" class="mt-4"/>
+        </FormSection>
+
+        <FormSection title="Registration" description="Enter the starting date of the member." >
+            <DatepickerInput v-model="form.registration_date"></DatepickerInput>
+            <InputError :message="form.errors.registration_date" />
+        </FormSection>
+
+        <FormSection title="Profile" description="Enter the member's name, gender and birthdate." >
+            <div class="space-y-2">
                 <div>
-                    <InputLabel for="name" value="Name" />
-                    <TextInput id="name" v-model="form.name" type="text"/>
+                    <TextInput id="name" v-model="form.name" type="text" placeholder="Name"/>
                     <InputError :message="form.errors.name" />
                 </div>
                 <div>
-                    <InputLabel for="gender" value="Gender" />
-                    <SelectInput v-model="form.gender" id="gender" :options="$page.props.genders" />
+                    <SelectInput v-model="form.gender" id="gender" :options="$page.props.genders" placeholder="Select gender"/>
                     <InputError :message="form.errors.gender" />
                 </div>
                 <div>
-                    <InputLabel for="birthdate" value="Birthdate" />
                     <DatepickerInput v-model="form.birthdate"></DatepickerInput>
                     <InputError :message="form.errors.birthdate" />
                 </div>
+            </div>
+        </FormSection>
+
+        <FormSection title="Body information" description="Enter the member's weight, height and blood type." >
+            <div class="space-y-2">
                 <div>
-                    <InputLabel for="height" value="Height" />
-                    <TextInput id="height" v-model="form.height" type="text" />
+                    <TextInput id="height" v-model="form.height" type="text" placeholder="Height in cm"/>
                     <InputError :message="form.errors.height" />
                 </div>
                 <div>
-                    <InputLabel for="weight" value="Weight" />
-                    <TextInput id="weight" v-model="form.weight" type="text" />
+                    <TextInput id="weight" v-model="form.weight" type="text" placeholder="Weight in cm" />
                     <InputError :message="form.errors.weight" />
                 </div>
                 <div>
-                    <InputLabel for="blood_type" value="Blood type" />
-                    <SelectInput v-model="form.blood_type" id="blood_type" :options="$page.props.bloodTypes" />
+                    <SelectInput v-model="form.blood_type" id="blood_type" :options="$page.props.bloodTypes" placeholder="Select blood type"/>
                     <InputError :message="form.errors.blood_type" />
                 </div>
             </div>
-        </div>
+        </FormSection>
 
-        <div>
-            <page-section-title>Contact info</page-section-title>
-            <div class="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-x-12 lg:gap-y-6 my-4">
+        <FormSection title="Contact" description="Enter the member's email, phone and other contact information." >
+            <div class="space-y-2">
                 <div>
-                    <InputLabel for="email" value="Email" />
-                    <TextInput id="email" v-model="form.email" type="text"/>
+                    <TextInput id="email" v-model="form.email" type="text" placeholder="Email"/>
                     <InputError :message="form.errors.email" />
                 </div>
                 <div>
-                    <InputLabel for="phone_number" value="Phone number" />
-                    <TextInput id="email" v-model="form.phone_number" type="text"/>
-                    <InputError :message="form.errors.phone_number" />
+                    <TextInput id="phone_number" v-model="form.phone_number" type="text" placeholder="Phone number"/>
+                    <InputError :message="form.errors.phone_number" placeholder="Phone number"/>
                 </div>
                 <div>
-                    <InputLabel for="instagram_handle" value="Instagram handle" />
-                    <TextInput id="email" v-model="form.instagram_handle" type="text"/>
-                    <InputError :message="form.errors.instagram_handle" />
-                </div>
-                <div>
-                    <InputLabel for="address" value="Address" />
-                    <TextInput id="address" v-model="form.address" type="text"/>
+                    <TextInput id="address" v-model="form.address" type="text" placeholder="Location"/>
                     <InputError :message="form.errors.address" />
                 </div>
                 <div>
-                    <InputLabel for="emergency_contact" value="Emergency Contact" />
-                    <TextInput id="emergency_contact" v-model="form.emergency_contact" type="text"/>
+                    <TextInput id="emergency_contact" v-model="form.emergency_contact" type="text" placeholder="Emergency Contact"/>
                     <InputError :message="form.errors.emergency_contact" />
                 </div>
             </div>
-        </div>
+        </FormSection>
 
-        <div>
-            <primary-button @click="saveUser" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">Save {{ form.role }}</primary-button>
+        <FormSection title="Social" description="Enter the member's instagram handle." >
+            <TextInput id="instagram_handle" v-model="form.instagram_handle" type="text" placeholder="Instagram handle"/>
+            <InputError :message="form.errors.instagram_handle" />
+        </FormSection>
+
+        <div class="text-right">
+            <primary-button
+                @click="saveUser"
+                :class="{ 'opacity-25': form.processing }"
+                :disabled="form.processing">
+                    Save {{ form.role }}
+            </primary-button>
         </div>
     </div>
 </template>
 
 <script setup>
+import FormSection from '@/Components/Form/FormSection.vue'
 import { inject } from 'vue'
 
 import DatepickerInput from '@/Components/Form/DatepickerInput.vue'
 import InputError from '@/Components/Form/InputError.vue'
-import InputLabel from '@/Components/Form/InputLabel.vue'
 import SelectInput from '@/Components/Form/SelectInput.vue'
 import SwitchInput from '@/Components/Form/SwitchInput.vue'
 import TextInput from '@/Components/Form/TextInput.vue'
-import PageSectionTitle from '@/Components/Layout/PageSectionTitle.vue'
 import PrimaryButton from '@/Components/Layout/PrimaryButton.vue'
 
 const form = inject('form')

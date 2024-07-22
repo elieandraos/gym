@@ -3,7 +3,7 @@
         <Container>
             <page-back-button>{{ role }}s</page-back-button>
 
-            <div class="flex justify-between items-center pb-6 mb-12 border-b border-zinc-200">
+            <div class="flex justify-between items-center pb-6">
                 <div class="flex flex-wrap grow items-center gap-6">
                     <img class="h-20 w-20 flex-shrink-0 rounded-full object-cover" :src="profile_photo_url" :alt="name">
                     <div>
@@ -15,22 +15,24 @@
                     </div>
                 </div>
 
-                <div class="space-x-4">
+                <div class="space-x-4" v-if="isMember">
                     <SecondaryButton>View training history</SecondaryButton>
-                    <Link :href="route('admin.bookings.show', bookings[0].id)" v-if="isMember && isTraining">
-                        <PrimaryButton>View active training</PrimaryButton>
-                    </Link>
                 </div>
             </div>
 
-            <div class="space-y-12 lg:space-y-0 lg:flex lg:flex-row lg:gap-24 lg:justify-between">
-                <user-profile :user="user" class="grow"></user-profile>
-                <user-contact :user="user" class="grow"></user-contact>
+            <div v-if="isMember && isTraining" class="mb-16">
+                <member-training-status :user="user"></member-training-status>
             </div>
+
+            <div class="space-y-12">
+                <user-profile :user="user"></user-profile>
+                <user-contact :user="user"></user-contact>
+            </div>
+
             <div class="mt-12">
                 <div v-if="isTrainer && isTraining">
                     <!-- @todo: cards: members this month, sessions this month, most busy days (for ex: Mon,Wed,Th) -->
-                    <h3 class="font-bold text-sm pb-1 mb-1">Members training with {{ name }}</h3>
+                    <h3 class="font-semibold text-sm pb-1 mb-1">Members training with {{ name }}</h3>
                     <trainer-bookings :bookings="bookings" :user="user"></trainer-bookings>
                 </div>
             </div>
@@ -44,6 +46,7 @@ import PageBackButton from '@/Components/Layout/PageBackButton.vue'
 import PrimaryButton from '@/Components/Layout/PrimaryButton.vue'
 import SecondaryButton from '@/Components/Layout/SecondaryButton.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
+import MemberTrainingStatus from '@/Pages/Admin/Users/Partials/MemberTrainingStatus.vue'
 import TrainerBookings from '@/Pages/Admin/Users/Partials/TrainerBookings.vue'
 import UserContact from '@/Pages/Admin/Users/Partials/UserContact.vue'
 import UserProfile from '@/Pages/Admin/Users/Partials/UserProfile.vue'

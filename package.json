@@ -29,6 +29,7 @@
     },
     "dependencies": {
         "@heroicons/vue": "^2.1.3",
+        "@vueuse/core": "^10.11.0",
         "vuejs3-datepicker": "^1.1.3"
     }
 }
