@@ -27,7 +27,7 @@
 
                 <div class="space-x-4">
                     <SecondaryButton @click="showChangeDateModal = true">Change date</SecondaryButton>
-                    <SecondaryButton>Mark as cancelled</SecondaryButton>
+                    <SecondaryButton @click="showMarkAsACancelledModal = true">Cancel Session</SecondaryButton>
                     <PrimaryButton>Add workout</PrimaryButton>
                 </div>
             </div>
@@ -62,9 +62,19 @@
                     </div>
                 </div>
 
-                <div class="flex justify-end mt-16 gap-4">
+                <div class="flex justify-end gap-4">
                     <TransparentButton @click="showChangeDateModal = false">cancel</TransparentButton>
                     <primary-button>update date and time</primary-button>
+                </div>
+            </modal>
+
+            <modal v-model="showMarkAsACancelledModal">
+                <h2 class="font-bold text-zinc-950 capitalize">Cancel Session</h2>
+                <hr class="border-t my-2">
+                <div class=" text-zinc-500 my-8">Are you sure you want to cancel this session?</div>
+                <div class="flex justify-end mt-8 gap-4">
+                    <TransparentButton @click="showMarkAsACancelledModal = false">exit</TransparentButton>
+                    <primary-button>Yes, Cancel it</primary-button>
                 </div>
             </modal>
         </teleport>
@@ -94,4 +104,5 @@ const props = defineProps({
 const { booking, formatted_date , start_time, status, badge_type, date} = props.bookingSlot
 
 const showChangeDateModal = ref(false)
+const showMarkAsACancelledModal = ref(false)
 </script>
