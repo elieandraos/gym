@@ -15,7 +15,7 @@ class BookingSlotFactory extends Factory
     public function definition(): array
     {
         return [
-            'start_time' => Carbon::now(),
+            'start_time' => Carbon::now()->floorMinutes(15),
             'end_time' => Carbon::now()->addMinutes(60),
             'status' => Status::Upcoming,
             'booking_id' => Booking::factory(),
@@ -29,12 +29,15 @@ class BookingSlotFactory extends Factory
             $endDate = $booking->end_date;
 
             // Generate a random start time within the booking date range
-            $startDateTime = $this->faker->dateTimeBetween($startDate, $endDate);
+            $startDateTime = Carbon::instance($this->faker->dateTimeBetween($startDate, $endDate));
 
             // Ensure the start time is at least one hour before the end date
             if ($startDateTime->format('Y-m-d H:i:s') > $endDate->subHour()->format('Y-m-d H:i:s')) {
                 $startDateTime = $endDate->subHour();  // Adjust start time back by one hour if too close to end date
             }
+
+            // Floor the start time to the nearest 15-minute increment
+            $startDateTime = $startDateTime->floorMinutes(15);
 
             // Clone the startDateTime and add one hour for endDateTime
             $endDateTime = (clone $startDateTime)->modify('+1 hour');

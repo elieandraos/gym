@@ -17,8 +17,8 @@ class BookingSlotResource extends JsonResource
         return [
             'id' => $this->id,
             'date' => $startTime->clone()->toDate(),
-            'start_time' => $startTime->format('g\hi A'),
-            'end_time' => $endTime->format('g\hi A'),
+            'start_time' => $startTime->format('h:i A'),
+            'end_time' => $endTime->format('h:i A'),
             'status' => $this->status,
             'formatted_date' => $this->formatDateWithSuffix($startTime),
             'booking' => new BookingResource($this->whenLoaded('booking')),

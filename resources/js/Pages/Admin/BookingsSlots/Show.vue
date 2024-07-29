@@ -37,7 +37,35 @@
 
         <teleport to="#modals">
             <modal v-model="showChangeDateModal">
-                <DateInput v-model="date" class="mt-12"></DateInput>
+                <h2 class="font-bold text-zinc-950 capitalize">Update session</h2>
+                <p class=" text-zinc-500 text-sm">Change the session date and time.</p>
+                <hr class="border-t my-2">
+
+                <div class="my-8">
+                    <div class="space-y-6">
+                        <section class="flex gap-6 items-center">
+                            <div class="space-y-1">
+                                <h2 class="font-semibold text-zinc-950 sm:text-sm">Date</h2>
+                            </div>
+                            <div>
+                                <DateInput v-model="date"></DateInput>
+                            </div>
+                        </section>
+                        <section class="flex gap-6 items-center">
+                            <div class="space-y-1">
+                                <h2 class="font-semibold text-zinc-950 sm:text-sm">Time</h2>
+                            </div>
+                            <div>
+                                <TimeInput v-model="start_time" />
+                            </div>
+                        </section>
+                    </div>
+                </div>
+
+                <div class="flex justify-end mt-16 gap-4">
+                    <TransparentButton @click="showChangeDateModal = false">cancel</TransparentButton>
+                    <primary-button>update date and time</primary-button>
+                </div>
             </modal>
         </teleport>
     </AppLayout>
@@ -46,12 +74,14 @@
 <script setup>
 
 import DateInput from '@/Components/Form/DateInput.vue'
+import TimeInput from '@/Components/Form/TimeInput.vue'
 import Badge from '@/Components/Layout/Badge.vue'
 import Container from '@/Components/Layout/Container.vue'
 import Modal from '@/Components/Layout/Modal.vue'
 import PageBackButton from '@/Components/Layout/PageBackButton.vue'
 import PrimaryButton from '@/Components/Layout/PrimaryButton.vue'
 import SecondaryButton from '@/Components/Layout/SecondaryButton.vue'
+import TransparentButton from '@/Components/Layout/TransparentButton.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import { UsersIcon, ClockIcon }  from '@heroicons/vue/24/solid/index.js'
 import { ref } from 'vue'

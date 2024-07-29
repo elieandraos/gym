@@ -32,7 +32,7 @@ class BookingResource extends JsonResource
             'bookingSlots' => BookingSlotResource::collection($this->whenLoaded('bookingSlots')),
             'upcoming_session_url' => $upcomingSlot ? route('admin.bookings-slots.show', $upcomingSlot->id) : null,
             'upcoming_session_date' => $upcomingSlot ? Carbon::parse($upcomingSlot->start_time)->isoFormat('ddd MMM Do') : null,
-            'upcoming_session_time' => $upcomingSlot ? Carbon::parse($upcomingSlot->start_time)->isoFormat('h[h]mma') : null,
+            'upcoming_session_time' => $upcomingSlot ? Carbon::parse($upcomingSlot->start_time)->format('h:i A') : null,
             'nb_completed_sessions' => $completedSessionsCount,
             'nb_remaining_sessions' => $this->nb_sessions - $completedSessionsCount.' '.Str::plural('session', $this->nb_sessions - $completedSessionsCount),
         ];
