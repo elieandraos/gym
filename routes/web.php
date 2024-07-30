@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\BookingsController;
 use App\Http\Controllers\Admin\BookingSlotsController;
 use App\Http\Controllers\Admin\UsersController;
+use App\Http\Controllers\UserBookingsHistoryController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -16,6 +17,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     Route::get('/users/create/{role}', [UsersController::class, 'create'])->name('admin.users.create');
     Route::post('/users/store', [UsersController::class, 'store'])->name('admin.users.store');
     Route::get('/users/{user}/{role}', [UsersController::class, 'show'])->name('admin.users.show');
+    Route::get('/users/{user}/{role}/history', UserBookingsHistoryController::class)->name('admin.users.history');
 
     // bookings
     Route::get('/bookings/create', [BookingsController::class, 'create'])->name('admin.bookings.create');
@@ -24,5 +26,4 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
 
     // bookings slots
     Route::get('/bookings-slots/{bookingSlot}/show', [BookingSlotsController::class, 'show'])->name('admin.bookings-slots.show');
-
 });

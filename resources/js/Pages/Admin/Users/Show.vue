@@ -16,7 +16,7 @@
                 </div>
 
                 <div class="space-x-4" v-if="isMember">
-                    <SecondaryButton>View training history</SecondaryButton>
+                    <SecondaryButton @click="goToBookingsHistory(id)">View training history</SecondaryButton>
                 </div>
             </div>
 
@@ -43,7 +43,6 @@
 <script setup>
 import Container from '@/Components/Layout/Container.vue'
 import PageBackButton from '@/Components/Layout/PageBackButton.vue'
-import PrimaryButton from '@/Components/Layout/PrimaryButton.vue'
 import SecondaryButton from '@/Components/Layout/SecondaryButton.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import MemberTrainingStatus from '@/Pages/Admin/Users/Partials/MemberTrainingStatus.vue'
@@ -51,7 +50,7 @@ import TrainerBookings from '@/Pages/Admin/Users/Partials/TrainerBookings.vue'
 import UserContact from '@/Pages/Admin/Users/Partials/UserContact.vue'
 import UserProfile from '@/Pages/Admin/Users/Partials/UserProfile.vue'
 import { CheckBadgeIcon } from '@heroicons/vue/24/solid/index.js'
-import { Link } from '@inertiajs/vue3'
+import { router } from '@inertiajs/vue3'
 import { computed } from 'vue'
 
 const props = defineProps({
@@ -59,10 +58,12 @@ const props = defineProps({
 })
 
 const {
-    role, bookings, name, since, profile_photo_url, in_house, age
+    id, role, bookings, name, since, profile_photo_url, in_house, age
 } = props.user
 
 const isMember = computed( () => role === 'Member')
 const isTrainer = computed( () => role === 'Trainer')
 const isTraining = computed( () => bookings.length)
+
+const goToBookingsHistory = (id)  => router.visit( route('admin.users.history', { user: id, role: 'Member' }))
 </script>

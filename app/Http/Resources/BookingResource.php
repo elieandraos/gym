@@ -26,6 +26,7 @@ class BookingResource extends JsonResource
             'nb_sessions' => $this->nb_sessions,
             'start_date' => $this->start_date,
             'end_date' => $this->end_date,
+            'title' => Carbon::parse($this->start_date)->format('M j').' - '.Carbon::parse($this->end_date)->format('M j').', '.Carbon::parse($this->end_date)->format('Y'),
             'formatted_end_date' => Carbon::parse($this->end_date)->isoFormat('MMM Do'),
             'member' => new UserResource($this->whenLoaded('member')),
             'trainer' => new UserResource($this->whenLoaded('trainer')),

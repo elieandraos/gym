@@ -63,7 +63,7 @@
                 </div>
 
                 <div class="flex justify-end gap-4">
-                    <TransparentButton @click="showChangeDateModal = false">cancel</TransparentButton>
+                    <TransparentButton @click="showChangeDateModal = false">exit</TransparentButton>
                     <primary-button>update date and time</primary-button>
                 </div>
             </modal>
