@@ -2,12 +2,18 @@
 
 namespace App\Providers;
 
+use Closure;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Testing\TestResponse;
 use Inertia\Testing\AssertableInertia;
 
+/**
+ * @method assertInertia(Closure $param)
+ * @method has(string $key)
+ * @method prop(string $key)
+ */
 class TestingServiceProvider extends ServiceProvider
 {
     public function register(): void

@@ -25,6 +25,7 @@ const selectedMinute = ref('00')
 const selectedTime = ref('AM')
 
 watch(() => props.modelValue, value => {
+
     const [timeWithoutSpace, amPm] = value.split(' ')
     const [hour, minute] = timeWithoutSpace.split(':')
 

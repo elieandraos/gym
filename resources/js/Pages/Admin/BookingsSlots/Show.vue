@@ -32,68 +32,32 @@
                 </div>
             </div>
 
-            Workout details to follow ...
+            No workout details added yet.
         </Container>
 
         <teleport to="#modals">
             <modal v-model="showChangeDateModal">
-                <h2 class="font-bold text-zinc-950 capitalize">Update session</h2>
-                <p class=" text-zinc-500 text-sm">Change the session date and time.</p>
-                <hr class="border-t my-2">
-
-                <div class="my-8">
-                    <div class="space-y-6">
-                        <section class="flex gap-6 items-center">
-                            <div class="space-y-1">
-                                <h2 class="font-semibold text-zinc-950 sm:text-sm">Date</h2>
-                            </div>
-                            <div>
-                                <DateInput v-model="date"></DateInput>
-                            </div>
-                        </section>
-                        <section class="flex gap-6 items-center">
-                            <div class="space-y-1">
-                                <h2 class="font-semibold text-zinc-950 sm:text-sm">Time</h2>
-                            </div>
-                            <div>
-                                <TimeInput v-model="start_time" />
-                            </div>
-                        </section>
-                    </div>
-                </div>
-
-                <div class="flex justify-end gap-4">
-                    <TransparentButton @click="showChangeDateModal = false">exit</TransparentButton>
-                    <primary-button>update date and time</primary-button>
-                </div>
+                <ChangeDateModal :date="date" :start_time="start_time" @close="showChangeDateModal = false" @change=""></ChangeDateModal>
             </modal>
 
             <modal v-model="showMarkAsACancelledModal">
-                <h2 class="font-bold text-zinc-950 capitalize">Cancel Session</h2>
-                <hr class="border-t my-2">
-                <div class=" text-zinc-500 my-8">Are you sure you want to cancel this session?</div>
-                <div class="flex justify-end mt-8 gap-4">
-                    <TransparentButton @click="showMarkAsACancelledModal = false">exit</TransparentButton>
-                    <primary-button>Yes, Cancel it</primary-button>
-                </div>
+                <MarkAsCancelledModal @close="showMarkAsACancelledModal = false" @cancel=""></MarkAsCancelledModal>
             </modal>
         </teleport>
     </AppLayout>
 </template>
 
 <script setup>
-
-import DateInput from '@/Components/Form/DateInput.vue'
-import TimeInput from '@/Components/Form/TimeInput.vue'
 import Badge from '@/Components/Layout/Badge.vue'
 import Container from '@/Components/Layout/Container.vue'
 import Modal from '@/Components/Layout/Modal.vue'
 import PageBackButton from '@/Components/Layout/PageBackButton.vue'
 import PrimaryButton from '@/Components/Layout/PrimaryButton.vue'
 import SecondaryButton from '@/Components/Layout/SecondaryButton.vue'
-import TransparentButton from '@/Components/Layout/TransparentButton.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
+import MarkAsCancelledModal from '@/Pages/Admin/BookingsSlots/Partials/MarkAsCancelledModal.vue'
 import { UsersIcon, ClockIcon }  from '@heroicons/vue/24/solid/index.js'
+import ChangeDateModal from '@/Pages/Admin/BookingsSlots/Partials/ChangeDateModal.vue'
 import { ref } from 'vue'
 import { Link } from '@inertiajs/vue3'
 

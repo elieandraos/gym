@@ -15,7 +15,7 @@ class MarkBookingSlotsComplete extends Command
 
     public function handle(): void
     {
-        BookingSlot::where('end_time', '<', Carbon::now())
+        BookingSlot::query()->where('end_time', '<', Carbon::now())
             ->whereNotIn('status', [Status::Complete, Status::Cancelled, Status::Frozen])
             ->update([
                 'status' => Status::Complete,

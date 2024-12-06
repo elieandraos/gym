@@ -2,13 +2,20 @@
 
 namespace App\Http\Resources;
 
+use App\Models\BookingSlot;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @property mixed $status
+ * @property mixed $start_time
+ * @property mixed $end_time
+ * @property mixed $id
+ */
 class BookingSlotResource extends JsonResource
 {
-    /** @mixin \App\Models\BookingSlot */
+    /** @mixin BookingSlot */
     public function toArray(Request $request): array
     {
         $startTime = Carbon::parse($this->start_time);
