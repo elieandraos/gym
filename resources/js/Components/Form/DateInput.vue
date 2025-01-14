@@ -12,7 +12,7 @@ import { ref, watch, computed, onBeforeMount } from 'vue'
 
 const props = defineProps({
     modelValue: {
-        type: [Date, String, Object],
+        type: [Date, String, Object], //accepts the default Carbon date string instance or a javascript date object
         required: true
     },
     placeholder: {
@@ -86,10 +86,6 @@ watch([selectedDay, selectedMonth, selectedYear], ([newDay, newMonth, newYear]) 
         emit('update:modelValue', newDate)
     }
 }, { immediate: true })
-
-onBeforeMount(() => {
-    initializeValues()
-})
 </script>
 
 <style scoped>

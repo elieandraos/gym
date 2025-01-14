@@ -10,14 +10,14 @@ use Inertia\Response;
 
 class UserBookingsHistoryController extends Controller
 {
-    public function __invoke(User $user, Request $request) : Response
+    public function __invoke(User $user, Request $request): Response
     {
         $user->load(['memberBookings' => function ($query) {
             $query->with('trainer')->history();
         }]);
 
         return Inertia::render('Admin/UserBookingsHistory/Index', [
-            'user' => UserResource::make($user)
+            'user' => UserResource::make($user),
         ]);
     }
 }

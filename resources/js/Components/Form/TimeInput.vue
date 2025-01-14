@@ -24,16 +24,24 @@ const selectedHour = ref('07')
 const selectedMinute = ref('00')
 const selectedTime = ref('AM')
 
-watch(() => props.modelValue, value => {
-
-    const [timeWithoutSpace, amPm] = value.split(' ')
+const initializeValues = (timeString) => {
+    const [timeWithoutSpace, amPm] = timeString.split(' ')
     const [hour, minute] = timeWithoutSpace.split(':')
 
     selectedHour.value = hour
     selectedMinute.value = minute
     selectedTime.value = amPm
+}
 
-}, { immediate: true, deep: true })
+watch(() => props.modelValue, value => {
+    initializeValues(value)
+}, { immediate: true })
+
+watch([selectedHour, selectedMinute, selectedTime], ([newHour, newMinute, newTime]) => {
+    if (newHour && newMinute && newTime) {
+        emit('update:modelValue', `${newHour}:${newMinute} ${newTime}`)
+    }
+}, { immediate: true })
 
 const timeString = computed( () => `${selectedHour.value}:${selectedMinute.value} ${selectedTime.value}` )
 </script>

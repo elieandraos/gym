@@ -17,14 +17,14 @@ use Inertia\Response;
 
 class BookingsController extends Controller
 {
-    public function index() : Response
+    public function index(): Response
     {
         return Inertia::render('Admin/Bookings/Create', [
-            'bookings' => []
+            'bookings' => [],
         ]);
     }
 
-    public function create() : Response
+    public function create(): Response
     {
         $trainers = UserResource::collection(User::query()->trainers()->get());
         $members = UserResource::collection(User::query()->members()->get());

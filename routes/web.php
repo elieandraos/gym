@@ -26,4 +26,6 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
 
     // bookings slots
     Route::get('/bookings-slots/{bookingSlot}/show', [BookingSlotsController::class, 'show'])->name('admin.bookings-slots.show');
+    Route::get('/bookings-slots/{bookingSlot}/edit', [BookingSlotsController::class, 'edit'])->name('admin.bookings-slots.edit');
+    Route::put('/bookings-slots/{bookingSlot}/update', [BookingSlotsController::class, 'update'])->name('admin.bookings-slots.update');
 });

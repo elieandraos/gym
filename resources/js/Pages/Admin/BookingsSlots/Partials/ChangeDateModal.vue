@@ -26,7 +26,7 @@
 
     <div class="flex justify-end gap-4">
         <TransparentButton @click="emit('close')">exit</TransparentButton>
-        <primary-button @click="emit('change')">update date and time</primary-button>
+        <primary-button @click="changeDateAndTime">update date and time</primary-button>
     </div>
 </template>
 
@@ -46,4 +46,23 @@ const emit = defineEmits(['close', 'change'])
 
 const date = ref(props.date)
 const start_time = ref(props.start_time)
+
+const changeDateAndTime = () => {
+    const dateObj = new Date(date.value); // Clone the original date
+    const [time, modifier] = start_time.value.split(' '); // Split time into parts
+    let [hours, minutes] = time.split(':').map(Number); // Extract hours and minutes
+
+    // Convert to 24-hour format if necessary
+    if (modifier === 'PM' && hours !== 12) {
+        hours += 12;
+    }
+    if (modifier === 'AM' && hours === 12) {
+        hours = 0;
+    }
+
+    // Set hours and minutes to the cloned Date object
+    dateObj.setHours(hours, minutes);
+    console.log(dateObj)
+    //emit('change')
+}
 </script>

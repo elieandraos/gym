@@ -26,9 +26,10 @@
                 </div>
 
                 <div class="space-x-4">
-                    <SecondaryButton @click="showChangeDateModal = true">Change date</SecondaryButton>
+                    <Link :href="route('admin.bookings-slots.edit', id)">
+                        <SecondaryButton>Change date & time</SecondaryButton>
+                    </Link>
                     <SecondaryButton @click="showMarkAsACancelledModal = true">Cancel Session</SecondaryButton>
-                    <PrimaryButton>Add workout</PrimaryButton>
                 </div>
             </div>
 
@@ -52,7 +53,6 @@ import Badge from '@/Components/Layout/Badge.vue'
 import Container from '@/Components/Layout/Container.vue'
 import Modal from '@/Components/Layout/Modal.vue'
 import PageBackButton from '@/Components/Layout/PageBackButton.vue'
-import PrimaryButton from '@/Components/Layout/PrimaryButton.vue'
 import SecondaryButton from '@/Components/Layout/SecondaryButton.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import MarkAsCancelledModal from '@/Pages/Admin/BookingsSlots/Partials/MarkAsCancelledModal.vue'
@@ -65,7 +65,7 @@ const props = defineProps({
     bookingSlot: { type: Object, required: true }
 })
 
-const { booking, formatted_date , start_time, status, badge_type, date} = props.bookingSlot
+const { id, booking, formatted_date , start_time, status, badge_type, date} = props.bookingSlot
 
 const showChangeDateModal = ref(false)
 const showMarkAsACancelledModal = ref(false)
