@@ -45,7 +45,7 @@ class UsersController extends Controller
     public function store(UserRequest $request): RedirectResponse
     {
         $request->merge(['password' => Hash::make('password')]);
-        User::create($request->all());
+        User::query()->create($request->all());
 
         return redirect(route('admin.users.index', $request->input('role')))
             ->with('flash.banner', $request->input('role').' created successfully')

@@ -7,23 +7,26 @@
 </template>
 
 <script setup>
+import {
+    ref, watch, computed,
+} from 'vue'
+
 import SelectInput from '@/Components/Form/SelectInput.vue'
-import { ref, watch, computed, onBeforeMount } from 'vue'
 
 const props = defineProps({
     modelValue: {
-        type: [Date, String, Object], //accepts the default Carbon date string instance or a javascript date object
-        required: true
+        type: [Date, String, Object], // accepts the default Carbon date string instance or a javascript date object
+        required: true,
     },
     placeholder: {
         type: String,
         default: '',
-        required: false
+        required: false,
     },
     yearRange: {
         type: Array,
         default: () => [1950, new Date().getFullYear()],
-        required: false
+        required: false,
     },
 })
 
@@ -42,12 +45,12 @@ const months = [
     { name: 'Sep', value: 9 },
     { name: 'Oct', value: 10 },
     { name: 'Nov', value: 11 },
-    { name: 'Dec', value: 12 }
+    { name: 'Dec', value: 12 },
 ]
 const years = computed(() => {
     const [start, end] = props.yearRange
     const range = []
-    for (let year = start; year <= end; year++) {
+    for (let year = start; year <= end; year += 1) {
         range.push(year)
     }
     return range
@@ -56,9 +59,9 @@ const years = computed(() => {
 const convertToDate = (value) => {
     if (value instanceof Date) {
         return value
-    } else if (typeof value === 'string') {
+    } if (typeof value === 'string') {
         return new Date(value)
-    } else if (value && typeof value.date === 'string') {
+    } if (value && typeof value.date === 'string') {
         return new Date(value.date)
     }
 

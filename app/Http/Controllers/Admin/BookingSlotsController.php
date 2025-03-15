@@ -13,7 +13,7 @@ use Inertia\Response;
 
 class BookingSlotsController extends Controller
 {
-    public function show(BookingSlot $bookingSlot) : Response
+    public function show(BookingSlot $bookingSlot): Response
     {
         $bookingSlot->load(['booking', 'booking.member', 'booking.trainer']);
 
@@ -22,7 +22,7 @@ class BookingSlotsController extends Controller
         ]);
     }
 
-    public function edit(BookingSlot $bookingSlot) : Response
+    public function edit(BookingSlot $bookingSlot): Response
     {
         $bookingSlot->load('booking');
 
@@ -31,15 +31,17 @@ class BookingSlotsController extends Controller
         ]);
     }
 
-    public function update(Request $request, BookingSlot $bookingSlot) : RedirectResponse
+    public function update(Request $request, BookingSlot $bookingSlot): RedirectResponse
     {
-        $startTime = Carbon::createFromFormat('Y-m-d\TH:i:s.u\Z', $request->get('start_time'), 'UTC')
-            ->setTimezone('Asia/Beirut');
+        $validated = $request->validate([
+            'start_time' => ['required', 'date_format:Y-m-d H:i:s'],
+            'end_time' => ['required', 'date_format:Y-m-d H:i:s'],
+        ]);
 
-        $endTime = Carbon::createFromFormat('Y-m-d\TH:i:s.u\Z', $request->get('end_time'), 'UTC')
-            ->setTimezone('Asia/Beirut');
-
-        $bookingSlot->update(['start_time' => $startTime, 'end_time' => $endTime ]);
+        $bookingSlot->update([
+            'start_time' => Carbon::createFromFormat('Y-m-d H:i:s', $validated['start_time'], 'Asia/Beirut'),
+            'end_time' => Carbon::createFromFormat('Y-m-d H:i:s', $validated['end_time'], 'Asia/Beirut'),
+        ]);
 
         return redirect()->route('admin.bookings-slots.show', $bookingSlot->id);
     }

@@ -4,8 +4,7 @@
 
         <div
             v-else
-            class="flex items-center justify-between w-full min-w-36 lg:min-w-52 border border-indigo-300 bg-indigo-50 text-indigo-900 font-medium rounded-lg text-sm p-2"
-        >
+            class="flex items-center justify-between w-full min-w-36 lg:min-w-52 border border-indigo-300 bg-indigo-50 text-indigo-900 font-medium rounded-lg text-sm p-2">
             <span>{{ selectedOption.label }}</span>
             <x-mark-icon class="w-4 h-4 text-indigo-400 cursor-pointer" @click="clearSelection">x</x-mark-icon>
         </div>
@@ -15,8 +14,7 @@
                 <slot name="list-item-preview" :options="filteredOptions.slice(0, maxResults)" :selectOption="selectOption" :highlightSearch="highlightSearch" :searchString="model">
                     <li v-for="option in filteredOptions.slice(0, maxResults)" :key="option.value"
                         class="cursor-pointer p-2 text-sm hover:bg-indigo-500"
-                        @mousedown.prevent="selectOption(option)"
-                    >
+                        @mousedown.prevent="selectOption(option)">
                         <span v-html="highlightSearch(option.label, model)" class="text-zinc-950"></span>
                     </li>
                 </slot>
@@ -27,12 +25,15 @@
 </template>
 
 <script setup>
+import { XMarkIcon } from '@heroicons/vue/24/solid'
+import {
+    ref, computed, watch, nextTick,
+} from 'vue'
+
 import TextInput from '@/Components/Form/TextInput.vue'
-import { XMarkIcon } from '@heroicons/vue/24/solid/index.js'
-import { ref, computed, watch, nextTick } from 'vue'
 
 const props = defineProps({
-    options: { type: Array, required: true }
+    options: { type: Array, required: true },
 })
 
 const model = defineModel()
@@ -50,7 +51,7 @@ const filterOptions = () => {
         return
     }
 
-    filteredOptions.value = props.options.filter( option => option.label.toLowerCase().includes(inputValue.toLowerCase()))
+    filteredOptions.value = props.options.filter((option) => option.label.toLowerCase().includes(inputValue.toLowerCase()))
 }
 
 const selectOption = (option) => {
@@ -67,10 +68,10 @@ const clearSelection = () => {
     })
 }
 
-const showResults = computed( () => filteredOptions.value.length && !selectedOption.value)
+const showResults = computed(() => filteredOptions.value.length && !selectedOption.value)
 
 watch(model, (newValue) => {
-    selectedOption.value = props.options.find(opt => opt.value === newValue) || null
+    selectedOption.value = props.options.find((opt) => opt.value === newValue) || null
 }, { immediate: true })
 
 const highlightSearch = (text, search) => {

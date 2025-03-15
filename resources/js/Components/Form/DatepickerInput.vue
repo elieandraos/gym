@@ -7,8 +7,7 @@
             icon-width="18"
             icon-height="18"
             v-bind="$attrs"
-            class="mt-0.5"
-        />
+            class="mt-0.5"/>
     </div>
 </template>
 

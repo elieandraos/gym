@@ -42,16 +42,19 @@
 </template>
 
 <script setup>
+import { ClockIcon, UsersIcon, BellIcon } from '@heroicons/vue/24/solid'
+import { Link } from '@inertiajs/vue3'
+
 import Container from '@/Components/Layout/Container.vue'
 import PageBackButton from '@/Components/Layout/PageBackButton.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import BookingSessions from '@/Pages/Admin/Bookings/Partials/BookingSessions.vue'
-import { ClockIcon, UsersIcon, BellIcon } from '@heroicons/vue/24/solid/index.js'
-import { Link } from '@inertiajs/vue3'
 
 const props = defineProps({
     booking: { type: Object, required: true },
 })
 
-const { member, trainer, nb_sessions, nb_remaining_sessions, bookingSlots, formatted_end_date} = props.booking
+const {
+    member, trainer, nb_remaining_sessions, bookingSlots, formatted_end_date,
+} = props.booking
 </script>

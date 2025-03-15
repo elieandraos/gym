@@ -11,24 +11,24 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
 import { onClickOutside } from '@vueuse/core'
+import { ref, watch } from 'vue'
 
 const props = defineProps({
     modelValue: {
         type: Boolean,
-        required: true
-    }
+        required: true,
+    },
 })
 
 const emit = defineEmits([
-    'update:modelValue'
+    'update:modelValue',
 ])
 
 const modal = ref(null)
 const isOpen = ref(false)
 
-watch(() => props.modelValue, value => {
+watch(() => props.modelValue, (value) => {
     isOpen.value = value
 }, { immediate: true })
 

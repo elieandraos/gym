@@ -33,7 +33,7 @@ class UserResource extends JsonResource
             'instagram_url' => 'https://www.instagram.com/'.$this->instagram_handle,
             'address' => $this->address,
             'emergency_contact' => $this->emergency_contact,
-            'role' => $this->role,
+            'role' => strtolower($this->role),
             'bookings' => $this->getBookings(),
         ];
     }

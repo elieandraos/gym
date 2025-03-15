@@ -16,7 +16,7 @@
                 </div>
 
                 <div class="space-x-4" v-if="isMember">
-                    <SecondaryButton @click="goToBookingsHistory(id)">View training history</SecondaryButton>
+                    <SecondaryButton @click="goToBookingsHistory">View training history</SecondaryButton>
                 </div>
             </div>
 
@@ -41,6 +41,10 @@
 </template>
 
 <script setup>
+import { CheckBadgeIcon } from '@heroicons/vue/24/solid'
+import { router } from '@inertiajs/vue3'
+import { computed } from 'vue'
+
 import Container from '@/Components/Layout/Container.vue'
 import PageBackButton from '@/Components/Layout/PageBackButton.vue'
 import SecondaryButton from '@/Components/Layout/SecondaryButton.vue'
@@ -49,21 +53,18 @@ import MemberTrainingStatus from '@/Pages/Admin/Users/Partials/MemberTrainingSta
 import TrainerBookings from '@/Pages/Admin/Users/Partials/TrainerBookings.vue'
 import UserContact from '@/Pages/Admin/Users/Partials/UserContact.vue'
 import UserProfile from '@/Pages/Admin/Users/Partials/UserProfile.vue'
-import { CheckBadgeIcon } from '@heroicons/vue/24/solid/index.js'
-import { router } from '@inertiajs/vue3'
-import { computed } from 'vue'
 
 const props = defineProps({
     user: { type: Object, required: true },
 })
 
 const {
-    id, role, bookings, name, since, profile_photo_url, in_house, age
+    id, role, bookings, name, since, profile_photo_url, in_house, age,
 } = props.user
 
-const isMember = computed( () => role === 'Member')
-const isTrainer = computed( () => role === 'Trainer')
-const isTraining = computed( () => bookings.length)
+const isMember = computed(() => role === 'member')
+const isTrainer = computed(() => role === 'trainer')
+const isTraining = computed(() => bookings.length)
 
-const goToBookingsHistory = (id)  => router.visit( route('admin.users.history', { user: id, role: 'Member' }))
+const goToBookingsHistory = () => router.visit(route('admin.users.history', { user: id, role: 'member' }))
 </script>

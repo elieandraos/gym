@@ -5,8 +5,7 @@
             ref="selectInput"
             v-bind="$attrs"
             class="p-2 text-sm border border-zinc-200 hover:border-zinc-300 rounded-lg focus:outline-none focus:ring-0 bg-none cursor-pointer appearance-none"
-            :class="[size !== 'auto' ? 'min-w-36 lg:min-w-52 w-full' : 'min-w-[70px]', model === '' || !model ? 'text-zinc-400' : '']"
-        >
+            :class="[size !== 'auto' ? 'min-w-36 lg:min-w-52 w-full' : 'min-w-[70px]', model === '' || !model ? 'text-zinc-400' : '']">
             <option disabled value="" class="text-zinc-300" v-if="placeholder">{{ placeholder }}</option>
             <option v-for="option in options" :key="optionKey(option)" :value="optionValue(option)">
                 {{ optionName(option) }}
@@ -19,29 +18,29 @@
 </template>
 
 <script setup>
+import { ChevronUpDownIcon } from '@heroicons/vue/24/solid'
 import { ref, watch } from 'vue'
-import { ChevronUpDownIcon } from '@heroicons/vue/24/solid/index.js'
 
 const props = defineProps({
     modelValue: {
-        type: [ String, Number, null],
+        type: [String, Number, null],
         default: '',
-        required: true
+        required: true,
     },
     options: {
         type: Array,
         default: () => [],
-        required: true
+        required: true,
     },
     size: {
         type: String,
         default: '',
-        required: false
+        required: false,
     },
     placeholder: {
         type: String,
         default: '',
-        required: false
+        required: false,
     },
 })
 
@@ -62,17 +61,11 @@ watch(() => props.options, () => {
     }
 }, { immediate: true })
 
-const optionKey = (option) => {
-    return typeof option === 'object' ? option.value : option
-}
+const optionKey = (option) => (typeof option === 'object' ? option.value : option)
 
-const optionValue = (option) => {
-    return typeof option === 'object' ? option.value : option
-}
+const optionValue = (option) => (typeof option === 'object' ? option.value : option)
 
-const optionName = (option) => {
-    return typeof option === 'object' ? option.name : option
-}
+const optionName = (option) => (typeof option === 'object' ? option.name : option)
 </script>
 
 <style scoped>

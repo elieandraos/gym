@@ -5,11 +5,11 @@
 </template>
 
 <script setup>
-import {computed} from 'vue'
+import { computed } from 'vue'
 
 const props = defineProps({
-    centered: { type: Boolean, required: false, default: false }
+    centered: { type: Boolean, required: false, default: false },
 })
 
-const classList = computed( () => props.centered === true ? 'max-w-4xl mx-auto' : 'max-w-7xl')
+const classList = computed(() => (props.centered === true ? 'max-w-4xl mx-auto' : 'max-w-7xl'))
 </script>

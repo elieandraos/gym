@@ -24,8 +24,8 @@ const classList = computed(() => {
         str = 'bg-amber-400/20 text-amber-700'
         break
     case 'info':
-            str = 'bg-indigo-400/20 text-indigo-700'
-            break
+        str = 'bg-indigo-400/20 text-indigo-700'
+        break
     case 'success': default:
         str = 'bg-lime-400/20 text-lime-700'
         break

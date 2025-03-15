@@ -39,8 +39,7 @@
                         v-for="{ id, title, nb_sessions, trainer } in bookings"
                         :key="id"
                         class="border-b border-zinc-100 hover:bg-zinc-100 hover:cursor-pointer"
-                        @click="goToBooking(id)"
-                    >
+                        @click="goToBooking">
                         <td class="text-zinc-400 p-4">
                             {{ title }}
                         </td>
@@ -60,27 +59,29 @@
 </template>
 
 <script setup>
-import Container from '@/Components/Layout/Container.vue'
-import PageBackButton from '@/Components/Layout/PageBackButton.vue'
-import AppLayout from '@/Layouts/AppLayout.vue'
-import { UsersIcon, UserIcon } from '@heroicons/vue/24/solid/index.js'
+import { UsersIcon, UserIcon } from '@heroicons/vue/24/solid'
 import { Link, router } from '@inertiajs/vue3'
 import { computed } from 'vue'
 
+import Container from '@/Components/Layout/Container.vue'
+import PageBackButton from '@/Components/Layout/PageBackButton.vue'
+import AppLayout from '@/Layouts/AppLayout.vue'
+
 const props = defineProps({
-    user: { type: Object, required: true }
+    user: { type: Object, required: true },
 })
 
-const { id, name, title, bookings } = props.user
+const {
+    id, name, bookings,
+} = props.user
 
 const headers = ['Date', 'Trainer', '# Sessions']
 
-const trainingsCount =  computed( () => {
-    if(bookings.length === 0)
-        return 'No training history yet'
+const trainingsCount = computed(() => {
+    if (bookings.length === 0) return 'No training history yet'
 
-    return bookings.length > 1 ? bookings.length + ' trainings' : '1 training'
+    return bookings.length > 1 ? `${bookings.length} trainings` : '1 training'
 })
 
-const goToBooking = (id) => router.visit( route('admin.bookings.show', id))
+const goToBooking = () => router.visit(route('admin.bookings.show', id))
 </script>

@@ -34,6 +34,6 @@ const props = defineProps({
 })
 
 const {
-    name, gender, age, birthdate, weight, height, blood_type, in_house,
+    gender, birthdate, weight, height, blood_type,
 } = props.user
 </script>

@@ -81,10 +81,10 @@
 </template>
 
 <script setup>
-import FormSection from '@/Components/Form/FormSection.vue'
 import { inject } from 'vue'
 
 import DatepickerInput from '@/Components/Form/DatepickerInput.vue'
+import FormSection from '@/Components/Form/FormSection.vue'
 import InputError from '@/Components/Form/InputError.vue'
 import SelectInput from '@/Components/Form/SelectInput.vue'
 import SwitchInput from '@/Components/Form/SwitchInput.vue'

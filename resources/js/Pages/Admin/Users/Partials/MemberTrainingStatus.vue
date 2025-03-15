@@ -44,14 +44,14 @@
 
 <script setup>
 import { CalendarIcon, ClockIcon } from '@heroicons/vue/24/outline'
-import {Link} from '@inertiajs/vue3'
+import { Link } from '@inertiajs/vue3'
 
 const props = defineProps({
     user: { type: Object, required: true },
 })
 
-const { profile_photo_url, name, bookings } = props.user
+const { name, bookings } = props.user
 const {
-    id, nb_sessions, nb_remaining_sessions, trainer, upcoming_session_date, upcoming_session_time, formatted_end_date, upcoming_session_url
+    id, nb_remaining_sessions, trainer, upcoming_session_date, upcoming_session_time, formatted_end_date, upcoming_session_url,
 } = bookings[0]
 </script>

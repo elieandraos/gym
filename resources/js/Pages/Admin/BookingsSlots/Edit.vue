@@ -17,7 +17,7 @@
 
             <div class="text-right space-x-4">
                 <Link :href="route('admin.bookings-slots.show', id)">
-                    <TransparentButton @click="">Cancel</TransparentButton>
+                    <TransparentButton>Cancel</TransparentButton>
                 </Link>
                 <primary-button @click="updateBookingSlot" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">Update</primary-button>
             </div>
@@ -26,25 +26,26 @@
 </template>
 
 <script setup>
+import { Link, useForm } from '@inertiajs/vue3'
+import { format, addHours, parse } from 'date-fns'
+import DateInput from '@/Components/Form/DateInput.vue'
 import FormSection from '@/Components/Form/FormSection.vue'
 import InputError from '@/Components/Form/InputError.vue'
-import DateInput from '@/Components/Form/DateInput.vue'
 import TimeInput from '@/Components/Form/TimeInput.vue'
+import Container from '@/Components/Layout/Container.vue'
+import PageTitle from '@/Components/Layout/PageTitle.vue'
 import PrimaryButton from '@/Components/Layout/PrimaryButton.vue'
 import TransparentButton from '@/Components/Layout/TransparentButton.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
-import Container from '@/Components/Layout/Container.vue'
-import PageTitle from '@/Components/Layout/PageTitle.vue'
-import {Link, useForm} from '@inertiajs/vue3'
 
 const props = defineProps({
-    bookingSlot: { type: Object, required: true }
+    bookingSlot: { type: Object, required: true },
 })
 
 const { id, date, start_time } = props.bookingSlot
 
 const form = useForm({
-    date: date,
+    date,
     time: start_time,
     start_time: null,
     end_time: null,
@@ -64,16 +65,15 @@ const combineDateAndTime = (dateString, time) => {
     }
 
     dateObj.setHours(hours, minutes, 0, 0)
-    return dateObj
+    return format(dateObj, 'yyyy-MM-dd HH:mm:ss')
 }
 
 const updateBookingSlot = () => {
     form
         .transform((data) => {
             const startTime = combineDateAndTime(data.date, data.time)
-            const endTime = new Date(startTime)
-            endTime.setHours(endTime.getHours() + 1)
-            console.log(startTime, endTime)
+            const endTime = format(addHours(parse(startTime, 'yyyy-MM-dd HH:mm:ss', new Date()), 1), 'yyyy-MM-dd HH:mm:ss')
+
             return {
                 ...data,
                 start_time: startTime,
@@ -84,7 +84,7 @@ const updateBookingSlot = () => {
             preserveScroll: true,
             onError: (e) => {
                 console.log(e)
-            }
+            },
         })
 }
 </script>

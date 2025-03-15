@@ -13,8 +13,7 @@
                     v-for="{ id, member, upcoming_session_date, upcoming_session_time, nb_remaining_sessions } in bookings"
                     :key="id"
                     class="border-b border-zinc-100 hover:bg-zinc-100 hover:cursor-pointer"
-                    @click="goToBooking(id)"
-                >
+                    @click="goToBooking(id)">
                     <td class="text-zinc-900 font-medium p-4 flex gap-2 items-center">
                         <img class="w-8 h-8 rounded-full" :src="member.profile_photo_url"  alt=""/>
                         {{ member.name }}
@@ -43,8 +42,7 @@
                 v-for="{ id, member, upcoming_session_date, upcoming_session_time, nb_remaining_sessions } in bookings"
                 :key="id"
                 class="py-4 pl-1 pr-2 flex rounded-lg hover:bg-stone-100 cursor-pointer"
-                @click="goToBooking(id)"
-            >
+                @click="goToBooking(id)">
                 <div class="flex items-center justify-between gap-2 w-full">
                     <img :src="member.profile_photo_url"  :alt="member.name" class="rounded-full w-10"/>
                     <div>
@@ -68,9 +66,9 @@
 
 <script setup>
 import { CalendarIcon, ClockIcon } from '@heroicons/vue/24/outline'
+import { router } from '@inertiajs/vue3'
 
 import Badge from '@/Components/Layout/Badge.vue'
-import { router } from '@inertiajs/vue3'
 
 const props = defineProps({
     user: { type: Object, required: true },
@@ -82,5 +80,5 @@ const { first_name } = props.user
 
 const headers = ['Member', 'Date', 'Time', '# Remaining']
 
-const goToBooking = (id) => router.visit( route('admin.bookings.show', id))
+const goToBooking = (id) => router.visit(route('admin.bookings.show', id))
 </script>

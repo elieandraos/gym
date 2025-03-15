@@ -3,6 +3,7 @@
 use App\Helpers\DateHelper;
 use App\Http\Resources\BookingResource;
 use App\Models\Booking;
+use App\Models\BookingSlot;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
@@ -59,8 +60,8 @@ test('it shows booking information', function () {
 });
 
 test('it creates a booking and its booking slots', function () {
-    $member = User::members()->inRandomOrder()->first();
-    $trainer = User::trainers()->inRandomOrder()->first();
+    $member = User::query()->members()->inRandomOrder()->first();
+    $trainer = User::query()->trainers()->inRandomOrder()->first();
 
     $data = [
         'start_date' => Carbon::today()->addMonths(2),
@@ -81,7 +82,7 @@ test('it creates a booking and its booking slots', function () {
     $this->assertDatabaseHas(Booking::class, Arr::only($data, ['start_date', 'member_id', 'trainer_id', 'nb_sessions']));
 
     // fetch the booking created
-    $booking = Booking::where('member_id', $member->id)
+    $booking = Booking::query()->where('member_id', $member->id)
         ->where('trainer_id', $trainer->id)
         ->whereDate('start_date', Carbon::today()->addMonths(2))
         ->latest('created_at')
@@ -104,4 +105,29 @@ test('it creates a booking and its booking slots', function () {
     $lastBookingSlot = $booking->bookingSlots()->orderBy('start_time', 'desc')->first();
     $this->assertNotNull($lastBookingSlot);
     $this->assertEquals($lastBookingSlot->start_time->toDateString(), $booking->end_date->toDateString());
+});
+
+test('it updates a booking slot', function () {
+    $bookingSlot = BookingSlot::query()->firstOrFail();
+
+    $newStartTime = now()->addDay()->setHour(10)->setMinute(0)->setSecond(0);
+    $newEndTime = $newStartTime->copy()->addHour();
+
+    $data = [
+        'start_time' => $newStartTime->format('Y-m-d H:i:s'),
+        'end_time'   => $newEndTime->format('Y-m-d H:i:s'),
+    ];
+
+    actingAsAdmin()
+        ->put(route('admin.bookings-slots.update', $bookingSlot), $data)
+        ->assertRedirect(route('admin.bookings-slots.show', $bookingSlot->id));
+
+    $bookingSlot->refresh();
+
+    // Convert expected values to Asia/Beirut (matches the controller logic)
+    $expectedStartTime = $newStartTime->clone()->setTimezone('Asia/Beirut');
+    $expectedEndTime = $newEndTime->clone()->setTimezone('Asia/Beirut');
+
+    expect($bookingSlot->start_time->toDateTimeString())->toBe($expectedStartTime->toDateTimeString());
+    expect($bookingSlot->end_time->toDateTimeString())->toBe($expectedEndTime->toDateTimeString());
 });

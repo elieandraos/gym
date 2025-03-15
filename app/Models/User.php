@@ -12,6 +12,11 @@ use Illuminate\Notifications\Notifiable;
 use InvalidArgumentException;
 use Laravel\Jetstream\HasProfilePhoto;
 
+/**
+ * @property \Illuminate\Support\Carbon|mixed|null $birthdate
+ * @property \Illuminate\Support\Carbon|mixed|null $registration_date
+ * @property mixed|string $role
+ */
 class User extends Authenticatable
 {
     use HasFactory;
@@ -101,13 +106,13 @@ class User extends Authenticatable
 
     public function loadActiveBookingsWithSlots(): User
     {
-        $bookingsRelation = match ($this->role) {
+        $bookingsRelation = match (strtolower($this->role)) {
             Role::Member->value => 'memberBookings',
             Role::Trainer->value => 'trainerBookings',
             default => throw new InvalidArgumentException('Invalid role provided.'),
         };
 
-        $memberOrTrainerRelation = match ($this->role) {
+        $memberOrTrainerRelation = match (strtolower($this->role)) {
             Role::Member->value => 'trainer',
             Role::Trainer->value => 'member',
             default => throw new InvalidArgumentException('Invalid role provided.'),

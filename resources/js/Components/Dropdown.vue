@@ -33,8 +33,10 @@
 </template>
 
 <script setup>
-import { computed, onMounted, onUnmounted, ref } from 'vue'
-import { EllipsisHorizontalIcon } from '@heroicons/vue/24/outline/index.js'
+import { EllipsisHorizontalIcon } from '@heroicons/vue/24/outline'
+import {
+    computed, onMounted, onUnmounted, ref,
+} from 'vue'
 
 const props = defineProps({
     align: {

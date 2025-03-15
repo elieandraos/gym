@@ -17,8 +17,8 @@
 
 <script setup>
 defineProps({
-    title: { type: String, required: true},
-    description: { type: String, required: false, default: ''},
-    separator: { type: Boolean, required: false, default: true }
+    title: { type: String, required: true },
+    description: { type: String, required: false, default: '' },
+    separator: { type: Boolean, required: false, default: true },
 })
 </script>

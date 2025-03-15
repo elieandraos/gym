@@ -53,7 +53,7 @@ class BookingsController extends Controller
         $request->merge(['end_date' => end($bookingSlots)->start_time->toDateString()]);
 
         // create the booking and its slots
-        $booking = Booking::create($request->all());
+        $booking = Booking::query()->create($request->all());
         $booking->bookingSlots()->saveMany($bookingSlots);
 
         return redirect(route('admin.users.show', [$booking->member_id, $booking->member->role]))

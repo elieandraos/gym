@@ -10,11 +10,11 @@
 </template>
 
 <script setup>
-import PageTitle from '@/Components/Layout/PageTitle.vue'
 import { useForm } from '@inertiajs/vue3'
 import { provide } from 'vue'
 
 import Container from '@/Components/Layout/Container.vue'
+import PageTitle from '@/Components/Layout/PageTitle.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import UserForm from '@/Pages/Admin/Users/Partials/UserForm.vue'
 

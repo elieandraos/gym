@@ -12,9 +12,10 @@
 </template>
 
 <script setup>
-import SelectInput from '@/Components/Form/SelectInput.vue'
-import { ref, computed, watch } from 'vue'
 import { XCircleIcon } from '@heroicons/vue/24/outline'
+import { ref, computed, watch } from 'vue'
+
+import SelectInput from '@/Components/Form/SelectInput.vue'
 
 const props = defineProps({
     modelValue: Object,
@@ -22,17 +23,17 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue', 'remove'])
 
-const days = [ 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ]
-const hours = [ '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12' ]
+const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+const hours = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
 const minutes = ['00', '15', '30', '45']
-const time = [ 'am', 'pm' ]
+const time = ['am', 'pm']
 
 const selectedDay = ref('Monday')
 const selectedHour = ref('07')
 const selectedMinute = ref('00')
 const selectedTime = ref('am')
 
-watch(() => props.modelValue, value => {
+watch(() => props.modelValue, (value) => {
     const [timeWithoutSpace, amPm] = value.time.split(' ')
     const [hour, minute] = timeWithoutSpace.split(':')
 
@@ -40,13 +41,10 @@ watch(() => props.modelValue, value => {
     selectedHour.value = hour
     selectedMinute.value = minute
     selectedTime.value = amPm
-
 }, { immediate: true, deep: true })
 
-const dayAndTime = computed( () => {
-    return {
-        day: selectedDay.value,
-        time: `${selectedHour.value}:${selectedMinute.value} ${selectedTime.value}`
-    }
-})
+const dayAndTime = computed(() => ({
+    day: selectedDay.value,
+    time: `${selectedHour.value}:${selectedMinute.value} ${selectedTime.value}`,
+}))
 </script>

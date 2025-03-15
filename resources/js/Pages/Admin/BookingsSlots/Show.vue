@@ -13,9 +13,9 @@
                         <div class="flex gap-x-2">
                             <UsersIcon class="w-4 text-zinc-500"></UsersIcon>
                             <span>
-                                <Link class="text-sky-500 hover:text-sky-700 font-medium text-sm" :href="route('admin.users.show', { user: booking.member.id, role: 'Member' })"> {{ booking.member.name}}</Link>
+                                <Link class="text-sky-500 hover:text-sky-700 font-medium text-sm" :href="route('admin.users.show', { user: booking.member.id, role: 'member' })"> {{ booking.member.name}}</Link>
                                 ·
-                                <Link class="text-sky-500 hover:text-sky-700 font-medium text-sm" :href="route('admin.users.show', { user: booking.trainer.id, role: 'Trainer' })"> {{ booking.trainer.name}}</Link>
+                                <Link class="text-sky-500 hover:text-sky-700 font-medium text-sm" :href="route('admin.users.show', { user: booking.trainer.id, role: 'trainer' })"> {{ booking.trainer.name}}</Link>
                             </span>
                         </div>
                         <div class="flex gap-x-2">
@@ -38,34 +38,37 @@
 
         <teleport to="#modals">
             <modal v-model="showChangeDateModal">
-                <ChangeDateModal :date="date" :start_time="start_time" @close="showChangeDateModal = false" @change=""></ChangeDateModal>
+                <ChangeDateModal :date="date" :start_time="start_time" @close="showChangeDateModal = false"></ChangeDateModal>
             </modal>
 
             <modal v-model="showMarkAsACancelledModal">
-                <MarkAsCancelledModal @close="showMarkAsACancelledModal = false" @cancel=""></MarkAsCancelledModal>
+                <MarkAsCancelledModal @close="showMarkAsACancelledModal = false"></MarkAsCancelledModal>
             </modal>
         </teleport>
     </AppLayout>
 </template>
 
 <script setup>
+import { UsersIcon, ClockIcon } from '@heroicons/vue/24/solid'
+import { Link } from '@inertiajs/vue3'
+import { ref } from 'vue'
+
 import Badge from '@/Components/Layout/Badge.vue'
 import Container from '@/Components/Layout/Container.vue'
 import Modal from '@/Components/Layout/Modal.vue'
 import PageBackButton from '@/Components/Layout/PageBackButton.vue'
 import SecondaryButton from '@/Components/Layout/SecondaryButton.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
-import MarkAsCancelledModal from '@/Pages/Admin/BookingsSlots/Partials/MarkAsCancelledModal.vue'
-import { UsersIcon, ClockIcon }  from '@heroicons/vue/24/solid/index.js'
 import ChangeDateModal from '@/Pages/Admin/BookingsSlots/Partials/ChangeDateModal.vue'
-import { ref } from 'vue'
-import { Link } from '@inertiajs/vue3'
+import MarkAsCancelledModal from '@/Pages/Admin/BookingsSlots/Partials/MarkAsCancelledModal.vue'
 
 const props = defineProps({
-    bookingSlot: { type: Object, required: true }
+    bookingSlot: { type: Object, required: true },
 })
 
-const { id, booking, formatted_date , start_time, status, badge_type, date} = props.bookingSlot
+const {
+    id, booking, formatted_date, start_time, status, badge_type, date,
+} = props.bookingSlot
 
 const showChangeDateModal = ref(false)
 const showMarkAsACancelledModal = ref(false)

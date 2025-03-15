@@ -4,8 +4,7 @@
             v-for="{ id, formatted_date, start_time, status} in bookingSlots"
             :key="id"
             class="py-4 pl-1 pr-2 flex rounded-lg hover:bg-zinc-100 cursor-pointer"
-            @click="goToBookingSlot(id)"
-        >
+            @click="goToBookingSlot(id)">
             <div class="flex items-center justify-between gap-2 w-full">
                 <img :src="profile_photo_url"  :alt="name" class="rounded-full w-10"/>
                 <div>
@@ -38,8 +37,7 @@
                 v-for="{ id, formatted_date, start_time, status} in bookingSlots"
                 :key="id"
                 class="border-b border-zinc-100 hover:bg-zinc-100 hover:cursor-pointer"
-                @click="goToBookingSlot(id)"
-            >
+                @click="goToBookingSlot(id)">
                 <td class="text-zinc-400 p-4">
                     {{ formatted_date }}
                 </td>
@@ -55,9 +53,10 @@
 </template>
 
 <script setup>
-import Badge from '@/Components/Layout/Badge.vue'
-import { CalendarIcon, ClockIcon } from '@heroicons/vue/24/outline/index.js'
+import { CalendarIcon, ClockIcon } from '@heroicons/vue/24/outline'
 import { router } from '@inertiajs/vue3'
+
+import Badge from '@/Components/Layout/Badge.vue'
 
 const props = defineProps({
     bookingSlots: { type: Array, required: true },
@@ -66,26 +65,26 @@ const props = defineProps({
 
 const { name, profile_photo_url } = props.trainer
 
-const headers = [ 'Date', 'Time', 'Status']
+const headers = ['Date', 'Time', 'Status']
 
 const goToBookingSlot = (id) => router.visit(route('admin.bookings-slots.show', { bookingSlot: id }))
 
 const statusBadgeType = (status) => {
     let type
 
-    switch(status) {
-        case 'upcoming':
-            type = 'warning'
-            break
-        case 'cancelled':
-            type = 'error'
-            break
-        case 'frozen':
-            type = 'info'
-            break
-        case 'complete': default:
-            type = 'success'
-            break
+    switch (status) {
+    case 'upcoming':
+        type = 'warning'
+        break
+    case 'cancelled':
+        type = 'error'
+        break
+    case 'frozen':
+        type = 'info'
+        break
+    case 'complete': default:
+        type = 'success'
+        break
     }
 
     return type

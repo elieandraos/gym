@@ -54,7 +54,7 @@ const menu = [
     },
     {
         name: 'Members',
-        url: route('admin.users.index', { role: 'Member' }),
+        url: route('admin.users.index', { role: 'member' }),
         icon: UserIcon,
         activeRoute: 'admin.users.*',
         for: 'Member',
@@ -62,7 +62,7 @@ const menu = [
     },
     {
         name: 'Trainers',
-        url: route('admin.users.index', { role: 'Trainer' }),
+        url: route('admin.users.index', { role: 'trainer' }),
         icon: UsersIcon,
         activeRoute: 'admin.users.*',
         for: 'Trainer',
