@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\UpdateBookingSlotRequest;
 use App\Http\Resources\BookingSlotResource;
 use App\Models\BookingSlot;
 use Carbon\Carbon;
@@ -31,18 +32,13 @@ class BookingSlotsController extends Controller
         ]);
     }
 
-    public function update(Request $request, BookingSlot $bookingSlot): RedirectResponse
+    public function update(UpdateBookingSlotRequest $request, BookingSlot $bookingSlot): RedirectResponse
     {
         $bookingSlot->load('booking', 'booking.bookingSlots');
 
-        $validated = $request->validate([
-            'start_time' => ['required', 'date_format:Y-m-d H:i:s'],
-            'end_time' => ['required', 'date_format:Y-m-d H:i:s'],
-        ]);
-
         $bookingSlot->update([
-            'start_time' => Carbon::createFromFormat('Y-m-d H:i:s', $validated['start_time'], 'Asia/Beirut'),
-            'end_time' => Carbon::createFromFormat('Y-m-d H:i:s', $validated['end_time'], 'Asia/Beirut'),
+            'start_time' => Carbon::createFromFormat('Y-m-d H:i:s', $request->validated('start_time'), 'Asia/Beirut'),
+            'end_time' => Carbon::createFromFormat('Y-m-d H:i:s', $request->validated('end_time'), 'Asia/Beirut'),
         ]);
 
         return redirect()->route('admin.bookings-slots.show', $bookingSlot->id);
