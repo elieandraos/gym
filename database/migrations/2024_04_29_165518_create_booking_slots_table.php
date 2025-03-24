@@ -15,9 +15,9 @@ return new class extends Migration
         Schema::create('booking_slots', function (Blueprint $table) use ($statuses) {
             $table->id();
             $table->foreignIdFor(Booking::class);
-            $table->dateTime('start_time');
-            $table->dateTime('end_time');
-            $table->enum('status', $statuses);
+            $table->dateTime('start_time')->index();
+            $table->dateTime('end_time')->index();
+            $table->enum('status', $statuses)->index();
             $table->timestamps();
         });
     }

@@ -13,8 +13,8 @@ return new class extends Migration
             $table->integer('nb_sessions');
             $table->foreignId('member_id')->constrained('users');
             $table->foreignId('trainer_id')->constrained('users');
-            $table->date('start_date');
-            $table->date('end_date');
+            $table->date('start_date')->index();
+            $table->date('end_date')->index();
             $table->timestamps();
         });
     }

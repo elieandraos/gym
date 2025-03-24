@@ -8,7 +8,6 @@ use App\Http\Resources\BookingSlotResource;
 use App\Models\BookingSlot;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
