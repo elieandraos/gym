@@ -26,12 +26,9 @@ class BookingsController extends Controller
 
     public function create(): Response
     {
-        $trainers = UserResource::collection(User::query()->trainers()->get());
-        $members = UserResource::collection(User::query()->members()->get());
-
         return Inertia::render('Admin/Bookings/Create', [
-            'trainers' => $trainers,
-            'members' => $members,
+            'trainers' => UserResource::collection(User::query()->trainers()->get()),
+            'members' => UserResource::collection(User::query()->members()->get()),
         ]);
     }
 

@@ -33,6 +33,8 @@ class BookingSlotsController extends Controller
 
     public function update(Request $request, BookingSlot $bookingSlot): RedirectResponse
     {
+        $bookingSlot->load('booking', 'booking.bookingSlots');
+
         $validated = $request->validate([
             'start_time' => ['required', 'date_format:Y-m-d H:i:s'],
             'end_time' => ['required', 'date_format:Y-m-d H:i:s'],
