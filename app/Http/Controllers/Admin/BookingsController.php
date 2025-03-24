@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Enums\Status;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\BookingRequest;
+use App\Http\Requests\Admin\BookingRequest;
 use App\Http\Resources\BookingResource;
 use App\Http\Resources\UserResource;
 use App\Models\Booking;
