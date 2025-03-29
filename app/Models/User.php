@@ -53,15 +53,12 @@ class User extends Authenticatable
         'age',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'birthdate' => 'date',
-            'registration_date' => 'date',
-            'password' => 'hashed',
-            'email_verified_at' => 'datetime',
-        ];
-    }
+    protected $casts = [
+        'birthdate' => 'date',
+        'registration_date' => 'date',
+        'password' => 'hashed',
+        'email_verified_at' => 'datetime',
+    ];
 
     public function memberBookings(): HasMany
     {
@@ -94,8 +91,11 @@ class User extends Authenticatable
 
     public function getAgeAttribute(): ?string
     {
-        $birthdate = Carbon::parse($this->birthdate);
+        if (!$this->birthdate) {
+            return null;
+        }
 
+        $birthdate = Carbon::parse($this->birthdate);
         return $birthdate->diff(Carbon::now())->format('%y');
     }
 
