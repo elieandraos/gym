@@ -85,8 +85,8 @@ watch(() => props.modelValue, () => {
 
 watch([selectedDay, selectedMonth, selectedYear], ([newDay, newMonth, newYear]) => {
     if (newDay && newMonth && newYear) {
-        const newDate = new Date(newYear, newMonth - 1, newDay)
-        emit('update:modelValue', newDate)
+        const formattedDate = `${newYear}-${String(newMonth).padStart(2, '0')}-${String(newDay).padStart(2, '0')}`
+        emit('update:modelValue', formattedDate)
     }
 }, { immediate: true })
 </script>
