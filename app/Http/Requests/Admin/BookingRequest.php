@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\Admin;
 
-use App\Helpers\DateHelper;
 use App\Rules\DoesNotOverlapWithOtherMemberBookings;
+use App\Services\BookingManager;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -33,7 +33,7 @@ class BookingRequest extends FormRequest
         $nbSessions = $this->input('nb_sessions');
         $days = $this->input('days');
 
-        $bookingSlotsDates = DateHelper::generateRepeatableDates($startDate, $nbSessions, $days);
+        $bookingSlotsDates = BookingManager::generateRepeatableDates($startDate, $nbSessions, $days);
 
         $this->merge([
             'booking_slots_dates' => $bookingSlotsDates,

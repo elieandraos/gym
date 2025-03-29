@@ -1,10 +1,10 @@
 <?php
 
-use App\Helpers\DateHelper;
 use App\Http\Resources\BookingResource;
 use App\Models\Booking;
 use App\Models\BookingSlot;
 use App\Models\User;
+use App\Services\BookingManager;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 
@@ -91,7 +91,7 @@ test('it creates a booking and its booking slots', function () {
     $this->assertNotNull($booking);
 
     // Generate expected session dates
-    $expectedSessionDates = DateHelper::generateRepeatableDates($data['start_date'], $data['nb_sessions'], $data['days']);
+    $expectedSessionDates = BookingManager::generateRepeatableDates($data['start_date'], $data['nb_sessions'], $data['days']);
 
     // Check that each expected session date is in the database
     foreach ($expectedSessionDates as $sessionDate) {

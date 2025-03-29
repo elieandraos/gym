@@ -103,30 +103,4 @@ class User extends Authenticatable
     {
         return Carbon::parse($this->registration_date)->format('M j, Y');
     }
-
-    public function loadActiveBookingsWithSlots(): User
-    {
-        $bookingsRelation = match (strtolower($this->role)) {
-            Role::Member->value => 'memberBookings',
-            Role::Trainer->value => 'trainerBookings',
-            default => throw new InvalidArgumentException('Invalid role provided.'),
-        };
-
-        $memberOrTrainerRelation = match (strtolower($this->role)) {
-            Role::Member->value => 'trainer',
-            Role::Trainer->value => 'member',
-            default => throw new InvalidArgumentException('Invalid role provided.'),
-        };
-
-        return $this->load([
-            $bookingsRelation => function ($query) use ($memberOrTrainerRelation) {
-                $query->active()->with([
-                    $memberOrTrainerRelation,
-                    'bookingSlots' => function ($query) {
-                        $query->orderBy('start_time', 'ASC');
-                    },
-                ]);
-            },
-        ]);
-    }
 }

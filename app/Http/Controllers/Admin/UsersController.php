@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\UserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use App\Services\BookingManager;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
@@ -28,7 +29,7 @@ class UsersController extends Controller
 
     public function show(User $user, string $role): Response
     {
-        $user->loadActiveBookingsWithSlots();
+        $user = BookingManager::loadActiveBookingsWithSlotsForUser($user);
 
         return Inertia::render('Admin/Users/Show', [
             'user' => UserResource::make($user),
@@ -46,7 +47,7 @@ class UsersController extends Controller
     {
         $request->merge(['password' => Hash::make('password')]);
         User::query()->create($request->all());
-        
+
         return redirect(route('admin.users.index', $request->input('role')))
             ->with('flash.banner', $request->input('role').' created successfully')
             ->with('flash.bannerStyle', 'success');

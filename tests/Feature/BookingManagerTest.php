@@ -1,6 +1,6 @@
 <?php
 
-use App\Helpers\DateHelper;
+use App\Services\BookingManager;
 use Carbon\Carbon;
 
 it('generates repeatable dates correctly', function () {
@@ -11,7 +11,7 @@ it('generates repeatable dates correctly', function () {
         ['day' => 'Wednesday', 'time' => '02:00 PM'],
     ];
 
-    $result = DateHelper::generateRepeatableDates($startDate, $nb_dates, $repeatableDayTime);
+    $result = BookingManager::generateRepeatableDates($startDate, $nb_dates, $repeatableDayTime);
 
     expect($result)->toHaveCount($nb_dates);
     expect($result[0])->toBe('2023-06-05 10:00 AM');
@@ -28,7 +28,7 @@ it('throws an exception for invalid day', function () {
         ['day' => 'Fun day', 'time' => '10:00 AM'],
     ];
 
-    DateHelper::generateRepeatableDates($startDate, $nb_dates, $repeatableDayTime);
+    BookingManager::generateRepeatableDates($startDate, $nb_dates, $repeatableDayTime);
 })->throws(InvalidArgumentException::class, 'Invalid day in days array.');
 
 it('throws an exception for invalid time format', function () {
@@ -38,5 +38,5 @@ it('throws an exception for invalid time format', function () {
         ['day' => 'Monday', 'time' => '25:00 AM'],
     ];
 
-    DateHelper::generateRepeatableDates($startDate, $nb_dates, $repeatableDayTime);
+    BookingManager::generateRepeatableDates($startDate, $nb_dates, $repeatableDayTime);
 })->throws(InvalidArgumentException::class, 'Invalid time format in days array.');

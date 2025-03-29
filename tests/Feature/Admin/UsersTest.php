@@ -5,6 +5,7 @@ use App\Enums\Gender;
 use App\Enums\Role;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use App\Services\BookingManager;
 
 beforeEach(function () {
     setupUsersAndBookings();
@@ -116,22 +117,20 @@ test('it validates request before creating member or trainer', function () {
 
 test('it shows trainer information', function () {
     $trainer = User::query()->trainers()->first();
-    $trainer->loadActiveBookingsWithSlots();
 
     actingAsAdmin()
         ->get(route('admin.users.show', [$trainer, Role::Trainer->value]))
         ->assertHasComponent('Admin/Users/Show')
-        ->assertHasResource('user', UserResource::make($trainer))
+        ->assertHasResource('user', UserResource::make(BookingManager::loadActiveBookingsWithSlotsForUser($trainer)))
         ->assertStatus(200);
 });
 
 test('it shows member information', function () {
     $member = User::query()->members()->first();
-    $member->loadActiveBookingsWithSlots();
 
     actingAsAdmin()
         ->get(route('admin.users.show', [$member, Role::Member->value]))
         ->assertHasComponent('Admin/Users/Show')
-        ->assertHasResource('user', UserResource::make($member))
+        ->assertHasResource('user', UserResource::make(BookingManager::loadActiveBookingsWithSlotsForUser($member)))
         ->assertStatus(200);
 });
