@@ -34,7 +34,7 @@
             </FormSection>
 
             <FormSection title="Start date" description="Enter the training starting date.">
-                <DatepickerInput v-model="form.start_date"></DatepickerInput>
+                <DateInput v-model="form.start_date"></DateInput>
                 <InputError :message="form.errors.start_date" />
             </FormSection>
 
@@ -58,7 +58,7 @@
 import { useForm } from '@inertiajs/vue3'
 import { computed, provide } from 'vue'
 
-import DatepickerInput from '@/Components/Form/DatepickerInput.vue'
+import DateInput from '@/Components/Form/DateInput.vue'
 import FormSection from '@/Components/Form/FormSection.vue'
 import InputAutocomplete from '@/Components/Form/InputAutocomplete.vue'
 import InputError from '@/Components/Form/InputError.vue'

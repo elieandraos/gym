@@ -5,11 +5,11 @@
         </FormSection>
 
         <FormSection title="Registration" description="Enter the starting date of the member." >
-            <DatepickerInput v-model="form.registration_date"></DatepickerInput>
+            <DateInput v-model="form.registration_date"></DateInput>
             <InputError :message="form.errors.registration_date" />
         </FormSection>
 
-        <FormSection title="Profile" description="Enter the member's name, gender and birthdate." >
+        <FormSection title="Profile" description="Enter the member's name and gender." >
             <div class="space-y-2">
                 <div>
                     <TextInput id="name" v-model="form.name" type="text" placeholder="Name"/>
@@ -19,8 +19,13 @@
                     <SelectInput v-model="form.gender" id="gender" :options="$page.props.genders" placeholder="Select gender"/>
                     <InputError :message="form.errors.gender" />
                 </div>
+            </div>
+        </FormSection>
+
+        <FormSection title="Age" description="Enter the member's birthdate" >
+            <div class="space-y-2">
                 <div>
-                    <DatepickerInput v-model="form.birthdate"></DatepickerInput>
+                    <DateInput v-model="form.birthdate"></DateInput>
                     <InputError :message="form.errors.birthdate" />
                 </div>
             </div>
@@ -83,7 +88,7 @@
 <script setup>
 import { inject } from 'vue'
 
-import DatepickerInput from '@/Components/Form/DatepickerInput.vue'
+import DateInput from '@/Components/Form/DateInput.vue'
 import FormSection from '@/Components/Form/FormSection.vue'
 import InputError from '@/Components/Form/InputError.vue'
 import SelectInput from '@/Components/Form/SelectInput.vue'

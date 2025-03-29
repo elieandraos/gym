@@ -19,7 +19,7 @@
                 </div>
                 <div>
                     <InputLabel for="birthdate" value="Birthdate" />
-                    <DatepickerInput v-model="form.birthdate"></DatepickerInput>
+                    <DateInput v-model="form.birthdate"></DateInput>
                     <InputError :message="form.errors.birthdate" />
                 </div>
                 <div>
@@ -68,7 +68,7 @@ import { router } from '@inertiajs/vue3'
 import { defineEmits, inject } from 'vue'
 
 import ActionMessage from '@/Components/ActionMessage.vue'
-import DatepickerInput from '@/Components/Form/DatepickerInput.vue'
+import DateInput from '@/Components/Form/DateInput.vue'
 import InputError from '@/Components/Form/InputError.vue'
 import InputLabel from '@/Components/Form/InputLabel.vue'
 import InputPhotoUpload from '@/Components/Form/InputPhotoUpload.vue'

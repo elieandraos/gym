@@ -1,26 +1,10 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+    --font-sans: "Quicksand", "sans-serif";
+    --font-serif: "figtree";
+}
 
 [x-cloak] {
     display: none;
-}
-
-/* date picker styles overriding */
-div.vuejs3-datepicker {
-    width: 100%;
-}
-div.vuejs3-datepicker__content {
-    font-size: 0.875rem;
-    line-height: 1.25rem;
-}
-section.vuejs3-datepicker__calendar-topbar {
-    display: none;
-}
-div.vuejs3-datepicker__value
-{
-    padding: 0;
-    min-width: 13rem;
-    width: 100%;
-    border: none;
 }
