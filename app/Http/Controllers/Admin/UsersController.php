@@ -30,7 +30,7 @@ class UsersController extends Controller
     public function show(User $user, string $role): Response
     {
         $user = BookingManager::loadActiveBookingsWithSlotsForUser($user);
-
+        //dd($user->toArray());
         return Inertia::render('Admin/Users/Show', [
             'user' => UserResource::make($user),
         ]);

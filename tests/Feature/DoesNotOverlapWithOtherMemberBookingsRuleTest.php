@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\Validator;
 beforeEach(function () {
     setupUsersAndBookings();
 
-    $this->member = User::members()->with('memberBookings')->first();
-    $this->trainer = User::trainers()->inRandomOrder()->first();
+    $this->member = User::query()->members()->with('memberBookings')->first();
+    $this->trainer = User::query()->trainers()->inRandomOrder()->first();
 
     $this->startDate = $this->member->memberBookings[0]->start_date;
     $this->endDate = $this->member->memberBookings[0]->end_date;

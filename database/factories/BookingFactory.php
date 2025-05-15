@@ -24,7 +24,7 @@ class BookingFactory extends Factory
 
     public function active(): BookingFactory
     {
-        $startDate = $this->faker->dateTimeBetween('-20 days', '-1 days');
+        $startDate = $this->faker->dateTimeBetween('-20 days', '-5 days');
         $endDate = Carbon::instance($startDate)->addDays(30);
 
         return $this->state(function () use ($startDate, $endDate) {
@@ -35,7 +35,7 @@ class BookingFactory extends Factory
         });
     }
 
-    public function completed(int $nbMonths): BookingFactory
+    public function completed(int $nbMonths = 1): BookingFactory
     {
         $nbStartDay = 60 * $nbMonths;
         $nbEndDay = 30 * $nbMonths;
@@ -50,4 +50,16 @@ class BookingFactory extends Factory
             ];
         });
     }
+
+    public function scheduled(): BookingFactory
+    {
+        $startDate = $this->faker->dateTimeBetween("5 days", "20 days");
+        $endDate = Carbon::instance($startDate)->addDays(30);
+
+        return $this->state(fn () => [
+            'start_date' => $startDate,
+            'end_date' => $endDate,
+        ]);
+    }
+
 }

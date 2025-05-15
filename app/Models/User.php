@@ -4,18 +4,18 @@ namespace App\Models;
 
 use App\Enums\Role;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Attributes\Scope as AsScope;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use InvalidArgumentException;
 use Laravel\Jetstream\HasProfilePhoto;
 
 /**
  * @property \Illuminate\Support\Carbon|mixed|null $birthdate
  * @property \Illuminate\Support\Carbon|mixed|null $registration_date
- * @property mixed|string $role
  */
 class User extends Authenticatable
 {
@@ -70,17 +70,20 @@ class User extends Authenticatable
         return $this->hasMany(Booking::class, 'trainer_id');
     }
 
-    public function scopeMembers(Builder $query): Builder
+    #[AsScope]
+    public function members(Builder $query): Builder
     {
         return $query->where('role', '=', Role::Member->value);
     }
 
-    public function scopeTrainers(Builder $query): Builder
+    #[AsScope]
+    public function trainers(Builder $query): Builder
     {
         return $query->where('role', '=', Role::Trainer->value);
     }
 
-    public function scopeByRole(Builder $query, string $role): Builder
+    #[AsScope]
+    public function byRole(Builder $query, string $role): Builder
     {
         return $query->when($role === Role::Member->value, function ($query) {
             return $query->members();
@@ -89,18 +92,20 @@ class User extends Authenticatable
         });
     }
 
-    public function getAgeAttribute(): ?string
+    public function age(): Attribute
     {
-        if (!$this->birthdate) {
-            return null;
-        }
-
-        $birthdate = Carbon::parse($this->birthdate);
-        return $birthdate->diff(Carbon::now())->format('%y');
+        return Attribute::make(
+            get: fn () => $this->birthdate
+                ? Carbon::parse($this->birthdate)->diff(Carbon::now())->format('%y')
+                : null,
+        );
     }
 
-    public function getSinceAttribute(): string
+
+    public function since(): Attribute
     {
-        return Carbon::parse($this->registration_date)->format('M j, Y');
+        return Attribute::make(
+            get: fn () => Carbon::parse($this->registration_date)->format('M j, Y'),
+        );
     }
 }

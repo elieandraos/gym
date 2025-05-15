@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Attributes\Scope as AsScope;
 
 class Booking extends Model
 {
@@ -41,22 +42,25 @@ class Booking extends Model
         return $this->hasMany(BookingSlot::class);
     }
 
-    public function scopeActive(Builder $query): Builder
+    #[AsScope]
+    public function active(Builder $query): Builder
     {
         return $query->where('start_date', '<=', Carbon::today())
             ->where('end_date', '>=', Carbon::today())
             ->orderBy('start_date', 'ASC');
     }
 
-    public function scopeHistory(Builder $query): Builder
+    #[AsScope]
+    public function history(Builder $query): Builder
     {
         return $query->where('end_date', '<', Carbon::today())
             ->orderBy('start_date', 'DESC');
     }
 
-    public function scopeScheduled(Builder $query): Builder
+    #[AsScope]
+    public function scheduled(Builder $query): Builder
     {
-        return $query->where('start_date', '>', Carbon::now())
+        return $query->where('start_date', '>', Carbon::today())
             ->orderBy('start_date', 'ASC');
     }
 }
