@@ -1,9 +1,5 @@
 <?php
 
-use App\Enums\Role;
-use App\Models\Booking;
-use App\Models\BookingSlot;
-use App\Models\User;
 use App\Services\BookingManager;
 use Carbon\Carbon;
 
