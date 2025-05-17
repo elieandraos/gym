@@ -2,27 +2,21 @@
     <AppLayout>
         <Container :centered="true">
             <page-title>
-                <div class="pb-8 border-b border-zinc-200 w-full">New {{ role }}</div>
+                <div class="pb-8 border-b border-zinc-200 w-full">New Member</div>
             </page-title>
-            <user-form></user-form>
+            <member-form></member-form>
         </Container>
     </AppLayout>
 </template>
 
 <script setup>
+import MemberForm from '@/Pages/Admin/Members/Partials/MemberForm.vue'
 import { useForm } from '@inertiajs/vue3'
 import { provide } from 'vue'
 
 import Container from '@/Components/Layout/Container.vue'
 import PageTitle from '@/Components/Layout/PageTitle.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
-import UserForm from '@/Pages/Admin/Users/Partials/UserForm.vue'
-
-const { route } = window
-
-const props = defineProps({
-    role: { type: String, default: 'Member', required: false },
-})
 
 const form = useForm({
     name: null,
@@ -31,8 +25,7 @@ const form = useForm({
     weight: null,
     height: null,
     blood_type: null,
-    birthdate: null,
-    role: props.role,
+    birthdate: '1993-9-27',
     phone_number: null,
     instagram_handle: null,
     address: null,

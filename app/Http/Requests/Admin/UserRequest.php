@@ -30,8 +30,7 @@ class UserRequest extends FormRequest
             'phone_number' => ['required', 'string'],
             'instagram_handle' => ['nullable', 'string'],
             'address' => ['nullable', 'string'],
-            'emergency_contact' => ['nullable', 'string'],
-            'role' => ['required', new Enum(Role::class)],
+            'emergency_contact' => ['nullable', 'string']
         ];
     }
 }

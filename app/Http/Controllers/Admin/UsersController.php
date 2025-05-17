@@ -29,6 +29,7 @@ class UsersController extends Controller
 
     public function show(User $user, string $role): Response
     {
+        // @todo: trainer controller and member controller complete refactor!!!
         $user = BookingManager::loadActiveBookingsWithSlotsForUser($user);
         //dd($user->toArray());
         return Inertia::render('Admin/Users/Show', [

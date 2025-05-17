@@ -53,7 +53,7 @@ class BookingsController extends Controller
         $booking = Booking::query()->create($request->all());
         $booking->bookingSlots()->saveMany($bookingSlots);
 
-        return redirect(route('admin.users.show', [$booking->member_id, $booking->member->role]))
+        return redirect(route('admin.members.show', [$booking->member_id]))
             ->with('flash.banner', 'Booking created successfully')
             ->with('flash.bannerStyle', 'success');
     }

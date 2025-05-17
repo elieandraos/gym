@@ -1,41 +1,12 @@
 <?php
 namespace App\Services;
 
-use App\Enums\Role;
-use App\Models\User;
 use Carbon\Carbon;
 use Carbon\Exceptions\InvalidFormatException;
 use InvalidArgumentException;
 
 class BookingManager
 {
-    public static function loadActiveBookingsWithSlotsForUser(User $user): User
-    {
-        $bookingsRelation = match (strtolower($user->role)) {
-            Role::Member->value => 'memberBookings',
-            Role::Trainer->value => 'trainerBookings',
-            default => throw new InvalidArgumentException('Invalid role provided.'),
-        };
-
-        $otherSideRelation = match (strtolower($user->role)) {
-            Role::Member->value => 'trainer',
-            Role::Trainer->value => 'member',
-            default => throw new InvalidArgumentException('Invalid role provided.'),
-        };
-
-        return $user->load([
-            $bookingsRelation => function ($query) use ($otherSideRelation) {
-                $query->active()
-                    ->with([
-                        $otherSideRelation,
-                        'bookingSlots' => function ($query) {
-                            $query->orderBy('start_time', 'ASC');
-                        },
-                    ]);
-            },
-        ]);
-    }
-
     public static function generateRepeatableDates(Carbon $startDate, int $nb_dates, array $repeatableDayTime): array
     {
         $validDaysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];

@@ -71,12 +71,12 @@ import { router } from '@inertiajs/vue3'
 import Badge from '@/Components/Layout/Badge.vue'
 
 const props = defineProps({
-    user: { type: Object, required: true },
+    trainer: { type: Object, required: true },
     bookings: { type: Array, required: true },
 })
 
 const { route } = window
-const { first_name } = props.user
+const { first_name } = props.trainer
 
 const headers = ['Member', 'Date', 'Time', '# Remaining']
 

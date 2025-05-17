@@ -15,7 +15,7 @@ import SelectInput from '@/Components/Form/SelectInput.vue'
 
 const props = defineProps({
     modelValue: {
-        type: [Date, String, Object], // accepts the default Carbon date string instance or a javascript date object
+        type: [Date, String, Object, null],
         required: true,
     },
     placeholder: {

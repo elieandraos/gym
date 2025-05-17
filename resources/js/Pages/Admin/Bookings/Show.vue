@@ -13,9 +13,9 @@
                             <div class="flex gap-x-2">
                                 <UsersIcon class="w-4 text-zinc-500"></UsersIcon>
                                 <span>
-                                    <Link class="text-sky-500 hover:text-sky-700 font-medium text-sm" :href="route('admin.users.show', { user: member.id, role: 'Member' })"> {{ member.name}}</Link>
+                                    <Link class="text-sky-500 hover:text-sky-700 font-medium text-sm" :href="route('admin.members.show', { user: member.id })"> {{ member.name}}</Link>
                                     ·
-                                    <Link class="text-sky-500 hover:text-sky-700 font-medium text-sm" :href="route('admin.users.show', { user: trainer.id, role: 'Trainer' })"> {{ trainer.name}}</Link>
+                                    <Link class="text-sky-500 hover:text-sky-700 font-medium text-sm" :href="route('admin.trainers.show', { user: trainer.id })"> {{ trainer.name}}</Link>
                                 </span>
                             </div>
                             <div class="flex gap-x-2">
@@ -53,6 +53,8 @@ import BookingSessions from '@/Pages/Admin/Bookings/Partials/BookingSessions.vue
 const props = defineProps({
     booking: { type: Object, required: true },
 })
+
+const { route } = window
 
 const {
     member, trainer, nb_remaining_sessions, bookingSlots, formatted_end_date,

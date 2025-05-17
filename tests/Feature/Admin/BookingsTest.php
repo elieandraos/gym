@@ -77,7 +77,7 @@ test('it creates a booking and its booking slots', function () {
     actingAsAdmin()
         ->post(route('admin.bookings.store'), $data)
         ->assertSessionHasNoErrors()
-        ->assertRedirect(route('admin.users.show', ['role' => $member->role, 'user' => $member->id]));
+        ->assertRedirect(route('admin.members.show', ['user' => $member->id]));
 
     $this->assertDatabaseHas(Booking::class, Arr::only($data, ['start_date', 'member_id', 'trainer_id', 'nb_sessions']));
 

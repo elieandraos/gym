@@ -1,7 +1,7 @@
 <template>
     <AppLayout title="Profile">
         <Container>
-            <page-back-button>{{ role }}s</page-back-button>
+            <page-back-button>Members</page-back-button>
 
             <div class="flex justify-between items-center pb-6">
                 <div class="flex flex-wrap grow items-center gap-6">
@@ -15,32 +15,24 @@
                     </div>
                 </div>
 
-                <div class="space-x-4" v-if="isMember">
-                    <SecondaryButton @click="goToBookingsHistory">View training history</SecondaryButton>
-                </div>
+                <SecondaryButton @click="goToBookingsHistory">View training history</SecondaryButton>
             </div>
 
-            <div v-if="isMember && isTraining" class="mb-16">
-                <member-training-status :user="user"></member-training-status>
+            <div v-if="isTraining" class="mb-16">
+                <training-status :member="member"></training-status>
             </div>
 
             <div class="space-y-12">
-                <user-profile :user="user"></user-profile>
-                <user-contact :user="user"></user-contact>
+                <user-profile :user="member"></user-profile>
+                <user-contact :user="member"></user-contact>
             </div>
 
-            <div class="mt-12">
-                <div v-if="isTrainer && isTraining">
-                    <!-- @todo: cards: members this month, sessions this month, most busy days (for ex: Mon,Wed,Th) -->
-                    <h3 class="font-semibold text-sm pb-1 mb-1">Members training with {{ name }}</h3>
-                    <trainer-bookings :bookings="bookings" :user="user"></trainer-bookings>
-                </div>
-            </div>
         </Container>
     </AppLayout>
 </template>
 
 <script setup>
+import TrainingStatus from '@/Pages/Admin/Members/Partials/TrainingStatus.vue'
 import { CheckBadgeIcon } from '@heroicons/vue/24/solid'
 import { router } from '@inertiajs/vue3'
 import { computed } from 'vue'
@@ -49,22 +41,18 @@ import Container from '@/Components/Layout/Container.vue'
 import PageBackButton from '@/Components/Layout/PageBackButton.vue'
 import SecondaryButton from '@/Components/Layout/SecondaryButton.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
-import MemberTrainingStatus from '@/Pages/Admin/Users/Partials/MemberTrainingStatus.vue'
-import TrainerBookings from '@/Pages/Admin/Users/Partials/TrainerBookings.vue'
 import UserContact from '@/Pages/Admin/Users/Partials/UserContact.vue'
 import UserProfile from '@/Pages/Admin/Users/Partials/UserProfile.vue'
 
 const props = defineProps({
-    user: { type: Object, required: true },
+    member: { type: Object, required: true },
 })
 
 const {
     id, role, bookings, name, since, profile_photo_url, in_house, age,
-} = props.user
+} = props.member
 
-const isMember = computed(() => role === 'member')
-const isTrainer = computed(() => role === 'trainer')
 const isTraining = computed(() => bookings.length)
 
-const goToBookingsHistory = () => router.visit(route('admin.users.history', { user: id, role: 'member' }))
+const goToBookingsHistory = () => router.visit(route('admin.members.history', { user: id }))
 </script>

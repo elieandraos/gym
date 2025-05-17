@@ -12,7 +12,7 @@
                         <div class="flex gap-x-2">
                             <UserIcon class="w-4 text-zinc-500"></UserIcon>
                             <span>
-                                <Link class="text-sky-500 hover:text-sky-700 font-medium text-sm" :href="route('admin.users.show', { user: id, role: 'Member' })"> {{ name}}</Link>
+                                <Link class="text-sky-500 hover:text-sky-700 font-medium text-sm" :href="route('admin.members.show', { user: id })"> {{ name}}</Link>
                             </span>
                         </div>
                         <div class="flex gap-x-2">
@@ -76,6 +76,8 @@ const {
 } = props.user
 
 const headers = ['Date', 'Trainer', '# Sessions']
+
+const { route } = window
 
 const trainingsCount = computed(() => {
     if (bookings.length === 0) return 'No training history yet'
