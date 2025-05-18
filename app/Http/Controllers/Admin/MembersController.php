@@ -28,14 +28,7 @@ class MembersController extends Controller
 
     public function show(User $user): Response
     {
-        $user->load([
-            'memberBookings' => function ($query) {
-                $query->active()->with([
-                    'trainer',
-                    'bookingSlots' => fn ($query) => $query->orderBy('start_time'),
-                ]);
-            },
-        ]);
+        $user->load(['memberActiveBooking', 'memberScheduledBookings']);
 
         return Inertia::render('Admin/Members/Show', [
             'member' => UserResource::make($user),

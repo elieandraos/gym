@@ -8,7 +8,7 @@
                     <img class="h-20 w-20 flex-shrink-0 rounded-full object-cover" :src="profile_photo_url" :alt="name">
                     <div>
                         <div class="flex flex-wrap items-center gap-2">
-                            <h1 class="text-xl font-bold text-zinc-950">{{ name }}</h1>
+                            <h1 class="text-2xl font-bold text-zinc-950">{{ name }}</h1>
                             <check-badge-icon class="w-6 h-6 text-sky-500 inline" v-if="in_house"></check-badge-icon>
                         </div>
                         <div class="mt-1 text-sm text-zinc-500">{{ age }} years old · Member since {{  since }}</div>

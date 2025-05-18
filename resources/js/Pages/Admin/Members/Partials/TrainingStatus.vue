@@ -3,7 +3,7 @@
         <div class="flex flex-col gap-2 sm:flex-row md:justify-between md:gap-x-4">
             <div class="grow">
                 <hr class="w-full border-t border-zinc-200">
-                <div class="mt-6 font-semibold text-zinc-950 capitalize">Training with</div>
+                <div class="mt-6 font-bold text-zinc-950 capitalize">Training with</div>
                 <div class="mt-3 text-sm flex gap-2 items-center">
                     <img class="h-6 w-6 rounded-full object-cover" :src="trainer.profile_photo_url" :alt="name">
                     <span class="text-zinc-950">{{ trainer.name }}</span>
@@ -11,7 +11,7 @@
             </div>
             <div class="grow">
                 <hr class="w-full border-t border-zinc-200">
-                <div class="mt-6 font-semibold text-zinc-950 capitalize">upcoming session</div>
+                <div class="mt-6 font-bold text-zinc-950 capitalize">upcoming session</div>
                 <div class="mt-3 text-sm flex gap-2 items-center">
                     <div class="flex items-center gap-1">
                         <calendar-icon class="h-4 w-4 text-zinc-400"></calendar-icon>
@@ -28,7 +28,7 @@
             </div>
             <div class="grow">
                 <hr class="w-full border-t border-zinc-200">
-                <div class="mt-6 font-semibold text-zinc-950 capitalize">Remaining</div>
+                <div class="mt-6 font-bold text-zinc-950 capitalize">Remaining</div>
                 <div class="mt-3 text-sm">
                     {{ nb_remaining_sessions }} until {{ formatted_end_date }}
                 </div>
@@ -52,9 +52,9 @@ const props = defineProps({
 
 const { route } = window
 
-const { name, bookings } = props.member
+const { name, active_booking } = props.member
 
 const {
     id, nb_remaining_sessions, trainer, upcoming_session_date, upcoming_session_time, formatted_end_date, upcoming_session_url,
-} = bookings[0]
+} = active_booking
 </script>

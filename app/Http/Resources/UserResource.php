@@ -34,7 +34,8 @@ class UserResource extends JsonResource
             'address' => $this->address,
             'emergency_contact' => $this->emergency_contact,
             'role' => strtolower($this->role),
-            'bookings' => $this->getBookings(),
+            'active_booking' => new BookingResource($this->whenLoaded('memberActiveBooking')),
+            'scheduled_bookings' => BookingResource::collection($this->whenLoaded('memberScheduledBookings'))
         ];
     }
 
