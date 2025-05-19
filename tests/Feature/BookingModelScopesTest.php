@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Booking;
+use Carbon\Carbon;
 
 describe('active scope', function () {
     it('returns only active bookings', function () {
@@ -22,6 +23,17 @@ describe('active scope', function () {
 
         expect($results)->toHaveCount(0);
     });
+
+    it('includes bookings with start_date and end_date equal to today', function () {
+        Booking::factory()->create([
+            'start_date' => Carbon::today(),
+            'end_date' => Carbon::today(),
+        ]);
+
+        $results = Booking::query()->active()->get();
+
+        expect($results)->toHaveCount(1);
+    });
 });
 
 describe('scheduled scope', function () {
@@ -41,6 +53,28 @@ describe('scheduled scope', function () {
         Booking::factory()->completed(2)->create();
 
         $results = Booking::query()->scheduled()->get();
+
+        expect($results)->toHaveCount(0);
+    });
+
+    it('does not include bookings with start_date equal to today', function () {
+        Booking::factory()->create([
+            'start_date' => Carbon::today(),
+            'end_date' => Carbon::today()->addDays(3),
+        ]);
+
+        $results = Booking::query()->scheduled()->get();
+
+        expect($results)->toHaveCount(0);
+    });
+
+    it('does not include bookings with end_date equal to today', function () {
+        Booking::factory()->create([
+            'start_date' => Carbon::today()->subDays(5),
+            'end_date' => Carbon::today(),
+        ]);
+
+        $results = Booking::query()->history()->get();
 
         expect($results)->toHaveCount(0);
     });
