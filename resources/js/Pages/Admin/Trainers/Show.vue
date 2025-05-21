@@ -2,7 +2,7 @@
     <AppLayout title="Profile">
         <Container>
             <page-back-button>Trainers</page-back-button>
-
+            <pre>{{ trainer }}</pre>
             <div class="flex justify-between items-center pb-6">
                 <div class="flex flex-wrap grow items-center gap-6">
                     <img class="h-20 w-20 flex-shrink-0 rounded-full object-cover" :src="profile_photo_url" :alt="name">
@@ -22,11 +22,11 @@
             </div>
 
             <div class="mt-12">
-                <div v-if="isTraining">
-                    <!-- @todo: cards: members this month, sessions this month, most busy days (for ex: Mon,Wed,Th) -->
-                    <h3 class="font-semibold text-sm pb-1 mb-1">Members training with {{ name }}</h3>
-                    <trainer-bookings :bookings="bookings" :trainer="trainer"></trainer-bookings>
-                </div>
+<!--                <div v-if="isTraining">-->
+<!--                    &lt;!&ndash; @todo: cards: members this month, sessions this month, most busy days (for ex: Mon,Wed,Th) &ndash;&gt;-->
+<!--                    <h3 class="font-semibold text-sm pb-1 mb-1">Members training with {{ name }}</h3>-->
+<!--                    <trainer-bookings :bookings="bookings" :trainer="trainer"></trainer-bookings>-->
+<!--                </div>-->
             </div>
         </Container>
     </AppLayout>
@@ -51,5 +51,5 @@ const {
     id, role, bookings, name, since, profile_photo_url, in_house, age,
 } = props.trainer
 
-const isTraining = computed(() => bookings.length)
+//const isTraining = computed(() => bookings.length)
 </script>

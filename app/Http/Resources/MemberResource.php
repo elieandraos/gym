@@ -9,7 +9,7 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /** @mixin \App\Models\User */
-class UserResource extends JsonResource
+class MemberResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
@@ -34,15 +34,8 @@ class UserResource extends JsonResource
             'address' => $this->address,
             'emergency_contact' => $this->emergency_contact,
             'role' => strtolower($this->role),
-            'active_booking' => new BookingResource($this->whenLoaded('trainerActiveBooking')),
-            'scheduled_bookings' => BookingResource::collection($this->whenLoaded('trainerScheduledBookings'))
+            'active_booking' => new BookingResource($this->whenLoaded('memberActiveBooking')),
+            'scheduled_bookings' => BookingResource::collection($this->whenLoaded('memberScheduledBookings'))
         ];
-    }
-
-    protected function getBookings(): AnonymousResourceCollection
-    {
-        return $this->role === Role::Member->value ?
-            BookingResource::collection($this->whenLoaded('memberBookings')) :
-            BookingResource::collection($this->whenLoaded('trainerBookings'));
     }
 }

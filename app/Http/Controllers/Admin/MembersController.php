@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Enums\Role;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\UserRequest;
-use App\Http\Resources\UserResource;
+use App\Http\Resources\MemberResource;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Hash;
@@ -22,7 +22,7 @@ class MembersController extends Controller
             ->paginate(10);
 
         return Inertia::render('Admin/Members/Index', [
-            'members' => UserResource::collection($members)
+            'members' => MemberResource::collection($members)
         ]);
     }
 
@@ -31,7 +31,7 @@ class MembersController extends Controller
         $user->load(['memberActiveBooking', 'memberScheduledBookings']);
 
         return Inertia::render('Admin/Members/Show', [
-            'member' => UserResource::make($user),
+            'member' => MemberResource::make($user),
         ]);
     }
 
