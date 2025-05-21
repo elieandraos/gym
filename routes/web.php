@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\BookingsController;
 use App\Http\Controllers\Admin\BookingSlotsController;
 use App\Http\Controllers\Admin\MembersController;
 use App\Http\Controllers\Admin\TrainersController;
+use App\Http\Controllers\Admin\WeeklyCalendarController;
 use App\Http\Controllers\UserBookingsHistoryController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -31,7 +32,6 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         Route::get('/{user}/history', UserBookingsHistoryController::class)->name('history');
     });
 
-
     // Bookings
     Route::get('/bookings/create', [BookingsController::class, 'create'])->name('admin.bookings.create');
     Route::post('/bookings/store', [BookingsController::class, 'store'])->name('admin.bookings.store');
@@ -41,4 +41,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     Route::get('/bookings-slots/{bookingSlot}/show', [BookingSlotsController::class, 'show'])->name('admin.bookings-slots.show');
     Route::get('/bookings-slots/{bookingSlot}/edit', [BookingSlotsController::class, 'edit'])->name('admin.bookings-slots.edit');
     Route::put('/bookings-slots/{bookingSlot}/update', [BookingSlotsController::class, 'update'])->name('admin.bookings-slots.update');
+
+    // Weekly Calendar
+    Route::get('/calendar', [WeeklyCalendarController::class, 'index'])->name('admin.weekly-calendar.index');
 });

@@ -22,8 +22,9 @@
 </template>
 
 <script setup>
+
 import {
-    HomeIcon, UserIcon, UsersIcon, Cog6ToothIcon, PlusCircleIcon,
+    HomeIcon, UserIcon, UsersIcon, Cog6ToothIcon, PlusCircleIcon, CalendarIcon
 } from '@heroicons/vue/24/solid'
 import { Head, usePage } from '@inertiajs/vue3'
 
@@ -53,11 +54,17 @@ const menu = [
         when: () => usePage().props.auth.user,
     },
     {
+        name: 'Calendar',
+        url: route('admin.weekly-calendar.index'),
+        icon: CalendarIcon,
+        activeRoute: 'admin.weekly-calendar.index',
+        when: () => usePage().props.auth.user,
+    },
+    {
         name: 'Members',
         url: route('admin.members.index'),
         icon: UserIcon,
         activeRoute: 'admin.members.*',
-        for: 'Member',
         when: () => usePage().props.auth.user,
     },
     {
@@ -65,7 +72,6 @@ const menu = [
         url: route('admin.trainers.index'),
         icon: UsersIcon,
         activeRoute: 'admin.trainers.*',
-        for: 'Trainer',
         when: () => usePage().props.auth.user,
     },
     {
