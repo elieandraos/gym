@@ -4,11 +4,19 @@
         <header class="flex flex-none items-center justify-between border-b border-gray-200 px-6 py-4">
             <div class="flex items-center">
                 <div class="relative flex items-center rounded-md bg-white shadow-sm md:items-stretch">
-                    <button type="button" class="flex h-9 w-12 items-center justify-center rounded-l-md border-y border-l border-gray-300 pr-1 text-gray-400 hover:text-gray-500 focus:relative md:w-9 md:pr-0 md:hover:bg-gray-50">
+                    <button
+                        @click="prevWeek"
+                        :disabled="currentWeekIndex === 0"
+                        class="flex h-9 w-12 items-center justify-center rounded-l-md border-y border-l border-gray-300 pr-1 text-gray-400 cursor-pointer hover:text-gray-500 focus:relative disabled:opacity-30 md:w-9 md:pr-0 md:hover:bg-gray-50"
+                    >
                         <ChevronLeftIcon class="size-5" aria-hidden="true" />
                     </button>
                     <span class="relative -mx-px h-5 w-px bg-gray-300 md:hidden" />
-                    <button type="button" class="flex h-9 w-12 items-center justify-center rounded-r-md border-y border-r border-gray-300 pl-1 text-gray-400 hover:text-gray-500 focus:relative md:w-9 md:pl-0 md:hover:bg-gray-50">
+                    <button
+                        @click="nextWeek"
+                        :disabled="currentWeekIndex === weeks.length - 1"
+                        class="flex h-9 w-12 items-center justify-center rounded-r-md border-y border-r border-gray-300 pl-1 text-gray-400 cursor-pointer hover:text-gray-500 focus:relative disabled:opacity-30 md:w-9 md:pl-0 md:hover:bg-gray-50"
+                    >
                         <ChevronRightIcon class="size-5" aria-hidden="true" />
                     </button>
                 </div>
@@ -24,12 +32,14 @@
                         <div class="col-end-1 w-14" />
                         <template v-for="(day, key) in headerDays" :key="key">
                             <div class="flex items-center justify-center py-3">
-                                <span>{{ day.short }} <span class="items-center justify-center font-semibold text-gray-900">{{ day.day }}</span></span>
+                                <span>{{ day.short }}
+                                    <span class="items-center justify-center font-semibold" :class="day.isToday ? 'p-1 rounded-full bg-indigo-600 text-white' : 'text-gray-900'">{{ day.day }}</span>
+                                </span>
                             </div>
                         </template>
                     </div>
                 </div>
-                
+
                 <div class="flex flex-auto">
                     <div class="sticky left-0 z-10 w-14 flex-none bg-white ring-1 ring-gray-100" />
                     <div class="grid flex-auto grid-cols-1 grid-rows-1">
@@ -99,7 +109,6 @@
                             <div>
                                 <div class="sticky left-0 z-20 -ml-14 -mt-2.5 w-14 pr-2 text-right text-xs/5 text-gray-400">10PM</div>
                             </div>
-
                         </div>
 
                         <!-- Vertical lines -->
@@ -148,10 +157,9 @@
 </template>
 
 <script setup>
-import {ChevronLeftIcon, ChevronRightIcon} from '@heroicons/vue/20/solid'
-
-import {addDays, format, parseISO} from 'date-fns'
-import {ref} from 'vue'
+import { ref, computed } from 'vue'
+import { addDays, parseISO, format, isSameDay } from 'date-fns'
+import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/20/solid'
 
 const props = defineProps({
     weeks: { type: Array, required: true }
@@ -161,20 +169,29 @@ const container = ref(null)
 const containerNav = ref(null)
 const containerOffset = ref(null)
 
-const selectedWeek = props.weeks.find( w => {
-    const { is_current } = w
-    return is_current === true
+// Track current week
+const currentWeekIndex = ref(props.weeks.findIndex(w => w.is_current))
+const weeks = props.weeks
+const today = new Date()
+
+// Navigation
+const prevWeek = () => currentWeekIndex.value > 0 && currentWeekIndex.value--
+const nextWeek = () => currentWeekIndex.value < weeks.length - 1 && currentWeekIndex.value++
+
+// Computed selected week
+const selectedWeek = computed(() => weeks[currentWeekIndex.value])
+
+// Days calendar header
+const headerDays = computed(() => {
+    const start = parseISO(selectedWeek.value.start)
+    return Array.from({ length: 6 }).map((_, i) => {
+        const date = addDays(start, i)
+        return {
+            letter: format(date, 'EEEEE'),
+            short: format(date, 'EEE'),
+            day: format(date, 'd'),
+            isToday: isSameDay(date, today)
+        }
+    })
 })
-
-const weekStart = parseISO(selectedWeek.start)
-
-const headerDays = Array.from({ length: 6 }).map((_, i) => {
-    const date = addDays(weekStart, i)
-    return {
-        letter: format(date, 'EEEEE'),
-        short:  format(date, 'EEE'),
-        day:    format(date, 'd'),
-    }
-})
-
 </script>
