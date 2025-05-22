@@ -19,57 +19,17 @@
             <div style="width: 165%" class="flex max-w-full flex-none flex-col sm:max-w-none md:max-w-full">
                 <div ref="containerNav" class="sticky top-0 z-30 flex-none bg-white shadow ring-1 ring-black/5 sm:pr-8">
 
-                    <div class="grid grid-cols-6 text-sm/6 text-gray-500 sm:hidden">
-                        <button type="button" class="flex flex-col items-center pb-3 pt-2">
-                            M
-                            <span class="mt-1 flex size-8 items-center justify-center font-semibold text-gray-900">10</span>
-                        </button>
-                        <button type="button" class="flex flex-col items-center pb-3 pt-2">
-                            T
-                            <span class="mt-1 flex size-8 items-center justify-center font-semibold text-gray-900">11</span>
-                        </button>
-                        <button type="button" class="flex flex-col items-center pb-3 pt-2">
-                            W
-                            <span class="mt-1 flex size-8 items-center justify-center rounded-full bg-indigo-600 font-semibold text-white">12</span>
-                        </button>
-                        <button type="button" class="flex flex-col items-center pb-3 pt-2">
-                            T
-                            <span class="mt-1 flex size-8 items-center justify-center font-semibold text-gray-900">13</span>
-                        </button>
-                        <button type="button" class="flex flex-col items-center pb-3 pt-2">
-                            F
-                            <span class="mt-1 flex size-8 items-center justify-center font-semibold text-gray-900">14</span>
-                        </button>
-                        <button type="button" class="flex flex-col items-center pb-3 pt-2">
-                            S
-                            <span class="mt-1 flex size-8 items-center justify-center font-semibold text-gray-900">15</span>
-                        </button>
-                    </div>
-
+                    <!-- header days -->
                     <div class="-mr-px hidden grid-cols-6 divide-x divide-gray-100 border-r border-gray-100 text-sm/6 text-gray-500 sm:grid">
                         <div class="col-end-1 w-14" />
-                        <div class="flex items-center justify-center py-3">
-                            <span>Mon <span class="items-center justify-center font-semibold text-gray-900">10</span></span>
-                        </div>
-                        <div class="flex items-center justify-center py-3">
-                            <span>Tue <span class="items-center justify-center font-semibold text-gray-900">11</span></span>
-                        </div>
-                        <div class="flex items-center justify-center py-3">
-                            <span class="flex items-baseline">Wed <span class="ml-1.5 flex size-8 items-center justify-center rounded-full bg-indigo-600 font-semibold text-white">12</span></span>
-                        </div>
-                        <div class="flex items-center justify-center py-3">
-                            <span>Thu <span class="items-center justify-center font-semibold text-gray-900">13</span></span>
-                        </div>
-                        <div class="flex items-center justify-center py-3">
-                            <span>Fri <span class="items-center justify-center font-semibold text-gray-900">14</span></span>
-                        </div>
-                        <div class="flex items-center justify-center py-3">
-                            <span>Sat <span class="items-center justify-center font-semibold text-gray-900">15</span></span>
-                        </div>
+                        <template v-for="(day, key) in headerDays" :key="key">
+                            <div class="flex items-center justify-center py-3">
+                                <span>{{ day.short }} <span class="items-center justify-center font-semibold text-gray-900">{{ day.day }}</span></span>
+                            </div>
+                        </template>
                     </div>
                 </div>
-
-
+                
                 <div class="flex flex-auto">
                     <div class="sticky left-0 z-10 w-14 flex-none bg-white ring-1 ring-gray-100" />
                     <div class="grid flex-auto grid-cols-1 grid-rows-1">
@@ -188,10 +148,33 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/20/solid'
+import {ChevronLeftIcon, ChevronRightIcon} from '@heroicons/vue/20/solid'
+
+import {addDays, format, parseISO} from 'date-fns'
+import {ref} from 'vue'
+
+const props = defineProps({
+    weeks: { type: Array, required: true }
+})
 
 const container = ref(null)
 const containerNav = ref(null)
 const containerOffset = ref(null)
+
+const selectedWeek = props.weeks.find( w => {
+    const { is_current } = w
+    return is_current === true
+})
+
+const weekStart = parseISO(selectedWeek.start)
+
+const headerDays = Array.from({ length: 6 }).map((_, i) => {
+    const date = addDays(weekStart, i)
+    return {
+        letter: format(date, 'EEEEE'),
+        short:  format(date, 'EEE'),
+        day:    format(date, 'd'),
+    }
+})
+
 </script>
