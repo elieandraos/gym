@@ -15,7 +15,7 @@ class BookingSlotFactory extends Factory
     public function definition(): array
     {
         return [
-            'start_time' => Carbon::now()->floorMinutes(15),
+            'start_time' => Carbon::now()->floorMinutes(30),
             'end_time' => Carbon::now()->addMinutes(60),
             'status' => Status::Upcoming,
             'booking_id' => Booking::factory(),
@@ -25,29 +25,32 @@ class BookingSlotFactory extends Factory
     public function forBooking(Booking $booking): BookingSlotFactory
     {
         return $this->state(function () use ($booking) {
-            $startDate = $booking->start_date;
-            $endDate = $booking->end_date;
+            // 1) grab the booking window...
+            $startDate = Carbon::parse($booking->start_date)->setTime(7, 0);
+            $endDate   = Carbon::parse($booking->end_date)
+                ->setTime(21, 0)     // latest end boundary is 21:00
+                ->subHour();         // leave room for 1-hour slot
 
-            // Generate a random start time within the booking date range
-            $startDateTime = Carbon::instance($this->faker->dateTimeBetween($startDate, $endDate));
+            // 2) pick a random start between 07:00 and (21:00–1h)
+            $startDateTime = Carbon::instance(
+                $this->faker->dateTimeBetween($startDate, $endDate)
+            );
 
-            // Ensure the start time is at least one hour before the end date
-            if ($startDateTime->format('Y-m-d H:i:s') > $endDate->subHour()->format('Y-m-d H:i:s')) {
-                $startDateTime = $endDate->subHour();  // Adjust start time back by one hour if too close to end date
-            }
+            // 3) floor it to the nearest 30-minute mark
+            $startDateTime = $startDateTime->floorMinutes(30);
 
-            // Floor the start time to the nearest 15-minute increment
-            $startDateTime = $startDateTime->floorMinutes(15);
-
-            // Clone the startDateTime and add one hour for endDateTime
-            $endDateTime = (clone $startDateTime)->modify('+1 hour');
+            // 4) build the one-hour slot
+            $endDateTime = (clone $startDateTime)->addHour();
 
             return [
                 'start_time' => $startDateTime,
-                'end_time' => $endDateTime,
+                'end_time'   => $endDateTime,
                 'booking_id' => $booking->id,
-                'status' => $endDateTime < Carbon::now() ? Status::Complete : Status::Upcoming,
+                'status'     => $endDateTime->isPast()
+                    ? Status::Complete
+                    : Status::Upcoming,
             ];
         });
     }
+
 }

@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
             'role' => Role::Trainer->value,
         ]);
 
-        $members = User::factory(50)->create([
+        $members = User::factory(40)->create([
             'role' => Role::Member->value,
         ]);
 
@@ -28,8 +28,8 @@ class DatabaseSeeder extends Seeder
         });
 
         User::factory()->create([
-            'name' => 'Admin',
-            'email' => 'test@example.com',
+            'name' => 'Owner',
+            'email' => 'owner@liftstation.fitness',
             'role' => Role::Admin->value,
         ]);
     }
