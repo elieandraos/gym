@@ -45,10 +45,18 @@ class CalendarWeekCollection extends ResourceCollection
                         })
                         ->values()
                         ->map(function($slot) {
+                            $minutes = $slot->start_time->minute;
+
                             return [
                                 'id'         => $slot->id,
                                 'start_time'=> $slot->start_time->toIso8601String(),
                                 'end_time'  => $slot->end_time->toIso8601String(),
+                                'duration'    => $slot->end_time->diffInMinutes($slot->start_time),
+                                'short_time'  => $slot->start_time->format(
+                                    $minutes === 0
+                                        ? 'ga'    // “7am”, “2pm” when on the hour
+                                        : 'g:i a' // “7:30 am”, “2:15 pm” when minutes > 0
+                                ),
                             ];
                         });
 

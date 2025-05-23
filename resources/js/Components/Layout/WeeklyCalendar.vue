@@ -1,6 +1,5 @@
 <template>
     <div class="flex h-full flex-col">
-
         <header class="flex flex-none items-center justify-between border-b border-gray-200 px-6 py-4">
             <div class="flex items-center">
                 <div class="relative flex items-center rounded-md bg-white shadow-sm md:items-stretch">
@@ -70,32 +69,31 @@
                         </div>
 
                         <!-- Events -->
-                        <ol class="col-start-1 col-end-2 row-start-1 grid grid-cols-1 sm:grid-cols-6 sm:pr-8" style="grid-template-rows: 1.75rem repeat(180, minmax(0, 1fr)) auto">
-                            <li class="relative py-px flex sm:col-start-3" style="grid-row: 2 / span 6">
-                                <a href="#" class="group absolute inset-x-1 inset-y-2 flex flex-col overflow-y-auto rounded-lg bg-blue-50 p-2 text-xs/5 hover:bg-blue-100">
-                                    <p class="order-1 font-semibold text-blue-700">Breakfast</p>
-                                    <p class="text-blue-500 group-hover:text-blue-700">
-                                        <time datetime="2022-01-12T06:00">7:00 AM</time>
+                        <ol class="col-start-1 col-end-2 row-start-1 grid grid-cols-1 sm:grid-cols-6 sm:pr-8"
+                            style="grid-template-rows: 1.75rem repeat(180, minmax(0,1fr)) auto">
+                            <li
+                                v-for="slot in events"
+                                :key="slot.id"
+                                class="relative py-px flex"
+                                :class="`sm:col-start-${slot.col}`"
+                                :style="`grid-row: ${slot.rowStart} / span ${slot.span}`"
+                            >
+                                <a href="#"
+                                   class="group absolute inset-x-1 inset-y-2 flex flex-col overflow-y-auto rounded-lg p-2 text-xs/5 hover:opacity-90"
+                                   :class="slot.bgClass"
+                                >
+                                    <p class="order-1 font-semibold" :class="slot.textClass">
+                                        {{ slot.member }}
                                     </p>
-                                </a>
-                            </li>
-                            <li class="relative py-px flex sm:col-start-3" style="grid-row: 8 / span 30">
-                                <a href="#" class="group absolute inset-x-1 inset-y-2 flex flex-col overflow-y-auto rounded-lg bg-pink-50 p-2 text-xs/5 hover:bg-pink-100">
-                                    <p class="order-1 font-semibold text-pink-700">Flight to Paris</p>
-                                    <p class="text-pink-500 group-hover:text-pink-700">
-                                        <time datetime="2022-01-12T07:30">7:30 AM</time>
-                                    </p>
-                                </a>
-                            </li>
-                            <li class="relative py-px hidden sm:col-start-6 sm:flex" style="grid-row: 38 / span 24">
-                                <a href="#" class="group absolute inset-x-1 inset-y-2 flex flex-col overflow-y-auto rounded-lg bg-gray-100 p-2 text-xs/5 hover:bg-gray-200">
-                                    <p class="order-1 font-semibold text-gray-700">Meeting with design team at Disney</p>
-                                    <p class="text-gray-500 group-hover:text-gray-700">
-                                        <time datetime="2022-01-15T10:00">10:00 AM</time>
+                                    <p :class="slot.textClass + ' group-hover:' + slot.hoverText">
+                                        <time :datetime="slot.start_time">
+                                            {{ slot.short_time }}
+                                        </time>
                                     </p>
                                 </a>
                             </li>
                         </ol>
+
                     </div>
                 </div>
             </div>
@@ -105,7 +103,7 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import { addDays, parseISO, format, isSameDay, startOfDay, setHours, setMinutes } from 'date-fns'
+import { addDays, parseISO, format, isSameDay, startOfDay, setHours, setMinutes, differenceInCalendarDays, differenceInMinutes } from 'date-fns'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/20/solid'
 
 const props = defineProps({
@@ -148,4 +146,61 @@ const hours = computed(() =>
         setMinutes(setHours(startOfDay(new Date()), 7 + i), 0)
     )
 )
+
+const events = computed(() => {
+    const weekStart = parseISO(selectedWeek.value.start)
+
+    return selectedWeek.value.bookings
+        .flatMap((b, bi) =>
+            b.booking_slots.map(slot => {
+                const start = parseISO(slot.start_time)
+                const end   = parseISO(slot.end_time)
+
+                // filter out anything outside 7 AM–10 PM
+                const minsSinceMidnight = differenceInMinutes(start, startOfDay(start))
+                if (minsSinceMidnight < 7 * 60 || minsSinceMidnight >= 22 * 60) {
+                    return null
+                }
+
+                // column (Mon=1..Sat=6)
+                let dayIndex = differenceInCalendarDays(start, weekStart)
+                dayIndex = Math.max(0, Math.min(5, dayIndex))
+                const col = dayIndex + 1
+
+                // rowStart: minutes since 7 AM ÷ 5 + 2
+                const minsFrom7 = Math.max(0, Math.min(900, minsSinceMidnight - 420))
+                const rowStart = Math.floor(minsFrom7 / 5) + 2
+
+                // span (duration ÷ 5min)
+                const duration = differenceInMinutes(end, start)
+                const span     = Math.max(1, Math.ceil(duration / 5))
+
+                // rotating color palette
+                const colors = [
+                    { bg: 'bg-blue-50 hover:bg-blue-100', text: 'text-blue-700',  hover: 'text-blue-700'  },
+                    { bg: 'bg-pink-50 hover:bg-pink-100', text: 'text-pink-700', hover: 'text-pink-700' },
+                    { bg: 'bg-gray-100 hover:bg-gray-200', text: 'text-gray-700',  hover: 'text-gray-700'  },
+                    { bg: 'bg-amber-100 hover:bg-amber-200', text: 'text-amber-700', hover: 'text-amber-700' },
+                    { bg: 'bg-purple-100 hover:bg-purple-200', text: 'text-purple-700', hover: 'text-purple-700' },
+                    { bg: 'bg-teal-100 hover:bg-teal-200', text: 'text-teal-700',  hover: 'text-teal-700'  },
+                ][bi % 6]
+
+                return {
+                    id:         slot.id,
+                    start_time: slot.start_time,
+                    short_time: slot.short_time,
+                    member:     b.member,
+                    trainer:    b.trainer,
+                    col,
+                    rowStart,
+                    span,
+                    bgClass:    colors.bg,
+                    textClass:  colors.text,
+                    hoverText:  colors.hover
+                }
+            })
+        )
+        .filter(s => s !== null)
+})
+
 </script>
