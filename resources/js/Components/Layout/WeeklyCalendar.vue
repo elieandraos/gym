@@ -24,9 +24,8 @@
         </header>
 
         <div ref="container" class="isolate flex flex-auto flex-col overflow-auto bg-white">
-            <div style="width: 165%" class="flex max-w-full flex-none flex-col sm:max-w-none md:max-w-full">
+            <div class="flex w-[165%] max-w-full flex-none flex-col sm:max-w-none md:max-w-full">
                 <div ref="containerNav" class="sticky top-0 z-30 flex-none bg-white shadow ring-1 ring-black/5 sm:pr-8">
-
                     <!-- header days -->
                     <div class="-mr-px hidden grid-cols-6 divide-x divide-gray-100 border-r border-gray-100 text-sm/6 text-gray-500 sm:grid">
                         <div class="col-end-1 w-14" />
@@ -44,71 +43,19 @@
                     <div class="sticky left-0 z-10 w-14 flex-none bg-white ring-1 ring-gray-100" />
                     <div class="grid flex-auto grid-cols-1 grid-rows-1">
                         <!-- Horizontal lines: 30 rows = 15 hours (7 AM → 10 PM) at ½-hour increments. -->
-                        <div class="col-start-1 col-end-2 row-start-1 grid divide-y divide-gray-100" style="grid-template-rows: repeat(30, minmax(3.5rem, 1fr))">
+                        <div
+                            class="col-start-1 col-end-2 row-start-1 grid divide-y divide-gray-100"
+                            style="grid-template-rows: repeat(30, minmax(3.5rem, 1fr))"
+                        >
                             <div ref="containerOffset" class="row-end-1 h-7" />
-                            <div>
-                                <div class="sticky left-0 z-20 -ml-14 -mt-2.5 w-14 pr-2 text-right text-xs/5 text-gray-400">7AM</div>
-                            </div>
-                            <div />
-                            <div>
-                                <div class="sticky left-0 z-20 -ml-14 -mt-2.5 w-14 pr-2 text-right text-xs/5 text-gray-400">8AM</div>
-                            </div>
-                            <div />
-                            <div>
-                                <div class="sticky left-0 z-20 -ml-14 -mt-2.5 w-14 pr-2 text-right text-xs/5 text-gray-400">9AM</div>
-                            </div>
-                            <div />
-                            <div>
-                                <div class="sticky left-0 z-20 -ml-14 -mt-2.5 w-14 pr-2 text-right text-xs/5 text-gray-400">10AM</div>
-                            </div>
-                            <div />
-                            <div>
-                                <div class="sticky left-0 z-20 -ml-14 -mt-2.5 w-14 pr-2 text-right text-xs/5 text-gray-400">11AM</div>
-                            </div>
-                            <div />
-                            <div>
-                                <div class="sticky left-0 z-20 -ml-14 -mt-2.5 w-14 pr-2 text-right text-xs/5 text-gray-400">12PM</div>
-                            </div>
-                            <div />
-                            <div>
-                                <div class="sticky left-0 z-20 -ml-14 -mt-2.5 w-14 pr-2 text-right text-xs/5 text-gray-400">1PM</div>
-                            </div>
-                            <div />
-                            <div>
-                                <div class="sticky left-0 z-20 -ml-14 -mt-2.5 w-14 pr-2 text-right text-xs/5 text-gray-400">2PM</div>
-                            </div>
-                            <div />
-                            <div>
-                                <div class="sticky left-0 z-20 -ml-14 -mt-2.5 w-14 pr-2 text-right text-xs/5 text-gray-400">3PM</div>
-                            </div>
-                            <div />
-                            <div>
-                                <div class="sticky left-0 z-20 -ml-14 -mt-2.5 w-14 pr-2 text-right text-xs/5 text-gray-400">4PM</div>
-                            </div>
-                            <div />
-                            <div>
-                                <div class="sticky left-0 z-20 -ml-14 -mt-2.5 w-14 pr-2 text-right text-xs/5 text-gray-400">5PM</div>
-                            </div>
-                            <div />
-                            <div>
-                                <div class="sticky left-0 z-20 -ml-14 -mt-2.5 w-14 pr-2 text-right text-xs/5 text-gray-400">6PM</div>
-                            </div>
-                            <div />
-                            <div>
-                                <div class="sticky left-0 z-20 -ml-14 -mt-2.5 w-14 pr-2 text-right text-xs/5 text-gray-400">7PM</div>
-                            </div>
-                            <div />
-                            <div>
-                                <div class="sticky left-0 z-20 -ml-14 -mt-2.5 w-14 pr-2 text-right text-xs/5 text-gray-400">8PM</div>
-                            </div>
-                            <div />
-                            <div>
-                                <div class="sticky left-0 z-20 -ml-14 -mt-2.5 w-14 pr-2 text-right text-xs/5 text-gray-400">9PM</div>
-                            </div>
-                            <div />
-                            <div>
-                                <div class="sticky left-0 z-20 -ml-14 -mt-2.5 w-14 pr-2 text-right text-xs/5 text-gray-400">10PM</div>
-                            </div>
+                            <template v-for="(hour, idx) in hours" :key="idx">
+                                <div>
+                                    <div class="sticky left-0 z-20 -ml-14 -mt-2.5 w-14 pr-2 text-right text-xs/5 text-gray-400">
+                                        {{ format(hour, 'ha') }}
+                                    </div>
+                                </div>
+                                <div v-if="idx < hours.length - 1" />
+                            </template>
                         </div>
 
                         <!-- Vertical lines -->
@@ -158,7 +105,7 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import { addDays, parseISO, format, isSameDay } from 'date-fns'
+import { addDays, parseISO, format, isSameDay, startOfDay, setHours, setMinutes } from 'date-fns'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/20/solid'
 
 const props = defineProps({
@@ -194,4 +141,11 @@ const headerDays = computed(() => {
         }
     })
 })
+
+// Time slots from 7 AM to 10 PM (16 hours → 32 half-hour rows)
+const hours = computed(() =>
+    Array.from({ length: 16 }).map((_, i) =>
+        setMinutes(setHours(startOfDay(new Date()), 7 + i), 0)
+    )
+)
 </script>
