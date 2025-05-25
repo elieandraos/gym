@@ -2,21 +2,21 @@
     <div class="flex h-full flex-col">
         <!-- week nav: sticks to top of viewport -->
         <header
-            class="sticky top-0 z-50 flex flex-none items-center justify-between border-b border-gray-200 bg-white px-6 py-4"
+            class="sticky top-0 z-50 flex flex-none items-center justify-between border-b border-gray-200 bg-white py-4"
         >
             <div class="flex items-center">
                 <div class="relative flex items-center rounded-md bg-white shadow-sm md:items-stretch">
                     <button
                         @click="prevWeek"
                         :disabled="currentWeekIndex === 0"
-                        class="flex h-9 w-12 items-center justify-center rounded-l-md border-y border-l border-gray-300 pr-1 text-gray-400 hover:text-gray-500 disabled:opacity-30"
+                        class="flex h-9 w-12 items-center justify-center rounded-l-md border-y border-l border-gray-300 pr-1 text-gray-400 cursor-pointer hover:text-gray-500 disabled:opacity-30"
                     >
                         <ChevronLeftIcon class="size-5" aria-hidden="true"/>
                     </button>
                     <button
                         @click="nextWeek"
                         :disabled="currentWeekIndex === weeks.length - 1"
-                        class="flex h-9 w-12 items-center justify-center rounded-r-md border-y border-r border-gray-300 pl-1 text-gray-400 hover:text-gray-500 disabled:opacity-30"
+                        class="flex h-9 w-12 items-center justify-center rounded-r-md border-y border-r border-gray-300 pl-1 text-gray-400 cursor-pointer hover:text-gray-500 disabled:opacity-30"
                     >
                         <ChevronRightIcon class="size-5" aria-hidden="true"/>
                     </button>
