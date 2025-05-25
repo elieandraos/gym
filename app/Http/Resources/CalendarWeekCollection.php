@@ -61,7 +61,7 @@ class CalendarWeekCollection extends ResourceCollection
                         });
 
                     return [
-                        'member' =>  $booking->member->name,
+                        'member' =>  explode(' ', $booking->member->name)[0],
                         'trainer' =>  $booking->trainer->name,
                         'booking_slots' => $slots,
                     ];

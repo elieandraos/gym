@@ -1,5 +1,4 @@
 <template>
-    <pre>{{ selectedWeek }}</pre>
     <div class="flex h-full flex-col">
         <header class="flex flex-none items-center justify-between border-b border-gray-200 px-6 py-4">
             <div class="flex items-center">
@@ -89,10 +88,10 @@
                                     class="group absolute inset-y-2 flex flex-col overflow-y-auto rounded-lg p-2 text-xs hover:opacity-90"
                                     :class="slot.bgClass"
                                     :style="{
-                                        left: slot.overlapCount>1
+                                        left: slot.overlapCount > 1
                                           ? `calc(${slot.overlapIndex}*(100%/${slot.overlapCount}) + 0.25rem)`
                                           : '0.25rem',
-                                        width: slot.overlapCount>1
+                                        width: slot.overlapCount > 1
                                           ? `calc((100%/${slot.overlapCount}) - 0.5rem)`
                                           : 'calc(100% - 0.5rem)'
                                       }"
@@ -113,109 +112,116 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/20/solid'
+
 import {
     addDays, parseISO, format, isSameDay,
     startOfDay, setHours, setMinutes,
     differenceInCalendarDays, differenceInMinutes
 } from 'date-fns'
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/20/solid'
 
-const props = defineProps({ weeks: Array })
+const props = defineProps({
+    weeks: Array
+})
 
 // state
-const currentWeekIndex = ref(props.weeks.findIndex(w=>w.is_current))
-const today = new Date()
+const currentWeekIndex = ref(props.weeks.findIndex(w => w.is_current))
+const today            = new Date()
 
-// nav
-const prevWeek = () => { if(currentWeekIndex.value>0) currentWeekIndex.value-- }
-const nextWeek = () => { if(currentWeekIndex.value<props.weeks.length-1) currentWeekIndex.value++ }
+// navigation
+const prevWeek = () => currentWeekIndex.value > 0 && currentWeekIndex.value--
+const nextWeek = () => currentWeekIndex.value < props.weeks.length - 1 && currentWeekIndex.value++
 
-// pick out
-const selectedWeek = computed(()=> props.weeks[currentWeekIndex.value])
+// pick the current week
+const selectedWeek = computed(() => props.weeks[currentWeekIndex.value])
 
-// build header Mon→Sat
-const headerDays = computed(()=>{
+// header days Mon→Sat
+const headerDays = computed(() => {
     const start = parseISO(selectedWeek.value.start)
-    return Array.from({length:6}).map((_,i)=>{
-        const d = addDays(start,i)
-        return { short: format(d,'EEE'), day: format(d,'d'), isToday: isSameDay(d,today) }
+    return Array.from({ length: 6 }).map((_, i) => {
+        const d = addDays(start, i)
+        return {
+            short:   format(d, 'EEE'),
+            day:     format(d, 'd'),
+            isToday: isSameDay(d, today),
+        }
     })
 })
 
-// 7AM→10PM on-the-hour
-const hours = computed(()=> Array.from({length:16}).map((_,i)=>
-    setMinutes(setHours(startOfDay(new Date()),7+i),0)
-))
+// times gutter 7AM→10PM
+const hours = computed(() =>
+    Array.from({ length: 16 }).map((_, i) =>
+        setMinutes(setHours(startOfDay(new Date()), 7 + i), 0)
+    )
+)
 
-// flatten, filter and detect overlaps
-const events = computed(()=>{
+// flatten & position events
+const events = computed(() => {
     const weekStart = parseISO(selectedWeek.value.start)
 
-    // 1) raw list
-    const raw = selectedWeek.value.bookings.flatMap((b,bi)=>{
-        return b.booking_slots.map(s=>{
-            const start = parseISO(s.start_time)
-            const end   = parseISO(s.end_time)
-            const mins  = differenceInMinutes(start, startOfDay(start))
-            const day   = differenceInCalendarDays(start, weekStart)
-            // drop outside 7AM–10PM or Mon(0)→Sat(5)
-            if(mins<420||mins>=1320||day<0||day>5) return null
+    // 1) build raw list
+    const raw = selectedWeek.value.bookings
+        .flatMap((b, bi) =>
+            b.booking_slots.map(s => {
+                const start = parseISO(s.start_time)
+                const end   = parseISO(s.end_time)
+                const mins  = differenceInMinutes(start, startOfDay(start))
+                const dayIx = differenceInCalendarDays(start, weekStart)
 
-            const col       = day+1
-            const rowStart  = Math.floor((mins-420)/5)+2
-            const span      = Math.max(1, Math.ceil(differenceInMinutes(end,start)/5))
-            const palette   = [
-                {bg:'bg-blue-50 hover:bg-blue-100',   text:'text-blue-700', hover:'text-blue-700'},
-                {bg:'bg-pink-50 hover:bg-pink-100',   text:'text-pink-700', hover:'text-pink-700'},
-                {bg:'bg-gray-100 hover:bg-gray-200',  text:'text-gray-700', hover:'text-gray-700'},
-                {bg:'bg-amber-100 hover:bg-amber-200',text:'text-amber-700',hover:'text-amber-700'},
-                {bg:'bg-purple-100 hover:bg-purple-200',text:'text-purple-700',hover:'text-purple-700'},
-                {bg:'bg-teal-100 hover:bg-teal-200',  text:'text-teal-700', hover:'text-teal-700'}
-            ][bi%6]
+                // drop outside 7AM–10PM or Mon→Sat
+                if (mins < 420 || mins >= 1320 || dayIx < 0 || dayIx > 5) return null
 
-            return {
-                id:         s.id,
-                member:     b.member, trainer: b.trainer,
-                start_time: s.start_time, short_time: s.short_time,
-                col, rowStart, span,
-                bgClass:    palette.bg,
-                textClass:  palette.text,
-                hoverText:  palette.hover
-            }
-        })
-    }).filter(Boolean)
+                const col      = dayIx + 1
+                const rowStart = Math.floor((mins - 420) / 5) + 2
+                const span     = Math.max(1, Math.ceil(differenceInMinutes(end, start) / 5))
 
-    // 2) group by day & spread overlaps
-    const byDay = raw.reduce((acc,e)=>{
-        (acc[e.col]||(acc[e.col]=[])).push(e)
-        return acc
-    },{})
+                const palette = [
+                    { bg: 'bg-blue-50 hover:bg-blue-100',   text: 'text-blue-700',  hover: 'text-blue-700' },
+                    { bg: 'bg-pink-50  hover:bg-pink-100',  text: 'text-pink-700',  hover: 'text-pink-700' },
+                    { bg: 'bg-gray-100 hover:bg-gray-200',  text: 'text-gray-700',  hover: 'text-gray-700' },
+                    { bg: 'bg-amber-100 hover:bg-amber-200',text: 'text-amber-700', hover: 'text-amber-700' },
+                    { bg: 'bg-purple-100 hover:bg-purple-200',text:'text-purple-700',hover:'text-purple-700' },
+                    { bg: 'bg-teal-100 hover:bg-teal-200',  text: 'text-teal-700',  hover: 'text-teal-700' },
+                ][bi % 6]
 
-    const positioned = []
-    Object.values(byDay).forEach(slots=>{
-        // order
-        slots.sort((a,b)=>a.rowStart-b.rowStart)
-        const tracks = []
-        slots.forEach(slot=>{
-            let placed = false
-            for(let i=0;i<tracks.length;i++){
-                const last = tracks[i][tracks[i].length-1]
-                if(last.rowStart+last.span <= slot.rowStart){
-                    slot.overlapIndex = i
-                    tracks[i].push(slot)
-                    placed = true
-                    break
+                return {
+                    id:         s.id,
+                    member:     b.member,
+                    trainer:    b.trainer,
+                    start_time: s.start_time,
+                    short_time: s.short_time,
+                    col,
+                    rowStart,
+                    span,
+                    bgClass:    palette.bg,
+                    textClass:  palette.text,
+                    hoverText:  palette.hover,
                 }
-            }
-            if(!placed){
-                slot.overlapIndex = tracks.length
-                tracks.push([slot])
-            }
-        })
+            })
+        )
+        .filter(Boolean)
 
-        // annotate count
-        tracks.forEach(trk=> trk.forEach(s=> s.overlapCount = tracks.length))
-        positioned.push(...slots)
+    // 2) group by day
+    const byDay = raw.reduce((acc, e) => {
+        ;(acc[e.col] ||= []).push(e)
+        return acc
+    }, {})
+
+    // 3) compute overlaps per-slot
+    const positioned = []
+    Object.values(byDay).forEach(slots => {
+        slots.forEach(s => {
+            const colliding = slots
+                .filter(o =>
+                    o.rowStart < s.rowStart + s.span &&
+                    o.rowStart + o.span > s.rowStart
+                )
+                .sort((a, b) => a.rowStart - b.rowStart || a.id - b.id)
+
+            s.overlapCount = colliding.length
+            s.overlapIndex = colliding.findIndex(o => o.id === s.id)
+            positioned.push(s)
+        })
     })
 
     return positioned
