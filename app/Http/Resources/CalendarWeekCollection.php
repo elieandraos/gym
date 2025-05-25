@@ -51,7 +51,7 @@ class CalendarWeekCollection extends ResourceCollection
                                 'id'         => $slot->id,
                                 'start_time'=> $slot->start_time->toIso8601String(),
                                 'end_time'  => $slot->end_time->toIso8601String(),
-                                'duration'    => $slot->end_time->diffInMinutes($slot->start_time),
+                                'duration'    => $slot->start_time->diffInMinutes($slot->end_time),
                                 'short_time'  => $slot->start_time->format(
                                     $minutes === 0
                                         ? 'ga'    // “7am”, “2pm” when on the hour
