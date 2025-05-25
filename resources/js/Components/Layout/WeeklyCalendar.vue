@@ -75,7 +75,7 @@
                                 v-for="slot in events"
                                 :key="slot.id"
                                 class="relative py-px flex"
-                                :class="`sm:col-start-${slot.col}`"
+                                :class="['sm:col-start-' + slot.col]"
                                 :style="`grid-row: ${slot.rowStart} / span ${slot.span}`"
                             >
                                 <a href="#"
@@ -149,58 +149,64 @@ const hours = computed(() =>
 
 const events = computed(() => {
     const weekStart = parseISO(selectedWeek.value.start)
+    let raw
 
-    return selectedWeek.value.bookings
+    // 1) build and filter raw slots
+    raw = selectedWeek.value.bookings
         .flatMap((b, bi) =>
             b.booking_slots.map(slot => {
                 const start = parseISO(slot.start_time)
-                const end   = parseISO(slot.end_time)
+                const end = parseISO(slot.end_time)
+                const mins = differenceInMinutes(start, startOfDay(start))
 
-                // filter out anything outside 7 AM–10 PM
-                const minsSinceMidnight = differenceInMinutes(start, startOfDay(start))
-                if (minsSinceMidnight < 7 * 60 || minsSinceMidnight >= 22 * 60) {
-                    return null
-                }
+                // ── drop anything before 7 AM or at/after 10 PM
+                if (mins < 7 * 60 || mins >= 22 * 60) return null
 
-                // column (Mon=1..Sat=6)
-                let dayIndex = differenceInCalendarDays(start, weekStart)
-                dayIndex = Math.max(0, Math.min(5, dayIndex))
-                const col = dayIndex + 1
+                // ── drop days outside Monday(0)→Saturday(5)
+                const dayDiff = differenceInCalendarDays(start, weekStart)
+                if (dayDiff < 0 || dayDiff > 5) return null
 
-                // rowStart: minutes since 7 AM ÷ 5 + 2
-                const minsFrom7 = Math.max(0, Math.min(900, minsSinceMidnight - 420))
+                // ── grid column
+                const col = dayDiff + 1
+
+                // ── grid-row start
+                const minsFrom7 = mins - 7 * 60
                 const rowStart = Math.floor(minsFrom7 / 5) + 2
 
-                // span (duration ÷ 5min)
-                const duration = differenceInMinutes(end, start)
-                const span     = Math.max(1, Math.ceil(duration / 5))
+                // ── span (duration ÷ 5)
+                const span = Math.max(
+                    1,
+                    Math.ceil(differenceInMinutes(end, start) / 5)
+                )
 
-                // rotating color palette
+                // ── rotating color palette
                 const colors = [
-                    { bg: 'bg-blue-50 hover:bg-blue-100', text: 'text-blue-700',  hover: 'text-blue-700'  },
-                    { bg: 'bg-pink-50 hover:bg-pink-100', text: 'text-pink-700', hover: 'text-pink-700' },
-                    { bg: 'bg-gray-100 hover:bg-gray-200', text: 'text-gray-700',  hover: 'text-gray-700'  },
-                    { bg: 'bg-amber-100 hover:bg-amber-200', text: 'text-amber-700', hover: 'text-amber-700' },
-                    { bg: 'bg-purple-100 hover:bg-purple-200', text: 'text-purple-700', hover: 'text-purple-700' },
-                    { bg: 'bg-teal-100 hover:bg-teal-200', text: 'text-teal-700',  hover: 'text-teal-700'  },
+                    {bg: 'bg-blue-50 hover:bg-blue-100', text: 'text-blue-700', hover: 'text-blue-700'},
+                    {bg: 'bg-pink-50 hover:bg-pink-100', text: 'text-pink-700', hover: 'text-pink-700'},
+                    {bg: 'bg-gray-100 hover:bg-gray-200', text: 'text-gray-700', hover: 'text-gray-700'},
+                    {bg: 'bg-amber-100 hover:bg-amber-200', text: 'text-amber-700', hover: 'text-amber-700'},
+                    {bg: 'bg-purple-100 hover:bg-purple-200', text: 'text-purple-700', hover: 'text-purple-700'},
+                    {bg: 'bg-teal-100 hover:bg-teal-200', text: 'text-teal-700', hover: 'text-teal-700'},
                 ][bi % 6]
 
                 return {
-                    id:         slot.id,
+                    id: slot.id,
                     start_time: slot.start_time,
                     short_time: slot.short_time,
-                    member:     b.member,
-                    trainer:    b.trainer,
+                    member: b.member,
+                    trainer: b.trainer,
                     col,
                     rowStart,
                     span,
-                    bgClass:    colors.bg,
-                    textClass:  colors.text,
-                    hoverText:  colors.hover
+                    bgClass: colors.bg,
+                    textClass: colors.text,
+                    hoverText: colors.hover
                 }
             })
         )
         .filter(s => s !== null)
+
+    return raw
 })
 
 </script>

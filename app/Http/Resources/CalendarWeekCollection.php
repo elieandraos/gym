@@ -71,7 +71,8 @@ class CalendarWeekCollection extends ResourceCollection
             $weeks[] = [
                 'start'    => $weekStart->toDateString(),
                 'end'      => $weekEnd->toDateString(),
-                'is_current' => Carbon::today()->between($weekStart->copy()->startOfDay(), $weekEnd->copy()->endOfDay()),
+                //'is_current' => Carbon::today()->between($weekStart->copy()->startOfDay(), $weekEnd->copy()->endOfDay()),
+                'is_current' => $weekStart->isSameWeek(Carbon::today()),
                 'bookings' => $weekBookings,
             ];
 
