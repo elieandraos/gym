@@ -1,6 +1,9 @@
 <template>
     <div class="flex h-full flex-col">
-        <header class="flex flex-none items-center justify-between border-b border-gray-200 px-6 py-4">
+        <!-- week nav: sticks to top of viewport -->
+        <header
+            class="sticky top-0 z-50 flex flex-none items-center justify-between border-b border-gray-200 bg-white px-6 py-4"
+        >
             <div class="flex items-center">
                 <div class="relative flex items-center rounded-md bg-white shadow-sm md:items-stretch">
                     <button
@@ -21,34 +24,42 @@
             </div>
         </header>
 
-        <div ref="container" class="isolate flex flex-auto flex-col overflow-auto bg-white">
+        <div ref="container" class="isolate flex flex-auto flex-col bg-white">
             <div class="flex w-[165%] max-w-full flex-none flex-col sm:max-w-none md:max-w-full">
-                <div ref="containerNav" class="sticky top-0 z-30 flex-none bg-white shadow ring-1 ring-black/5 sm:pr-8">
-                    <!-- days header -->
-                    <div class="-mr-px hidden grid-cols-6 divide-x divide-gray-100 border-r border-gray-100 text-sm text-gray-500 sm:grid">
+                <!-- days header: sticks just below week-nav -->
+                <div
+                    ref="containerNav"
+                    class="sticky top-16 z-40 flex-none bg-white shadow ring-1 ring-black/5 sm:pr-8"
+                >
+                    <div
+                        class="-mr-px hidden grid-cols-6 divide-x divide-gray-100 border-r border-gray-100 text-sm text-gray-500 sm:grid"
+                    >
                         <div class="col-end-1 w-14"></div>
                         <template v-for="day in headerDays" :key="day.day">
                             <div class="flex items-center justify-center py-3">
                                 <span class="text-gray-900">
                                     {{ day.short }}
-                                      <span
-                                          class="ml-1 inline-flex items-center justify-center rounded-full px-2 py-0.5 text-xs font-semibold"
-                                          :class="day.isToday ? 'bg-indigo-600 text-white' : 'text-gray-700'"
-                                      >
+                                    <span
+                                        class="ml-1 inline-flex items-center justify-center rounded-full px-2 py-0.5 text-xs font-semibold"
+                                        :class="day.isToday ? 'bg-indigo-600 text-white' : 'text-gray-700'"
+                                    >
                                         {{ day.day }}
-                                      </span>
+                                    </span>
                                 </span>
                             </div>
                         </template>
                     </div>
                 </div>
 
-                <div class="flex flex-auto">
+                <!-- only horizontal scroll on the calendar body -->
+                <div class="flex flex-auto overflow-x-auto">
                     <!-- time gutter -->
-                    <div class="sticky left-0 z-10 w-14 flex-none bg-white ring-1 ring-gray-100"></div>
-                    <!-- grid & lines -->
+                    <div
+                        class="sticky left-0 z-20 w-14 flex-none bg-white ring-1 ring-gray-100"
+                    ></div>
+                    <!-- grid & lines & events -->
                     <div class="grid flex-auto grid-cols-1 grid-rows-1">
-                        <!-- horizontal -->
+                        <!-- horizontal lines -->
                         <div
                             class="col-start-1 col-end-2 row-start-1 grid divide-y divide-gray-100"
                             style="grid-template-rows: repeat(30, minmax(3.5rem,1fr))"
@@ -56,7 +67,9 @@
                             <div ref="containerOffset" class="row-end-1 h-7"></div>
                             <template v-for="(hour, idx) in hours" :key="idx">
                                 <div>
-                                    <div class="sticky left-0 z-20 -ml-14 -mt-2.5 w-14 pr-2 text-right text-xs text-gray-400">
+                                    <div
+                                        class="sticky left-0 z-20 -ml-14 -mt-2.5 w-14 pr-2 text-right text-xs text-gray-400"
+                                    >
                                         {{ format(hour,'ha') }}
                                     </div>
                                 </div>
@@ -64,9 +77,11 @@
                             </template>
                         </div>
 
-                        <!-- vertical -->
-                        <div class="col-start-1 col-end-2 row-start-1 hidden grid-cols-6 divide-x divide-gray-100 sm:grid sm:grid-cols-6">
-                            <div v-for="n in 7" :key="n" :class="n<7?'row-span-full':'row-span-full w-8'"/>
+                        <!-- vertical columns -->
+                        <div
+                            class="col-start-1 col-end-2 row-start-1 hidden grid-cols-6 divide-x divide-gray-100 sm:grid sm:grid-cols-6"
+                        >
+                            <div v-for="n in 7" :key="n" :class="n < 7 ? 'row-span-full' : 'row-span-full w-8'" />
                         </div>
 
                         <!-- events -->
@@ -79,8 +94,8 @@
                                 :key="slot.id"
                                 class="relative py-px"
                                 :style="{
-                                  gridColumnStart: slot.col,
-                                  gridRow: `${slot.rowStart} / span ${slot.span}`
+                                    gridColumnStart: slot.col,
+                                    gridRow: `${slot.rowStart} / span ${slot.span}`
                                 }"
                             >
                                 <a
@@ -89,12 +104,12 @@
                                     :class="slot.bgClass"
                                     :style="{
                                         left: slot.overlapCount > 1
-                                          ? `calc(${slot.overlapIndex}*(100%/${slot.overlapCount}) + 0.25rem)`
-                                          : '0.25rem',
+                                            ? `calc(${slot.overlapIndex}*(100%/${slot.overlapCount}) + 0.25rem)`
+                                            : '0.25rem',
                                         width: slot.overlapCount > 1
-                                          ? `calc((100%/${slot.overlapCount}) - 0.5rem)`
-                                          : 'calc(100% - 0.5rem)'
-                                      }"
+                                            ? `calc((100%/${slot.overlapCount}) - 0.5rem)`
+                                            : 'calc(100% - 0.5rem)'
+                                    }"
                                 >
                                     <p class="font-semibold" :class="slot.textClass">{{ slot.member }}</p>
                                     <p :class="slot.textClass + ' group-hover:' + slot.hoverText">
@@ -120,9 +135,7 @@ import {
     differenceInCalendarDays, differenceInMinutes
 } from 'date-fns'
 
-const props = defineProps({
-    weeks: Array
-})
+const props = defineProps({ weeks: Array })
 
 // state
 const currentWeekIndex = ref(props.weeks.findIndex(w => w.is_current))
