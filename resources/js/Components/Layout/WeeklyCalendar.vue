@@ -169,10 +169,13 @@ const hours = computed(() =>
 )
 
 // flatten & position events
+// … your existing imports and setup above …
+
+// flatten & position events
 const events = computed(() => {
     const weekStart = parseISO(selectedWeek.value.start)
 
-    // 1) build raw list
+    // 1) build raw list exactly as before
     const raw = selectedWeek.value.bookings
         .flatMap((b, bi) =>
             b.booking_slots.map(s => {
@@ -189,12 +192,12 @@ const events = computed(() => {
                 const span     = Math.max(1, Math.ceil(differenceInMinutes(end, start) / 5))
 
                 const palette = [
-                    { bg: 'bg-blue-50 hover:bg-blue-100',   text: 'text-blue-700',  hover: 'text-blue-700' },
-                    { bg: 'bg-pink-50  hover:bg-pink-100',  text: 'text-pink-700',  hover: 'text-pink-700' },
-                    { bg: 'bg-gray-100 hover:bg-gray-200',  text: 'text-gray-700',  hover: 'text-gray-700' },
-                    { bg: 'bg-amber-100 hover:bg-amber-200',text: 'text-amber-700', hover: 'text-amber-700' },
-                    { bg: 'bg-purple-100 hover:bg-purple-200',text:'text-purple-700',hover:'text-purple-700' },
-                    { bg: 'bg-teal-100 hover:bg-teal-200',  text: 'text-teal-700',  hover: 'text-teal-700' },
+                    { bg: 'bg-blue-50 hover:bg-blue-100',    text: 'text-blue-700',  hover: 'text-blue-700' },
+                    { bg: 'bg-pink-50 hover:bg-pink-100',    text: 'text-pink-700',  hover: 'text-pink-700' },
+                    { bg: 'bg-gray-100 hover:bg-gray-200',   text: 'text-gray-700',  hover: 'text-gray-700' },
+                    { bg: 'bg-amber-100 hover:bg-amber-200', text: 'text-amber-700', hover: 'text-amber-700' },
+                    { bg: 'bg-purple-100 hover:bg-purple-200', text:'text-purple-700', hover:'text-purple-700' },
+                    { bg: 'bg-teal-100 hover:bg-teal-200',   text: 'text-teal-700',  hover: 'text-teal-700' },
                 ][bi % 6]
 
                 return {
@@ -214,29 +217,56 @@ const events = computed(() => {
         )
         .filter(Boolean)
 
-    // 2) group by day
-    const byDay = raw.reduce((acc, e) => {
-        ;(acc[e.col] ||= []).push(e)
+    // 2) group by day-column
+    const byDay = raw.reduce((acc, ev) => {
+        ;(acc[ev.col] ||= []).push(ev)
         return acc
     }, {})
 
-    // 3) compute overlaps per-slot
+    // 3) for each day, find *connected* overlap-clusters via union-find
     const positioned = []
     Object.values(byDay).forEach(slots => {
-        slots.forEach(s => {
-            const colliding = slots
-                .filter(o =>
-                    o.rowStart < s.rowStart + s.span &&
-                    o.rowStart + o.span > s.rowStart
-                )
-                .sort((a, b) => a.rowStart - b.rowStart || a.id - b.id)
+        const n = slots.length
+        const parent = slots.map((_, i) => i)
+        const find = i => parent[i] === i ? i : (parent[i] = find(parent[i]))
+        const union = (a, b) => {
+            const ra = find(a), rb = find(b)
+            if (ra !== rb) parent[rb] = ra
+        }
 
-            s.overlapCount = colliding.length
-            s.overlapIndex = colliding.findIndex(o => o.id === s.id)
-            positioned.push(s)
+        // link any two that *time*-overlap
+        for (let i = 0; i < n; i++) {
+            for (let j = i + 1; j < n; j++) {
+                const a = slots[i], b = slots[j]
+                if (
+                    a.rowStart < b.rowStart + b.span &&
+                    b.rowStart < a.rowStart + a.span
+                ) {
+                    union(i, j)
+                }
+            }
+        }
+
+        // collect clusters
+        const clusters = {}
+        for (let i = 0; i < n; i++) {
+            const root = find(i)
+            ;(clusters[root] ||= []).push(slots[i])
+        }
+
+        // assign equal widths & positions within each cluster
+        Object.values(clusters).forEach(group => {
+            group.sort((a, b) => a.rowStart - b.rowStart || a.id - b.id)
+            const count = group.length
+            group.forEach((slot, idx) => {
+                slot.overlapCount = count
+                slot.overlapIndex = idx
+                positioned.push(slot)
+            })
         })
     })
 
     return positioned
 })
+
 </script>
