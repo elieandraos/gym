@@ -41,7 +41,7 @@
                                     {{ day.short }}
                                     <span
                                         class="ml-1 inline-flex items-center justify-center rounded-full px-2 py-0.5 text-xs font-semibold"
-                                        :class="day.isToday ? 'bg-indigo-600 text-white' : 'text-gray-700'"
+                                        :class="day.isToday ? 'bg-black text-white' : 'text-gray-700'"
                                     >
                                         {{ day.day }}
                                     </span>
@@ -218,11 +218,12 @@ const events = computed(() => {
             const pal = [
                 {bg:'bg-blue-50 hover:bg-blue-100',   text:'text-blue-700',  hover:'text-blue-700'},
                 {bg:'bg-pink-50 hover:bg-pink-100',   text:'text-pink-700',  hover:'text-pink-700'},
+                {bg:'bg-emerald-50 hover:bg-emerald-100',   text:'text-emerald-700',  hover:'text-emerald-700'},
                 {bg:'bg-gray-100 hover:bg-gray-200',  text:'text-gray-700',  hover:'text-gray-700'},
-                {bg:'bg-amber-100 hover:bg-amber-200',text:'text-amber-700', hover:'text-amber-700'},
                 {bg:'bg-purple-100 hover:bg-purple-200',text:'text-purple-700',hover:'text-purple-700'},
-                {bg:'bg-teal-100 hover:bg-teal-200',  text:'text-teal-700',  hover:'text-teal-700'},
-            ][bi%6]
+                {bg:'bg-cyan-100 hover:bg-cyan-200',  text:'text-cyan-700',  hover:'text-cyan-700'},
+                {bg:'bg-orange-100 hover:bg-orange-200',  text:'text-orange-700',  hover:'text-orange-700'},
+            ][bi%7]
 
             return {
                 id:         s.id,
