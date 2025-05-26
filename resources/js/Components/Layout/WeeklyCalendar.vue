@@ -2,25 +2,40 @@
     <div class="flex h-full flex-col">
         <!-- week nav: sticks to top -->
         <header
-            class="sticky top-0 z-50 flex flex-none items-center justify-between border-b border-gray-200 bg-white py-4"
+            class="sticky top-0 z-50 flex flex-none items-center justify-between border-b border-gray-200 bg-white py-4 px-6"
         >
-            <div class="flex items-center">
+            <div class="flex items-center space-x-3">
                 <div class="relative flex items-center rounded-md bg-white shadow-sm md:items-stretch">
                     <button
                         @click="prevWeek"
                         :disabled="currentWeekIndex === 0"
-                        class="flex h-9 w-12 items-center justify-center rounded-l-md border-y border-l border-gray-300 pr-1 text-gray-400 cursor-pointer hover:text-gray-500 disabled:opacity-30"
+                        class="flex h-9 w-12 items-center justify-center rounded-l-md border-y border-l border-gray-300 pr-1 text-gray-400 hover:text-gray-500 disabled:opacity-30"
                     >
                         <ChevronLeftIcon class="size-5" aria-hidden="true" />
                     </button>
                     <button
                         @click="nextWeek"
                         :disabled="currentWeekIndex === weeks.length - 1"
-                        class="flex h-9 w-12 items-center justify-center rounded-r-md border-y border-r border-gray-300 pl-1 text-gray-400 cursor-pointer hover:text-gray-500 disabled:opacity-30"
+                        class="flex h-9 w-12 items-center justify-center rounded-r-md border-y border-r border-gray-300 pl-1 text-gray-400 hover:text-gray-500 disabled:opacity-30"
                     >
                         <ChevronRightIcon class="size-5" aria-hidden="true" />
                     </button>
                 </div>
+            </div>
+
+            <!-- trainer filter checkboxes -->
+            <div class="flex items-center space-x-4">
+                <template v-for="trainer in trainers" :key="trainer">
+                    <label class="inline-flex items-center text-sm">
+                        <input
+                            type="checkbox"
+                            v-model="selectedTrainers"
+                            :value="trainer"
+                            class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                        />
+                        <span class="ml-2">{{ trainer }}</span>
+                    </label>
+                </template>
             </div>
         </header>
 
@@ -37,15 +52,15 @@
                         <div class="col-end-1 w-14"></div>
                         <template v-for="day in headerDays" :key="day.day">
                             <div class="flex items-center justify-center py-3">
-                                <span class="text-gray-900">
-                                    {{ day.short }}
-                                    <span
-                                        class="ml-1 inline-flex items-center justify-center rounded-full px-2 py-0.5 text-xs font-semibold"
-                                        :class="day.isToday ? 'bg-black text-white' : 'text-gray-700'"
-                                    >
-                                        {{ day.day }}
-                                    </span>
-                                </span>
+                <span class="text-gray-900">
+                  {{ day.short }}
+                  <span
+                      class="ml-1 inline-flex items-center justify-center rounded-full px-2 py-0.5 text-xs font-semibold"
+                      :class="day.isToday ? 'bg-indigo-600 text-white' : 'text-gray-700'"
+                  >
+                    {{ day.day }}
+                  </span>
+                </span>
                             </div>
                         </template>
                     </div>
@@ -54,9 +69,7 @@
                 <!-- horizontal scroll only -->
                 <div class="flex flex-auto overflow-x-auto">
                     <!-- time gutter -->
-                    <div
-                        class="sticky left-0 z-20 w-14 flex-none bg-white ring-1 ring-gray-100"
-                    ></div>
+                    <div class="sticky left-0 z-20 w-14 flex-none bg-white ring-1 ring-gray-100"></div>
 
                     <!-- grid, lines & events -->
                     <div class="grid flex-auto grid-cols-1 grid-rows-1">
@@ -91,60 +104,36 @@
                             style="grid-template-rows: 1.75rem repeat(180, minmax(0,1fr)) auto"
                         >
                             <li
-                                v-for="slot in events"
-                                :key="slot.id"
+                                v-for="slot in filteredEvents"
+                                :key="slot.id + '-' + slot.members.join(',')"
                                 class="relative py-px"
                                 :style="{
-                                  gridColumnStart: slot.col,
-                                  gridRow: slot.rowStart + ' / span ' + slot.span
-                                }"
+                  gridColumnStart: slot.col,
+                  gridRow: slot.rowStart + ' / span ' + slot.span
+                }"
                             >
-                                <!-- single-member slots get a link -->
-                                <a
-                                    v-if="slot.members.length === 1"
-                                    :href="route('admin.bookings-slots.show', slot.id)"
+                                <component
+                                    :is="slot.members.length === 1 ? 'a' : 'div'"
+                                    v-bind="slot.members.length === 1 ? { href: route('admin.bookings-slots.show', slot.id) } : {}"
                                     class="group absolute inset-y-2 flex flex-col overflow-y-auto rounded-lg p-2 text-xs hover:opacity-90"
                                     :class="slot.bgClass"
                                     :style="{
-                                        left: slot.overlapCount > 1
-                                          ? 'calc(' + slot.overlapIndex + '*(100%/' + slot.overlapCount + ') + 0.25rem)'
-                                          : '0.25rem',
-                                        width: slot.overlapCount > 1
-                                          ? 'calc((100%/' + slot.overlapCount + ') - 0.5rem)'
-                                          : 'calc(100% - 0.5rem)',
-                                        zIndex: slot.overlapCount - slot.overlapIndex
-                                      }"
+                    left: slot.overlapCount > 1
+                      ? 'calc(' + slot.overlapIndex + '*(100%/' + slot.overlapCount + ') + 0.25rem)'
+                      : '0.25rem',
+                    width: slot.overlapCount > 1
+                      ? 'calc((100%/' + slot.overlapCount + ') - 0.5rem)'
+                      : 'calc(100% - 0.5rem)',
+                    zIndex: slot.overlapCount - slot.overlapIndex
+                  }"
                                 >
-                                    <p class="text-xs" :class="slot.textClass + ' group-hover:' + slot.hoverText">
-                                        <time :datetime="slot.start_time">{{ slot.short_time }}</time>
-                                    </p>
-                                    <p class="font-semibold mt-2" :class="slot.textClass">
-                                        {{ slot.members[0] }}
-                                    </p>
-                                </a>
-
-                                <!-- merged slots (multiple members) have no link -->
-                                <div
-                                    v-else
-                                    class="group absolute inset-y-2 flex flex-col overflow-y-auto rounded-lg p-2 text-xs"
-                                    :class="slot.bgClass"
-                                    :style="{
-                                        left: slot.overlapCount > 1
-                                          ? 'calc(' + slot.overlapIndex + '*(100%/' + slot.overlapCount + ') + 0.25rem)'
-                                          : '0.25rem',
-                                        width: slot.overlapCount > 1
-                                          ? 'calc((100%/' + slot.overlapCount + ') - 0.5rem)'
-                                          : 'calc(100% - 0.5rem)',
-                                        zIndex: slot.overlapCount - slot.overlapIndex
-                                      }"
-                                >
-                                    <p class="text-xs" :class="slot.textClass">
+                                    <p class="text-xs" :class="slot.textClass + (slot.members.length === 1 ? ' group-hover:' + slot.hoverText : '')">
                                         <time :datetime="slot.start_time">{{ slot.short_time }}</time>
                                     </p>
                                     <p class="font-semibold mt-2" :class="slot.textClass">
                                         {{ slot.members.join(', ') }}
                                     </p>
-                                </div>
+                                </component>
                             </li>
                         </ol>
                     </div>
@@ -168,8 +157,9 @@ const props = defineProps({ weeks: Array })
 const { route } = window
 
 // state
-const currentWeekIndex = ref(props.weeks.findIndex(w => w.is_current))
-const today            = new Date()
+const currentWeekIndex   = ref(props.weeks.findIndex(w => w.is_current))
+const today              = new Date()
+const selectedTrainers   = ref([])      // our filter selection
 
 // navigation
 const prevWeek = () => currentWeekIndex.value > 0 && currentWeekIndex.value--
@@ -177,6 +167,12 @@ const nextWeek = () => currentWeekIndex.value < props.weeks.length - 1 && curren
 
 // pick the current week
 const selectedWeek = computed(() => props.weeks[currentWeekIndex.value])
+
+// gather unique trainers in this week
+const trainers = computed(() => {
+    const all = selectedWeek.value.bookings.map(b => b.trainer)
+    return Array.from(new Set(all))
+})
 
 // header days Mon→Sat
 const headerDays = computed(() => {
@@ -198,32 +194,31 @@ const hours = computed(() =>
     )
 )
 
-// flatten, merge by trainer+time, then union-find cluster for equal widths
-const events = computed(() => {
+// flatten, merge by trainer+time, then union-find cluster
+const allEvents = computed(() => {
     const weekStart = parseISO(selectedWeek.value.start)
 
     // 1) raw slots
     const raw = selectedWeek.value.bookings.flatMap((b, bi) =>
         b.booking_slots.map(s => {
-            const start = parseISO(s.start_time)
-            const end   = parseISO(s.end_time)
-            const mins  = differenceInMinutes(start, startOfDay(start))
-            const dayIx = differenceInCalendarDays(start, weekStart)
+            const start  = parseISO(s.start_time)
+            const end    = parseISO(s.end_time)
+            const mins   = differenceInMinutes(start, startOfDay(start))
+            const dayIx  = differenceInCalendarDays(start, weekStart)
             if (mins < 420 || mins >= 1320 || dayIx < 0 || dayIx > 5) return null
 
-            const col      = dayIx + 1
-            const rowStart = Math.floor((mins - 420)/5) + 2
-            const span     = Math.max(1, Math.ceil(differenceInMinutes(end, start)/5))
+            const col       = dayIx + 1
+            const rowStart  = Math.floor((mins - 420)/5) + 2
+            const span      = Math.max(1, Math.ceil(differenceInMinutes(end,start)/5))
 
             const pal = [
                 {bg:'bg-blue-50 hover:bg-blue-100',   text:'text-blue-700',  hover:'text-blue-700'},
                 {bg:'bg-pink-50 hover:bg-pink-100',   text:'text-pink-700',  hover:'text-pink-700'},
-                {bg:'bg-emerald-50 hover:bg-emerald-100',   text:'text-emerald-700',  hover:'text-emerald-700'},
                 {bg:'bg-gray-100 hover:bg-gray-200',  text:'text-gray-700',  hover:'text-gray-700'},
+                {bg:'bg-amber-100 hover:bg-amber-200',text:'text-amber-700', hover:'text-amber-700'},
                 {bg:'bg-purple-100 hover:bg-purple-200',text:'text-purple-700',hover:'text-purple-700'},
-                {bg:'bg-cyan-100 hover:bg-cyan-200',  text:'text-cyan-700',  hover:'text-cyan-700'},
-                {bg:'bg-orange-100 hover:bg-orange-200',  text:'text-orange-700',  hover:'text-orange-700'},
-            ][bi%7]
+                {bg:'bg-teal-100 hover:bg-teal-200',  text:'text-teal-700',  hover:'text-teal-700'},
+            ][bi%6]
 
             return {
                 id:         s.id,
@@ -251,19 +246,19 @@ const events = computed(() => {
     })
     const merged = Object.values(mergedMap)
 
-    // 3) group by day for overlap-clustering
+    // 3) group by day-column
     const byDay = merged.reduce((acc,e) => {
         ;(acc[e.col] ||= []).push(e)
         return acc
     }, {})
 
-    // 4) union-find each day's cluster → equal widths
+    // 4) union-find each day's overlap clusters
     const positioned = []
     Object.values(byDay).forEach(slots => {
         const n = slots.length
-        const parent = Array.from({length:n}, (_,i)=>i)
-        const find = i => parent[i]===i ? i : (parent[i]=find(parent[i]))
-        const union = (a,b) => { const ra=find(a), rb=find(b); if(ra!==rb) parent[rb]=ra }
+        const parent = slots.map((_,i)=>i)
+        const find   = i => parent[i]===i ? i : (parent[i]=find(parent[i]))
+        const union  = (a,b) => { const ra=find(a), rb=find(b); if(ra!==rb) parent[rb]=ra }
 
         for (let i=0;i<n;i++) {
             for (let j=i+1;j<n;j++) {
@@ -274,14 +269,12 @@ const events = computed(() => {
             }
         }
 
-        // collect clusters by root
+        // collect clusters & assign
         const clusters = {}
         for (let i=0;i<n;i++){
             const r = find(i)
             ;(clusters[r] ||= []).push(slots[i])
         }
-
-        // assign index & count
         Object.values(clusters).forEach(group => {
             group.sort((a,b)=>a.rowStart-b.rowStart||a.id-b.id)
             group.forEach((slot, idx) => {
@@ -293,5 +286,13 @@ const events = computed(() => {
     })
 
     return positioned
+})
+
+// apply trainer filter
+const filteredEvents = computed(() => {
+    if (!selectedTrainers.value.length) {
+        return allEvents.value
+    }
+    return allEvents.value.filter(e => selectedTrainers.value.includes(e.trainer))
 })
 </script>
