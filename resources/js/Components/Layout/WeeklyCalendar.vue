@@ -1,6 +1,6 @@
 <template>
     <div class="flex h-full flex-col">
-        <!-- week nav: sticks to top of viewport -->
+        <!-- week nav: sticks to top -->
         <header
             class="sticky top-0 z-50 flex flex-none items-center justify-between border-b border-gray-200 bg-white py-4"
         >
@@ -11,14 +11,14 @@
                         :disabled="currentWeekIndex === 0"
                         class="flex h-9 w-12 items-center justify-center rounded-l-md border-y border-l border-gray-300 pr-1 text-gray-400 cursor-pointer hover:text-gray-500 disabled:opacity-30"
                     >
-                        <ChevronLeftIcon class="size-5" aria-hidden="true"/>
+                        <ChevronLeftIcon class="size-5" aria-hidden="true" />
                     </button>
                     <button
                         @click="nextWeek"
                         :disabled="currentWeekIndex === weeks.length - 1"
                         class="flex h-9 w-12 items-center justify-center rounded-r-md border-y border-r border-gray-300 pl-1 text-gray-400 cursor-pointer hover:text-gray-500 disabled:opacity-30"
                     >
-                        <ChevronRightIcon class="size-5" aria-hidden="true"/>
+                        <ChevronRightIcon class="size-5" aria-hidden="true" />
                     </button>
                 </div>
             </div>
@@ -26,7 +26,7 @@
 
         <div ref="container" class="isolate flex flex-auto flex-col bg-white">
             <div class="flex w-[165%] max-w-full flex-none flex-col sm:max-w-none md:max-w-full">
-                <!-- days header: sticks just below week-nav -->
+                <!-- days header -->
                 <div
                     ref="containerNav"
                     class="sticky top-16 z-40 flex-none bg-white shadow ring-1 ring-black/5 sm:pr-8"
@@ -40,8 +40,8 @@
                                 <span class="text-gray-900">
                                     {{ day.short }}
                                     <span
-                                        class="ml-1 inline-flex items-center justify-center rounded-full px-2 py-0.5 text-xs font-semibold"
-                                        :class="day.isToday ? 'bg-indigo-600 text-white' : 'text-gray-700'"
+                                          class="ml-1 inline-flex items-center justify-center rounded-full px-2 py-0.5 text-xs font-semibold"
+                                          :class="day.isToday ? 'bg-indigo-600 text-white' : 'text-gray-700'"
                                     >
                                         {{ day.day }}
                                     </span>
@@ -51,13 +51,14 @@
                     </div>
                 </div>
 
-                <!-- only horizontal scroll on the calendar body -->
+                <!-- horizontal scroll only -->
                 <div class="flex flex-auto overflow-x-auto">
                     <!-- time gutter -->
                     <div
                         class="sticky left-0 z-20 w-14 flex-none bg-white ring-1 ring-gray-100"
                     ></div>
-                    <!-- grid & lines & events -->
+
+                    <!-- grid, lines & events -->
                     <div class="grid flex-auto grid-cols-1 grid-rows-1">
                         <!-- horizontal lines -->
                         <div
@@ -81,7 +82,7 @@
                         <div
                             class="col-start-1 col-end-2 row-start-1 hidden grid-cols-6 divide-x divide-gray-100 sm:grid sm:grid-cols-6"
                         >
-                            <div v-for="n in 7" :key="n" :class="n < 7 ? 'row-span-full' : 'row-span-full w-8'" />
+                            <div v-for="n in 7" :key="n" :class="n<7?'row-span-full':'row-span-full w-8'" />
                         </div>
 
                         <!-- events -->
@@ -94,27 +95,29 @@
                                 :key="slot.id"
                                 class="relative py-px"
                                 :style="{
-                                    gridColumnStart: slot.col,
-                                    gridRow: `${slot.rowStart} / span ${slot.span}`
+                                  gridColumnStart: slot.col,
+                                  gridRow: slot.rowStart + ' / span ' + slot.span
                                 }"
                             >
                                 <a
-                                    href="#"
+                                    :href="route('admin.bookings-slots.show', slot.id)"
                                     class="group absolute inset-y-2 flex flex-col overflow-y-auto rounded-lg p-2 text-xs hover:opacity-90"
                                     :class="slot.bgClass"
                                     :style="{
                                         left: slot.overlapCount > 1
-                                            ? `calc(${slot.overlapIndex}*(100%/${slot.overlapCount}) + 0.25rem)`
-                                            : '0.25rem',
+                                          ? 'calc(' + slot.overlapIndex + '*(100%/' + slot.overlapCount + ') + 0.25rem)'
+                                          : '0.25rem',
                                         width: slot.overlapCount > 1
-                                            ? `calc((100%/${slot.overlapCount}) - 0.5rem)`
-                                            : 'calc(100% - 0.5rem)'
-                                    }"
+                                          ? 'calc((100%/' + slot.overlapCount + ') - 0.5rem)'
+                                          : 'calc(100% - 0.5rem)',
+                                        /* ensure earlier slots sit on top */
+                                        zIndex: slot.overlapCount - slot.overlapIndex
+                                      }"
                                 >
-                                    <p class="font-semibold" :class="slot.textClass">{{ slot.member }}</p>
-                                    <p :class="slot.textClass + ' group-hover:' + slot.hoverText">
+                                    <p class="text-xs" :class="slot.textClass + ' group-hover:' + slot.hoverText">
                                         <time :datetime="slot.start_time">{{ slot.short_time }}</time>
                                     </p>
+                                    <p class="font-semibold mt-2" :class="slot.textClass">{{ slot.member }}</p>
                                 </a>
                             </li>
                         </ol>
@@ -140,6 +143,7 @@ const props = defineProps({ weeks: Array })
 // state
 const currentWeekIndex = ref(props.weeks.findIndex(w => w.is_current))
 const today            = new Date()
+const { route } = window
 
 // navigation
 const prevWeek = () => currentWeekIndex.value > 0 && currentWeekIndex.value--
@@ -167,9 +171,6 @@ const hours = computed(() =>
         setMinutes(setHours(startOfDay(new Date()), 7 + i), 0)
     )
 )
-
-// flatten & position events
-// … your existing imports and setup above …
 
 // flatten & position events
 const events = computed(() => {
