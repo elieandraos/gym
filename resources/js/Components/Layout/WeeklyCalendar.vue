@@ -40,8 +40,8 @@
                                 <span class="text-gray-900">
                                     {{ day.short }}
                                     <span
-                                          class="ml-1 inline-flex items-center justify-center rounded-full px-2 py-0.5 text-xs font-semibold"
-                                          :class="day.isToday ? 'bg-indigo-600 text-white' : 'text-gray-700'"
+                                        class="ml-1 inline-flex items-center justify-center rounded-full px-2 py-0.5 text-xs font-semibold"
+                                        :class="day.isToday ? 'bg-indigo-600 text-white' : 'text-gray-700'"
                                     >
                                         {{ day.day }}
                                     </span>
@@ -99,7 +99,9 @@
                                   gridRow: slot.rowStart + ' / span ' + slot.span
                                 }"
                             >
+                                <!-- single-member slots get a link -->
                                 <a
+                                    v-if="slot.members.length === 1"
                                     :href="route('admin.bookings-slots.show', slot.id)"
                                     class="group absolute inset-y-2 flex flex-col overflow-y-auto rounded-lg p-2 text-xs hover:opacity-90"
                                     :class="slot.bgClass"
@@ -110,15 +112,39 @@
                                         width: slot.overlapCount > 1
                                           ? 'calc((100%/' + slot.overlapCount + ') - 0.5rem)'
                                           : 'calc(100% - 0.5rem)',
-                                        /* ensure earlier slots sit on top */
                                         zIndex: slot.overlapCount - slot.overlapIndex
                                       }"
                                 >
                                     <p class="text-xs" :class="slot.textClass + ' group-hover:' + slot.hoverText">
                                         <time :datetime="slot.start_time">{{ slot.short_time }}</time>
                                     </p>
-                                    <p class="font-semibold mt-2" :class="slot.textClass">{{ slot.member }}</p>
+                                    <p class="font-semibold mt-2" :class="slot.textClass">
+                                        {{ slot.members[0] }}
+                                    </p>
                                 </a>
+
+                                <!-- merged slots (multiple members) have no link -->
+                                <div
+                                    v-else
+                                    class="group absolute inset-y-2 flex flex-col overflow-y-auto rounded-lg p-2 text-xs"
+                                    :class="slot.bgClass"
+                                    :style="{
+                                        left: slot.overlapCount > 1
+                                          ? 'calc(' + slot.overlapIndex + '*(100%/' + slot.overlapCount + ') + 0.25rem)'
+                                          : '0.25rem',
+                                        width: slot.overlapCount > 1
+                                          ? 'calc((100%/' + slot.overlapCount + ') - 0.5rem)'
+                                          : 'calc(100% - 0.5rem)',
+                                        zIndex: slot.overlapCount - slot.overlapIndex
+                                      }"
+                                >
+                                    <p class="text-xs" :class="slot.textClass">
+                                        <time :datetime="slot.start_time">{{ slot.short_time }}</time>
+                                    </p>
+                                    <p class="font-semibold mt-2" :class="slot.textClass">
+                                        {{ slot.members.join(', ') }}
+                                    </p>
+                                </div>
                             </li>
                         </ol>
                     </div>
@@ -139,11 +165,11 @@ import {
 } from 'date-fns'
 
 const props = defineProps({ weeks: Array })
+const { route } = window
 
 // state
 const currentWeekIndex = ref(props.weeks.findIndex(w => w.is_current))
 const today            = new Date()
-const { route } = window
 
 // navigation
 const prevWeek = () => currentWeekIndex.value > 0 && currentWeekIndex.value--
@@ -172,95 +198,93 @@ const hours = computed(() =>
     )
 )
 
-// flatten & position events
+// flatten, merge by trainer+time, then union-find cluster for equal widths
 const events = computed(() => {
     const weekStart = parseISO(selectedWeek.value.start)
 
-    // 1) build raw list exactly as before
-    const raw = selectedWeek.value.bookings
-        .flatMap((b, bi) =>
-            b.booking_slots.map(s => {
-                const start = parseISO(s.start_time)
-                const end   = parseISO(s.end_time)
-                const mins  = differenceInMinutes(start, startOfDay(start))
-                const dayIx = differenceInCalendarDays(start, weekStart)
+    // 1) raw slots
+    const raw = selectedWeek.value.bookings.flatMap((b, bi) =>
+        b.booking_slots.map(s => {
+            const start = parseISO(s.start_time)
+            const end   = parseISO(s.end_time)
+            const mins  = differenceInMinutes(start, startOfDay(start))
+            const dayIx = differenceInCalendarDays(start, weekStart)
+            if (mins < 420 || mins >= 1320 || dayIx < 0 || dayIx > 5) return null
 
-                // drop outside 7AM–10PM or Mon→Sat
-                if (mins < 420 || mins >= 1320 || dayIx < 0 || dayIx > 5) return null
+            const col      = dayIx + 1
+            const rowStart = Math.floor((mins - 420)/5) + 2
+            const span     = Math.max(1, Math.ceil(differenceInMinutes(end, start)/5))
 
-                const col      = dayIx + 1
-                const rowStart = Math.floor((mins - 420) / 5) + 2
-                const span     = Math.max(1, Math.ceil(differenceInMinutes(end, start) / 5))
+            const pal = [
+                {bg:'bg-blue-50 hover:bg-blue-100',   text:'text-blue-700',  hover:'text-blue-700'},
+                {bg:'bg-pink-50 hover:bg-pink-100',   text:'text-pink-700',  hover:'text-pink-700'},
+                {bg:'bg-gray-100 hover:bg-gray-200',  text:'text-gray-700',  hover:'text-gray-700'},
+                {bg:'bg-amber-100 hover:bg-amber-200',text:'text-amber-700', hover:'text-amber-700'},
+                {bg:'bg-purple-100 hover:bg-purple-200',text:'text-purple-700',hover:'text-purple-700'},
+                {bg:'bg-teal-100 hover:bg-teal-200',  text:'text-teal-700',  hover:'text-teal-700'},
+            ][bi%6]
 
-                const palette = [
-                    { bg: 'bg-blue-50 hover:bg-blue-100',    text: 'text-blue-700',  hover: 'text-blue-700' },
-                    { bg: 'bg-pink-50 hover:bg-pink-100',    text: 'text-pink-700',  hover: 'text-pink-700' },
-                    { bg: 'bg-gray-100 hover:bg-gray-200',   text: 'text-gray-700',  hover: 'text-gray-700' },
-                    { bg: 'bg-amber-100 hover:bg-amber-200', text: 'text-amber-700', hover: 'text-amber-700' },
-                    { bg: 'bg-purple-100 hover:bg-purple-200', text:'text-purple-700', hover:'text-purple-700' },
-                    { bg: 'bg-teal-100 hover:bg-teal-200',   text: 'text-teal-700',  hover: 'text-teal-700' },
-                ][bi % 6]
+            return {
+                id:         s.id,
+                trainer:    b.trainer,
+                start_time: s.start_time,
+                short_time: s.short_time,
+                col, rowStart, span,
+                bgClass:    pal.bg,
+                textClass:  pal.text,
+                hoverText:  pal.hover,
+                member:     b.member
+            }
+        })
+    ).filter(Boolean)
 
-                return {
-                    id:         s.id,
-                    member:     b.member,
-                    trainer:    b.trainer,
-                    start_time: s.start_time,
-                    short_time: s.short_time,
-                    col,
-                    rowStart,
-                    span,
-                    bgClass:    palette.bg,
-                    textClass:  palette.text,
-                    hoverText:  palette.hover,
-                }
-            })
-        )
-        .filter(Boolean)
+    // 2) merge same-trainer + identical time-slot
+    const mergedMap = {}
+    raw.forEach(e => {
+        const key = `${e.trainer}::${e.col}-${e.rowStart}-${e.span}`
+        if (!mergedMap[key]) {
+            mergedMap[key] = { ...e, members: [ e.member ] }
+        } else {
+            mergedMap[key].members.push(e.member)
+        }
+    })
+    const merged = Object.values(mergedMap)
 
-    // 2) group by day-column
-    const byDay = raw.reduce((acc, ev) => {
-        ;(acc[ev.col] ||= []).push(ev)
+    // 3) group by day for overlap-clustering
+    const byDay = merged.reduce((acc,e) => {
+        ;(acc[e.col] ||= []).push(e)
         return acc
     }, {})
 
-    // 3) for each day, find *connected* overlap-clusters via union-find
+    // 4) union-find each day's cluster → equal widths
     const positioned = []
     Object.values(byDay).forEach(slots => {
         const n = slots.length
-        const parent = slots.map((_, i) => i)
-        const find = i => parent[i] === i ? i : (parent[i] = find(parent[i]))
-        const union = (a, b) => {
-            const ra = find(a), rb = find(b)
-            if (ra !== rb) parent[rb] = ra
-        }
+        const parent = Array.from({length:n}, (_,i)=>i)
+        const find = i => parent[i]===i ? i : (parent[i]=find(parent[i]))
+        const union = (a,b) => { const ra=find(a), rb=find(b); if(ra!==rb) parent[rb]=ra }
 
-        // link any two that *time*-overlap
-        for (let i = 0; i < n; i++) {
-            for (let j = i + 1; j < n; j++) {
-                const a = slots[i], b = slots[j]
-                if (
-                    a.rowStart < b.rowStart + b.span &&
-                    b.rowStart < a.rowStart + a.span
-                ) {
-                    union(i, j)
+        for (let i=0;i<n;i++) {
+            for (let j=i+1;j<n;j++) {
+                const a=slots[i], b=slots[j]
+                if (a.rowStart < b.rowStart + b.span && b.rowStart < a.rowStart + a.span) {
+                    union(i,j)
                 }
             }
         }
 
-        // collect clusters
+        // collect clusters by root
         const clusters = {}
-        for (let i = 0; i < n; i++) {
-            const root = find(i)
-            ;(clusters[root] ||= []).push(slots[i])
+        for (let i=0;i<n;i++){
+            const r = find(i)
+            ;(clusters[r] ||= []).push(slots[i])
         }
 
-        // assign equal widths & positions within each cluster
+        // assign index & count
         Object.values(clusters).forEach(group => {
-            group.sort((a, b) => a.rowStart - b.rowStart || a.id - b.id)
-            const count = group.length
+            group.sort((a,b)=>a.rowStart-b.rowStart||a.id-b.id)
             group.forEach((slot, idx) => {
-                slot.overlapCount = count
+                slot.overlapCount = group.length
                 slot.overlapIndex = idx
                 positioned.push(slot)
             })
@@ -269,5 +293,4 @@ const events = computed(() => {
 
     return positioned
 })
-
 </script>
