@@ -2,28 +2,29 @@
     <div class="flex h-full flex-col">
         <!-- week nav: sticks to top -->
         <header
-            class="sticky top-0 z-50 flex flex-none items-center justify-between border-b border-gray-200 bg-white py-4 px-6"
+            class="sticky top-0 z-50 flex items-center justify-between border-b border-gray-200 bg-white pb-2 pt-4"
         >
-            <div class="flex items-center space-x-3">
-                <div class="relative flex items-center rounded-md bg-white shadow-sm md:items-stretch">
-                    <button
-                        @click="prevWeek"
-                        :disabled="currentWeekIndex === 0"
-                        class="flex h-9 w-12 items-center justify-center rounded-l-md border-y border-l border-gray-300 pr-1 text-gray-400 hover:text-gray-500 disabled:opacity-30 cursor-pointer"
-                    >
-                        <ChevronLeftIcon class="size-5" aria-hidden="true" />
-                    </button>
-                    <button
-                        @click="nextWeek"
-                        :disabled="currentWeekIndex === weeks.length - 1"
-                        class="flex h-9 w-12 items-center justify-center rounded-r-md border-y border-r border-gray-300 pl-1 text-gray-400 hover:text-gray-500 disabled:opacity-30 cursor-pointer"
-                    >
-                        <ChevronRightIcon class="size-5" aria-hidden="true" />
-                    </button>
-                </div>
-                <!-- month–year label -->
-                <span class="text-gray-200 uppercase text-xl">
-                  {{ monthLabel }}
+            <div class="flex items-center space-x-2">
+                <button
+                    @click="prevWeek"
+                    :disabled="currentWeekIndex === 0"
+                    :class="currentWeekIndex === 0
+                        ? 'text-gray-200 cursor-default'
+                        : 'text-gray-500 cursor-pointer'"
+                >
+                    <ChevronLeftIcon class="size-6" aria-hidden="true" />
+                </button>
+                <button
+                    @click="nextWeek"
+                    :disabled="currentWeekIndex === weeks.length - 1"
+                    :class="currentWeekIndex === weeks.length - 1
+                        ? 'text-gray-200 cursor-default'
+                        : 'text-gray-500 cursor-pointer'"
+                >
+                    <ChevronRightIcon class="size-6" aria-hidden="true" />
+                </button>
+                <span class="text-gray-200 uppercase text-xl font-medium">
+                    {{ monthLabel }}
                 </span>
             </div>
 
@@ -37,7 +38,9 @@
                             :value="trainer"
                             class="h-4 w-4 rounded border-gray-300 bg-white text-indigo-600 focus:ring-indigo-500 cursor-pointer"
                         />
-                        <span class="ml-2 text-gray-700 cursor-pointer">{{ trainer }}</span>
+                        <span class="ml-2 text-gray-700 cursor-pointer">
+                            {{ trainer }}
+                        </span>
                     </label>
                 </template>
             </div>
@@ -48,7 +51,7 @@
                 <!-- days header -->
                 <div
                     ref="containerNav"
-                    class="sticky top-16 z-40 flex-none bg-white shadow ring-1 ring-black/5 sm:pr-8"
+                    class="sticky top-[50px] z-40 flex-none bg-white shadow ring-1 ring-black/5 sm:pr-8"
                 >
                     <div
                         class="-mr-px hidden grid-cols-6 divide-x divide-gray-100 border-r border-gray-100 text-sm text-gray-500 sm:grid"
@@ -60,7 +63,7 @@
                                     {{ day.short }}
                                     <span
                                         class="ml-1 inline-flex items-center justify-center rounded-full px-2 py-0.5 text-xs font-semibold"
-                                        :class="day.isToday ? 'bg-indigo-600 text-white' : 'text-gray-700'"
+                                        :class="day.isToday ? 'bg-black text-white' : 'text-gray-700'"
                                     >
                                         {{ day.day }}
                                     </span>
@@ -101,7 +104,11 @@
                         <div
                             class="col-start-1 col-end-2 row-start-1 hidden grid-cols-6 divide-x divide-gray-100 sm:grid sm:grid-cols-6"
                         >
-                            <div v-for="n in 7" :key="n" :class="n<7 ? 'row-span-full' : 'row-span-full w-8'" />
+                            <div
+                                v-for="n in 7"
+                                :key="n"
+                                :class="n < 7 ? 'row-span-full' : 'row-span-full w-8'"
+                            />
                         </div>
 
                         <!-- events -->
@@ -121,8 +128,8 @@
                                 <component
                                     :is="slot.members.length === 1 ? 'a' : 'div'"
                                     v-bind="slot.members.length === 1
-                                      ? { href: route('admin.bookings-slots.show', slot.id) }
-                                      : {}"
+                                        ? { href: route('admin.bookings-slots.show', slot.id) }
+                                        : {}"
                                     class="group absolute inset-y-2 flex flex-col overflow-y-auto rounded-lg p-2 text-xs hover:opacity-90 cursor-pointer"
                                     :class="slot.bgClass"
                                     :style="{
@@ -157,6 +164,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/20/solid'
+
 import {
     addDays, parseISO, format, isSameDay,
     startOfDay, setHours, setMinutes,
@@ -175,62 +183,63 @@ const selectedTrainers = ref([])
 const prevWeek = () => currentWeekIndex.value > 0 && currentWeekIndex.value--
 const nextWeek = () => currentWeekIndex.value < props.weeks.length - 1 && currentWeekIndex.value++
 
-// pick the current week
+// pick current week
 const selectedWeek = computed(() => props.weeks[currentWeekIndex.value])
 
-// month–year label
+// month–day range label
 const monthLabel = computed(() => {
     const s = parseISO(selectedWeek.value.start)
     const e = parseISO(selectedWeek.value.end)
-    const sm = format(s,'MMM').toUpperCase()
-    const em = format(e,'MMM').toUpperCase()
-    const yy = format(s,'yy')
-    return sm === em ? `${sm} ${yy}` : `${sm}–${em} ${yy}`
+    const startFmt = format(s, 'MMM d')
+    const endFmt = format(e, 'MMM d')
+    return `${startFmt} - ${endFmt}`
 })
 
-// trainers in current week
+// trainers list
 const trainers = computed(() =>
     Array.from(new Set(selectedWeek.value.bookings.map(b => b.trainer)))
 )
 
-// header days Mon→Sat
+// header days
 const headerDays = computed(() => {
     const start = parseISO(selectedWeek.value.start)
     return Array.from({ length: 6 }).map((_, i) => {
         const d = addDays(start, i)
-        return { short: format(d,'EEE'), day: format(d,'d'), isToday: isSameDay(d,today) }
+        return { short: format(d,'EEE'), day: format(d,'d'), isToday: isSameDay(d, today) }
     })
 })
 
-// times gutter 7AM→10PM
+// times gutter
 const hours = computed(() =>
     Array.from({ length: 16 }).map((_, i) =>
         setMinutes(setHours(startOfDay(new Date()), 7 + i), 0)
     )
 )
 
-// build & merge slots, union-find clusters
-const allEvents = computed(() => {
+// 1) raw + merge same‐trainer+slot
+const rawMerged = computed(() => {
     const weekStart = parseISO(selectedWeek.value.start)
-    const raw = selectedWeek.value.bookings.flatMap((b, bi) =>
-        b.booking_slots.map(s => {
-            const start = parseISO(s.start_time)
-            const end   = parseISO(s.end_time)
-            const mins  = differenceInMinutes(start, startOfDay(start))
-            const dayIx = differenceInCalendarDays(start, weekStart)
-            if (mins<420||mins>=1320||dayIx<0||dayIx>5) return null
+    const slots = selectedWeek.value.bookings.flatMap((b, bi) => {
+        return b.booking_slots.map(s => {
+            const start  = parseISO(s.start_time)
+            const end    = parseISO(s.end_time)
+            const mins   = differenceInMinutes(start, startOfDay(start))
+            const dayIx  = differenceInCalendarDays(start, weekStart)
+            if (mins < 420 || mins >= 1320 || dayIx < 0 || dayIx > 5) return null
 
-            const col      = dayIx+1
-            const rowStart = Math.floor((mins-420)/5)+2
-            const span     = Math.max(1, Math.ceil(differenceInMinutes(end,start)/5))
-            const pal      = [
+            const col       = dayIx + 1
+            const rowStart  = Math.floor((mins - 420) / 5) + 2
+            const span      = Math.max(1, Math.ceil(differenceInMinutes(end, start) / 5))
+            const pal       = [
                 {bg:'bg-blue-50 hover:bg-blue-100',   text:'text-blue-700',  hover:'text-blue-700'},
+                {bg:'bg-orange-100 hover:bg-orange-200',  text:'text-orange-700',  hover:'text-orange-700'},
                 {bg:'bg-pink-50 hover:bg-pink-100',   text:'text-pink-700',  hover:'text-pink-700'},
+                {bg:'bg-emerald-50 hover:bg-emerald-100',   text:'text-emerald-700',  hover:'text-emerald-700'},
                 {bg:'bg-gray-100 hover:bg-gray-200',  text:'text-gray-700',  hover:'text-gray-700'},
-                {bg:'bg-amber-100 hover:bg-amber-200',text:'text-amber-700', hover:'text-amber-700'},
                 {bg:'bg-purple-100 hover:bg-purple-200',text:'text-purple-700',hover:'text-purple-700'},
-                {bg:'bg-teal-100 hover:bg-teal-200',  text:'text-teal-700',  hover:'text-teal-700'}
-            ][bi%6]
+                {bg:'bg-cyan-100 hover:bg-teal-200',  text:'text-cyan-700',  hover:'text-cyan-700'},
+                {bg:'bg-yellow-100 hover:bg-yellow-200',text:'text-yellow-700', hover:'text-yellow-700'},
+            ][bi % 8]
 
             return {
                 id:         s.id,
@@ -244,54 +253,64 @@ const allEvents = computed(() => {
                 member:     b.member
             }
         })
-    ).filter(Boolean)
+    }).filter(Boolean)
 
-    // merge same-trainer+same-slot
+    // merge identical
     const map = {}
-    raw.forEach(e => {
+    slots.forEach(e => {
         const key = `${e.trainer}::${e.col}-${e.rowStart}-${e.span}`
         if (!map[key]) map[key] = { ...e, members: [e.member] }
         else map[key].members.push(e.member)
     })
-    const merged = Object.values(map)
+    return Object.values(map)
+})
 
-    // group by day & union-find overlaps
-    const byDay = merged.reduce((acc,e)=>{
-        (acc[e.col] ||= []).push(e)
+// 2) apply trainer filter
+const filteredRaw = computed(() =>
+    selectedTrainers.value.length
+        ? rawMerged.value.filter(e => selectedTrainers.value.includes(e.trainer))
+        : rawMerged.value
+)
+
+// 3) cluster and position
+const filteredEvents = computed(() => {
+    const byDay = filteredRaw.value.reduce((acc,e) => {
+        ;(acc[e.col] ||= []).push(e)
         return acc
     }, {})
+
     const positioned = []
+
     Object.values(byDay).forEach(slots => {
         const n = slots.length
         const parent = slots.map((_,i)=>i)
-        const find = i => parent[i]===i?i:(parent[i]=find(parent[i]))
-        const union = (a,b)=>{ const ra=find(a), rb=find(b); if(ra!==rb) parent[rb]=ra }
-        for(let i=0;i<n;i++) for(let j=i+1;j<n;j++){
-            const a=slots[i], b=slots[j]
-            if(a.rowStart < b.rowStart+b.span && b.rowStart < a.rowStart+a.span)
-                union(i,j)
-        }
+        const find   = i => parent[i]===i?i:(parent[i]=find(parent[i]))
+        const union  = (a,b)=>{const ra=find(a), rb=find(b); if(ra!==rb) parent[rb]=ra}
+
+        for (let i=0; i<n; i++)
+            for (let j=i+1; j<n; j++){
+                const a=slots[i], b=slots[j]
+                if (a.rowStart < b.rowStart + b.span && b.rowStart < a.rowStart + a.span)
+                    union(i,j)
+            }
+
         const clusters = {}
-        for(let i=0;i<n;i++){
+
+        for (let i=0; i<n; i++){
             const r = find(i)
             ;(clusters[r] ||= []).push(slots[i])
         }
-        Object.values(clusters).forEach(group=>{
+
+        Object.values(clusters).forEach(group => {
             group.sort((a,b)=>a.rowStart-b.rowStart||a.id-b.id)
-            group.forEach((slot,idx)=>{
+            group.forEach((slot,idx) => {
                 slot.overlapCount = group.length
                 slot.overlapIndex = idx
                 positioned.push(slot)
             })
         })
     })
+
     return positioned
 })
-
-// apply trainer filter
-const filteredEvents = computed(() =>
-    selectedTrainers.value.length
-        ? allEvents.value.filter(e => selectedTrainers.value.includes(e.trainer))
-        : allEvents.value
-)
 </script>
