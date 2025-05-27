@@ -36,11 +36,9 @@
                             type="checkbox"
                             v-model="selectedTrainers"
                             :value="trainer"
-                            class="h-4 w-4 rounded border-gray-300 bg-white text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+                            class="h-4 w-4 rounded border-gray-300 accent-black focus:ring-black cursor-pointer"
                         />
-                        <span class="ml-2 text-gray-700 cursor-pointer">
-                            {{ trainer }}
-                        </span>
+                        <span class="ml-2 text-gray-700 cursor-pointer">{{ trainer }}</span>
                     </label>
                 </template>
             </div>
