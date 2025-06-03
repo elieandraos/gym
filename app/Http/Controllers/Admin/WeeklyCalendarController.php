@@ -19,8 +19,8 @@ class WeeklyCalendarController extends Controller
         $saturday   = $monday->copy()->addDays(5);
 
         // 7-week span around Monday→Saturday
-        $spanStart = $monday->copy()->subWeeks(3);
-        $spanEnd   = $saturday->copy()->addWeeks(3);
+        $spanStart = $monday->copy()->subWeeks(2);
+        $spanEnd   = $saturday->copy()->addWeeks(4);
 
         $bookings = Booking::with([
             // Only load slots that at least partially overlap our span

@@ -66,6 +66,17 @@ class User extends Authenticatable
         return $this->hasMany(Booking::class, 'trainer_id');
     }
 
+    public function trainerActiveBookings(): HasMany
+    {
+        return $this->hasMany(Booking::class, 'trainer_id')
+            ->active()
+            ->orderBy('start_date')
+            ->with([
+                'member',
+                'bookingSlots' => fn($query) => $query->orderBy('start_time'),
+            ]);
+    }
+
     public function memberBookings(): HasMany
     {
         return $this->hasMany(Booking::class, 'member_id');

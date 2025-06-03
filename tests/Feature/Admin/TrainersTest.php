@@ -2,7 +2,7 @@
 
 use App\Enums\BloodType;
 use App\Enums\Gender;
-use App\Http\Resources\UserResource;
+use App\Http\Resources\TrainerResource;
 use App\Models\User;
 
 beforeEach(function () {
@@ -24,7 +24,7 @@ test('it lists all the trainers', function () {
     actingAsAdmin()
         ->get(route('admin.trainers.index'))
         ->assertHasComponent('Admin/Trainers/Index')
-        ->assertHasPaginatedResource('trainers', UserResource::collection($trainers))
+        ->assertHasPaginatedResource('trainers', TrainerResource::collection($trainers))
         ->assertStatus(200);
 });
 
@@ -47,7 +47,7 @@ test('it creates a trainer', function () {
         'birthdate' => '1980-01-01',
         'blood_type' => BloodType::OPlus->value,
         'phone_number' => '00961 3 000 000',
-        'instagram_handle' => 'elietrainer',
+        'instagram_handle' => 'elie.trainer',
         'address' => 'somewhere',
         'emergency_contact' => 'someone'
     ];
@@ -95,13 +95,11 @@ test('it validates trainer creation', function () {
 
 test('it shows trainer information', function () {
     $trainer = User::query()->trainers()->first();
-    $trainer->load([
-        'trainerBookings' => fn ($q) => $q->active()->with(['member', 'bookingSlots']),
-    ]);
+    $trainer->load(['trainerActiveBookings']);
 
     actingAsAdmin()
         ->get(route('admin.trainers.show', $trainer))
         ->assertHasComponent('Admin/Trainers/Show')
-        ->assertHasResource('trainer', UserResource::make($trainer))
+        ->assertHasResource('trainer', TrainerResource::make($trainer))
         ->assertStatus(200);
 });

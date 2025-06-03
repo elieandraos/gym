@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Enums\Role;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\UserRequest;
-use App\Http\Resources\UserResource;
+use App\Http\Resources\TrainerResource;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Hash;
@@ -22,23 +22,16 @@ class TrainersController extends Controller
             ->paginate(10);
 
         return Inertia::render('Admin/Trainers/Index', [
-            'trainers' => UserResource::collection($trainers)
+            'trainers' => TrainerResource::collection($trainers)
         ]);
     }
 
     public function show(User $user): Response
     {
-        $user->load([
-            'trainerBookings' => function ($query) {
-                $query->active()->with([
-                    'member',
-                    'bookingSlots' => fn ($query) => $query->orderBy('start_time'),
-                ]);
-            },
-        ]);
+        $user->load(['trainerActiveBookings']);
 
         return Inertia::render('Admin/Trainers/Show', [
-            'trainer' => UserResource::make($user),
+            'trainer' => TrainerResource::make($user),
         ]);
     }
 

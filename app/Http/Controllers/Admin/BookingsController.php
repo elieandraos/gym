@@ -6,7 +6,8 @@ use App\Enums\Status;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\BookingRequest;
 use App\Http\Resources\BookingResource;
-use App\Http\Resources\UserResource;
+use App\Http\Resources\MemberResource;
+use App\Http\Resources\TrainerResource;
 use App\Models\Booking;
 use App\Models\BookingSlot;
 use App\Models\User;
@@ -27,8 +28,8 @@ class BookingsController extends Controller
     public function create(): Response
     {
         return Inertia::render('Admin/Bookings/Create', [
-            'trainers' => UserResource::collection(User::query()->trainers()->get()),
-            'members' => UserResource::collection(User::query()->members()->get()),
+            'trainers' => TrainerResource::collection(User::query()->trainers()->get()),
+            'members' => MemberResource::collection(User::query()->members()->get()),
         ]);
     }
 

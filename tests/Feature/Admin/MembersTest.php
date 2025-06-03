@@ -2,7 +2,7 @@
 
 use App\Enums\BloodType;
 use App\Enums\Gender;
-use App\Http\Resources\UserResource;
+use App\Http\Resources\MemberResource;
 use App\Models\User;
 
 beforeEach(function () {
@@ -24,7 +24,7 @@ test('it lists all the members', function () {
     actingAsAdmin()
         ->get(route('admin.members.index'))
         ->assertHasComponent('Admin/Members/Index')
-        ->assertHasPaginatedResource('members', UserResource::collection($members))
+        ->assertHasPaginatedResource('members', MemberResource::collection($members))
         ->assertStatus(200);
 });
 
@@ -95,13 +95,11 @@ test('it validates member creation', function () {
 
 test('it shows member information', function () {
     $member = User::query()->members()->first();
-    $member->load([
-        'memberBookings' => fn ($q) => $q->active()->with(['trainer', 'bookingSlots']),
-    ]);
+    $member->load(['memberActiveBooking', 'memberScheduledBookings']);
 
     actingAsAdmin()
         ->get(route('admin.members.show', $member))
         ->assertHasComponent('Admin/Members/Show')
-        ->assertHasResource('member', UserResource::make($member))
+        ->assertHasResource('member', MemberResource::make($member))
         ->assertStatus(200);
 });
