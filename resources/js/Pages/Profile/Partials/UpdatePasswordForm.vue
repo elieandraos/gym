@@ -1,6 +1,5 @@
 <template>
-    <h3 class="font-medium">Update password</h3>
-    <div class="text-sm text-zinc-500">
+    <div class="text-sm font-medium text-zinc-500">
         Ensure your account is using a strong password to stay secure.
     </div>
 

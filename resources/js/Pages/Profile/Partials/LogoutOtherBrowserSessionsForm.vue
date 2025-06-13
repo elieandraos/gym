@@ -1,6 +1,5 @@
 <template>
-    <h3 class="font-medium mt-4">Browser sessions</h3>
-    <div class="text-sm text-zinc-500">
+    <div class="text-sm font-medium text-zinc-500">
         Manage and log out your active sessions on other browsers and devices.
     </div>
 

@@ -1,8 +1,8 @@
 <template>
-    <ul class="flex justify-between items-center mb-8 lg:mt-8 lg:justify-start lg:gap-8 bg-white capitalize cursor-pointer">
+    <ul class="flex justify-between items-center mb-4 border-b border-gray-200 lg:justify-start lg:gap-8 bg-white capitalize cursor-pointer">
         <li
-            class="uppercase text-xs rounded-lg px-3 py-1.5 font-medium leading-relaxed"
-            :class="title === selectedTitle ? 'bg-stone-200 text-zinc-900' : 'bg-stone-100 text-zinc-400 hover:bg-stone-200 hover:text-zinc-900'"
+            class="uppercase text-sm rounded-lg px-3 py-1.5 font-medium leading-relaxed tracking-widest"
+            :class="title === selectedTitle ? 'text-zinc-900' : 'text-zinc-400 hover:text-zinc-900'"
             v-for="title in tabTitles"
             :key="title"
             @click="selectTab(title)">

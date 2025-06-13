@@ -1,6 +1,5 @@
 <template>
-    <h3 class="font-medium">Profile information</h3>
-    <div class="text-sm text-zinc-500">
+    <div class="text-sm font-medium text-zinc-500">
         Your profile details helps us provide a more personalized experience.
     </div>
 

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\UserResource;
+use App\Http\Resources\MemberResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -17,7 +17,7 @@ class UserBookingsHistoryController extends Controller
         }]);
 
         return Inertia::render('Admin/UserBookingsHistory/Index', [
-            'user' => UserResource::make($user),
+            'user' => MemberResource::make($user),
         ]);
     }
 }

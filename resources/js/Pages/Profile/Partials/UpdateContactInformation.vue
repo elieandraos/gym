@@ -1,6 +1,5 @@
 <template>
-    <h3 class="font-medium">Contact information</h3>
-    <div class="text-sm text-zinc-500">
+    <div class="text-sm font-medium text-zinc-500">
         Your contact details help us reach you promptly for any necessary communications.
     </div>
 
