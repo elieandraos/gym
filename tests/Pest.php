@@ -55,16 +55,32 @@ function actingAsAdmin()
 
 function setupUsersAndBookings(): void
 {
-    $members = User::factory()->count(1)->create(['role' => Role::Member]);
-    $trainers = User::factory()->count(1)->create(['role' => Role::Trainer]);
+    $members = User::factory()->count(10)->create(['role' => Role::Member]);
+    $trainers = User::factory()->count(2)->create(['role' => Role::Trainer]);
 
-    $members->each(function ($user) use ($trainers) {
-        // Create active booking
-        $booking = Booking::factory()->active()->create([
-            'member_id' => $user->id,
-            'trainer_id' => $trainers->random()->id,
-        ]);
+    foreach ($members as $member) {
+        // Create one active booking
+        $activeBooking = Booking::factory()
+            ->active()
+            ->create([
+                'member_id' => $member->id,
+                'trainer_id' => $trainers->random()->id,
+            ]);
 
-        BookingSlot::factory($booking->nb_sessions)->forBooking($booking)->create();
-    });
+        BookingSlot::factory($activeBooking->nb_sessions)
+            ->forBooking($activeBooking)
+            ->create();
+
+        // Create one completed booking
+        $completedBooking = Booking::factory()
+            ->completed()
+            ->create([
+                'member_id' => $member->id,
+                'trainer_id' => $trainers->random()->id,
+            ]);
+
+        BookingSlot::factory($completedBooking->nb_sessions)
+            ->forBooking($completedBooking)
+            ->create();
+    }
 }

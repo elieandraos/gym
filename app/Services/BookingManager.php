@@ -41,4 +41,17 @@ class BookingManager
 
         return $sessionDates;
     }
+
+    public static function getCalendarSpan(?Carbon $today = null, int $weeksBefore = 2, int $weeksAfter = 4): array
+    {
+        $today ??= Carbon::today();
+        $monday = $today->copy()->startOfWeek();
+        $saturday = $monday->copy()->addDays(5);
+
+        return [
+            'start' => $monday->copy()->subWeeks($weeksBefore),
+            'end' => $saturday->copy()->addWeeks($weeksAfter),
+        ];
+    }
+
 }

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -62,5 +63,17 @@ class Booking extends Model
     {
         return $query->where('start_date', '>', Carbon::today())
             ->orderBy('start_date', 'ASC');
+    }
+
+    #[AsScope]
+    public function between(Builder $query, DateTimeInterface $start, DateTimeInterface $end): Builder
+    {
+        $start = Carbon::instance($start);
+        $end = Carbon::instance($end);
+
+        return $query->where(function ($q) use ($start, $end) {
+            $q->whereBetween('start_date', [$start->toDateString(), $end->toDateString()])
+                ->orWhereBetween('end_date', [$start->toDateString(), $end->toDateString()]);
+        });
     }
 }

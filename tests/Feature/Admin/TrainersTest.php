@@ -19,7 +19,10 @@ test('trainers routes require authentication', function () {
 });
 
 test('it lists all the trainers', function () {
-    $trainers = User::query()->trainers()->paginate();
+    $trainers = User::query()
+        ->trainers()
+        ->orderBy('registration_date', 'DESC')
+        ->paginate(10);
 
     actingAsAdmin()
         ->get(route('admin.trainers.index'))

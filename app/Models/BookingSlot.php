@@ -2,9 +2,13 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
+use DateTimeInterface;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Attributes\Scope as AsScope;
 
 class BookingSlot extends Model
 {
@@ -25,5 +29,17 @@ class BookingSlot extends Model
     public function booking(): BelongsTo
     {
         return $this->belongsTo(Booking::class);
+    }
+
+    #[AsScope]
+    public function between(Builder $query, DateTimeInterface $start, DateTimeInterface $end): Builder
+    {
+        $start = Carbon::instance($start);
+        $end = Carbon::instance($end);
+
+        return $query->where(function ($q) use ($start, $end) {
+            $q->whereBetween('start_time', [$start->copy()->startOfDay(), $end->copy()->endOfDay()])
+                ->orWhereBetween('end_time', [$start->copy()->startOfDay(), $end->copy()->endOfDay()]);
+        });
     }
 }

@@ -19,7 +19,10 @@ test('members routes require authentication', function () {
 });
 
 test('it lists all the members', function () {
-    $members = User::query()->members()->paginate();
+    $members = User::query()
+        ->members()
+        ->orderBy('registration_date', 'DESC')
+        ->paginate(10);
 
     actingAsAdmin()
         ->get(route('admin.members.index'))
