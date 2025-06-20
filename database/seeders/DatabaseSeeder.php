@@ -54,7 +54,7 @@ class DatabaseSeeder extends Seeder
         ]);
     }
 
-    protected function addPreviousBookings(User $user, Collection $trainers, int $nbMonthsAgo): void
+    protected function addPreviousBookings(User $user, Collection $trainers, int $nbMonthsAgo = 3): void
     {
         if ($nbMonthsAgo <= 0) {
             return;

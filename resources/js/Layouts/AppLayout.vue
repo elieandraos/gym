@@ -6,7 +6,7 @@
 
         <div class="bg-zinc-100 text-black relative">
             <div class="flex">
-                <div class="h-screen w-64 hidden lg:block">
+                <div class="h-screen w-60 hidden lg:block">
                     <sidebar :menu="menu"></sidebar>
                 </div>
                 <div class="h-screen lg:pt-2 grow">
