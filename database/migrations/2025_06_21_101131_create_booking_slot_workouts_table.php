@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\BookingSlot;
+use App\Models\Workout;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -11,10 +13,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('booking_workouts', function (Blueprint $table) {
+        Schema::create('booking_slot_workouts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('booking_id')->constrained()->onDelete('cascade');
-            $table->foreignId('workout_id')->constrained()->onDelete('cascade');
+            $table->foreignIdFor(BookingSlot::class);
+            $table->foreignIdFor(Workout::class);
             $table->string('image')->nullable();
             $table->text('notes')->nullable();
             $table->timestamps();
@@ -26,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('booking_workouts');
+        Schema::dropIfExists('booking_slot_workouts');
     }
 };

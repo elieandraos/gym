@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Attributes\Scope as AsScope;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class BookingSlot extends Model
 {
@@ -29,6 +30,11 @@ class BookingSlot extends Model
     public function booking(): BelongsTo
     {
         return $this->belongsTo(Booking::class);
+    }
+
+    public function bookingSlotWorkouts(): HasMany
+    {
+        return $this->hasMany(BookingSlotWorkout::class);
     }
 
     #[AsScope]

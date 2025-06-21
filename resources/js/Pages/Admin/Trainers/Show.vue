@@ -38,7 +38,7 @@
                     <user-contact :user="trainer"></user-contact>
                 </div>
             </div>
-            
+
         </Container>
     </AppLayout>
 </template>
