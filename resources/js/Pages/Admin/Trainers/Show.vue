@@ -30,10 +30,15 @@
                 </div>
             </div>
 
-            <div class="space-y-12">
-                <user-profile :user="trainer"></user-profile>
-                <user-contact :user="trainer"></user-contact>
+            <div class="flex flex-col md:flex-row md:justify-between gap-6 md:gap-12">
+                <div class="bg-stone-50 w-full p-4 rounded-lg">
+                    <user-profile :user="trainer"></user-profile>
+                </div>
+                <div class="bg-stone-50 w-full p-4 rounded-lg">
+                    <user-contact :user="trainer"></user-contact>
+                </div>
             </div>
+            
         </Container>
     </AppLayout>
 </template>

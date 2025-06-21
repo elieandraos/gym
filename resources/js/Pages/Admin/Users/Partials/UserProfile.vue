@@ -1,6 +1,6 @@
 <template>
     <div class="w-full">
-        <h3 class="font-semibold text-sm pb-1 mb-1">Summary</h3>
+        <h3 class="font-semibold text-sm mb-4">Summary</h3>
         <table class="text-left text-sm w-full">
             <tbody>
                 <tr class="border-b border-zinc-100">
