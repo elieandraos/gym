@@ -4,7 +4,6 @@ namespace App\Http\Requests\Admin;
 
 use App\Enums\BloodType;
 use App\Enums\Gender;
-use App\Enums\Role;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
 
@@ -30,7 +29,7 @@ class UserRequest extends FormRequest
             'phone_number' => ['required', 'string'],
             'instagram_handle' => ['nullable', 'string'],
             'address' => ['nullable', 'string'],
-            'emergency_contact' => ['nullable', 'string']
+            'emergency_contact' => ['nullable', 'string'],
         ];
     }
 }

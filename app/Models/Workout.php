@@ -11,7 +11,7 @@ class Workout extends Model
     protected $fillable = [
         'name',
         'category',
-        'image'
+        'image',
     ];
 
     protected $casts = [

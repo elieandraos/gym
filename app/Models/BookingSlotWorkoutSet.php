@@ -13,7 +13,7 @@ class BookingSlotWorkoutSet extends Model
         'is_timed',
         'is_weighted',
         'weight_in_kg',
-        'duration_in_seconds'
+        'duration_in_seconds',
     ];
 
     public function bookingSlotWorkout(): BelongsTo

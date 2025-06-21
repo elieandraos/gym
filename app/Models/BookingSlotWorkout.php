@@ -12,7 +12,7 @@ class BookingSlotWorkout extends Model
         'booking_slot_id',
         'workout_id',
         'image',
-        'notes'
+        'notes',
     ];
 
     public function bookingSlot(): BelongsTo

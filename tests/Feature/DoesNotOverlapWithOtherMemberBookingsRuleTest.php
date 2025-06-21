@@ -28,7 +28,7 @@ beforeEach(function () {
 
 function validate(array $data): bool
 {
-    $rule = new DoesNotOverlapWithOtherMemberBookings();
+    $rule = new DoesNotOverlapWithOtherMemberBookings;
     $rule->setData($data);
 
     $validator = Validator::make($data, [

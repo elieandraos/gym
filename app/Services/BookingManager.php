@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 use Carbon\Carbon;
@@ -53,5 +54,4 @@ class BookingManager
             'end' => $saturday->copy()->addWeeks($weeksAfter),
         ];
     }
-
 }

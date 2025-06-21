@@ -13,10 +13,10 @@ test('owner can view the calendar with expected weekly data', function () {
     ['start' => $spanStart, 'end' => $spanEnd] = BookingManager::getCalendarSpan();
 
     $bookings = Booking::with([
-            'bookingSlots' => fn ($q) => $q->between($spanStart, $spanEnd),
-            'member:id,name',
-            'trainer:id,name',
-        ])
+        'bookingSlots' => fn ($q) => $q->between($spanStart, $spanEnd),
+        'member:id,name',
+        'trainer:id,name',
+    ])
         ->between($spanStart, $spanEnd)
         ->has('bookingSlots')
         ->get();
@@ -37,10 +37,10 @@ test('booking outside the 7-week window is not shown', function () {
         ->create();
 
     $expectedBookings = Booking::with([
-            'bookingSlots' => fn ($q) => $q->between($spanStart, $spanEnd),
-            'member:id,name',
-            'trainer:id,name',
-        ])
+        'bookingSlots' => fn ($q) => $q->between($spanStart, $spanEnd),
+        'member:id,name',
+        'trainer:id,name',
+    ])
         ->between($spanStart, $spanEnd)
         ->has('bookingSlots')
         ->get();

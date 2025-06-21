@@ -22,7 +22,7 @@ class MembersController extends Controller
             ->paginate(10);
 
         return Inertia::render('Admin/Members/Index', [
-            'members' => MemberResource::collection($members)
+            'members' => MemberResource::collection($members),
         ]);
     }
 

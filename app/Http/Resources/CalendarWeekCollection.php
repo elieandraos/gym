@@ -2,57 +2,57 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\Request;
-use Carbon\CarbonInterface;
-use Illuminate\Http\Resources\Json\ResourceCollection;
 use Carbon\Carbon;
+use Carbon\CarbonInterface;
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class CalendarWeekCollection extends ResourceCollection
 {
-    public function toArray(Request $request) : array
+    public function toArray(Request $request): array
     {
         // Compute the 7-week span: 3 weeks back, current Monday→Saturday, 3 ahead
-        $today      = Carbon::today();
-        $monday     = $today->copy()->startOfWeek(CarbonInterface::MONDAY);
-        $saturday   = $monday->copy()->addDays(5);
-        $spanStart  = $monday->copy()->subWeeks(3);
-        $spanEnd    = $saturday->copy()->addWeeks(3);
+        $today = Carbon::today();
+        $monday = $today->copy()->startOfWeek(CarbonInterface::MONDAY);
+        $saturday = $monday->copy()->addDays(5);
+        $spanStart = $monday->copy()->subWeeks(3);
+        $spanEnd = $saturday->copy()->addWeeks(3);
 
         $weeks = [];
         $cursor = $spanStart->copy();
 
         while ($cursor->lte($spanEnd)) {
             $weekStart = $cursor->copy();
-            $weekEnd   = $weekStart->copy()->addDays(5);
+            $weekEnd = $weekStart->copy()->addDays(5);
 
             // Filter bookings that have slots in this week, then map to minimal structure
             $weekBookings = $this->collection
-                ->filter(function($booking) use ($weekStart, $weekEnd) {
-                    return $booking->bookingSlots->contains(function($slot) use ($weekStart, $weekEnd) {
+                ->filter(function ($booking) use ($weekStart, $weekEnd) {
+                    return $booking->bookingSlots->contains(function ($slot) use ($weekStart, $weekEnd) {
                         return $slot->start_time->between(
                             $weekStart->startOfDay(),
                             $weekEnd->endOfDay()
                         );
                     });
                 })
-                ->map(function($booking) use ($weekStart, $weekEnd) {
+                ->map(function ($booking) use ($weekStart, $weekEnd) {
                     $slots = $booking->bookingSlots
-                        ->filter(function($slot) use ($weekStart, $weekEnd) {
+                        ->filter(function ($slot) use ($weekStart, $weekEnd) {
                             return $slot->start_time->between(
                                 $weekStart->startOfDay(),
                                 $weekEnd->endOfDay()
                             );
                         })
                         ->values()
-                        ->map(function($slot) {
+                        ->map(function ($slot) {
                             $minutes = $slot->start_time->minute;
 
                             return [
-                                'id'         => $slot->id,
-                                'start_time'=> $slot->start_time->toIso8601String(),
-                                'end_time'  => $slot->end_time->toIso8601String(),
-                                'duration'    => $slot->start_time->diffInMinutes($slot->end_time),
-                                'short_time'  => $slot->start_time->format(
+                                'id' => $slot->id,
+                                'start_time' => $slot->start_time->toIso8601String(),
+                                'end_time' => $slot->end_time->toIso8601String(),
+                                'duration' => $slot->start_time->diffInMinutes($slot->end_time),
+                                'short_time' => $slot->start_time->format(
                                     $minutes === 0
                                         ? 'ga'    // “7am”, “2pm” when on the hour
                                         : 'g:i a' // “7:30 am”, “2:15 pm” when minutes > 0
@@ -61,16 +61,16 @@ class CalendarWeekCollection extends ResourceCollection
                         });
 
                     return [
-                        'member' =>  explode(' ', $booking->member->name)[0],
-                        'trainer' =>  explode(' ', $booking->trainer->name)[0],
+                        'member' => explode(' ', $booking->member->name)[0],
+                        'trainer' => explode(' ', $booking->trainer->name)[0],
                         'booking_slots' => $slots,
                     ];
                 })
                 ->values();
 
             $weeks[] = [
-                'start'    => $weekStart->toDateString(),
-                'end'      => $weekEnd->toDateString(),
+                'start' => $weekStart->toDateString(),
+                'end' => $weekEnd->toDateString(),
                 'is_current' => $weekStart->isSameWeek(Carbon::today()),
                 'bookings' => $weekBookings,
             ];
@@ -78,6 +78,6 @@ class CalendarWeekCollection extends ResourceCollection
             $cursor->addWeek();
         }
 
-        return  $weeks;
+        return $weeks;
     }
 }

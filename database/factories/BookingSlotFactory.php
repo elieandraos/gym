@@ -27,7 +27,7 @@ class BookingSlotFactory extends Factory
         return $this->state(function () use ($booking) {
             // 1) grab the booking window...
             $startDate = Carbon::parse($booking->start_date)->setTime(7, 0);
-            $endDate   = Carbon::parse($booking->end_date)
+            $endDate = Carbon::parse($booking->end_date)
                 ->setTime(21, 0)     // latest end boundary is 21:00
                 ->subHour();         // leave room for 1-hour slot
 
@@ -44,13 +44,12 @@ class BookingSlotFactory extends Factory
 
             return [
                 'start_time' => $startDateTime,
-                'end_time'   => $endDateTime,
+                'end_time' => $endDateTime,
                 'booking_id' => $booking->id,
-                'status'     => $endDateTime->isPast()
+                'status' => $endDateTime->isPast()
                     ? Status::Complete
                     : Status::Upcoming,
             ];
         });
     }
-
 }

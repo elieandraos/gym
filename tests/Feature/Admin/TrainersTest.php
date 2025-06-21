@@ -52,7 +52,7 @@ test('it creates a trainer', function () {
         'phone_number' => '00961 3 000 000',
         'instagram_handle' => 'elie.trainer',
         'address' => 'somewhere',
-        'emergency_contact' => 'someone'
+        'emergency_contact' => 'someone',
     ];
 
     actingAsAdmin()

@@ -115,7 +115,7 @@ test('it updates a booking slot', function () {
 
     $data = [
         'start_time' => $newStartTime->format('Y-m-d H:i:s'),
-        'end_time'   => $newEndTime->format('Y-m-d H:i:s'),
+        'end_time' => $newEndTime->format('Y-m-d H:i:s'),
     ];
 
     actingAsAdmin()

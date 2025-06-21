@@ -2,10 +2,8 @@
 
 namespace App\Http\Resources;
 
-use App\Enums\Role;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /** @mixin \App\Models\User */
@@ -35,7 +33,7 @@ class MemberResource extends JsonResource
             'emergency_contact' => $this->emergency_contact,
             'role' => strtolower($this->role),
             'active_booking' => new BookingResource($this->whenLoaded('memberActiveBooking')),
-            'scheduled_bookings' => BookingResource::collection($this->whenLoaded('memberScheduledBookings'))
+            'scheduled_bookings' => BookingResource::collection($this->whenLoaded('memberScheduledBookings')),
         ];
     }
 }

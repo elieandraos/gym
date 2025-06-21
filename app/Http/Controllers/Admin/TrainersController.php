@@ -22,7 +22,7 @@ class TrainersController extends Controller
             ->paginate(10);
 
         return Inertia::render('Admin/Trainers/Index', [
-            'trainers' => TrainerResource::collection($trainers)
+            'trainers' => TrainerResource::collection($trainers),
         ]);
     }
 

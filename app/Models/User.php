@@ -73,7 +73,7 @@ class User extends Authenticatable
             ->orderBy('start_date')
             ->with([
                 'member',
-                'bookingSlots' => fn($query) => $query->orderBy('start_time'),
+                'bookingSlots' => fn ($query) => $query->orderBy('start_time'),
             ]);
     }
 
@@ -134,7 +134,6 @@ class User extends Authenticatable
                 : null,
         );
     }
-
 
     public function since(): Attribute
     {
