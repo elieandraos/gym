@@ -6,7 +6,6 @@ use App\Enums\Role;
 use App\Models\Booking;
 use App\Models\BookingSlot;
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Seeder;
 
@@ -14,18 +13,18 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        //        $trainers = User::factory(3)->create([
-        //            'role' => Role::Trainer->value,
-        //        ]);
+        $trainers = User::factory(3)->create([
+            'role' => Role::Trainer->value,
+        ]);
 
-        //        $members = User::factory(40)->create([
-        //            'role' => Role::Member->value,
-        //        ]);
-        //
-        //        $members->each(function ($user) use ($trainers) {
-        //            $this->addActiveBooking($user, $trainers);
-        //            $this->addPreviousBookings($user, $trainers, array_rand([0, 1, 2, 3, 4, 5, 6]));
-        //        });
+        $members = User::factory(40)->create([
+            'role' => Role::Member->value,
+        ]);
+
+        $members->each(function ($user) use ($trainers) {
+            $this->addActiveBooking($user, $trainers);
+            $this->addPreviousBookings($user, $trainers, array_rand([0, 1, 2, 3, 4, 5, 6]));
+        });
 
         User::factory()->create([
             'name' => 'Owner',

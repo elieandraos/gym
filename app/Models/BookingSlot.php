@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\Status;
 use Carbon\Carbon;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Attributes\Scope as AsScope;
@@ -25,6 +26,7 @@ class BookingSlot extends Model
     protected $casts = [
         'start_time' => 'datetime',
         'end_time' => 'datetime',
+        'status' => Status::class
     ];
 
     public function booking(): BelongsTo

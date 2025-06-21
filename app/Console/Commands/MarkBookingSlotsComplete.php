@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use App\Enums\Status;
 use App\Models\BookingSlot;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Console\Command;
 
 class MarkBookingSlotsComplete extends Command
@@ -15,7 +15,7 @@ class MarkBookingSlotsComplete extends Command
 
     public function handle(): void
     {
-        BookingSlot::query()->where('end_time', '<', Carbon::now())
+        BookingSlot::query()->where('end_time', '<', Date::now())
             ->whereNotIn('status', [Status::Complete, Status::Cancelled, Status::Frozen])
             ->update([
                 'status' => Status::Complete,

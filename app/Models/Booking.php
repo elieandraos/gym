@@ -26,6 +26,7 @@ class Booking extends Model
     protected $casts = [
         'start_date' => 'date',
         'end_date' => 'date',
+        'nb_sessions' => 'integer',
     ];
 
     public function member(): BelongsTo
