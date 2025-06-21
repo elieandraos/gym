@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedInteger('reps')->default(12)->nullable();
             $table->boolean('is_timed')->default(false);
             $table->boolean('is_weighted')->default(true);
-            $table->unsignedInteger('weight_in_kg')->nullable();
+            $table->decimal('weight_in_kg', 5, 2)->nullable();
             $table->unsignedInteger('duration_in_seconds')->nullable();
             $table->timestamps();
         });
