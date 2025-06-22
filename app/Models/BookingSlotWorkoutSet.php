@@ -17,13 +17,12 @@ class BookingSlotWorkoutSet extends Model
     ];
 
     protected $casts = [
-        'weight_in_kg'       => 'decimal:2',
-        'reps'               => 'integer',
-        'is_timed'           => 'boolean',
-        'is_weighted'        => 'boolean',
-        'duration_in_seconds'=> 'integer',
+        'weight_in_kg' => 'decimal:2',
+        'reps' => 'integer',
+        'is_timed' => 'boolean',
+        'is_weighted' => 'boolean',
+        'duration_in_seconds' => 'integer',
     ];
-
 
     public function bookingSlotWorkout(): BelongsTo
     {

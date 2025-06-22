@@ -26,7 +26,7 @@ class BookingSlot extends Model
     protected $casts = [
         'start_time' => 'datetime',
         'end_time' => 'datetime',
-        'status' => Status::class
+        'status' => Status::class,
     ];
 
     public function booking(): BelongsTo

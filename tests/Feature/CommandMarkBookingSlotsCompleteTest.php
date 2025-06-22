@@ -4,7 +4,7 @@ use App\Enums\Status;
 use App\Models\BookingSlot;
 use Illuminate\Support\Facades\Artisan;
 
-beforeEach(function(){
+beforeEach(function () {
     $this->travelTo(now()); // freeze “now” at the start of the test
 });
 

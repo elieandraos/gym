@@ -4,8 +4,8 @@ namespace App\Console\Commands;
 
 use App\Enums\Status;
 use App\Models\BookingSlot;
-use Illuminate\Support\Facades\Date;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Date;
 
 class MarkBookingSlotsComplete extends Command
 {

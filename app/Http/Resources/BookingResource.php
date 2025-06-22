@@ -17,8 +17,8 @@ class BookingResource extends JsonResource
             ? $this->bookingSlots->sortBy('start_time')->values()
             : collect();
 
-        $upcomingSlot = $slots->firstWhere('status', Status::Upcoming->value);
-        $completedSessionsCount = $slots->where('status', Status::Complete->value)->count();
+        $upcomingSlot = $slots->firstWhere('status', Status::Upcoming);
+        $completedSessionsCount = $slots->where('status', Status::Complete)->count();
 
         return [
             'id' => $this->id,
