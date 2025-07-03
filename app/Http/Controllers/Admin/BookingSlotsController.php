@@ -44,4 +44,5 @@ class BookingSlotsController extends Controller
 
         return redirect()->route('admin.bookings-slots.show', $bookingSlot->id);
     }
+
 }
