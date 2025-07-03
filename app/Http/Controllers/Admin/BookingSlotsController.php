@@ -22,6 +22,7 @@ class BookingSlotsController extends Controller
         ]);
     }
 
+    // change date and time
     public function edit(BookingSlot $bookingSlot): Response
     {
         $bookingSlot->load('booking');
@@ -31,6 +32,7 @@ class BookingSlotsController extends Controller
         ]);
     }
 
+    // @todo: change to action change_date_time and call it in update()
     public function update(UpdateBookingSlotRequest $request, BookingSlot $bookingSlot): RedirectResponse
     {
         $bookingSlot->load('booking', 'booking.bookingSlots');
