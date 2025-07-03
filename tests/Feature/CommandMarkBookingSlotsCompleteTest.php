@@ -30,3 +30,16 @@ it('marks past booking slots as complete', function () {
     // Reset time
     $this->travelBack();
 });
+
+it('does not mark future booking slots as complete', function () {
+    $slot = BookingSlot::factory()->create([
+        'end_time' => now()->addHour(),
+        'status' => Status::Upcoming,
+    ]);
+
+    Artisan::call('lift-station:mark-booking-slots-complete');
+
+    expect($slot->fresh()->status)->toBe(Status::Upcoming);
+
+    $this->travelBack();
+});
