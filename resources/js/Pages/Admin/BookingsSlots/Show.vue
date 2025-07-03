@@ -30,6 +30,9 @@
                         <SecondaryButton>Change date & time</SecondaryButton>
                     </Link>
                     <SecondaryButton @click="showMarkAsACancelledModal = true">Cancel Session</SecondaryButton>
+                    <Link :href="route('admin.bookings-slots.workout.create', id)">
+                        <PrimaryButton>Add workouts</PrimaryButton>
+                    </Link>
                 </div>
             </div>
 
@@ -58,6 +61,7 @@ import Container from '@/Components/Layout/Container.vue'
 import Modal from '@/Components/Layout/Modal.vue'
 import PageBackButton from '@/Components/Layout/PageBackButton.vue'
 import SecondaryButton from '@/Components/Layout/SecondaryButton.vue'
+import PrimaryButton from '@/Components/Layout/PrimaryButton.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import ChangeDateModal from '@/Pages/Admin/BookingsSlots/Partials/ChangeDateModal.vue'
 import MarkAsCancelledModal from '@/Pages/Admin/BookingsSlots/Partials/MarkAsCancelledModal.vue'
