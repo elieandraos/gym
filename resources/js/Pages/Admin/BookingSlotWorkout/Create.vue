@@ -10,6 +10,16 @@
                         <TextInput v-model="search" placeholder="Search workouts..." class="mt-1" />
                     </div>
 
+                    <div>
+                        <InputLabel value="Categories" class="mt-4" />
+                        <div class="space-y-1 mt-1">
+                            <label v-for="category in categories" :key="category" class="flex items-center gap-2">
+                                <Checkbox v-model:checked="selectedCategories" :value="category" />
+                                <span class="text-sm text-gray-700">{{ category }}</span>
+                            </label>
+                        </div>
+                    </div>
+
                     <div v-for="(items, category) in groupedWorkouts" :key="category">
                         <h3 class="font-semibold text-sm mb-2 text-zinc-600">{{ category }}</h3>
                         <ul class="space-y-1">
@@ -35,12 +45,12 @@
                     >
                         <ul class="space-y-2">
                             <li
-                                v-for="(w, index) in selectedWorkouts"
-                                :key="w.id"
+                                v-for="(selectedWorkout, workoutIndex) in selectedWorkouts"
+                                :key="selectedWorkout.id"
                                 class="flex justify-between items-center bg-white border p-2 rounded"
                             >
-                                <span>{{ w.name }}</span>
-                                <TransparentButton type="button" @click="remove(index)">Remove</TransparentButton>
+                                <span>{{ selectedWorkout.name }}</span>
+                                <TransparentButton type="button" @click="remove(workoutIndex)">Remove</TransparentButton>
                             </li>
                         </ul>
                     </div>
@@ -59,6 +69,7 @@ import PageBackButton from '@/Components/Layout/PageBackButton.vue'
 import TransparentButton from '@/Components/Layout/TransparentButton.vue'
 import InputLabel from '@/Components/Form/InputLabel.vue'
 import TextInput from '@/Components/Form/TextInput.vue'
+import Checkbox from '@/Components/Checkbox.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
 
 const props = defineProps({
@@ -70,11 +81,29 @@ const { id } = props.bookingSlot
 const { route } = window
 
 const search = ref('')
+const selectedCategories = ref([])
+
+const categories = computed(() => {
+    const list = []
+    for (const workout of props.workouts) {
+        if (!list.includes(workout.category)) list.push(workout.category)
+    }
+    return list
+})
 
 const groupedWorkouts = computed(() => {
-    const filtered = props.workouts.filter((w) =>
-        w.name.toLowerCase().includes(search.value.toLowerCase())
-    )
+    if (!search.value) {
+        return {}
+    }
+    const filtered = props.workouts.filter((workout) => {
+        const matchesSearch = workout.name
+            .toLowerCase()
+            .includes(search.value.toLowerCase())
+        const matchesCategory =
+            selectedCategories.value.length === 0 ||
+            selectedCategories.value.includes(workout.category)
+        return matchesSearch && matchesCategory
+    })
     const groups = {}
     for (const workout of filtered) {
         if (!groups[workout.category]) groups[workout.category] = []
@@ -88,20 +117,20 @@ const groupedWorkouts = computed(() => {
 
 const selectedWorkouts = ref([])
 
-const dragStart = (e, workout) => {
-    e.dataTransfer.setData('workout', JSON.stringify(workout))
+const dragStart = (event, workout) => {
+    event.dataTransfer.setData('workout', JSON.stringify(workout))
 }
 
-const drop = (e) => {
-    const data = e.dataTransfer.getData('workout')
+const drop = (event) => {
+    const data = event.dataTransfer.getData('workout')
     if (!data) return
     const workout = JSON.parse(data)
-    if (!selectedWorkouts.value.some((w) => w.id === workout.id)) {
+    if (!selectedWorkouts.value.some((existingWorkout) => existingWorkout.id === workout.id)) {
         selectedWorkouts.value.push(workout)
     }
 }
 
-const remove = (index) => {
-    selectedWorkouts.value.splice(index, 1)
+const remove = (workoutIndex) => {
+    selectedWorkouts.value.splice(workoutIndex, 1)
 }
 </script>
