@@ -4,7 +4,7 @@
             <page-back-button :url="route('admin.bookings-slots.show', id)">Back</page-back-button>
 
             <div class="flex flex-col lg:flex-row gap-8">
-                <div class="lg:w-1/2 space-y-6">
+                <div class="lg:w-1/3 space-y-6">
                     <div>
                         <InputLabel value="Search" />
                         <TextInput v-model="search" placeholder="Search workouts..." class="mt-1" />
@@ -26,7 +26,7 @@
                     </div>
                 </div>
 
-                <div class="lg:w-1/2 space-y-4">
+                <div class="lg:w-2/3 space-y-4">
                     <h3 class="font-semibold text-sm mb-2 text-zinc-600">Selected Workouts</h3>
                     <div
                         class="min-h-40 p-4 bg-stone-50 border border-stone-100 rounded"

@@ -5,12 +5,14 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-/** @mixin \App\Models\Workout */
+/** @mixin \App\Models\Workout
+ *
+ * @property int $id
+ * @property string $name
+ * @property string $category
+ */
 class WorkoutResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     */
     public function toArray(Request $request): array
     {
         return [
