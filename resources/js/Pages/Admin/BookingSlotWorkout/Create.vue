@@ -10,15 +10,6 @@
                         <TextInput v-model="search" placeholder="Search workouts..." class="mt-1" />
                     </div>
 
-                    <div>
-                        <InputLabel value="Categories" class="mt-4" />
-                        <div class="space-y-1 mt-1">
-                            <label v-for="category in categories" :key="category" class="flex items-center gap-2">
-                                <Checkbox v-model:checked="selectedCategories" :value="category" />
-                                <span class="text-sm text-gray-700">{{ category }}</span>
-                            </label>
-                        </div>
-                    </div>
 
                     <div v-for="(items, category) in groupedWorkouts" :key="category">
                         <h3 class="font-semibold text-sm mb-2 text-zinc-600">{{ category }}</h3>
@@ -69,7 +60,6 @@ import PageBackButton from '@/Components/Layout/PageBackButton.vue'
 import TransparentButton from '@/Components/Layout/TransparentButton.vue'
 import InputLabel from '@/Components/Form/InputLabel.vue'
 import TextInput from '@/Components/Form/TextInput.vue'
-import Checkbox from '@/Components/Checkbox.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
 
 const props = defineProps({
@@ -81,15 +71,6 @@ const { id } = props.bookingSlot
 const { route } = window
 
 const search = ref('')
-const selectedCategories = ref([])
-
-const categories = computed(() => {
-    const list = []
-    for (const workout of props.workouts) {
-        if (!list.includes(workout.category)) list.push(workout.category)
-    }
-    return list
-})
 
 const groupedWorkouts = computed(() => {
     if (!search.value) {
@@ -99,10 +80,7 @@ const groupedWorkouts = computed(() => {
         const matchesSearch = workout.name
             .toLowerCase()
             .includes(search.value.toLowerCase())
-        const matchesCategory =
-            selectedCategories.value.length === 0 ||
-            selectedCategories.value.includes(workout.category)
-        return matchesSearch && matchesCategory
+        return matchesSearch
     })
     const groups = {}
     for (const workout of filtered) {
