@@ -38,10 +38,55 @@
                             <li
                                 v-for="(selectedWorkout, workoutIndex) in selectedWorkouts"
                                 :key="selectedWorkout.id"
-                                class="flex justify-between items-center bg-white border p-2 rounded"
+                                class="bg-white border p-2 rounded space-y-2"
                             >
-                                <span>{{ selectedWorkout.name }}</span>
-                                <TransparentButton type="button" @click="remove(workoutIndex)">Remove</TransparentButton>
+                                <div class="flex justify-between items-center">
+                                    <span>{{ selectedWorkout.name }}</span>
+                                    <TransparentButton type="button" @click="remove(workoutIndex)">Remove</TransparentButton>
+                                </div>
+
+                                <div class="flex items-center gap-4 text-sm">
+                                    <label class="flex items-center gap-1">
+                                        <input
+                                            type="radio"
+                                            :name="'type-' + workoutIndex"
+                                            value="weight"
+                                            v-model="selectedWorkout.type"
+                                        />
+                                        Weight
+                                    </label>
+                                    <label class="flex items-center gap-1">
+                                        <input
+                                            type="radio"
+                                            :name="'type-' + workoutIndex"
+                                            value="minutes"
+                                            v-model="selectedWorkout.type"
+                                        />
+                                        Minutes
+                                    </label>
+                                </div>
+
+                                <div v-if="selectedWorkout.type === 'weight'" class="flex gap-2">
+                                    <TextInput
+                                        v-for="(value, idx) in selectedWorkout.weight_in_kg"
+                                        :key="idx"
+                                        v-model="selectedWorkout.weight_in_kg[idx]"
+                                        name="weight_in_kg[]"
+                                        type="number"
+                                        class="w-20"
+                                    />
+                                </div>
+
+                                <div v-if="selectedWorkout.type === 'minutes'" class="flex gap-2">
+                                    <TextInput
+                                        v-for="(value, idx) in selectedWorkout.duration_in_seconds"
+                                        :key="idx"
+                                        v-model="selectedWorkout.duration_in_seconds[idx]"
+                                        name="duration_in_seconds[]"
+                                        type="number"
+                                        class="w-20"
+                                    />
+                                </div>
                             </li>
                         </ul>
                     </div>
@@ -53,7 +98,6 @@
 
 <script setup>
 import { computed, ref } from 'vue'
-import { Link } from '@inertiajs/vue3'
 
 import Container from '@/Components/Layout/Container.vue'
 import PageBackButton from '@/Components/Layout/PageBackButton.vue'
@@ -95,6 +139,13 @@ const groupedWorkouts = computed(() => {
 
 const selectedWorkouts = ref([])
 
+const createWorkoutSets = (workout) => ({
+    ...workout,
+    type: 'weight',
+    weight_in_kg: ['', '', ''],
+    duration_in_seconds: ['', '', ''],
+})
+
 const dragStart = (event, workout) => {
     event.dataTransfer.setData('workout', JSON.stringify(workout))
 }
@@ -104,7 +155,7 @@ const drop = (event) => {
     if (!data) return
     const workout = JSON.parse(data)
     if (!selectedWorkouts.value.some((existingWorkout) => existingWorkout.id === workout.id)) {
-        selectedWorkouts.value.push(workout)
+        selectedWorkouts.value.push(createWorkoutSets(workout))
     }
 }
 
