@@ -36,7 +36,24 @@
                 </div>
             </div>
 
-            No workout details added yet.
+            <div v-if="workouts && workouts.length" class="space-y-6">
+                <div v-for="workout in workouts" :key="workout.id" class="border-b pb-4">
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-semibold">{{ workout.name }}</h3>
+                        <div class="space-x-2">
+                            <Link :href="workout.edit_url">Edit</Link>
+                            <Link :href="workout.delete_url" method="delete" as="button" preserve-scroll>Remove</Link>
+                        </div>
+                    </div>
+                    <ul class="list-disc ml-6 mt-2">
+                        <li v-for="(set, index) in workout.sets" :key="index">
+                            <span v-if="set.weight_in_kg">{{ set.weight_in_kg }} kg</span>
+                            <span v-if="set.duration_in_seconds">{{ set.duration_in_seconds }}s</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div v-else>No workout details added yet.</div>
         </Container>
 
         <teleport to="#modals">
@@ -71,7 +88,7 @@ const props = defineProps({
 })
 
 const {
-    id, booking, formatted_date, start_time, status, badge_type, date,
+    id, booking, formatted_date, start_time, status, badge_type, date, workouts,
 } = props.bookingSlot
 
 const showChangeDateModal = ref(false)
