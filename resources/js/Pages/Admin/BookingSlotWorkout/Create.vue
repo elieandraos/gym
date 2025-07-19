@@ -102,16 +102,16 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
-import { useForm } from '@inertiajs/vue3'
+import InputLabel from '@/Components/Form/InputLabel.vue'
+import TextInput from '@/Components/Form/TextInput.vue'
 
 import Container from '@/Components/Layout/Container.vue'
 import PageBackButton from '@/Components/Layout/PageBackButton.vue'
-import TransparentButton from '@/Components/Layout/TransparentButton.vue'
-import InputLabel from '@/Components/Form/InputLabel.vue'
-import TextInput from '@/Components/Form/TextInput.vue'
-import AppLayout from '@/Layouts/AppLayout.vue'
 import PrimaryButton from '@/Components/Layout/PrimaryButton.vue'
+import TransparentButton from '@/Components/Layout/TransparentButton.vue'
+import AppLayout from '@/Layouts/AppLayout.vue'
+import {useForm} from '@inertiajs/vue3'
+import {computed, ref} from 'vue'
 
 const props = defineProps({
     bookingSlot: { type: Object, required: true },
@@ -131,20 +131,24 @@ const groupedWorkouts = computed(() => {
     if (search.value.length < 3) {
         return {}
     }
+
     const filtered = props.workouts.filter((workout) => {
-        const matchesSearch = workout.name
+        return workout.name
             .toLowerCase()
             .includes(search.value.toLowerCase())
-        return matchesSearch
     })
+
     const groups = {}
+
     for (const workout of filtered) {
         if (!groups[workout.category]) groups[workout.category] = []
         groups[workout.category].push(workout)
     }
+
     for (const key in groups) {
         groups[key].sort((a, b) => a.name.localeCompare(b.name))
     }
+
     return groups
 })
 

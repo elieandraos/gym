@@ -8,8 +8,8 @@ use App\Http\Resources\BookingSlotResource;
 use App\Http\Resources\WorkoutResource;
 use App\Models\BookingSlot;
 use App\Models\BookingSlotWorkout;
-use App\Models\BookingSlotWorkoutSet;
 use App\Models\Workout;
+use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -26,10 +26,11 @@ class BookingSlotWorkoutController extends Controller
         ]);
     }
 
-    public function store(BookingSlotWorkoutRequest $request, BookingSlot $bookingSlot)
+    // @todo: change to action create_booking_slot_workout and call it in store()
+    public function store(BookingSlotWorkoutRequest $request, BookingSlot $bookingSlot) : RedirectResponse
     {
         foreach ($request->input('workouts') as $workoutData) {
-            $bookingSlotWorkout = BookingSlotWorkout::create([
+            $bookingSlotWorkout = BookingSlotWorkout::query()->create([
                 'booking_slot_id' => $bookingSlot->id,
                 'workout_id' => $workoutData['id'],
                 'image' => null,

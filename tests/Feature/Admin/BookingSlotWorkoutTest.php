@@ -3,6 +3,7 @@
 use App\Http\Resources\BookingSlotResource;
 use App\Http\Resources\WorkoutResource;
 use App\Models\BookingSlot;
+use App\Models\BookingSlotWorkout;
 use App\Models\Workout;
 
 beforeEach(function () {
@@ -19,7 +20,7 @@ test('it requires authentication', function () {
 
 test('it renders the booking slot workout create page', function () {
     $bookingSlot = BookingSlot::query()->first();
-    $bookingSlot->load(['booking', 'booking.member', 'booking.trainer']);
+    $bookingSlot->load(['booking', 'booking.member']);
 
     $workouts = Workout::query()->orderBy('category')->orderBy('name')->get();
 
@@ -58,17 +59,17 @@ test('it creates booking slot workouts and sets', function () {
         ->assertSessionHasNoErrors()
         ->assertRedirect(route('admin.bookings-slots.show', $bookingSlot->id));
 
-    $this->assertDatabaseHas(\App\Models\BookingSlotWorkout::class, [
+    $this->assertDatabaseHas(BookingSlotWorkout::class, [
         'booking_slot_id' => $bookingSlot->id,
         'workout_id' => $workout1->id,
     ]);
 
-    $this->assertDatabaseHas(\App\Models\BookingSlotWorkout::class, [
+    $this->assertDatabaseHas(BookingSlotWorkout::class, [
         'booking_slot_id' => $bookingSlot->id,
         'workout_id' => $workout2->id,
     ]);
 
-    $bookingSlotWorkout = \App\Models\BookingSlotWorkout::where('booking_slot_id', $bookingSlot->id)
+    $bookingSlotWorkout = BookingSlotWorkout::query()->where('booking_slot_id', $bookingSlot->id)
         ->where('workout_id', $workout1->id)
         ->first();
 
