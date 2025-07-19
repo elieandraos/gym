@@ -75,3 +75,18 @@ test('it creates booking slot workouts and sets', function () {
 
     expect($bookingSlotWorkout->sets()->count())->toBe(3);
 });
+
+test('it creates booking slot workouts with empty payload', function () {
+    $bookingSlot = BookingSlot::query()->first();
+
+    $data = [
+        'workouts' => [],
+    ];
+
+    actingAsAdmin()
+        ->post(route('admin.bookings-slots.workout.store', $bookingSlot), $data)
+        ->assertSessionHasNoErrors()
+        ->assertRedirect(route('admin.bookings-slots.show', $bookingSlot->id));
+
+    expect(BookingSlotWorkout::where('booking_slot_id', $bookingSlot->id)->count())->toBe(0);
+});
