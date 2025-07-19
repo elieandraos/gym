@@ -59,10 +59,10 @@
                                         <input
                                             type="radio"
                                             :name="'type-' + workoutIndex"
-                                            value="minutes"
+                                            value="seconds"
                                             v-model="selectedWorkout.type"
                                         />
-                                        Minutes
+                                        Seconds
                                     </label>
                                 </div>
 
@@ -77,7 +77,7 @@
                                     />
                                 </div>
 
-                                <div v-if="selectedWorkout.type === 'minutes'" class="flex gap-2">
+                                <div v-if="selectedWorkout.type === 'seconds'" class="flex gap-2">
                                     <TextInput
                                         v-for="(value, idx) in selectedWorkout.duration_in_seconds"
                                         :key="idx"
@@ -92,12 +92,18 @@
                     </div>
                 </div>
             </div>
+            <div class="text-right mt-4">
+                <PrimaryButton @click="saveWorkouts" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                    Save Workouts
+                </PrimaryButton>
+            </div>
         </Container>
     </AppLayout>
 </template>
 
 <script setup>
 import { computed, ref } from 'vue'
+import { useForm } from '@inertiajs/vue3'
 
 import Container from '@/Components/Layout/Container.vue'
 import PageBackButton from '@/Components/Layout/PageBackButton.vue'
@@ -105,6 +111,7 @@ import TransparentButton from '@/Components/Layout/TransparentButton.vue'
 import InputLabel from '@/Components/Form/InputLabel.vue'
 import TextInput from '@/Components/Form/TextInput.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
+import PrimaryButton from '@/Components/Layout/PrimaryButton.vue'
 
 const props = defineProps({
     bookingSlot: { type: Object, required: true },
@@ -116,8 +123,12 @@ const { route } = window
 
 const search = ref('')
 
+const form = useForm({
+    workouts: [],
+})
+
 const groupedWorkouts = computed(() => {
-    if (!search.value) {
+    if (search.value.length < 3) {
         return {}
     }
     const filtered = props.workouts.filter((workout) => {
@@ -161,5 +172,12 @@ const drop = (event) => {
 
 const remove = (workoutIndex) => {
     selectedWorkouts.value.splice(workoutIndex, 1)
+}
+
+const saveWorkouts = () => {
+    form.workouts = selectedWorkouts.value
+    form.post(route('admin.bookings-slots.workout.store', id), {
+        preserveScroll: true,
+    })
 }
 </script>
