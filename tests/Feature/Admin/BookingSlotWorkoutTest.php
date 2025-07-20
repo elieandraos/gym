@@ -90,3 +90,38 @@ test('it creates booking slot workouts with empty payload', function () {
 
     expect(BookingSlotWorkout::query()->where('booking_slot_id', $bookingSlot->id)->count())->toBe(0);
 });
+
+test('it renders the workout edit page with booking slot id', function () {
+    $bookingSlot = BookingSlot::query()->first();
+    $workout = Workout::factory()->create();
+    $bookingSlotWorkout = BookingSlotWorkout::query()->create([
+        'booking_slot_id' => $bookingSlot->id,
+        'workout_id' => $workout->id,
+    ]);
+
+    $bookingSlotWorkout->load(['bookingSlot', 'workout', 'sets']);
+
+    actingAsAdmin()
+        ->get(route('admin.bookings-slots.workout.edit', $bookingSlotWorkout))
+        ->assertHasComponent('Admin/BookingSlotWorkout/Edit')
+        ->assertHasResource('bookingSlotWorkout', \App\Http\Resources\BookingSlotWorkoutResource::make($bookingSlotWorkout))
+        ->assertStatus(200)
+        ->assertHasProp('bookingSlotWorkout.booking_slot_id', $bookingSlot->id);
+});
+
+test('it deletes a booking slot workout', function () {
+    $bookingSlot = BookingSlot::query()->first();
+    $workout = Workout::factory()->create();
+    $bookingSlotWorkout = BookingSlotWorkout::query()->create([
+        'booking_slot_id' => $bookingSlot->id,
+        'workout_id' => $workout->id,
+    ]);
+
+    actingAsAdmin()
+        ->delete(route('admin.bookings-slots.workout.destroy', $bookingSlotWorkout))
+        ->assertRedirect(route('admin.bookings-slots.show', $bookingSlot->id));
+
+    $this->assertDatabaseMissing(BookingSlotWorkout::class, [
+        'id' => $bookingSlotWorkout->id,
+    ]);
+});

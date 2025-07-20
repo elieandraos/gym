@@ -12,6 +12,7 @@ class BookingSlotWorkoutResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'booking_slot_id' => $this->booking_slot_id,
             'name' => $this->whenLoaded('workout', fn() => $this->workout->name),
             'sets' => $this->whenLoaded('sets', function () {
                 return $this->sets->map(fn($set) => [
