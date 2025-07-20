@@ -88,5 +88,5 @@ test('it creates booking slot workouts with empty payload', function () {
         ->assertSessionHasNoErrors()
         ->assertRedirect(route('admin.bookings-slots.show', $bookingSlot->id));
 
-    expect(BookingSlotWorkout::where('booking_slot_id', $bookingSlot->id)->count())->toBe(0);
+    expect(BookingSlotWorkout::query()->where('booking_slot_id', $bookingSlot->id)->count())->toBe(0);
 });
