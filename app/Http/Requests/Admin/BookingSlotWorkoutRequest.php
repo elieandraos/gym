@@ -15,7 +15,7 @@ class BookingSlotWorkoutRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'workouts' => ['required', 'array'],
+            'workouts' => ['nullable', 'array'],
             'workouts.*.id' => ['required', 'exists:workouts,id'],
             'workouts.*.type' => ['required', Rule::in(['weight', 'seconds'])],
             'workouts.*.weight_in_kg' => ['array'],

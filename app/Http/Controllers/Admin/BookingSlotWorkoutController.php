@@ -30,7 +30,7 @@ class BookingSlotWorkoutController extends Controller
     // @todo: change to action create_booking_slot_workout and call it in store()
     public function store(BookingSlotWorkoutRequest $request, BookingSlot $bookingSlot) : RedirectResponse
     {
-        foreach ($request->input('workouts') as $workoutData) {
+        foreach ($request->input('workouts', []) as $workoutData) {
             $bookingSlotWorkout = BookingSlotWorkout::query()->create([
                 'booking_slot_id' => $bookingSlot->id,
                 'workout_id' => $workoutData['id'],
