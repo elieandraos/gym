@@ -31,5 +31,6 @@ test('it shows workout details on booking slot show page', function () {
         ->assertHasComponent('Admin/BookingsSlots/Show')
         ->assertHasResource('bookingSlot', BookingSlotResource::make($bookingSlot))
         ->assertHasProp('bookingSlot.workouts.0.name', $workout->name)
+        ->assertHasProp('bookingSlot.workouts.0.category', $workout->category->value)
         ->assertStatus(200);
 });
