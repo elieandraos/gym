@@ -67,14 +67,22 @@
                                 </div>
 
                                 <div v-if="selectedWorkout.type === 'weight'" class="flex gap-2">
-                                    <TextInput
-                                        v-for="(value, idx) in selectedWorkout.weight_in_kg"
-                                        :key="idx"
-                                        v-model="selectedWorkout.weight_in_kg[idx]"
-                                        name="weight_in_kg[]"
-                                        type="number"
-                                        class="w-20"
-                                    />
+                                    <div class="flex flex-col gap-1" v-for="(value, idx) in selectedWorkout.weight_in_kg" :key="idx">
+                                        <TextInput
+                                            v-model="selectedWorkout.weight_in_kg[idx]"
+                                            name="weight_in_kg[]"
+                                            type="number"
+                                            placeholder="KG"
+                                            class="w-20"
+                                        />
+                                        <TextInput
+                                            v-model="selectedWorkout.reps[idx]"
+                                            name="reps[]"
+                                            type="number"
+                                            placeholder="Reps"
+                                            class="w-20"
+                                        />
+                                    </div>
                                 </div>
 
                                 <div v-if="selectedWorkout.type === 'seconds'" class="flex gap-2">
@@ -84,6 +92,7 @@
                                         v-model="selectedWorkout.duration_in_seconds[idx]"
                                         name="duration_in_seconds[]"
                                         type="number"
+                                        placeholder="Seconds"
                                         class="w-20"
                                     />
                                 </div>
@@ -158,6 +167,7 @@ const createWorkoutSets = (workout) => ({
     ...workout,
     type: 'weight',
     weight_in_kg: ['', '', ''],
+    reps: ['', '', ''],
     duration_in_seconds: ['', '', ''],
 })
 

@@ -42,10 +42,11 @@ class BookingSlotWorkoutController extends Controller
             $type = $workoutData['type'];
             $weights = $workoutData['weight_in_kg'] ?? [];
             $durations = $workoutData['duration_in_seconds'] ?? [];
+            $reps = $workoutData['reps'] ?? [];
 
             for ($i = 0; $i < max(count($weights), count($durations)); $i++) {
                 $sets[] = [
-                    'reps' => 12,
+                    'reps' => $reps[$i] ?? 12,
                     'is_timed' => $type === 'seconds',
                     'is_weighted' => $type === 'weight',
                     'weight_in_kg' => $type === 'weight' ? ($weights[$i] !== '' ? $weights[$i] : null) : null,
@@ -83,10 +84,11 @@ class BookingSlotWorkoutController extends Controller
         $type = $workoutData['type'];
         $weights = $workoutData['weight_in_kg'] ?? [];
         $durations = $workoutData['duration_in_seconds'] ?? [];
+        $reps = $workoutData['reps'] ?? [];
 
         for ($i = 0; $i < max(count($weights), count($durations)); $i++) {
             $sets[] = [
-                'reps' => 12,
+                'reps' => $reps[$i] ?? 12,
                 'is_timed' => $type === 'seconds',
                 'is_weighted' => $type === 'weight',
                 'weight_in_kg' => $type === 'weight' ? ($weights[$i] !== '' ? $weights[$i] : null) : null,

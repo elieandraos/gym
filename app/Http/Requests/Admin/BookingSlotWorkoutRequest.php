@@ -19,6 +19,7 @@ class BookingSlotWorkoutRequest extends FormRequest
             'workouts.*.id' => ['required', 'exists:workouts,id'],
             'workouts.*.type' => ['required', Rule::in(['weight', 'seconds'])],
             'workouts.*.weight_in_kg' => ['array'],
+            'workouts.*.reps' => ['array'],
             'workouts.*.duration_in_seconds' => ['array'],
         ];
     }
