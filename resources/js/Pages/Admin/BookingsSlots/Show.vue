@@ -36,25 +36,28 @@
                 </div>
             </div>
 
-            <div v-if="workouts && workouts.length">
-                <TransitionGroup name="fade" tag="div" class="space-y-6">
-                    <div v-for="workout in workouts" :key="workout.id" class="border-b pb-4">
-                        <div class="flex justify-between items-center">
-                            <h3 class="font-semibold">{{ workout.name }}</h3>
-                            <div class="space-x-2">
-                                <Link :href="workout.edit_url">Edit</Link>
-                                <button type="button" @click="removeWorkout(workout)" class="text-sky-500 hover:text-sky-700 font-medium text-sm">Remove</button>
+            <div v-if="Object.keys(groupedWorkouts).length" class="grid gap-6 md:grid-cols-3">
+                <div v-for="(items, category) in groupedWorkouts" :key="category" class="space-y-4">
+                    <h3 class="font-semibold text-sm text-zinc-600">{{ category }}</h3>
+                    <TransitionGroup name="fade" tag="div" class="space-y-4">
+                        <div v-for="workout in items" :key="workout.id" class="bg-white border rounded p-4 space-y-2">
+                            <div class="flex justify-between items-center">
+                                <h4 class="font-semibold">{{ workout.name }}</h4>
+                                <div class="space-x-2 text-sm">
+                                    <Link :href="workout.edit_url">Edit</Link>
+                                    <button type="button" @click="removeWorkout(workout)" class="text-sky-500 hover:text-sky-700 font-medium">Remove</button>
+                                </div>
                             </div>
+                            <ul class="list-disc ml-6">
+                                <li v-for="(set, index) in workout.sets" :key="index">
+                                    <span v-if="set.weight_in_kg">{{ set.weight_in_kg }} kg</span>
+                                    <span v-if="set.reps" class="ml-1">x {{ set.reps }} reps</span>
+                                    <span v-if="set.duration_in_seconds" class="ml-1">{{ set.duration_in_seconds }}s</span>
+                                </li>
+                            </ul>
                         </div>
-                    <ul class="list-disc ml-6 mt-2">
-                        <li v-for="(set, index) in workout.sets" :key="index">
-                            <span v-if="set.weight_in_kg">{{ set.weight_in_kg }} kg</span>
-                            <span v-if="set.reps" class="ml-1">x {{ set.reps }} reps</span>
-                            <span v-if="set.duration_in_seconds" class="ml-1">{{ set.duration_in_seconds }}s</span>
-                        </li>
-                    </ul>
-                    </div>
-                </TransitionGroup>
+                    </TransitionGroup>
+                </div>
             </div>
             <div v-else>No workout details added yet.</div>
         </Container>
@@ -74,7 +77,7 @@
 <script setup>
 import { UsersIcon, ClockIcon } from '@heroicons/vue/24/solid'
 import { Link, router } from '@inertiajs/vue3'
-import { ref, toRefs } from 'vue'
+import { ref, toRefs, computed } from 'vue'
 
 import Badge from '@/Components/Layout/Badge.vue'
 import Container from '@/Components/Layout/Container.vue'
@@ -103,6 +106,16 @@ const {
 
 const showChangeDateModal = ref(false)
 const showMarkAsACancelledModal = ref(false)
+
+const groupedWorkouts = computed(() => {
+    const groups = {}
+    workouts.value.forEach((w) => {
+        const cat = w.category || 'Others'
+        if (!groups[cat]) groups[cat] = []
+        groups[cat].push(w)
+    })
+    return groups
+})
 
 const removeWorkout = (workout) => {
     router.delete(workout.delete_url, {
