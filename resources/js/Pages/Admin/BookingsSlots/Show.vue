@@ -49,7 +49,8 @@
                     <ul class="list-disc ml-6 mt-2">
                         <li v-for="(set, index) in workout.sets" :key="index">
                             <span v-if="set.weight_in_kg">{{ set.weight_in_kg }} kg</span>
-                            <span v-if="set.duration_in_seconds">{{ set.duration_in_seconds }}s</span>
+                            <span v-if="set.reps" class="ml-1">x {{ set.reps }} reps</span>
+                            <span v-if="set.duration_in_seconds" class="ml-1">{{ set.duration_in_seconds }}s</span>
                         </li>
                     </ul>
                     </div>

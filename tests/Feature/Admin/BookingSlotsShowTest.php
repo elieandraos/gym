@@ -17,8 +17,8 @@ test('it shows workout details on booking slot show page', function () {
         'workout_id' => $workout->id,
     ]);
     $bookingSlotWorkout->sets()->createMany([
-        ['is_weighted' => true, 'is_timed' => false, 'weight_in_kg' => 10],
-        ['is_weighted' => true, 'is_timed' => false, 'weight_in_kg' => 12],
+        ['is_weighted' => true, 'is_timed' => false, 'weight_in_kg' => 10, 'reps' => 8],
+        ['is_weighted' => true, 'is_timed' => false, 'weight_in_kg' => 12, 'reps' => 10],
     ]);
 
     $bookingSlot->load([

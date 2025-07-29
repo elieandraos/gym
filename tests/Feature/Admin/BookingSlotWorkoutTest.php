@@ -43,6 +43,7 @@ test('it creates booking slot workouts and sets', function () {
                 'id' => $workout1->id,
                 'type' => 'weight',
                 'weight_in_kg' => [10, 12, 14],
+                'reps' => [8, 10, 12],
                 'duration_in_seconds' => ['', '', ''],
             ],
             [
@@ -74,6 +75,7 @@ test('it creates booking slot workouts and sets', function () {
         ->first();
 
     expect($bookingSlotWorkout->sets()->count())->toBe(3);
+    expect($bookingSlotWorkout->sets()->pluck('reps')->all())->toEqual([8, 10, 12]);
 });
 
 test('it creates booking slot workouts with empty payload', function () {
