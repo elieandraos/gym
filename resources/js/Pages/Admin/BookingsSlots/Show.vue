@@ -71,7 +71,7 @@
 <script setup>
 import { UsersIcon, ClockIcon } from '@heroicons/vue/24/solid'
 import { Link } from '@inertiajs/vue3'
-import { ref } from 'vue'
+import { ref, toRefs } from 'vue'
 
 import Badge from '@/Components/Layout/Badge.vue'
 import Container from '@/Components/Layout/Container.vue'
@@ -88,8 +88,15 @@ const props = defineProps({
 })
 
 const {
-    id, booking, formatted_date, start_time, status, badge_type, date, workouts,
-} = props.bookingSlot
+    id,
+    booking,
+    formatted_date,
+    start_time,
+    status,
+    badge_type,
+    date,
+    workouts,
+} = toRefs(props.bookingSlot)
 
 const showChangeDateModal = ref(false)
 const showMarkAsACancelledModal = ref(false)
