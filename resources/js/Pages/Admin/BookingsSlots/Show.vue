@@ -36,22 +36,24 @@
                 </div>
             </div>
 
-            <div v-if="workouts && workouts.length" class="space-y-6">
-                <div v-for="workout in workouts" :key="workout.id" class="border-b pb-4">
-                    <div class="flex justify-between items-center">
-                        <h3 class="font-semibold">{{ workout.name }}</h3>
-                        <div class="space-x-2">
-                            <Link :href="workout.edit_url">Edit</Link>
-                            <Link :href="workout.delete_url" method="delete" as="button" preserve-scroll>Remove</Link>
+            <div v-if="workouts && workouts.length">
+                <TransitionGroup name="fade" tag="div" class="space-y-6">
+                    <div v-for="workout in workouts" :key="workout.id" class="border-b pb-4">
+                        <div class="flex justify-between items-center">
+                            <h3 class="font-semibold">{{ workout.name }}</h3>
+                            <div class="space-x-2">
+                                <Link :href="workout.edit_url">Edit</Link>
+                                <button type="button" @click="removeWorkout(workout)" class="text-sky-500 hover:text-sky-700 font-medium text-sm">Remove</button>
+                            </div>
                         </div>
-                    </div>
                     <ul class="list-disc ml-6 mt-2">
                         <li v-for="(set, index) in workout.sets" :key="index">
                             <span v-if="set.weight_in_kg">{{ set.weight_in_kg }} kg</span>
                             <span v-if="set.duration_in_seconds">{{ set.duration_in_seconds }}s</span>
                         </li>
                     </ul>
-                </div>
+                    </div>
+                </TransitionGroup>
             </div>
             <div v-else>No workout details added yet.</div>
         </Container>
@@ -70,8 +72,8 @@
 
 <script setup>
 import { UsersIcon, ClockIcon } from '@heroicons/vue/24/solid'
-import { Link } from '@inertiajs/vue3'
-import { ref } from 'vue'
+import { Link, router } from '@inertiajs/vue3'
+import { ref, toRefs } from 'vue'
 
 import Badge from '@/Components/Layout/Badge.vue'
 import Container from '@/Components/Layout/Container.vue'
@@ -88,9 +90,34 @@ const props = defineProps({
 })
 
 const {
-    id, booking, formatted_date, start_time, status, badge_type, date, workouts,
-} = props.bookingSlot
+    id,
+    booking,
+    formatted_date,
+    start_time,
+    status,
+    badge_type,
+    date,
+    workouts,
+} = toRefs(props.bookingSlot)
 
 const showChangeDateModal = ref(false)
 const showMarkAsACancelledModal = ref(false)
+
+const removeWorkout = (workout) => {
+    router.delete(workout.delete_url, {
+        preserveScroll: true,
+        onSuccess: () => {
+            workouts.value = workouts.value.filter(w => w.id !== workout.id)
+        },
+    })
+}
 </script>
+
+<style>
+.fade-enter-active, .fade-leave-active {
+    transition: opacity 0.5s;
+}
+.fade-enter-from, .fade-leave-to {
+    opacity: 0;
+}
+</style>
