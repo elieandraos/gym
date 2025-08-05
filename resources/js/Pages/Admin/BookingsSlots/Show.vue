@@ -1,8 +1,6 @@
 <template>
     <AppLayout title="Booking">
         <Container>
-            <page-back-button>Back</page-back-button>
-
             <div class="flex justify-between items-center pb-6 mb-12 border-b border-zinc-200">
                 <div class="grow">
                     <div class="flex gap-x-4">
@@ -82,7 +80,6 @@ import { ref, toRefs, computed } from 'vue'
 import Badge from '@/Components/Layout/Badge.vue'
 import Container from '@/Components/Layout/Container.vue'
 import Modal from '@/Components/Layout/Modal.vue'
-import PageBackButton from '@/Components/Layout/PageBackButton.vue'
 import SecondaryButton from '@/Components/Layout/SecondaryButton.vue'
 import PrimaryButton from '@/Components/Layout/PrimaryButton.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
