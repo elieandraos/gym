@@ -82,7 +82,7 @@
 </template>
 
 <script setup>
-import { inject } from 'vue'
+import { inject, watch, nextTick } from 'vue'
 
 import DateInput from '@/Components/Form/DateInput.vue'
 import FormSection from '@/Components/Form/FormSection.vue'
@@ -95,10 +95,20 @@ const form = inject('form')
 
 const { route } = window
 
+const scrollToFirstError = () => {
+    nextTick(() => {
+        const field = Object.keys(form.errors)[0]
+        if (field) {
+            document.getElementById(field)?.scrollIntoView({ behavior: 'smooth' })
+        }
+    })
+}
+
 const saveUser = () => form.post(route('admin.trainers.store'), {
     preserveScroll: true,
     onFinish: () => {
         // form.reset()
     },
+    onError: () => scrollToFirstError(),
 })
 </script>
