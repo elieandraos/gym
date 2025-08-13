@@ -1,7 +1,7 @@
 <template>
     <AppLayout>
         <Container :centered="false">
-            <page-title>
+            <page-title :sticky="true">
                 <div class="pb-4 border-b border-zinc-200 w-full">New Trainer</div>
             </page-title>
             <trainer-form></trainer-form>
