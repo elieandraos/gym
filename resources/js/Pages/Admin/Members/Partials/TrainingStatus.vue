@@ -4,7 +4,7 @@
             <div class="grow">
                 <hr class="w-full border-t border-zinc-200">
                 <div class="mt-6 font-bold text-zinc-950 capitalize">Training with</div>
-                <div class="mt-3 text-sm flex gap-2 items-center">
+                <div class="mt-2 text-sm flex gap-2 items-center">
                     <img class="h-6 w-6 rounded-full object-cover" :src="trainer.profile_photo_url" :alt="name">
                     <span class="text-zinc-950">{{ trainer.name }}</span>
                 </div>

@@ -1,8 +1,8 @@
 <template>
     <AppLayout>
-        <Container :centered="true">
+        <Container :centered="false">
             <page-title>
-                <div class="pb-8 border-b border-zinc-200 w-full">New Member</div>
+                <div class="pb-4 border-b border-zinc-200 w-full">New Member</div>
             </page-title>
             <member-form></member-form>
         </Container>

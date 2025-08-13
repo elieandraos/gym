@@ -1,14 +1,12 @@
 <template>
     <AppLayout title="Profile">
         <Container>
-            <page-back-button>Members</page-back-button>
-
-            <div class="flex justify-between items-center pb-6">
-                <div class="flex flex-wrap grow items-center gap-6">
-                    <img class="h-20 w-20 flex-shrink-0 rounded-full object-cover" :src="profile_photo_url" :alt="name">
+            <div class="flex justify-between items-center pb-4">
+                <div class="flex flex-wrap grow items-center gap-4">
+                    <img class="h-16 w-16 flex-shrink-0 rounded-full object-cover" :src="profile_photo_url" :alt="name">
                     <div>
                         <div class="flex flex-wrap items-center gap-2">
-                            <h1 class="text-2xl font-bold text-zinc-950">{{ name }}</h1>
+                            <h1 class="text-xl/8 font-bold text-zinc-950">{{ name }}</h1>
                             <check-badge-icon class="w-6 h-6 text-sky-500 inline" v-if="in_house"></check-badge-icon>
                         </div>
                         <div class="mt-1 text-sm text-zinc-500">{{ age }} years old · Member since {{  since }}</div>
