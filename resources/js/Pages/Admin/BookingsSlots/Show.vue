@@ -24,7 +24,7 @@
                 </div>
 
                 <div class="space-x-4">
-                    <Link :href="route('admin.bookings-slots.edit', id)">
+                    <Link :href="route('admin.change-booking-slot-date-time.edit', id)">
                         <SecondaryButton>Change date & time</SecondaryButton>
                     </Link>
                     <SecondaryButton @click="showMarkAsACancelledModal = true">Cancel Session</SecondaryButton>
@@ -34,7 +34,7 @@
                     <dropdown direction="right">
                         <div class="space-y-2">
                             <a href="#" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">Add workouts</a>
-                            <a href="#" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">Change date & time</a>
+                            <Link :href="route('admin.change-booking-slot-date-time.edit', id)" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">Change date & time</Link>
                             <hr class="border-gray-200">
                             <a href="#" class="block p-2 text-red-500 hover:bg-red-50 hover:rounded-lg">Cancel session</a>
                         </div>
