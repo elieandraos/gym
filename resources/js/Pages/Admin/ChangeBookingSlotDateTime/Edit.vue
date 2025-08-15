@@ -1,9 +1,7 @@
 <template>
     <AppLayout title="New Training">
-        <Container :centered="true">
-            <page-title>
-                <div class="pb-8 border-b border-zinc-200 w-full">Change session date and time</div>
-            </page-title>
+        <Container>
+            <session-header :booking-slot="bookingSlot" ></session-header>
 
             <FormSection title="Date" description="Update the session date.">
                 <DateInput v-model="form.date"></DateInput>
@@ -26,6 +24,7 @@
 </template>
 
 <script setup>
+import SessionHeader from '@/Pages/Admin/BookingsSlots/Partials/SessionHeader.vue'
 import { Link, useForm } from '@inertiajs/vue3'
 import { format, addHours, parse } from 'date-fns'
 import DateInput from '@/Components/Form/DateInput.vue'
@@ -89,4 +88,3 @@ const updateBookingSlot = () => {
         })
 }
 </script>
-
