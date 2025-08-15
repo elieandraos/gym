@@ -31,6 +31,14 @@
                     <Link :href="route('admin.bookings-slots.workout.create', id)">
                         <PrimaryButton>Add workouts</PrimaryButton>
                     </Link>
+                    <dropdown direction="right">
+                        <div class="space-y-2">
+                            <a href="#" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">Add workouts</a>
+                            <a href="#" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">Change date & time</a>
+                            <hr class="border-gray-200">
+                            <a href="#" class="block p-2 text-red-500 hover:bg-red-50 hover:rounded-lg">Cancel session</a>
+                        </div>
+                    </dropdown>
                 </div>
             </div>
 
@@ -73,6 +81,7 @@
 </template>
 
 <script setup>
+import Dropdown from '@/Components/Layout/Dropdown.vue'
 import { UsersIcon, ClockIcon } from '@heroicons/vue/24/solid'
 import { Link, router } from '@inertiajs/vue3'
 import { ref, toRefs, computed } from 'vue'
