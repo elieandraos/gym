@@ -16,10 +16,10 @@ class WeeklyCalendarController extends Controller
         ['start' => $spanStart, 'end' => $spanEnd] = BookingManager::getCalendarSpan();
 
         $bookings = Booking::with([
-            'bookingSlots' => fn ($q) => $q->between($spanStart, $spanEnd),
-            'member:id,name',
-            'trainer:id,name',
-        ])
+                'bookingSlots' => fn ($q) => $q->between($spanStart, $spanEnd),
+                'member:id,name',
+                'trainer:id,name',
+            ])
             ->between($spanStart, $spanEnd)
             ->get();
 
