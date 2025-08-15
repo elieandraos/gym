@@ -61,3 +61,27 @@ test('it sets status to complete when new start time is in the past', function (
     expect($bookingSlot->status)->toBe(Status::Complete);
 });
 
+
+test('it validates request data', function () {
+    $bookingSlot = BookingSlot::query()->firstOrFail();
+
+    actingAsAdmin()
+        ->put(route('admin.change-booking-slot-date-time.update', $bookingSlot), [])
+        ->assertSessionHasErrors(['start_time', 'end_time'])
+        ->assertStatus(302);
+});
+
+test('it validates date format', function () {
+    $bookingSlot = BookingSlot::query()->firstOrFail();
+
+    $data = [
+        'start_time' => 'invalid',
+        'end_time' => 'invalid',
+    ];
+
+    actingAsAdmin()
+        ->put(route('admin.change-booking-slot-date-time.update', $bookingSlot), $data)
+        ->assertSessionHasErrors(['start_time', 'end_time'])
+        ->assertStatus(302);
+});
+
