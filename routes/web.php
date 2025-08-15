@@ -39,15 +39,12 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     Route::post('/bookings/store', [BookingsController::class, 'store'])->name('admin.bookings.store');
     Route::get('/bookings/{booking}', [BookingsController::class, 'show'])->name('admin.bookings.show');
 
-    // Bookings slots
+    // Bookings slot
     Route::get('/bookings-slots/{bookingSlot}/show', [BookingSlotsController::class, 'show'])->name('admin.bookings-slots.show');
-    Route::get('/bookings-slots/{bookingSlot}/edit', [BookingSlotsController::class, 'edit'])->name('admin.bookings-slots.edit');
-    Route::put('/bookings-slots/{bookingSlot}/update', [BookingSlotsController::class, 'update'])->name('admin.bookings-slots.update');
-
+    //  Bookings slot change date time
     Route::get('/bookings-slots/{bookingSlot}/change-date-time/edit', [ChangeBookingSlotDateTimeController::class, 'edit'])->name('admin.change-booking-slot-date-time.edit');
     Route::put('/bookings-slots/{bookingSlot}/change-date-time/update', [ChangeBookingSlotDateTimeController::class, 'update'])->name('admin.change-booking-slot-date-time.update');
-
-    // Bookings slots workouts
+    // Bookings slot workouts
     Route::get('/bookings-slots/{bookingSlot}/workout/create', [BookingSlotWorkoutController::class, 'create'])->name('admin.bookings-slots.workout.create');
     Route::post('/bookings-slots/{bookingSlot}/workout/store', [BookingSlotWorkoutController::class, 'store'])->name('admin.bookings-slots.workout.store');
     Route::get('/bookings-slots/workout/{bookingSlotWorkout}/edit', [BookingSlotWorkoutController::class, 'edit'])->name('admin.bookings-slots.workout.edit');

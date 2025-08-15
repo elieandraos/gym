@@ -18,13 +18,6 @@ use Inertia\Response;
 
 class BookingsController extends Controller
 {
-    public function index(): Response
-    {
-        return Inertia::render('Admin/Bookings/Create', [
-            'bookings' => [],
-        ]);
-    }
-
     public function create(): Response
     {
         return Inertia::render('Admin/Bookings/Create', [

@@ -24,16 +24,9 @@
                 </div>
 
                 <div class="space-x-4">
-                    <Link :href="route('admin.change-booking-slot-date-time.edit', id)">
-                        <SecondaryButton>Change date & time</SecondaryButton>
-                    </Link>
-                    <SecondaryButton @click="showMarkAsACancelledModal = true">Cancel Session</SecondaryButton>
-                    <Link :href="route('admin.bookings-slots.workout.create', id)">
-                        <PrimaryButton>Add workouts</PrimaryButton>
-                    </Link>
                     <dropdown direction="right">
                         <div class="space-y-2">
-                            <a href="#" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">Add workouts</a>
+                            <a :href="route('admin.bookings-slots.workout.create', id)" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">Add workouts</a>
                             <Link :href="route('admin.change-booking-slot-date-time.edit', id)" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">Change date & time</Link>
                             <hr class="border-gray-200">
                             <a href="#" class="block p-2 text-red-500 hover:bg-red-50 hover:rounded-lg">Cancel session</a>
@@ -67,16 +60,6 @@
             </div>
             <div v-else>No workout details added yet.</div>
         </Container>
-
-        <teleport to="#modals">
-            <modal v-model="showChangeDateModal">
-                <ChangeDateModal :date="date" :start_time="start_time" @close="showChangeDateModal = false"></ChangeDateModal>
-            </modal>
-
-            <modal v-model="showMarkAsACancelledModal">
-                <MarkAsCancelledModal @close="showMarkAsACancelledModal = false"></MarkAsCancelledModal>
-            </modal>
-        </teleport>
     </AppLayout>
 </template>
 
@@ -88,12 +71,7 @@ import { ref, toRefs, computed } from 'vue'
 
 import Badge from '@/Components/Layout/Badge.vue'
 import Container from '@/Components/Layout/Container.vue'
-import Modal from '@/Components/Layout/Modal.vue'
-import SecondaryButton from '@/Components/Layout/SecondaryButton.vue'
-import PrimaryButton from '@/Components/Layout/PrimaryButton.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
-import ChangeDateModal from '@/Pages/Admin/BookingsSlots/Partials/ChangeDateModal.vue'
-import MarkAsCancelledModal from '@/Pages/Admin/BookingsSlots/Partials/MarkAsCancelledModal.vue'
 
 const props = defineProps({
     bookingSlot: { type: Object, required: true },
@@ -110,8 +88,6 @@ const {
     workouts,
 } = toRefs(props.bookingSlot)
 
-const showChangeDateModal = ref(false)
-const showMarkAsACancelledModal = ref(false)
 
 const groupedWorkouts = computed(() => {
     const groups = {}
