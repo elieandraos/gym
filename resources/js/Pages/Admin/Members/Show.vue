@@ -1,20 +1,9 @@
 <template>
     <AppLayout title="Profile">
         <Container>
-            <div class="flex justify-between items-center pb-4">
-                <div class="flex flex-wrap grow items-center gap-4">
-                    <img class="h-16 w-16 flex-shrink-0 rounded-full object-cover" :src="profile_photo_url" :alt="name">
-                    <div>
-                        <div class="flex flex-wrap items-center gap-2">
-                            <h1 class="text-xl/8 font-bold text-zinc-950">{{ name }}</h1>
-                            <check-badge-icon class="w-6 h-6 text-sky-500 inline" v-if="in_house"></check-badge-icon>
-                        </div>
-                        <div class="mt-1 text-sm text-zinc-500">{{ age }} years old · Member since {{  since }}</div>
-                    </div>
-                </div>
-
-                <SecondaryButton @click="goToBookingsHistory">View training history</SecondaryButton>
-            </div>
+            <page-title :sticky="true">
+                <member-header :member="member"></member-header>
+            </page-title>
 
             <div v-if="isTraining" class="mb-12">
                 <training-status :member="member"></training-status>
@@ -45,28 +34,22 @@
 </template>
 
 <script setup>
-import TrainingStatus from '@/Pages/Admin/Members/Partials/TrainingStatus.vue'
-import { CheckBadgeIcon } from '@heroicons/vue/24/solid'
-import { router } from '@inertiajs/vue3'
-import { computed } from 'vue'
-
-import Container from '@/Components/Layout/Container.vue'
-import PageBackButton from '@/Components/Layout/PageBackButton.vue'
-import SecondaryButton from '@/Components/Layout/SecondaryButton.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
+import PageTitle from '@/Components/Layout/PageTitle.vue'
+import MemberHeader from '@/Pages/Admin/Members/Partials/MemberHeader.vue'
+import TrainingStatus from '@/Pages/Admin/Members/Partials/TrainingStatus.vue'
+import Container from '@/Components/Layout/Container.vue'
 import UserContact from '@/Pages/Admin/Users/Partials/UserContact.vue'
 import UserProfile from '@/Pages/Admin/Users/Partials/UserProfile.vue'
+
+import { computed } from 'vue'
 
 const props = defineProps({
     member: { type: Object, required: true },
 })
 
-const {
-    id, active_booking, scheduled_bookings, first_name, name, since, profile_photo_url, in_house, age,
-} = props.member
+const { active_booking, scheduled_bookings, first_name } = props.member
 
 const isTraining = computed(() => !!active_booking)
 const hasScheduledBooking = computed( () => scheduled_bookings.length)
-
-const goToBookingsHistory = () => router.visit(route('admin.members.history', { user: id }))
 </script>

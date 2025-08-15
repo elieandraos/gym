@@ -1,8 +1,8 @@
 <template>
     <AppLayout title="New Training">
-        <Container :centered="false">
-            <page-title>
-                <div class="pb-4 border-b border-zinc-200 w-full">New training</div>
+        <Container>
+            <page-title :sticky="true">
+                <div class="pb-4 border-b border-zinc-200 w-full mb-8">New training</div>
             </page-title>
 
             <FormSection title="Member" description="Choose the member receiving the training.">

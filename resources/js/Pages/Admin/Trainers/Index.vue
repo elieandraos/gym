@@ -1,15 +1,15 @@
 <template>
     <AppLayout title="Profile">
         <Container>
-            <page-title>
-                Trainers list
-                <template v-slot:buttons>
+            <page-title :sticky="true">
+                <div class="pb-4 w-full flex justify-between items-center">
+                    <div>Trainers list</div>
                     <Link :href="route('admin.trainers.create')">
                         <primary-button type="button" class="">
-                            Add Trainer
+                            Add trainer
                         </primary-button>
                     </Link>
-                </template>
+                </div>
             </page-title>
 
             <trainers-list :data="data" :headers="headers" :links="meta.links"></trainers-list>
@@ -30,6 +30,7 @@ const props = defineProps({
     trainers: Object,
 })
 
+const { route } = window
 const { data, meta } = props.trainers
 const headers = ['Name', 'Start date', 'Phone number', 'Age']
 </script>

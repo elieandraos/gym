@@ -42,6 +42,7 @@ const props = defineProps({
     bookingSlot: { type: Object, required: true },
 })
 
+const { route } = window
 const { id, date, start_time } = props.bookingSlot
 
 const form = useForm({

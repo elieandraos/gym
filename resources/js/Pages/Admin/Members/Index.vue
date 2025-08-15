@@ -1,15 +1,15 @@
 <template>
     <AppLayout title="Profile">
         <Container>
-            <page-title>
-                Members list
-                <template v-slot:buttons>
+            <page-title :sticky="true">
+                <div class="pb-4 w-full flex justify-between items-center">
+                    <div>Members list</div>
                     <Link :href="route('admin.members.create')">
                         <primary-button type="button" class="">
                             Add member
                         </primary-button>
                     </Link>
-                </template>
+                </div>
             </page-title>
 
             <members-list :data="data" :headers="headers" :links="meta.links"></members-list>

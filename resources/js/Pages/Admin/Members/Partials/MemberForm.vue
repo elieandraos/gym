@@ -75,6 +75,10 @@
         </FormSection>
 
         <div class="text-right">
+            <Link :href="route('admin.members.index')" class="mr-4">
+                <TransparentButton>Cancel</TransparentButton>
+            </Link>
+
             <primary-button
                 @click="saveMember"
                 :class="{ 'opacity-25': form.processing }"
@@ -86,7 +90,9 @@
 </template>
 
 <script setup>
-import { inject, watch, nextTick } from 'vue'
+import TransparentButton from '@/Components/Layout/TransparentButton.vue'
+import {Link} from '@inertiajs/vue3'
+import { inject, nextTick } from 'vue'
 
 import DateInput from '@/Components/Form/DateInput.vue'
 import FormSection from '@/Components/Form/FormSection.vue'
