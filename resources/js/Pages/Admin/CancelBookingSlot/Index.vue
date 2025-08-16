@@ -3,13 +3,16 @@
         <Container>
             <session-header :booking-slot="bookingSlot"></session-header>
 
-            <div class="text-zinc-500 my-8">Are you sure you want to cancel this session?</div>
+            <div class="flex justify-start items-center gap-4">
+                <div class="text-zinc-500">Are you sure you want to cancel this session?</div>
 
-            <div class="flex justify-end mt-8 gap-4">
-                <Link :href="route('admin.bookings-slots.show', id)">
-                    <TransparentButton>No, I have changed my mind</TransparentButton>
-                </Link>
-                <primary-button @click="cancelBookingSlot">Affirmative!</primary-button>
+                <div class="flex justify-end gap-4">
+                    <primary-button @click="cancelBookingSlot">Affirmative!</primary-button>
+
+                    <Link :href="route('admin.bookings-slots.show', id)">
+                        <TransparentButton>No, I have changed my mind</TransparentButton>
+                    </Link>
+                </div>
             </div>
         </Container>
     </AppLayout>
@@ -31,7 +34,6 @@ const { id } = props.bookingSlot
 const { route } = window
 
 const cancelBookingSlot = () => {
-    router.delete(route('admin.cancel-booking-slot.destroy', id))
+    router.delete(route('admin.bookings-slots.cancel.destroy', id))
 }
 </script>
-

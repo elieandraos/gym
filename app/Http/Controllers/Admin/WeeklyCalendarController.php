@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\Status;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CalendarWeekCollection;
 use App\Models\Booking;
@@ -16,7 +17,7 @@ class WeeklyCalendarController extends Controller
         ['start' => $spanStart, 'end' => $spanEnd] = BookingManager::getCalendarSpan();
 
         $bookings = Booking::with([
-                'bookingSlots' => fn ($q) => $q->between($spanStart, $spanEnd),
+                'bookingSlots' => fn ($q) => $q->between($spanStart, $spanEnd)->whereNot('status', Status::Cancelled),
                 'member:id,name',
                 'trainer:id,name',
             ])

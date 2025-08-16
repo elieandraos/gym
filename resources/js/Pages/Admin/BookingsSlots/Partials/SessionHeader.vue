@@ -27,7 +27,7 @@
                     <a :href="route('admin.bookings-slots.workout.create', id)" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">Add workouts</a>
                     <Link :href="route('admin.change-booking-slot-date-time.edit', id)" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">Change date & time</Link>
                     <hr class="border-gray-200">
-                    <a href="#" class="block p-2 text-red-500 hover:bg-red-50 hover:rounded-lg">Cancel session</a>
+                    <a :href="route('admin.bookings-slots.cancel.index', id)" class="block p-2 text-red-500 hover:bg-red-50 hover:rounded-lg">Cancel session</a>
                 </div>
             </dropdown>
         </div>
@@ -40,7 +40,7 @@ import Dropdown from '@/Components/Layout/Dropdown.vue'
 import { ClockIcon, UsersIcon } from '@heroicons/vue/24/solid'
 
 import { Link } from '@inertiajs/vue3'
-import {toRefs} from 'vue'
+import { toRefs } from 'vue'
 
 const { route } = window
 

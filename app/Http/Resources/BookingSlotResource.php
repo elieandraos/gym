@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Enums\Status;
 use App\Models\BookingSlot;
 use App\Http\Resources\BookingSlotWorkoutResource;
 use Carbon\Carbon;
@@ -32,9 +33,9 @@ class BookingSlotResource extends JsonResource
             'booking' => new BookingResource($this->whenLoaded('booking')),
             'workouts' => $this->whenLoaded('bookingSlotWorkouts', fn() => BookingSlotWorkoutResource::collection($this->bookingSlotWorkouts)),
             'badge_type' => match ($this->status) {
-                'upcoming' => 'warning',
-                'cancelled' => 'error',
-                'frozen' => 'info',
+                Status::Upcoming => 'warning',
+                Status::Cancelled => 'error',
+                Status::Frozen => 'info',
                 default => 'success',
             },
         ];
