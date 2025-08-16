@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\BookingsController;
 use App\Http\Controllers\Admin\BookingSlotsController;
+use App\Http\Controllers\Admin\CancelBookingSlotController;
 use App\Http\Controllers\Admin\BookingSlotWorkoutController;
 use App\Http\Controllers\Admin\ChangeBookingSlotDateTimeController;
 use App\Http\Controllers\Admin\MembersController;
@@ -44,6 +45,9 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     //  Bookings slot change date time
     Route::get('/bookings-slots/{bookingSlot}/change-date-time/edit', [ChangeBookingSlotDateTimeController::class, 'edit'])->name('admin.change-booking-slot-date-time.edit');
     Route::put('/bookings-slots/{bookingSlot}/change-date-time/update', [ChangeBookingSlotDateTimeController::class, 'update'])->name('admin.change-booking-slot-date-time.update');
+    // Bookings slot cancel
+    Route::get('/bookings-slots/{bookingSlot}/cancel', [CancelBookingSlotController::class, 'index'])->name('admin.bookings-slots.cancel.index');
+    Route::delete('/bookings-slots/{bookingSlot}/cancel', [CancelBookingSlotController::class, 'destroy'])->name('admin.bookings-slots.cancel.destroy');
     // Bookings slot workouts
     Route::get('/bookings-slots/{bookingSlot}/workout/create', [BookingSlotWorkoutController::class, 'create'])->name('admin.bookings-slots.workout.create');
     Route::post('/bookings-slots/{bookingSlot}/workout/store', [BookingSlotWorkoutController::class, 'store'])->name('admin.bookings-slots.workout.store');
