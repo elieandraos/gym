@@ -1,10 +1,11 @@
 <template>
     <AppLayout title="Add Workouts">
         <Container>
+            <session-header :booking-slot="bookingSlot"></session-header>
+
             <div class="space-y-8">
                 <div>
-                    <InputLabel value="Search" />
-                    <TextInput v-model="search" placeholder="Search workouts..." class="mt-1 w-full" />
+                    <TextInput v-model="search" placeholder="Search workouts..." class="w-full" />
                 </div>
 
                 <div v-if="Object.keys(groupedWorkouts).length" class="flex flex-wrap gap-8">
@@ -23,9 +24,8 @@
                         </ul>
                     </div>
                 </div>
-
+t
                 <div class="space-y-4">
-                    <h3 class="font-semibold text-sm mb-2 text-zinc-600">Selected Workouts</h3>
                     <div
                         class="min-h-40 p-4 bg-stone-50 border border-stone-100 rounded"
                         @dragover.prevent
@@ -119,6 +119,7 @@ import Container from '@/Components/Layout/Container.vue'
 import PrimaryButton from '@/Components/Layout/PrimaryButton.vue'
 import TransparentButton from '@/Components/Layout/TransparentButton.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
+import SessionHeader from '@/Pages/Admin/BookingsSlots/Partials/SessionHeader.vue'
 import { Link, useForm } from '@inertiajs/vue3'
 import { computed, ref } from 'vue'
 

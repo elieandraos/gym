@@ -18,7 +18,12 @@ class BookingSlotWorkoutController extends Controller
 {
     public function create(BookingSlot $bookingSlot): Response
     {
-        $bookingSlot->load(['booking.member']);
+        $bookingSlot->load([
+            'booking',
+            'booking.member',
+            'booking.trainer',
+            'bookingSlotWorkouts.workout',
+        ]);
         $workouts = Workout::query()->orderBy('category')->orderBy('name')->get();
 
         return Inertia::render('Admin/BookingSlotWorkout/Create', [
