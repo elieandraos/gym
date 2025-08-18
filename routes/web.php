@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\ChangeBookingSlotDateTimeController;
 use App\Http\Controllers\Admin\MembersController;
 use App\Http\Controllers\Admin\TrainersController;
 use App\Http\Controllers\Admin\WeeklyCalendarController;
+use App\Http\Controllers\Admin\WorkoutController;
 use App\Http\Controllers\UserBookingsHistoryController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -33,6 +34,16 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         Route::post('/store', [TrainersController::class, 'store'])->name('store');
         Route::get('/{user}', [TrainersController::class, 'show'])->name('show');
         Route::get('/{user}/history', UserBookingsHistoryController::class)->name('history');
+    });
+
+    // Workouts
+    Route::prefix('workouts')->name('admin.workouts.')->group(function () {
+        Route::get('/', [WorkoutController::class, 'index'])->name('index');
+        Route::get('/create', [WorkoutController::class, 'create'])->name('create');
+        Route::post('/store', [WorkoutController::class, 'store'])->name('store');
+        Route::get('/{workout}/edit', [WorkoutController::class, 'edit'])->name('edit');
+        Route::put('/{workout}', [WorkoutController::class, 'update'])->name('update');
+        Route::delete('/{workout}', [WorkoutController::class, 'destroy'])->name('destroy');
     });
 
     // Bookings

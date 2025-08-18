@@ -3,16 +3,16 @@
         <Container>
             <page-title :sticky="true">
                 <div class="pb-4 w-full flex justify-between items-center">
-                    <div>Members list</div>
-                    <Link :href="route('admin.members.create')">
+                    <div>Workouts list</div>
+                    <Link :href="route('admin.workouts.create')">
                         <primary-button type="button" class="">
-                            Add member
+                            Add workout
                         </primary-button>
                     </Link>
                 </div>
             </page-title>
 
-            <members-list :data="data" :headers="headers" :links="meta?.links || []"></members-list>
+            <workouts-list :data="data" :headers="headers" :links="meta?.links || []"></workouts-list>
         </Container>
     </AppLayout>
 </template>
@@ -24,13 +24,13 @@ import Container from '@/Components/Layout/Container.vue'
 import PageTitle from '@/Components/Layout/PageTitle.vue'
 import PrimaryButton from '@/Components/Layout/PrimaryButton.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
-import MembersList from '@/Pages/Admin/Members/Partials/MembersList.vue'
+import WorkoutsList from '@/Pages/Admin/Workouts/Partials/WorkoutsList.vue'
 
 const props = defineProps({
-    members: Object,
+    workouts: Object,
 })
 
 const { route } = window
-const { data, meta } = props.members || {}
-const headers = ['Name', 'Start date', 'Phone number', 'Age']
+const { data, meta } = props.workouts || {}
+const headers = ['Name', 'Category', 'Actions']
 </script>

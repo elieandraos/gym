@@ -138,15 +138,15 @@ const form = useForm({
 })
 
 const groupedWorkouts = computed(() => {
-    if (search.value.length < 3) {
-        return {}
-    }
+    let filtered = props.workouts
 
-    const filtered = props.workouts.filter((workout) => {
-        return workout.name
-            .toLowerCase()
-            .includes(search.value.toLowerCase())
-    })
+    if (search.value.length >= 3) {
+        filtered = props.workouts.filter((workout) => {
+            return workout.name
+                .toLowerCase()
+                .includes(search.value.toLowerCase())
+        })
+    }
 
     const groups = {}
 

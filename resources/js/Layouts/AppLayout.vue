@@ -24,7 +24,7 @@
 <script setup>
 
 import {
-    HomeIcon, UserIcon, UsersIcon, Cog6ToothIcon, PlusCircleIcon, CalendarIcon
+    HomeIcon, UserIcon, UsersIcon, Cog6ToothIcon, PlusCircleIcon, CalendarIcon, ClipboardDocumentListIcon
 } from '@heroicons/vue/24/solid'
 import { Head, usePage } from '@inertiajs/vue3'
 
@@ -72,6 +72,13 @@ const menu = [
         url: route('admin.trainers.index'),
         icon: UsersIcon,
         activeRoute: 'admin.trainers.*',
+        when: () => usePage().props.auth.user,
+    },
+    {
+        name: 'Workouts',
+        url: route('admin.workouts.index'),
+        icon: ClipboardDocumentListIcon,
+        activeRoute: 'admin.workouts.*',
         when: () => usePage().props.auth.user,
     },
     {
