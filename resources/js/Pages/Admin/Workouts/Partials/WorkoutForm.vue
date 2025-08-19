@@ -48,7 +48,7 @@ const { route } = window
 const isEditing = computed(() => workout !== null)
 
 const categoryOptions = computed(() => 
-    categories.map(category => ({ value: category, label: category }))
+    categories?.map(category => ({ value: category, name: category })) || []
 )
 
 const scrollToFirstError = () => {

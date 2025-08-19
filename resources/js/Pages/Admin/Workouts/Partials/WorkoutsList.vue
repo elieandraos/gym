@@ -1,6 +1,6 @@
 <template>
     <table class="min-w-full text-left hidden lg:table text-sm">
-        <thead class="text-zinc-400">
+        <thead class="text-zinc-400 sticky top-20 z-[5] bg-white">
             <tr>
                 <th class="border-b border-b-zinc-200 px-4 py-2 text-sm font-medium" v-for="header in headers" :key="header">
                     {{ header }}
@@ -17,19 +17,18 @@
             <td class="text-zinc-400 p-4">
                 {{ category }}
             </td>
-            <td class="p-4">
-                <div class="flex gap-2">
-                    <Link :href="route('admin.workouts.edit', { workout: id })">
-                        <transparent-button class="text-xs">
+            <td>
+                <dropdown direction="right">
+                    <div class="space-y-2 cursor-pointer">
+                        <Link :href="route('admin.workouts.edit', { workout: id })" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">
                             Edit
-                        </transparent-button>
-                    </Link>
-                    <form @submit.prevent="deleteWorkout(id)" class="inline">
-                        <transparent-button type="submit" class="text-xs text-red-600 hover:text-red-800">
+                        </Link>
+                        <hr class="border-gray-200">
+                        <button @click="deleteWorkout(id)" class="block w-full text-left p-2 text-red-500 hover:bg-red-50 hover:rounded-lg">
                             Delete
-                        </transparent-button>
-                    </form>
-                </div>
+                        </button>
+                    </div>
+                </dropdown>
             </td>
         </tr>
         </tbody>
@@ -45,18 +44,17 @@
                     <div class="font-medium">{{ name }}</div>
                     <div class="text-zinc-500 text-xs">{{ category }}</div>
                 </div>
-                <div class="flex gap-2">
-                    <Link :href="route('admin.workouts.edit', { workout: id })">
-                        <transparent-button class="text-xs">
+                <dropdown direction="right">
+                    <div class="space-y-2">
+                        <Link :href="route('admin.workouts.edit', { workout: id })" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">
                             Edit
-                        </transparent-button>
-                    </Link>
-                    <form @submit.prevent="deleteWorkout(id)" class="inline">
-                        <transparent-button type="submit" class="text-xs text-red-600 hover:text-red-800">
+                        </Link>
+                        <hr class="border-gray-200">
+                        <button @click="deleteWorkout(id)" class="block w-full text-left p-2 text-red-500 hover:bg-red-50 hover:rounded-lg">
                             Delete
-                        </transparent-button>
-                    </form>
-                </div>
+                        </button>
+                    </div>
+                </dropdown>
             </div>
         </li>
     </ul>
@@ -68,7 +66,7 @@
 import { router, Link } from '@inertiajs/vue3'
 
 import Pagination from '@/Components/Layout/Pagination.vue'
-import TransparentButton from '@/Components/Layout/TransparentButton.vue'
+import Dropdown from '@/Components/Layout/Dropdown.vue'
 
 const { route } = window
 
@@ -80,7 +78,9 @@ defineProps({
 
 const deleteWorkout = (id) => {
     if (confirm('Are you sure you want to delete this workout?')) {
-        router.delete(route('admin.workouts.destroy', { workout: id }))
+        router.visit(route('admin.workouts.destroy', { workout: id }), {
+            method: 'delete',
+        })
     }
 }
 </script>

@@ -1,6 +1,6 @@
 <template>
     <table class="min-w-full text-left hidden lg:table text-sm">
-        <thead class="text-zinc-400">
+        <thead class="text-zinc-400 sticky top-20 z-[5] bg-white">
             <tr>
                 <th class="border-b border-b-zinc-200 px-4 py-2 text-sm font-medium" v-for="header in headers" :key="header">
                     {{ header }}
@@ -10,7 +10,7 @@
         <tbody>
         <tr v-for="{ id, since, name, profile_photo_url, age, phone_number} in data"
             :key="id"
-            class="border-b border-zinc-100 hover:bg-zinc-100 hover:cursor-pointer"
+            class="border-t border-zinc-100 hover:bg-zinc-100 hover:cursor-pointer"
             @click="goToMember(id)">
             <td class="p-3 relative flex gap-2 items-center">
                 <img class="h-8 w-8 rounded-full object-cover" :src="profile_photo_url" :alt="name">
@@ -51,7 +51,6 @@
 
 <script setup>
 import { router } from '@inertiajs/vue3'
-
 import Pagination from '@/Components/Layout/Pagination.vue'
 
 const { route } = window

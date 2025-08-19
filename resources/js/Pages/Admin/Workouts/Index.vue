@@ -32,5 +32,5 @@ const props = defineProps({
 
 const { route } = window
 const { data, meta } = props.workouts || {}
-const headers = ['Name', 'Category', 'Actions']
+const headers = ['Name', 'Category', '']
 </script>
