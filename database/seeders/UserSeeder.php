@@ -35,11 +35,15 @@ class UserSeeder extends Seeder
 
     protected function addActiveBooking(User $user, Collection $trainers): void
     {
+        /** @var User $randomTrainer */
+        $randomTrainer = $trainers->random();
+
+        /** @var Booking $booking */
         $booking = Booking::factory()
             ->active()
             ->create([
                 'member_id' => $user->id,
-                'trainer_id' => $trainers->random()->id,
+                'trainer_id' => $randomTrainer->id,
             ]);
 
         $bookingSlots = BookingSlot::factory($booking->nb_sessions)
@@ -59,11 +63,15 @@ class UserSeeder extends Seeder
             return;
         }
 
+        /** @var User $randomTrainer */
+        $randomTrainer = $trainers->random();
+
+        /** @var Booking $booking */
         $booking = Booking::factory()
             ->completed($nbMonthsAgo)
             ->create([
                 'member_id' => $user->id,
-                'trainer_id' => $trainers->random()->id,
+                'trainer_id' => $randomTrainer->id,
             ]);
 
         $bookingSlots = BookingSlot::factory($booking->nb_sessions)
