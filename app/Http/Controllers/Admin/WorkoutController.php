@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Enums\Category;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\WorkoutRequest;
+use App\Http\Resources\Admin\WorkoutResource;
 use App\Models\Workout;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
@@ -19,7 +20,7 @@ class WorkoutController extends Controller
             ->paginate(10);
 
         return Inertia::render('Admin/Workouts/Index', [
-            'workouts' => $workouts,
+            'workouts' => WorkoutResource::collection($workouts),
         ]);
     }
 
@@ -27,6 +28,13 @@ class WorkoutController extends Controller
     {
         return Inertia::render('Admin/Workouts/Create', [
             'categories' => Category::values(),
+        ]);
+    }
+
+    public function show(Workout $workout): Response
+    {
+        return Inertia::render('Admin/Workouts/Show', [
+            'workout' => new WorkoutResource($workout),
         ]);
     }
 
@@ -42,7 +50,7 @@ class WorkoutController extends Controller
     public function edit(Workout $workout): Response
     {
         return Inertia::render('Admin/Workouts/Edit', [
-            'workout' => $workout,
+            'workout' => new WorkoutResource($workout),
             'categories' => Category::values(),
         ]);
     }

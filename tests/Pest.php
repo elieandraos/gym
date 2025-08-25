@@ -4,6 +4,7 @@ use App\Enums\Role;
 use App\Models\Booking;
 use App\Models\BookingSlot;
 use App\Models\User;
+use Database\Seeders\WorkoutSeeder;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Tests\TestCase;
 
@@ -31,9 +32,9 @@ uses(TestCase::class, LazilyRefreshDatabase::class)->in('Feature');
 |
 */
 
-expect()->extend('toBeOne', function () {
-    return $this->toBe(1);
-});
+//expect()->extend('toBeOne', function () {
+//    return $this->toBe(1);
+//});
 
 /*
 |--------------------------------------------------------------------------
@@ -55,31 +56,39 @@ function actingAsAdmin()
 
 function setupUsersAndBookings(): void
 {
+    test()->artisan('db:seed', ['--class' => WorkoutSeeder::class]);
+
     $members = User::factory()->count(10)->create(['role' => Role::Member]);
     $trainers = User::factory()->count(2)->create(['role' => Role::Trainer]);
 
+    /** @var User $member */
     foreach ($members as $member) {
-        // Create one active booking
+        /** @var User $randomTrainer */
+        $randomTrainer = $trainers->random();
+
+        /** @var Booking $activeBooking */
         $activeBooking = Booking::factory()
             ->active()
             ->create([
                 'member_id' => $member->id,
-                'trainer_id' => $trainers->random()->id,
+                'trainer_id' => $randomTrainer->id,
             ]);
 
-        BookingSlot::factory($activeBooking->nb_sessions)
+        BookingSlot::factory()
+            ->count($activeBooking->nb_sessions)
             ->forBooking($activeBooking)
             ->create();
 
-        // Create one completed booking
+        /** @var Booking $completedBooking */
         $completedBooking = Booking::factory()
             ->completed()
             ->create([
                 'member_id' => $member->id,
-                'trainer_id' => $trainers->random()->id,
+                'trainer_id' => $randomTrainer->id,
             ]);
 
-        BookingSlot::factory($completedBooking->nb_sessions)
+        BookingSlot::factory()
+            ->count($completedBooking->nb_sessions)
             ->forBooking($completedBooking)
             ->create();
     }

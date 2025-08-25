@@ -15,6 +15,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Jetstream\HasProfilePhoto;
 
 /**
+ * @property-read int id
  * @property \Illuminate\Support\Carbon|mixed|null $birthdate
  * @property \Illuminate\Support\Carbon|mixed|null $registration_date
  */
