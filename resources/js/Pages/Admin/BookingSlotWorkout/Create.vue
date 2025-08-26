@@ -24,7 +24,7 @@
                         </ul>
                     </div>
                 </div>
-t
+
                 <div class="space-y-4">
                     <div
                         class="min-h-40 p-4 bg-stone-50 border border-stone-100 rounded"
@@ -112,7 +112,6 @@ t
 </template>
 
 <script setup>
-import InputLabel from '@/Components/Form/InputLabel.vue'
 import TextInput from '@/Components/Form/TextInput.vue'
 
 import Container from '@/Components/Layout/Container.vue'
@@ -138,15 +137,15 @@ const form = useForm({
 })
 
 const groupedWorkouts = computed(() => {
-    let filtered = props.workouts
-
-    if (search.value.length >= 3) {
-        filtered = props.workouts.filter((workout) => {
-            return workout.name
-                .toLowerCase()
-                .includes(search.value.toLowerCase())
-        })
+    if (search.value.length < 3) {
+        return {}
     }
+
+    const filtered = props.workouts.filter((workout) => {
+        return workout.name
+            .toLowerCase()
+            .includes(search.value.toLowerCase())
+    })
 
     const groups = {}
 

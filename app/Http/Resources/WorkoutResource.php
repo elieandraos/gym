@@ -9,7 +9,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *
  * @property int $id
  * @property string $name
- * @property string $category
+ * @property mixed $category
  */
 class WorkoutResource extends JsonResource
 {
