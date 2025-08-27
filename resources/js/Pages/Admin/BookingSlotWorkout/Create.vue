@@ -40,7 +40,7 @@ const createWorkoutSets = (workout) => ({
     ...workout,
     type: 'weight',
     weight_in_kg: ['', '', ''],
-    reps: ['', '', ''],
+    reps: ['12', '12', '12'],
     duration_in_seconds: ['', '', ''],
 })
 
@@ -54,6 +54,7 @@ const drop = (event) => {
     const workout = JSON.parse(data)
     if (!selectedWorkouts.value.some((existingWorkout) => existingWorkout.id === workout.id)) {
         selectedWorkouts.value.push(createWorkoutSets(workout))
+        search.value = ''
     }
 }
 

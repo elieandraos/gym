@@ -5,15 +5,17 @@
             @dragover.prevent
             @drop="drop"
         >
-            <ul class="space-y-2">
-                <li
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div
                     v-for="(selectedWorkout, workoutIndex) in selectedWorkouts"
                     :key="selectedWorkout.id"
-                    class="bg-white p-2 rounded-lg space-y-2"
+                    class="bg-white p-4 rounded-lg space-y-3"
                 >
                     <div class="flex justify-between items-center">
-                        <span>{{ selectedWorkout.name }}</span>
-                        <TransparentButton type="button" @click="remove(workoutIndex)">Remove</TransparentButton>
+                        <span class="font-semibold">{{ selectedWorkout.name }}</span>
+                        <button type="button" @click="remove(workoutIndex)" class="text-red-700 hover:text-red-500 p-2 cursor-pointer hover:bg-red-50 hover:rounded-lg">
+                            <TrashIcon class="w-4 h-4" />
+                        </button>
                     </div>
 
                     <div class="flex items-center gap-4 text-sm">
@@ -37,21 +39,22 @@
                         </label>
                     </div>
 
-                    <div v-if="selectedWorkout.type === 'weight'" class="flex gap-2">
-                        <div class="flex items-center gap-1" v-for="(value, idx) in selectedWorkout.weight_in_kg" :key="idx">
+                    <div v-if="selectedWorkout.type === 'weight'" class="space-y-2">
+                        <div class="flex items-center gap-2" v-for="(value, idx) in selectedWorkout.weight_in_kg" :key="idx">
                             <TextInput
                                 v-model="selectedWorkout.weight_in_kg[idx]"
                                 name="weight_in_kg[]"
                                 type="number"
                                 placeholder="KG"
-                                class="w-4"
+                                class="flex-1"
                             />
+                            <span class="text-gray-500">×</span>
                             <TextInput
                                 v-model="selectedWorkout.reps[idx]"
                                 name="reps[]"
                                 type="number"
                                 placeholder="Reps"
-                                class="w-4"
+                                class="flex-1"
                             />
                         </div>
                     </div>
@@ -67,8 +70,8 @@
                             class="w-16"
                         />
                     </div>
-                </li>
-            </ul>
+                </div>
+            </div>
         </div>
 
         <div class="text-right space-x-4">
@@ -86,6 +89,7 @@
 import TextInput from '@/Components/Form/TextInput.vue'
 import PrimaryButton from '@/Components/Layout/PrimaryButton.vue'
 import TransparentButton from '@/Components/Layout/TransparentButton.vue'
+import { TrashIcon } from '@heroicons/vue/24/solid'
 import { Link } from '@inertiajs/vue3'
 import { inject } from 'vue'
 
