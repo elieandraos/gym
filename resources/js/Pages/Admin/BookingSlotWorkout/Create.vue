@@ -19,8 +19,8 @@ import SessionHeader from '@/Pages/Admin/BookingsSlots/Partials/SessionHeader.vu
 import SearchWorkouts from './Partials/SearchWorkouts.vue'
 import WorkoutSearchResults from './Partials/WorkoutSearchResults.vue'
 import WorkoutForm from './Partials/WorkoutForm.vue'
-import { useForm } from '@inertiajs/vue3'
 import { ref, provide } from 'vue'
+import { useForm } from '@inertiajs/vue3'
 
 const props = defineProps({
     bookingSlot: { type: Object, required: true },

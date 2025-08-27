@@ -1,7 +1,7 @@
 <template>
     <div class="space-y-4">
         <div
-            class="min-h-40 p-4 bg-stone-50 border border-stone-100 rounded"
+            class="min-h-40 p-4 bg-stone-50 border border-stone-100 rounded-lg"
             @dragover.prevent
             @drop="drop"
         >
@@ -9,7 +9,7 @@
                 <li
                     v-for="(selectedWorkout, workoutIndex) in selectedWorkouts"
                     :key="selectedWorkout.id"
-                    class="bg-white border p-2 rounded space-y-2"
+                    class="bg-white p-2 rounded-lg space-y-2"
                 >
                     <div class="flex justify-between items-center">
                         <span>{{ selectedWorkout.name }}</span>
@@ -44,14 +44,14 @@
                                 name="weight_in_kg[]"
                                 type="number"
                                 placeholder="KG"
-                                class="w-16"
+                                class="w-4"
                             />
                             <TextInput
                                 v-model="selectedWorkout.reps[idx]"
                                 name="reps[]"
                                 type="number"
                                 placeholder="Reps"
-                                class="w-16"
+                                class="w-4"
                             />
                         </div>
                     </div>
