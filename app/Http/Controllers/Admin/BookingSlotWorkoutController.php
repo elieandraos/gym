@@ -63,46 +63,6 @@ class BookingSlotWorkoutController extends Controller
         return redirect()->route('admin.bookings-slots.show', $bookingSlot->id);
     }
 
-    public function edit(BookingSlotWorkout $bookingSlotWorkout): Response
-    {
-        $bookingSlotWorkout->load(['bookingSlot', 'workout', 'sets']);
-        $workouts = Workout::query()->orderBy('category')->orderBy('name')->get();
-
-        return Inertia::render('Admin/BookingSlotWorkout/Edit', [
-            'bookingSlotWorkout' => BookingSlotWorkoutResource::make($bookingSlotWorkout),
-            'workouts' => WorkoutResource::collection($workouts),
-        ]);
-    }
-
-    public function update(BookingSlotWorkoutRequest $request, BookingSlotWorkout $bookingSlotWorkout): RedirectResponse
-    {
-        $bookingSlotWorkout->update([
-            'workout_id' => $request->input('workouts.0.id'),
-        ]);
-
-        $bookingSlotWorkout->sets()->delete();
-
-        $workoutData = $request->input('workouts.0');
-        $sets = [];
-        $type = $workoutData['type'];
-        $weights = $workoutData['weight_in_kg'] ?? [];
-        $durations = $workoutData['duration_in_seconds'] ?? [];
-        $reps = $workoutData['reps'] ?? [];
-
-        for ($i = 0; $i < max(count($weights), count($durations)); $i++) {
-            $sets[] = [
-                'reps' => $reps[$i] ?? 12,
-                'is_timed' => $type === 'seconds',
-                'is_weighted' => $type === 'weight',
-                'weight_in_kg' => $type === 'weight' ? ($weights[$i] !== '' ? $weights[$i] : null) : null,
-                'duration_in_seconds' => $type === 'seconds' ? ($durations[$i] !== '' ? $durations[$i] : null) : null,
-            ];
-        }
-
-        $bookingSlotWorkout->sets()->createMany($sets);
-
-        return redirect()->route('admin.bookings-slots.show', $bookingSlotWorkout->booking_slot_id);
-    }
 
     public function destroy(BookingSlotWorkout $bookingSlotWorkout): RedirectResponse
     {

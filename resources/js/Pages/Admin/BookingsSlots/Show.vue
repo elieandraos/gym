@@ -11,9 +11,6 @@
                                 <div class="flex justify-between items-center">
                                     <h4 class="font-semibold text-sm text-zinc-600">{{ workout.name }}</h4>
                                     <div class="flex items-center gap-2">
-                                        <Link :href="workout.edit_url" class="text-sky-500 hover:text-sky-700 p-1 hover:bg-sky-50 hover:rounded">
-                                            <PencilIcon class="w-4 h-4" />
-                                        </Link>
                                         <button type="button" @click="confirmRemoveWorkout(workout)" class="text-red-500 hover:text-red-700 p-1 hover:bg-red-50 hover:rounded">
                                             <TrashIcon class="w-4 h-4" />
                                         </button>
@@ -42,7 +39,7 @@
 <script setup>
 import { Link, router } from '@inertiajs/vue3'
 import { toRefs, computed, ref } from 'vue'
-import { PencilIcon, TrashIcon } from '@heroicons/vue/24/solid'
+import { TrashIcon } from '@heroicons/vue/24/solid'
 
 import SessionHeader from '@/Pages/Admin/BookingsSlots/Partials/SessionHeader.vue'
 import Container from '@/Components/Layout/Container.vue'

@@ -62,8 +62,6 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     // Bookings slot workouts
     Route::get('/bookings-slots/{bookingSlot}/workout/create', [BookingSlotWorkoutController::class, 'create'])->name('admin.bookings-slots.workout.create');
     Route::post('/bookings-slots/{bookingSlot}/workout/store', [BookingSlotWorkoutController::class, 'store'])->name('admin.bookings-slots.workout.store');
-    Route::get('/bookings-slots/workout/{bookingSlotWorkout}/edit', [BookingSlotWorkoutController::class, 'edit'])->name('admin.bookings-slots.workout.edit');
-    Route::put('/bookings-slots/workout/{bookingSlotWorkout}', [BookingSlotWorkoutController::class, 'update'])->name('admin.bookings-slots.workout.update');
     Route::delete('/bookings-slots/workout/{bookingSlotWorkout}', [BookingSlotWorkoutController::class, 'destroy'])->name('admin.bookings-slots.workout.destroy');
 
     // Weekly Calendar
