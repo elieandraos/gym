@@ -22,7 +22,6 @@ class BookingSlotWorkoutResource extends JsonResource
                     'duration_in_seconds' => $set->duration_in_seconds,
                 ]);
             }),
-            'edit_url' => route('admin.bookings-slots.workout.edit', $this->id),
             'delete_url' => route('admin.bookings-slots.workout.destroy', $this->id),
         ];
     }

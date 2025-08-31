@@ -20,7 +20,7 @@ test('it requires authentication', function () {
 
 test('it renders the booking slot workout create page', function () {
     $bookingSlot = BookingSlot::query()->first();
-    $bookingSlot->load(['booking', 'booking.member']);
+    $bookingSlot->load(['booking', 'booking.member', 'booking.trainer']);
 
     $workouts = Workout::query()->orderBy('category')->orderBy('name')->get();
 
