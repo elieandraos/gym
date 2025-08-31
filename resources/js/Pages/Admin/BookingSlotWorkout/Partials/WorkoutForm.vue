@@ -13,7 +13,7 @@
                 >
                     <div class="flex justify-between items-center">
                         <span class="font-semibold">{{ selectedWorkout.name }}</span>
-                        <button type="button" @click="remove(workoutIndex)" class="text-red-700 hover:text-red-500 p-2 cursor-pointer hover:bg-red-50 hover:rounded-lg">
+                        <button type="button" @click="remove(workoutIndex)" class="text-red-300 hover:text-red-500 p-1.5 cursor-pointer hover:bg-red-50 hover:rounded-lg">
                             <TrashIcon class="w-4 h-4" />
                         </button>
                     </div>

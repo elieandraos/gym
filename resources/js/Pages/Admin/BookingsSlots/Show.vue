@@ -11,7 +11,7 @@
                                 <div class="flex justify-between items-center">
                                     <h4 class="font-semibold text-sm text-zinc-600">{{ workout.name }}</h4>
                                     <div class="flex items-center gap-2">
-                                        <button type="button" @click="confirmRemoveWorkout(workout)" class="text-red-500 hover:text-red-700 p-1 hover:bg-red-50 hover:rounded">
+                                        <button type="button" @click="confirmRemoveWorkout(workout)" class="text-red-300 hover:text-red-700 p-1.5 hover:bg-red-50 hover:rounded cursor-pointer">
                                             <TrashIcon class="w-4 h-4" />
                                         </button>
                                     </div>
