@@ -17,8 +17,7 @@ class CancelBookingSlotController extends Controller
         $bookingSlot->load([
             'booking',
             'booking.member',
-            'booking.trainer',
-            'bookingSlotWorkouts.workout',
+            'booking.trainer'
         ]);
 
         return Inertia::render('Admin/CancelBookingSlot/Index', [

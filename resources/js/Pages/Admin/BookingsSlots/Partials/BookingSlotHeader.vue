@@ -21,7 +21,7 @@
             </div>
         </div>
 
-        <div class="space-x-4">
+        <div v-if="withMenu" class="space-x-4">
             <dropdown direction="right">
                 <div class="space-y-2">
                     <a :href="route('admin.bookings-slots.workout.create', id)" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">Add workouts</a>
@@ -47,6 +47,7 @@ const { route } = window
 
 const props = defineProps({
     bookingSlot: { type: Object, required: true },
+    withMenu: { type: Boolean, default: false },
 })
 
 const {

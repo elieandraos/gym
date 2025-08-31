@@ -1,7 +1,7 @@
 <template>
     <AppLayout title="New Training">
         <Container>
-            <session-header :booking-slot="bookingSlot" ></session-header>
+            <booking-slot-header :booking-slot="bookingSlot"></booking-slot-header>
 
             <FormSection title="Date" description="Update the session date.">
                 <DateInput v-model="form.date"></DateInput>
@@ -24,7 +24,7 @@
 </template>
 
 <script setup>
-import SessionHeader from '@/Pages/Admin/BookingsSlots/Partials/SessionHeader.vue'
+import BookingSlotHeader from '@/Pages/Admin/BookingsSlots/Partials/BookingSlotHeader.vue'
 import { Link, useForm } from '@inertiajs/vue3'
 import { format, addHours, parse } from 'date-fns'
 import DateInput from '@/Components/Form/DateInput.vue'

@@ -1,7 +1,7 @@
 <template>
     <AppLayout title="Booking">
         <Container>
-            <session-header :booking-slot="bookingSlot"></session-header>
+            <booking-slot-header :booking-slot="bookingSlot" :with-menu="true"></booking-slot-header>
 
             <div v-if="Object.keys(groupedWorkouts).length" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <div v-for="(items, category) in groupedWorkouts" :key="category" class="bg-stone-50 border border-stone-100 rounded-lg p-4">
@@ -41,7 +41,7 @@ import { router } from '@inertiajs/vue3'
 import { toRefs, computed, ref } from 'vue'
 import { TrashIcon } from '@heroicons/vue/24/solid'
 
-import SessionHeader from '@/Pages/Admin/BookingsSlots/Partials/SessionHeader.vue'
+import BookingSlotHeader from '@/Pages/Admin/BookingsSlots/Partials/BookingSlotHeader.vue'
 import Container from '@/Components/Layout/Container.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
 

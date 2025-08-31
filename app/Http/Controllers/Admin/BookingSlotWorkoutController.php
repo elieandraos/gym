@@ -21,8 +21,7 @@ class BookingSlotWorkoutController extends Controller
         $bookingSlot->load([
             'booking',
             'booking.member',
-            'booking.trainer',
-            'bookingSlotWorkouts.workout',
+            'booking.trainer'
         ]);
 
         $workouts = Workout::query()->orderBy('category')->orderBy('name')->get();
