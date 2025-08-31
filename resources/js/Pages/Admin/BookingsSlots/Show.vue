@@ -37,7 +37,7 @@
 </template>
 
 <script setup>
-import { Link, router } from '@inertiajs/vue3'
+import { router } from '@inertiajs/vue3'
 import { toRefs, computed, ref } from 'vue'
 import { TrashIcon } from '@heroicons/vue/24/solid'
 
@@ -49,10 +49,7 @@ const props = defineProps({
     bookingSlot: { type: Object, required: true },
 })
 
-const {
-    booking,
-    workouts,
-} = toRefs(props.bookingSlot)
+const { workouts } = toRefs(props.bookingSlot)
 
 const removingWorkout = ref(null)
 
