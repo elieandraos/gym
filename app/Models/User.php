@@ -15,9 +15,10 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Jetstream\HasProfilePhoto;
 
 /**
- * @property-read int id
+ * @property-read int                              id
  * @property \Illuminate\Support\Carbon|mixed|null $birthdate
  * @property \Illuminate\Support\Carbon|mixed|null $registration_date
+ * @property-read mixed                                 $memberCompletedBookings
  */
 class User extends Authenticatable
 {
@@ -103,6 +104,14 @@ class User extends Authenticatable
                 'trainer',
                 'bookingSlots' => fn ($query) => $query->orderBy('start_time'),
             ]);
+    }
+
+    public function memberCompletedBookings(): HasMany
+    {
+        return $this->hasMany(Booking::class, 'member_id')
+            ->history()
+            ->orderBy('start_date', 'desc')
+            ->with('trainer');
     }
 
     #[AsScope]

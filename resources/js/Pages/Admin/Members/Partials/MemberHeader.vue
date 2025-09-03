@@ -14,7 +14,7 @@
         <Dropdown direction="right">
             <div class="space-y-2 font-normal">
                 <Link v-if="isTraining" :href="route('admin.bookings.show', active_booking.id)" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">View all sessions</Link>
-                <Link :href="route('admin.members.history', { user: id })" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">View training history</Link>
+                <Link :href="route('admin.members.bookings.history', { user: id })" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">Training history</Link>
             </div>
         </Dropdown>
     </div>

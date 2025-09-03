@@ -34,6 +34,7 @@ class MemberResource extends JsonResource
             'role' => strtolower($this->role),
             'active_booking' => new BookingResource($this->whenLoaded('memberActiveBooking')),
             'scheduled_bookings' => BookingResource::collection($this->whenLoaded('memberScheduledBookings')),
+            'completed_bookings' => BookingResource::collection($this->whenLoaded('memberCompletedBookings')),
         ];
     }
 }

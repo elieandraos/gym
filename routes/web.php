@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\BookingSlotsController;
 use App\Http\Controllers\Admin\CancelBookingSlotController;
 use App\Http\Controllers\Admin\BookingSlotWorkoutController;
 use App\Http\Controllers\Admin\ChangeBookingSlotDateTimeController;
+use App\Http\Controllers\Admin\MemberBookingHistoryController;
 use App\Http\Controllers\Admin\MembersController;
 use App\Http\Controllers\Admin\TrainersController;
 use App\Http\Controllers\Admin\WeeklyCalendarController;
@@ -24,7 +25,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         Route::get('/create', [MembersController::class, 'create'])->name('create');
         Route::post('/store', [MembersController::class, 'store'])->name('store');
         Route::get('/{user}', [MembersController::class, 'show'])->name('show');
-        Route::get('/{user}/history', UserBookingsHistoryController::class)->name('history');
+        Route::get('/{user}/bookings/history', [MemberBookingHistoryController::class, 'index'])->name('bookings.history');
     });
 
     // Trainers
@@ -33,7 +34,6 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         Route::get('/create', [TrainersController::class, 'create'])->name('create');
         Route::post('/store', [TrainersController::class, 'store'])->name('store');
         Route::get('/{user}', [TrainersController::class, 'show'])->name('show');
-        Route::get('/{user}/history', UserBookingsHistoryController::class)->name('history');
     });
 
     // Workouts
