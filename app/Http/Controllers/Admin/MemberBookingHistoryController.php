@@ -12,7 +12,7 @@ class MemberBookingHistoryController extends Controller
 {
     public function index(User $user): Response
     {
-        $user->load('memberCompletedBookings');
+        $user->load('memberCompletedBookings', 'memberActiveBooking');
 
         return Inertia::render('Admin/MemberBookingsHistory/Index', [
             'member' => MemberResource::make($user),

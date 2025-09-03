@@ -2,7 +2,7 @@
     <AppLayout title="Member Booking History">
         <Container>
             <page-title :sticky="true">
-                <member-header :member="member"></member-header>
+                <member-header :member="member" :bordered="true"></member-header>
             </page-title>
 
             <table class="min-w-full text-left lg:table text-sm">
