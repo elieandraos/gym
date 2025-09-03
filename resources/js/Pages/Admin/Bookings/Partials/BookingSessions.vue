@@ -27,7 +27,7 @@
     <table class="min-w-full text-left lg:table text-sm">
         <thead class="text-zinc-400">
             <tr>
-                <th class="border-b border-b-zinc-200 px-4 py-2 text-sm font-medium" v-for="header in headers" :key="header">
+                <th class="px-4 py-2 text-sm font-medium" v-for="header in headers" :key="header">
                     {{ header }}
                 </th>
             </tr>

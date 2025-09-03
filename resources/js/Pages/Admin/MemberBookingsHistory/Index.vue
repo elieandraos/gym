@@ -8,7 +8,7 @@
             <table class="min-w-full text-left lg:table text-sm">
                 <thead class="text-zinc-400">
                 <tr>
-                    <th class="border-b border-b-zinc-200 px-4 py-2 text-sm font-medium" v-for="header in headers" :key="header">
+                    <th class="px-4 py-2 text-sm font-medium" v-for="header in headers" :key="header">
                         {{ header }}
                     </th>
                 </tr>
@@ -37,12 +37,9 @@
 </template>
 
 <script setup>
-import { UsersIcon, UserIcon } from '@heroicons/vue/24/solid'
 import { Link, router } from '@inertiajs/vue3'
-import { computed } from 'vue'
 
 import Container from '@/Components/Layout/Container.vue'
-import PageBackButton from '@/Components/Layout/PageBackButton.vue'
 import PageTitle from '@/Components/Layout/PageTitle.vue'
 import MemberHeader from '@/Pages/Admin/Members/Partials/MemberHeader.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
@@ -52,7 +49,7 @@ const props = defineProps({
 })
 
 const {
-    id, name, completed_bookings: bookings,
+    completed_bookings: bookings,
 } = props.member
 
 const headers = ['Date', 'Trainer', '# Sessions']
