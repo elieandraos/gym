@@ -7,7 +7,7 @@
 
         <div
             v-if="open"
-            class="absolute z-50 rounded-md border border-gray-200 bg-white text-sm text-zinc-500 p-4 min-w-56 shadow-sm"
+            class="absolute z-50 rounded-md border border-gray-200 bg-white text-sm font-normal text-zinc-500 p-4 min-w-56 shadow-sm"
             :class="alignmentClass"
         >
             <slot></slot>

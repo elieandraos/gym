@@ -11,21 +11,29 @@
             </div>
         </div>
 
-        <SecondaryButton @click="goToBookingsHistory">View training history</SecondaryButton>
+        <Dropdown direction="right">
+            <div class="space-y-2 font-normal">
+                <Link v-if="isTraining" :href="route('admin.bookings.show', active_booking.id)" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">View all sessions</Link>
+                <Link :href="route('admin.members.history', { user: id })" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">View training history</Link>
+            </div>
+        </Dropdown>
     </div>
 </template>
 
 <script setup>
-import SecondaryButton from '@/Components/Layout/SecondaryButton.vue'
+import Dropdown from '@/Components/Layout/Dropdown.vue'
 import { CheckBadgeIcon } from '@heroicons/vue/24/solid/index'
 
-import { router } from '@inertiajs/vue3'
+import { Link } from '@inertiajs/vue3'
+import { computed } from 'vue'
+
+const { route } = window
 
 const props = defineProps({
     member: { type: Object, required: true },
 })
 
-const { id, name, profile_photo_url, in_house, age, since } = props.member
+const { id, name, profile_photo_url, in_house, age, since, active_booking } = props.member
 
-const goToBookingsHistory = () => router.visit(route('admin.members.history', { user: id }))
+const isTraining = computed(() => !!active_booking)
 </script>
