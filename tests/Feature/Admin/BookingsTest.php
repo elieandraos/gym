@@ -48,7 +48,7 @@ test('it validates request before creating a booking', function () {
 
 test('it shows booking information', function () {
     $booking = Booking::query()->first();
-    $booking->load(['member', 'trainer', 'bookingSlots' => function ($query) {
+    $booking->load(['member', 'member.memberActiveBooking', 'trainer', 'bookingSlots' => function ($query) {
         $query->orderBy('start_time');
     }]);
 

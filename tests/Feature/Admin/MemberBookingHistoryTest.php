@@ -20,7 +20,7 @@ test('it displays member booking history', function () {
     $completedBookings = $member->memberCompletedBookings;
     expect($completedBookings->count())->toBeGreaterThan(0, 'Member should have completed bookings for this test');
 
-    $member->load('memberCompletedBookings');
+    $member->load('memberCompletedBookings', 'memberActiveBooking');
 
     actingAsAdmin()
         ->get(route('admin.members.bookings.history', $member))
