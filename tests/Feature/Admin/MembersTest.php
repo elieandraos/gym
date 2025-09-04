@@ -119,9 +119,7 @@ test('it searches members by name', function () {
         ->get(route('admin.members.index', ['search' => $searchTerm]))
         ->assertHasComponent('Admin/Members/Index')
         ->assertHasPaginatedResource('members', MemberResource::collection($searchResults))
-        ->assertInertia(function ($page) {
-            expect($page->toArray()['props']['search'])->toBe('John');
-        })
+        ->assertHasProp('search', 'John')
         ->assertStatus(200);
 });
 
