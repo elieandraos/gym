@@ -23,7 +23,8 @@ class MembersController extends Controller
                 $query->where('name', 'like', "%$search%");
             })
             ->orderBy('registration_date', 'DESC')
-            ->paginate(10);
+            ->paginate(10)
+            ->withQueryString();
 
         return Inertia::render('Admin/Members/Index', [
             'members' => MemberResource::collection($members),
