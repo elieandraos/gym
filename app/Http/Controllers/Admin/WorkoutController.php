@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\WorkoutRequest;
 use App\Http\Resources\Admin\WorkoutResource;
 use App\Models\Workout;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -16,11 +17,21 @@ class WorkoutController extends Controller
     public function index(): Response
     {
         $workouts = Workout::query()
+            ->when(request('search'), function (Builder $query, string $search) {
+                $query->where('name', 'like', "%$search%");
+            })
+            ->when(request('category'), function (Builder $query, string $category) {
+                $query->where('category', $category);
+            })
             ->orderBy('name')
-            ->paginate(10);
+            ->paginate(10)
+            ->withQueryString();
 
         return Inertia::render('Admin/Workouts/Index', [
             'workouts' => WorkoutResource::collection($workouts),
+            'search' => request('search'),
+            'category' => request('category'),
+            'categories' => Category::values(),
         ]);
     }
 

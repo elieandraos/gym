@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\UserRequest;
 use App\Http\Resources\TrainerResource;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
@@ -18,11 +19,16 @@ class TrainersController extends Controller
     {
         $trainers = User::query()
             ->trainers()
+            ->when(request('search'), function (Builder $query, string $search) {
+                $query->where('name', 'like', "%$search%");
+            })
             ->orderBy('registration_date', 'DESC')
-            ->paginate(10);
+            ->paginate(10)
+            ->withQueryString();
 
         return Inertia::render('Admin/Trainers/Index', [
             'trainers' => TrainerResource::collection($trainers),
+            'search' => request('search'),
         ]);
     }
 
