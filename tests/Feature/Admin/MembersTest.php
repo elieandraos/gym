@@ -138,3 +138,33 @@ test('it returns empty results when no members match search', function () {
         ->assertHasPaginatedResource('members', MemberResource::collection($emptyMembers))
         ->assertStatus(200);
 });
+
+test('it filters members by active training status', function () {
+    $activeTrainingMembers = User::query()
+        ->members()
+        ->whereHas('memberActiveBooking')
+        ->orderBy('registration_date', 'DESC')
+        ->paginate(10);
+
+    actingAsAdmin()
+        ->get(route('admin.members.index', ['activeTraining' => 1]))
+        ->assertHasComponent('Admin/Members/Index')
+        ->assertHasPaginatedResource('members', MemberResource::collection($activeTrainingMembers))
+        ->assertHasProp('activeTraining', true)
+        ->assertStatus(200);
+});
+
+test('it shows members without active training when filter is off', function () {
+    $membersWithoutActiveTraining = User::query()
+        ->members()
+        ->whereDoesntHave('memberActiveBooking')
+        ->orderBy('registration_date', 'DESC')
+        ->paginate(10);
+
+    actingAsAdmin()
+        ->get(route('admin.members.index', ['activeTraining' => 0]))
+        ->assertHasComponent('Admin/Members/Index')
+        ->assertHasPaginatedResource('members', MemberResource::collection($membersWithoutActiveTraining))
+        ->assertHasProp('activeTraining', false)
+        ->assertStatus(200);
+});

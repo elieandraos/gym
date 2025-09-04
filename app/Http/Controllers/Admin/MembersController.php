@@ -22,6 +22,13 @@ class MembersController extends Controller
             ->when(request('search'), function (Builder $query, string $search) {
                 $query->where('name', 'like', "%$search%");
             })
+            ->when(request()->has('activeTraining'), function (Builder $query) {
+                if (request('activeTraining')) {
+                    $query->whereHas('memberActiveBooking');
+                } else {
+                    $query->whereDoesntHave('memberActiveBooking');
+                }
+            })
             ->orderBy('registration_date', 'DESC')
             ->paginate(10)
             ->withQueryString();
@@ -29,6 +36,7 @@ class MembersController extends Controller
         return Inertia::render('Admin/Members/Index', [
             'members' => MemberResource::collection($members),
             'search' => request('search'),
+            'activeTraining' => (bool) request('activeTraining', true),
         ]);
     }
 
