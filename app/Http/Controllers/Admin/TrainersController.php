@@ -28,8 +28,6 @@ class TrainersController extends Controller
 
     public function show(User $user): Response
     {
-        $user->load(['trainerActiveBookings']);
-
         return Inertia::render('Admin/Trainers/Show', [
             'trainer' => TrainerResource::make($user),
         ]);

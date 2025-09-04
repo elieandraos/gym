@@ -11,21 +11,6 @@ class TrainerResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
-        // If the relationship is loaded, use it; otherwise use an empty Collection.
-        $bookings = $this->relationLoaded('trainerActiveBookings')
-            ? $this->trainerActiveBookings
-            : collect();
-
-        // Extract unique member names:
-        $memberNames = $bookings
-            ->pluck('member.name')
-            ->unique()
-            ->values();
-
-        $totalMembers = $memberNames->count();
-        $firstTwoNames = $memberNames->take(2)->values();
-        $additionalCount = max($totalMembers - $firstTwoNames->count(), 0);
-
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -47,17 +32,6 @@ class TrainerResource extends JsonResource
             'address' => $this->address,
             'emergency_contact' => $this->emergency_contact,
             'role' => strtolower($this->role),
-
-            // Always include the bookings themselves (if loaded)
-            'active_bookings' => BookingResource::collection($bookings),
-
-            // Conditionally merge only if the relation was eager-loaded
-            $this->mergeWhen($this->relationLoaded('trainerActiveBookings'), [
-                'active_members_count' => $totalMembers,
-                'active_member_names' => $firstTwoNames,
-                'active_members_additional_count' => $additionalCount,
-                'active_member_full_names' => $memberNames,
-            ]),
         ];
     }
 }
