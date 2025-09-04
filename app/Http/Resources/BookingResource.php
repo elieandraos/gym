@@ -20,12 +20,22 @@ class BookingResource extends JsonResource
         $upcomingSlot = $slots->firstWhere('status', Status::Upcoming);
         $completedSessionsCount = $slots->where('status', Status::Complete)->count();
 
+        $today = Carbon::today();
+        $status = 'scheduled';
+        if ($this->start_date <= $today && $this->end_date >= $today) {
+            $status = 'active';
+        } elseif ($this->end_date < $today) {
+            $status = 'completed';
+        }
+
         return [
             'id' => $this->id,
             'nb_sessions' => $this->nb_sessions,
             'start_date' => $this->start_date,
             'end_date' => $this->end_date,
+            'status' => $status,
             'title' => Carbon::parse($this->start_date)->format('M j').' - '.Carbon::parse($this->end_date)->format('M j').', '.Carbon::parse($this->end_date)->format('Y'),
+            'formatted_start_date' => Carbon::parse($this->start_date)->isoFormat('MMM Do'),
             'formatted_end_date' => Carbon::parse($this->end_date)->isoFormat('MMM Do'),
             'member' => new MemberResource($this->whenLoaded('member')),
             'trainer' => new TrainerResource($this->whenLoaded('trainer')),
