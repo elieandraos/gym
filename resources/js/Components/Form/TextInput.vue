@@ -2,7 +2,7 @@
     <input
         ref="input"
         v-bind="$attrs"
-        class="w-full p-2 border border-zinc-200 placeholder-zinc-400 hover:border-zinc-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-lg text-sm"
+        class="w-full p-2 border border-zinc-200 placeholder-zinc-400 hover:border-zinc-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-lg text-sm placeholder:font-normal"
         v-model="model"/>
 </template>
 

@@ -98,7 +98,7 @@ test('it validates trainer creation', function () {
 
 test('it shows trainer information', function () {
     $trainer = User::query()->trainers()->first();
-    
+
     actingAsAdmin()
         ->get(route('admin.trainers.show', $trainer))
         ->assertHasComponent('Admin/Trainers/Show')

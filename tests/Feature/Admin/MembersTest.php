@@ -106,3 +106,35 @@ test('it shows member information', function () {
         ->assertHasResource('member', MemberResource::make($member))
         ->assertStatus(200);
 });
+
+test('it searches members by name', function () {
+    $searchTerm = 'John';
+    $searchResults = User::query()
+        ->members()
+        ->where('name', 'like', "%{$searchTerm}%")
+        ->orderBy('registration_date', 'DESC')
+        ->paginate(10);
+
+    actingAsAdmin()
+        ->get(route('admin.members.index', ['search' => $searchTerm]))
+        ->assertHasComponent('Admin/Members/Index')
+        ->assertHasPaginatedResource('members', MemberResource::collection($searchResults))
+        ->assertInertia(function ($page) {
+            expect($page->toArray()['props']['search'])->toBe('John');
+        })
+        ->assertStatus(200);
+});
+
+test('it returns empty results when no members match search', function () {
+    $emptyMembers = User::query()
+        ->members()
+        ->where('name', 'like', '%NonExistentMember%')
+        ->orderBy('registration_date', 'DESC')
+        ->paginate(10);
+
+    actingAsAdmin()
+        ->get(route('admin.members.index', ['search' => 'NonExistentMember']))
+        ->assertHasComponent('Admin/Members/Index')
+        ->assertHasPaginatedResource('members', MemberResource::collection($emptyMembers))
+        ->assertStatus(200);
+});

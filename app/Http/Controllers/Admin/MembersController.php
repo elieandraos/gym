@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\UserRequest;
 use App\Http\Resources\MemberResource;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
@@ -18,11 +19,15 @@ class MembersController extends Controller
     {
         $members = User::query()
             ->members()
+            ->when(request('search'), function (Builder $query, string $search) {
+                $query->where('name', 'like', "%$search%");
+            })
             ->orderBy('registration_date', 'DESC')
             ->paginate(10);
 
         return Inertia::render('Admin/Members/Index', [
             'members' => MemberResource::collection($members),
+            'search' => request('search'),
         ]);
     }
 

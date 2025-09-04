@@ -91,3 +91,6 @@ Uses Pest with Feature tests covering:
 - Form validation with error state preservation
 - Responsive design with Tailwind CSS
 - Inertia.js for SPA-like navigation without API complexity
+
+- Instead of if request, use eloquent when() to chain it with the query
+- type hine eloquent function params
