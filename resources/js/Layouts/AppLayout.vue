@@ -9,14 +9,22 @@
                 <div class="h-screen w-60 hidden lg:block">
                     <sidebar :menu="menu"></sidebar>
                 </div>
+
                 <div class="h-screen lg:pt-2 grow">
                     <main class="h-full overflow-y-scroll bg-white rounded-t-lg lg:ring-1 lg:ring-zinc-950/5 ">
-                        <div class="h-6 lg:hidden"></div>
+                        <!-- Default mobile navigation -->
+                        <div class="flex justify-end items-start p-2 bg-white lg:hidden">
+                            <button @click="toggleSidebar" v-if="!sidebarOpen">
+                                <Bars3Icon class="h-6 w-6 text-zinc-700 hover:text-zinc-900" />
+                            </button>
+                        </div>
+                        <!-- main content -->
                         <slot />
                     </main>
                 </div>
             </div>
-            <floating-sidebar :menu="menu"></floating-sidebar>
+
+            <floating-sidebar :menu="menu" :sidebar-open="sidebarOpen" @toggle="toggleSidebar"></floating-sidebar>
         </div>
     </div>
 </template>
@@ -24,9 +32,10 @@
 <script setup>
 
 import {
-    HomeIcon, UserIcon, UsersIcon, Cog6ToothIcon, PlusCircleIcon, CalendarIcon, ClipboardDocumentListIcon
+    HomeIcon, UserIcon, UsersIcon, Cog6ToothIcon, PlusCircleIcon, CalendarIcon, ClipboardDocumentListIcon, Bars3Icon
 } from '@heroicons/vue/24/solid'
 import { Head, usePage } from '@inertiajs/vue3'
+import { ref, provide } from 'vue'
 
 import Banner from '@/Components/Layout/Banner.vue'
 import FloatingSidebar from '@/Layouts/FloatingSidebar.vue'
@@ -35,6 +44,17 @@ import Sidebar from '@/Layouts/Sidebar.vue'
 defineProps({
     title: String,
 })
+
+// Sidebar state
+const sidebarOpen = ref(false)
+
+const toggleSidebar = () => {
+    sidebarOpen.value = !sidebarOpen.value
+}
+
+// Provide sidebar functions to child components
+provide('toggleSidebar', toggleSidebar)
+provide('sidebarOpen', sidebarOpen)
 
 const { route } = window
 

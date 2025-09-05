@@ -1,7 +1,9 @@
 <template>
     <AppLayout title="Booking">
         <Container>
-            <booking-slot-header :booking-slot="bookingSlot" :with-menu="true"></booking-slot-header>
+            <page-header :sticky="true">
+                <booking-slot-header :booking-slot="bookingSlot" :with-menu="true"></booking-slot-header>
+            </page-header>
 
             <div v-if="Object.keys(groupedWorkouts).length" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <div v-for="(items, category) in groupedWorkouts" :key="category" class="bg-stone-50 border border-stone-100 rounded-lg p-4">
@@ -37,6 +39,7 @@
 </template>
 
 <script setup>
+import PageHeader from '@/Components/Layout/PageHeader.vue'
 import { router } from '@inertiajs/vue3'
 import { toRefs, computed, ref } from 'vue'
 import { TrashIcon } from '@heroicons/vue/24/solid'
