@@ -11,6 +11,8 @@
             <slot name="buttons"></slot>
         </div>
     </div>
+    <!-- Automatic spacer for sticky headers on mobile -->
+    <div v-if="sticky" class="pt-6 lg:pt-0"></div>
 </template>
 
 <script setup>
