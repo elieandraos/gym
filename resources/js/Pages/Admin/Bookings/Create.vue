@@ -5,7 +5,8 @@
                 <div class="pb-4 border-b border-zinc-200 w-full mb-8">New training</div>
             </page-header>
 
-            <FormSection title="Member" description="Choose the member receiving the training.">
+            <div class="pt-6 lg:pt-0">
+                <FormSection title="Member" description="Choose the member receiving the training.">
                 <InputAutocomplete :options="membersList" v-model="form.member_id" placeholder="Choose member">
                     <template #list-item-preview="{ options, selectOption, searchString, highlightSearch }">
                         <li v-for="option in options" :key="option.value"
@@ -47,8 +48,9 @@
                 <booking-schedule></booking-schedule>
             </FormSection>
 
-            <div class="text-right">
-                <primary-button @click="saveBooking" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">Save training</primary-button>
+                <div class="text-right">
+                    <primary-button @click="saveBooking" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">Save training</primary-button>
+                </div>
             </div>
         </Container>
     </AppLayout>
