@@ -1,7 +1,7 @@
 <template>
     <AppLayout title="Profile">
         <Container>
-            <page-title :sticky="true">
+            <page-header :sticky="true">
                 <div class="pb-8 w-full flex justify-between items-center font-normal">
                     <div class="flex items-center gap-4">
                         <div class="w-96">
@@ -19,7 +19,7 @@
                         </primary-button>
                     </Link>
                 </div>
-            </page-title>
+            </page-header>
 
             <trainers-list :data="data" :headers="headers" :links="meta.links"></trainers-list>
         </Container>
@@ -31,7 +31,7 @@ import { Link, router } from '@inertiajs/vue3'
 import { ref, watch } from 'vue'
 
 import Container from '@/Components/Layout/Container.vue'
-import PageTitle from '@/Components/Layout/PageTitle.vue'
+import PageHeader from '@/Components/Layout/PageHeader.vue'
 import PrimaryButton from '@/Components/Layout/PrimaryButton.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import TrainersList from '@/Pages/Admin/Trainers/Partials/TrainersList.vue'

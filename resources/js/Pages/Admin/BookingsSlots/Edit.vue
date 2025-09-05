@@ -1,9 +1,9 @@
 <template>
     <AppLayout title="New Training">
         <Container :centered="true">
-            <page-title>
+            <page-header>
                 <div class="pb-8 border-b border-zinc-200 w-full">Change session date and time</div>
-            </page-title>
+            </page-header>
 
             <FormSection title="Date" description="Update the session date.">
                 <DateInput v-model="form.date"></DateInput>
@@ -33,7 +33,7 @@ import FormSection from '@/Components/Form/FormSection.vue'
 import InputError from '@/Components/Form/InputError.vue'
 import TimeInput from '@/Components/Form/TimeInput.vue'
 import Container from '@/Components/Layout/Container.vue'
-import PageTitle from '@/Components/Layout/PageTitle.vue'
+import PageHeader from '@/Components/Layout/PageHeader.vue'
 import PrimaryButton from '@/Components/Layout/PrimaryButton.vue'
 import TransparentButton from '@/Components/Layout/TransparentButton.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'

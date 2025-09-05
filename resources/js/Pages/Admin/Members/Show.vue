@@ -1,9 +1,9 @@
 <template>
     <AppLayout title="Profile">
         <Container>
-            <page-title :sticky="true">
+            <page-header :sticky="true">
                 <member-header :member="member"></member-header>
-            </page-title>
+            </page-header>
 
             <div v-if="isTraining" class="mb-12">
                 <training-status :member="member"></training-status>
@@ -35,7 +35,7 @@
 
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue'
-import PageTitle from '@/Components/Layout/PageTitle.vue'
+import PageHeader from '@/Components/Layout/PageHeader.vue'
 import MemberHeader from '@/Pages/Admin/Members/Partials/MemberHeader.vue'
 import TrainingStatus from '@/Pages/Admin/Members/Partials/TrainingStatus.vue'
 import Container from '@/Components/Layout/Container.vue'

@@ -1,9 +1,9 @@
 <template>
     <AppLayout title="New Training">
         <Container>
-            <page-title :sticky="true">
+            <page-header :sticky="true">
                 <div class="pb-4 border-b border-zinc-200 w-full mb-8">New training</div>
-            </page-title>
+            </page-header>
 
             <FormSection title="Member" description="Choose the member receiving the training.">
                 <InputAutocomplete :options="membersList" v-model="form.member_id" placeholder="Choose member">
@@ -64,7 +64,7 @@ import InputAutocomplete from '@/Components/Form/InputAutocomplete.vue'
 import InputError from '@/Components/Form/InputError.vue'
 import TextInput from '@/Components/Form/TextInput.vue'
 import Container from '@/Components/Layout/Container.vue'
-import PageTitle from '@/Components/Layout/PageTitle.vue'
+import PageHeader from '@/Components/Layout/PageHeader.vue'
 import PrimaryButton from '@/Components/Layout/PrimaryButton.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import BookingSchedule from '@/Pages/Admin/Bookings/Partials/BookingSchedule.vue'

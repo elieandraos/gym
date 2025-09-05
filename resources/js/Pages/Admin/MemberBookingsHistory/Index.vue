@@ -1,9 +1,9 @@
 <template>
     <AppLayout title="Member Booking History">
         <Container>
-            <page-title :sticky="true">
+            <page-header :sticky="true">
                 <member-header :member="member" :bordered="true"></member-header>
-            </page-title>
+            </page-header>
 
             <table class="min-w-full text-left lg:table text-sm">
                 <thead class="text-zinc-400">
@@ -40,7 +40,7 @@
 import { Link, router } from '@inertiajs/vue3'
 
 import Container from '@/Components/Layout/Container.vue'
-import PageTitle from '@/Components/Layout/PageTitle.vue'
+import PageHeader from '@/Components/Layout/PageHeader.vue'
 import MemberHeader from '@/Pages/Admin/Members/Partials/MemberHeader.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
 

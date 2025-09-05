@@ -1,9 +1,9 @@
 <template>
     <AppLayout>
         <Container :centered="false">
-            <page-title :sticky="true">
+            <page-header :sticky="true">
                 <div class="pb-4 border-b border-zinc-200 w-full mb-8">New Member</div>
-            </page-title>
+            </page-header>
             <member-form></member-form>
         </Container>
     </AppLayout>
@@ -15,7 +15,7 @@ import { useForm } from '@inertiajs/vue3'
 import { provide } from 'vue'
 
 import Container from '@/Components/Layout/Container.vue'
-import PageTitle from '@/Components/Layout/PageTitle.vue'
+import PageHeader from '@/Components/Layout/PageHeader.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
 
 const form = useForm({

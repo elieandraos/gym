@@ -1,9 +1,9 @@
 <template>
     <AppLayout title="Booking">
         <Container>
-            <page-title :sticky="true">
+            <page-header :sticky="true">
                 <member-header :member="member" :bordered="true"></member-header>
-            </page-title>
+            </page-header>
 
             <p class="mb-8"> {{ description }}</p>
 
@@ -15,7 +15,7 @@
 <script setup>
 import { computed } from 'vue'
 import Container from '@/Components/Layout/Container.vue'
-import PageTitle from '@/Components/Layout/PageTitle.vue'
+import PageHeader from '@/Components/Layout/PageHeader.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import BookingSessions from '@/Pages/Admin/Bookings/Partials/BookingSessions.vue'
 import MemberHeader from '@/Pages/Admin/Members/Partials/MemberHeader.vue'

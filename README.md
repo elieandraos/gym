@@ -25,4 +25,4 @@
 ## UI blocks
 - `AppLayout`
   - `Container`
-    - Headings: `PageTitle` `PageBackButton`
+    - Headings: `PageHeader` `PageBackButton`
