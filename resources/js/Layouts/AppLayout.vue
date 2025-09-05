@@ -13,8 +13,8 @@
                 <div class="h-screen lg:pt-2 grow">
                     <main class="h-full overflow-y-scroll bg-white rounded-t-lg lg:ring-1 lg:ring-zinc-950/5 ">
                         <!-- Default mobile navigation -->
-                        <div class="flex justify-end items-start p-2 bg-white lg:hidden">
-                            <button @click="toggleSidebar" v-if="!sidebarOpen">
+                        <div class="lg:hidden">
+                            <button @click="toggleSidebar" v-if="!sidebarOpen" class="absolute top-2 right-2 z-50 p-2">
                                 <Bars3Icon class="h-6 w-6 text-zinc-700 hover:text-zinc-900" />
                             </button>
                         </div>
