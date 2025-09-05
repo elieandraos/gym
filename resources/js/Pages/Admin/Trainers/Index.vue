@@ -4,7 +4,7 @@
             <page-header :sticky="true">
                 <div class="pb-8 w-full flex justify-between items-center font-normal">
                     <div class="flex items-center gap-4">
-                        <div class="w-96">
+                        <div class="w-64">
                             <text-input
                                 v-model="searchQuery"
                                 @input="performSearch"
