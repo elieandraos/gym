@@ -1,5 +1,5 @@
 <template>
-    <div class="px-8" :class="classList">
+    <div class="px-8 pb-16" :class="classList">
         <slot></slot>
     </div>
 </template>
