@@ -1,6 +1,6 @@
 <template>
     <table class="min-w-full text-left hidden lg:table text-sm">
-        <thead class="text-zinc-400 sticky top-24  z-[5] bg-white">
+        <thead class="text-zinc-400">
             <tr>
                 <th class="border-b border-b-zinc-200 px-4 py-2 text-sm font-medium" v-for="header in headers" :key="header">
                     {{ header }}

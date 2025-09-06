@@ -1,7 +1,7 @@
 <template>
     <AppLayout title="Profile">
         <Container>
-            <PageHeader :sticky="true" :bordered="false" :bottom-gap="false">
+            <PageHeader :sticky="true" :bordered="false" :bottom-gap="true">
                 <div class="w-full flex justify-between items-center font-normal">
                     <div class="flex items-center gap-4">
                         <div class="w-64">
