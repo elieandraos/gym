@@ -1,14 +1,14 @@
 <template>
     <AppLayout title="Profile">
         <Container>
-            <page-header :sticky="true">
-                <div class="pb-8 w-full flex justify-between items-center font-normal">
+            <PageHeader :sticky="true" :bordered="false" :bottom-gap="false">
+                <div class="w-full flex justify-between items-center font-normal">
                     <div class="flex items-center gap-4">
                         <div class="w-64">
                             <text-input
                                 v-model="searchQuery"
                                 @input="performSearch"
-                                placeholder="Search workouts by name..."
+                                placeholder="Search workouts..."
                             />
                         </div>
                         <div class="w-48">
@@ -27,7 +27,7 @@
                         </primary-button>
                     </Link>
                 </div>
-            </page-header>
+            </PageHeader>
 
             <workouts-list :data="data" :headers="headers" :links="meta?.links || []"></workouts-list>
         </Container>

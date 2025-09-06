@@ -1,15 +1,16 @@
 <template>
     <AppLayout>
-        <Container :centered="false">
-            <page-header :sticky="true">
-                <div class="pb-4 border-b border-zinc-200 w-full mb-8">New Workout</div>
-            </page-header>
-            <workout-form></workout-form>
+        <Container>
+            <PageHeader :sticky="true">
+                <PageHeaderTitle>New Workout</PageHeaderTitle>
+            </PageHeader>
+            <WorkoutForm></WorkoutForm>
         </Container>
     </AppLayout>
 </template>
 
 <script setup>
+import PageHeaderTitle from '@/Components/Layout/PageHeaderTitle.vue'
 import WorkoutForm from '@/Pages/Admin/Workouts/Partials/WorkoutForm.vue'
 import { useForm } from '@inertiajs/vue3'
 import { provide } from 'vue'

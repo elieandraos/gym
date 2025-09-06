@@ -1,15 +1,16 @@
 <template>
     <AppLayout>
-        <Container :centered="false">
-            <page-header :sticky="true">
-                <div class="pb-4 border-b border-zinc-200 w-full mb-8">New Trainer</div>
-            </page-header>
-            <trainer-form></trainer-form>
+        <Container>
+            <PageHeader :sticky="true">
+                <PageHeaderTitle>New Trainer</PageHeaderTitle>
+            </PageHeader>
+            <TrainerForm></TrainerForm>
         </Container>
     </AppLayout>
 </template>
 
 <script setup>
+import PageHeaderTitle from '@/Components/Layout/PageHeaderTitle.vue'
 import { useForm } from '@inertiajs/vue3'
 import { provide } from 'vue'
 

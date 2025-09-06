@@ -1,7 +1,9 @@
 <template>
     <AppLayout title="Cancel Session">
         <Container>
-            <booking-slot-header :booking-slot="bookingSlot"></booking-slot-header>
+            <PageHeader :sticky="true">
+                <BookingSlotHeader :booking-slot="bookingSlot"></BookingSlotHeader>
+            </PageHeader>
 
             <div class="flex justify-start items-center gap-4">
                 <div class="text-zinc-500">Are you sure you want to cancel this session?</div>
@@ -19,6 +21,7 @@
 </template>
 
 <script setup>
+import PageHeader from '@/Components/Layout/PageHeader.vue'
 import BookingSlotHeader from '@/Pages/Admin/BookingsSlots/Partials/BookingSlotHeader.vue'
 import Container from '@/Components/Layout/Container.vue'
 import PrimaryButton from '@/Components/Layout/PrimaryButton.vue'

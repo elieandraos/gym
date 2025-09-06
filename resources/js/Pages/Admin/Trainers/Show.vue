@@ -1,7 +1,9 @@
 <template>
     <AppLayout title="Profile">
         <Container>
-            <trainer-header :trainer="trainer" :bordered="true"  />
+            <PageHeader :sticky="true">
+                <TrainerHeader :trainer="trainer" />
+            </PageHeader>
 
             <div class="flex flex-col md:flex-row md:justify-between gap-6 md:gap-12">
                 <div class="bg-stone-50 w-full p-4 rounded-lg">
@@ -17,6 +19,7 @@
 
 <script setup>
 import Container from '@/Components/Layout/Container.vue'
+import PageHeader from '@/Components/Layout/PageHeader.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import UserContact from '@/Pages/Admin/Users/Partials/UserContact.vue'
 import UserProfile from '@/Pages/Admin/Users/Partials/UserProfile.vue'

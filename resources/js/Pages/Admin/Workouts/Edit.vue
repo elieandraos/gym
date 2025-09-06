@@ -1,10 +1,10 @@
 <template>
     <AppLayout>
         <Container :centered="false">
-            <page-header :sticky="true">
-                <div class="pb-4 border-b border-zinc-200 w-full mb-8">Edit Workout</div>
-            </page-header>
-            <workout-form></workout-form>
+            <PageHeader :sticky="true">
+                <PageHeaderTitle>Edit Workout</PageHeaderTitle>
+            </PageHeader>
+            <WorkoutForm></WorkoutForm>
         </Container>
     </AppLayout>
 </template>
@@ -16,6 +16,7 @@ import { provide } from 'vue'
 
 import Container from '@/Components/Layout/Container.vue'
 import PageHeader from '@/Components/Layout/PageHeader.vue'
+import PageHeaderTitle from '@/Components/Layout/PageHeaderTitle.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
 
 const props = defineProps({

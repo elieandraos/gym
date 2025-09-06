@@ -1,7 +1,9 @@
 <template>
     <AppLayout title="New Training">
         <Container>
-            <booking-slot-header :booking-slot="bookingSlot"></booking-slot-header>
+            <PageHeader :sticky="true">
+                <BookingSlotHeader :booking-slot="bookingSlot"></BookingSlotHeader>
+            </PageHeader>
 
             <FormSection title="Date" description="Update the session date.">
                 <DateInput v-model="form.date"></DateInput>

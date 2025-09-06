@@ -1,9 +1,9 @@
 <template>
     <AppLayout title="Booking">
         <Container>
-            <page-header :sticky="true">
-                <member-header :member="member" :bordered="true"></member-header>
-            </page-header>
+            <PageHeader :sticky="true">
+                <MemberHeader :member="member" :bordered="true"></MemberHeader>
+            </PageHeader>
 
             <p class="mb-8"> {{ description }}</p>
 

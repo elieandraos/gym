@@ -1,9 +1,9 @@
 <template>
     <AppLayout title="Booking">
         <Container>
-            <page-header :sticky="true">
-                <booking-slot-header :booking-slot="bookingSlot" :with-menu="true"></booking-slot-header>
-            </page-header>
+            <PageHeader :sticky="true">
+                <BookingSlotHeader :booking-slot="bookingSlot" :with-menu="true"></BookingSlotHeader>
+            </PageHeader>
 
             <div v-if="Object.keys(groupedWorkouts).length" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <div v-for="(items, category) in groupedWorkouts" :key="category" class="bg-stone-50 border border-stone-100 rounded-lg p-4">

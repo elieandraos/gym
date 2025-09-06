@@ -1,8 +1,8 @@
 <template>
     <AppLayout title="New Training">
-        <Container :centered="true">
-            <page-header>
-                <div class="pb-8 border-b border-zinc-200 w-full">Change session date and time</div>
+        <Container>
+            <page-header :sticky="true">
+                <div>Change session date and time</div>
             </page-header>
 
             <FormSection title="Date" description="Update the session date.">

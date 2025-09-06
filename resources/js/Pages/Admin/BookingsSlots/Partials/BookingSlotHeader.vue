@@ -1,5 +1,5 @@
 <template>
-    <div class="flex justify-between items-end pb-6 mb-12 font-normal border-b border-zinc-200">
+    <div class="flex justify-between items-end font-normal">
         <div class="grow">
             <div class="flex gap-x-4">
                 <h1 class="text-xl font-bold text-zinc-950">Session Details</h1>

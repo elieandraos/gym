@@ -1,15 +1,16 @@
 <template>
     <AppLayout>
         <Container :centered="false">
-            <page-header :sticky="true">
-                <div class="pb-4 border-b border-zinc-200 w-full mb-8">New Member</div>
-            </page-header>
-            <member-form></member-form>
+            <PageHeader :sticky="true">
+                <PageHeaderTitle>New member</PageHeaderTitle>
+            </PageHeader>
+            <MemberForm></MemberForm>
         </Container>
     </AppLayout>
 </template>
 
 <script setup>
+import PageHeaderTitle from '@/Components/Layout/PageHeaderTitle.vue'
 import MemberForm from '@/Pages/Admin/Members/Partials/MemberForm.vue'
 import { useForm } from '@inertiajs/vue3'
 import { provide } from 'vue'

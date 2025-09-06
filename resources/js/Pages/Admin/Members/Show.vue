@@ -1,13 +1,11 @@
 <template>
     <AppLayout title="Profile">
         <Container>
-            <page-header :sticky="true">
-                <member-header :member="member"></member-header>
-            </page-header>
+            <PageHeader :sticky="true" :bordered="!isTraining" :bottom-gap="!isTraining">
+                <MemberHeader :member="member"></MemberHeader>
+            </PageHeader>
 
-            <div v-if="isTraining" class="mb-12">
-                <training-status :member="member"></training-status>
-            </div>
+            <TrainingStatus :member="member"  v-if="isTraining" class="mb-12"></TrainingStatus>
 
             <div
                 v-if="hasScheduledBooking"

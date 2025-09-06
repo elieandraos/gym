@@ -1,7 +1,9 @@
 <template>
     <AppLayout title="Add Workouts">
         <Container>
-            <booking-slot-header :booking-slot="bookingSlot"></booking-slot-header>
+            <PageHeader :sticky="true">
+                <BookingSlotHeader :booking-slot="bookingSlot"></BookingSlotHeader>
+            </PageHeader>
 
             <div class="space-y-8">
                 <SearchWorkouts />
@@ -14,6 +16,7 @@
 
 <script setup>
 import Container from '@/Components/Layout/Container.vue'
+import PageHeader from '@/Components/Layout/PageHeader.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import BookingSlotHeader from '@/Pages/Admin/BookingsSlots/Partials/BookingSlotHeader.vue'
 import SearchWorkouts from './Partials/SearchWorkouts.vue'

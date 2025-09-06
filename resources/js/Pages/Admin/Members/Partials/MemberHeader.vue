@@ -1,5 +1,5 @@
 <template>
-    <div class="flex justify-between items-center pb-4" :class="{ 'mb-12 border-b border-zinc-200': bordered }">
+    <div class="flex justify-between items-end">
         <div class="flex flex-wrap grow items-center gap-4">
             <img class="h-16 w-16 flex-shrink-0 rounded-full object-cover" :src="profile_photo_url" :alt="name">
             <div>
@@ -37,7 +37,6 @@ const { route } = window
 
 const props = defineProps({
     member: { type: Object, required: true },
-    bordered: { type: Boolean, default: false },
 })
 
 const { id, name, first_name, profile_photo_url, in_house, age, since, active_booking } = props.member
