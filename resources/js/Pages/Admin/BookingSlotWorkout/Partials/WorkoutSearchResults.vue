@@ -42,6 +42,7 @@ const groupedWorkouts = computed(() => {
 
     for (const key in groups) {
         groups[key].sort((a, b) => a.name.localeCompare(b.name))
+        groups[key] = groups[key].slice(0, 3)
     }
 
     return groups

@@ -1,12 +1,16 @@
 <template>
     <AppLayout title="Dashboard">
         <Container>
-            <h2 class="text-2xl/8 font-medium text-zinc-950 sm:text-xl/8">Good afternoon, Hanna</h2>
+            <PageHeader :sticky="true">
+                <PageHeaderTitle>Good afternoon, Hanna</PageHeaderTitle>
+            </PageHeader>
         </Container>
     </AppLayout>
 </template>
 
 <script setup>
 import Container from '@/Components/Layout/Container.vue'
+import PageHeader from '@/Components/Layout/PageHeader.vue'
+import PageHeaderTitle from '@/Components/Layout/PageHeaderTitle.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
 </script>

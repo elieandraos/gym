@@ -56,7 +56,7 @@ const drop = (event) => {
     if (!data) return
     const workout = JSON.parse(data)
     if (!selectedWorkouts.value.some((existingWorkout) => existingWorkout.id === workout.id)) {
-        selectedWorkouts.value.push(createWorkoutSets(workout))
+        selectedWorkouts.value.unshift(createWorkoutSets(workout))
         search.value = ''
     }
 }

@@ -14,7 +14,7 @@
                     <main class="h-full overflow-y-scroll bg-white rounded-t-lg lg:ring-1 lg:ring-zinc-950/5 ">
                         <!-- Mobile menu toggle -->
                         <div class="lg:hidden">
-                            <div class="absolute top-2 right-2 z-[60]">
+                            <div class="absolute top-1 right-1 z-[60]">
                                 <AnimatedMenuIcon :is-open="overlayOpen" @toggle="toggleOverlay" />
                             </div>
                         </div>
