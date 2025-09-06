@@ -9,12 +9,31 @@
             </div>
 
             <!-- menu items -->
-            <div class="space-y-1 capitalize text-sm font-semibold">
-                <div v-for="item in menu" :key="item.name">
-                    <NavLink :href="item.url" :active="isActive(item)">
-                        <component :is="item.icon" :class="[isActive(item) ? 'text-zinc-900' : 'text-zinc-500', 'w-5 h-5 group-hover:text-zinc-900']"></component>
-                        {{  item.name }}
-                    </NavLink>
+            <div class="space-y-6">
+                <!-- Quick Links -->
+                <div>
+                    <h3 class="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">Quick Links</h3>
+                    <div class="space-y-1 capitalize text-sm font-semibold">
+                        <div v-for="item in quickLinks" :key="item.name">
+                            <NavLink :href="item.url" :active="isActive(item)">
+                                <component :is="item.icon" :class="[isActive(item) ? 'text-zinc-900' : 'text-zinc-500', 'w-5 h-5 group-hover:text-zinc-900']"></component>
+                                {{  item.name }}
+                            </NavLink>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Administration -->
+                <div>
+                    <h3 class="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">Administration</h3>
+                    <div class="space-y-1 capitalize text-sm font-semibold">
+                        <div v-for="item in administrationLinks" :key="item.name">
+                            <NavLink :href="item.url" :active="isActive(item)">
+                                <component :is="item.icon" :class="[isActive(item) ? 'text-zinc-900' : 'text-zinc-500', 'w-5 h-5 group-hover:text-zinc-900']"></component>
+                                {{  item.name }}
+                            </NavLink>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -38,17 +57,26 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
 import { Link, router, usePage } from '@inertiajs/vue3'
 
 import ApplicationMark from '@/Components/ApplicationMark.vue'
 import NavLink from '@/Components/NavLink.vue'
 
-defineProps({
+const props = defineProps({
     menu: { type: Array, required: true },
 })
 
 const { route } = window
 const { name, profile_photo_url } = usePage().props.auth.user
+
+const quickLinks = computed(() => {
+    return props.menu.filter(item => ['Home', 'Training', 'Calendar'].includes(item.name))
+})
+
+const administrationLinks = computed(() => {
+    return props.menu.filter(item => ['Members', 'Trainers', 'Workouts', 'Account'].includes(item.name))
+})
 
 const logout = () => {
     router.post(route('logout'))

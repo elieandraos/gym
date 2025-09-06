@@ -15,7 +15,7 @@
                         <!-- Mobile menu toggle -->
                         <div class="lg:hidden">
                             <div class="absolute top-2 right-2 z-[60]">
-                                <AnimatedMenuIcon :is-open="sidebarOpen" @toggle="toggleSidebar" />
+                                <AnimatedMenuIcon :is-open="overlayOpen" @toggle="toggleOverlay" />
                             </div>
                         </div>
                         <!-- main content -->
@@ -24,7 +24,7 @@
                 </div>
             </div>
 
-            <OverlayMobileMenu :menu="menu" :is-open="sidebarOpen" @close="toggleSidebar" />
+            <OverlayMenu :menu="menu" :is-open="overlayOpen" @close="toggleOverlay" />
         </div>
     </div>
 </template>
@@ -39,23 +39,23 @@ import { ref, provide } from 'vue'
 
 import AnimatedMenuIcon from '@/Components/Layout/AnimatedMenuIcon.vue'
 import Banner from '@/Components/Layout/Banner.vue'
-import OverlayMobileMenu from '@/Layouts/OverlayMobileMenu.vue'
+import OverlayMenu from '@/Layouts/OverlayMenu.vue'
 import Sidebar from '@/Layouts/Sidebar.vue'
 
 defineProps({
     title: String,
 })
 
-// Sidebar state
-const sidebarOpen = ref(false)
+// Overlay state
+const overlayOpen = ref(false)
 
-const toggleSidebar = () => {
-    sidebarOpen.value = !sidebarOpen.value
+const toggleOverlay = () => {
+    overlayOpen.value = !overlayOpen.value
 }
 
-// Provide sidebar functions to child components
-provide('toggleSidebar', toggleSidebar)
-provide('sidebarOpen', sidebarOpen)
+// Provide overlay functions to child components
+provide('toggleOverlay', toggleOverlay)
+provide('overlayOpen', overlayOpen)
 
 const { route } = window
 
