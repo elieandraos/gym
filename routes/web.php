@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\BookingSlotsController;
 use App\Http\Controllers\Admin\CancelBookingSlotController;
 use App\Http\Controllers\Admin\BookingSlotWorkoutController;
 use App\Http\Controllers\Admin\ChangeBookingSlotDateTimeController;
+use App\Http\Controllers\Admin\MarkBookingAsPaidController;
 use App\Http\Controllers\Admin\MemberBookingHistoryController;
 use App\Http\Controllers\Admin\MembersController;
 use App\Http\Controllers\Admin\TrainersController;
@@ -50,6 +51,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     Route::get('/bookings/create', [BookingsController::class, 'create'])->name('admin.bookings.create');
     Route::post('/bookings/store', [BookingsController::class, 'store'])->name('admin.bookings.store');
     Route::get('/bookings/{booking}', [BookingsController::class, 'show'])->name('admin.bookings.show');
+    Route::patch('/bookings/{booking}/mark-as-paid', MarkBookingAsPaidController::class)->name('admin.bookings.mark-as-paid');
 
     // Bookings slot
     Route::get('/bookings-slots/{bookingSlot}/show', [BookingSlotsController::class, 'show'])->name('admin.bookings-slots.show');

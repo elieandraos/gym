@@ -138,3 +138,26 @@ test('it creates an unpaid booking', function () {
 
     expect($booking->is_paid)->toBeFalse();
 });
+
+test('it can mark a booking as paid', function () {
+    $member = User::query()->members()->inRandomOrder()->first();
+    $trainer = User::query()->trainers()->inRandomOrder()->first();
+
+    $booking = Booking::factory()
+        ->unpaid()
+        ->create([
+            'member_id' => $member->id,
+            'trainer_id' => $trainer->id,
+        ]);
+
+    expect($booking->is_paid)->toBeFalse();
+
+    actingAsAdmin()
+        ->patch(route('admin.bookings.mark-as-paid', $booking))
+        ->assertSessionHas('success')
+        ->assertRedirect();
+
+    $booking->refresh();
+    
+    expect($booking->is_paid)->toBeTrue();
+});
