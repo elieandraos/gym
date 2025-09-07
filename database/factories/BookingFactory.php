@@ -17,6 +17,7 @@ class BookingFactory extends Factory
             'nb_sessions' => $this->faker->randomElement([8, 12]),
             'start_date' => Carbon::today(),
             'end_date' => Carbon::today()->addDays(30),
+            'is_paid' => $this->faker->boolean(80),
             'member_id' => User::factory(),
             'trainer_id' => User::factory(),
         ];
@@ -59,6 +60,13 @@ class BookingFactory extends Factory
         return $this->state(fn () => [
             'start_date' => $startDate,
             'end_date' => $endDate,
+        ]);
+    }
+
+    public function unpaid(): BookingFactory
+    {
+        return $this->state(fn () => [
+            'is_paid' => false,
         ]);
     }
 }

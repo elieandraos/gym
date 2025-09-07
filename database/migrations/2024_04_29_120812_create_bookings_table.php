@@ -15,6 +15,7 @@ return new class extends Migration
             $table->foreignId('trainer_id')->constrained('users');
             $table->date('start_date')->index();
             $table->date('end_date')->index();
+            $table->boolean('is_paid')->default(true);
             $table->timestamps();
         });
     }

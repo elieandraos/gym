@@ -68,6 +68,7 @@ test('it creates a booking and its booking slots', function () {
         'member_id' => $member->id,
         'trainer_id' => $trainer->id,
         'nb_sessions' => 12,
+        'is_paid' => true,
         'days' => [
             ['day' => 'Monday', 'time' => '07:00 am'],
             ['day' => 'Wednesday', 'time' => '07:00 am'],
@@ -79,7 +80,7 @@ test('it creates a booking and its booking slots', function () {
         ->assertSessionHasNoErrors()
         ->assertRedirect(route('admin.members.show', ['user' => $member->id]));
 
-    $this->assertDatabaseHas(Booking::class, Arr::only($data, ['start_date', 'member_id', 'trainer_id', 'nb_sessions']));
+    $this->assertDatabaseHas(Booking::class, Arr::only($data, ['start_date', 'member_id', 'trainer_id', 'nb_sessions', 'is_paid']));
 
     // fetch the booking created
     $booking = Booking::query()->where('member_id', $member->id)
@@ -105,4 +106,35 @@ test('it creates a booking and its booking slots', function () {
     $lastBookingSlot = $booking->bookingSlots()->orderBy('start_time', 'desc')->first();
     $this->assertNotNull($lastBookingSlot);
     $this->assertEquals($lastBookingSlot->start_time->toDateString(), $booking->end_date->toDateString());
+});
+
+test('it creates an unpaid booking', function () {
+    $member = User::query()->members()->inRandomOrder()->first();
+    $trainer = User::query()->trainers()->inRandomOrder()->first();
+
+    $data = [
+        'start_date' => Carbon::today()->addMonths(3),
+        'member_id' => $member->id,
+        'trainer_id' => $trainer->id,
+        'nb_sessions' => 8,
+        'is_paid' => false,
+        'days' => [
+            ['day' => 'Tuesday', 'time' => '08:00 am'],
+        ],
+    ];
+
+    actingAsAdmin()
+        ->post(route('admin.bookings.store'), $data)
+        ->assertSessionHasNoErrors()
+        ->assertRedirect(route('admin.members.show', ['user' => $member->id]));
+
+    $this->assertDatabaseHas(Booking::class, Arr::only($data, ['start_date', 'member_id', 'trainer_id', 'nb_sessions', 'is_paid']));
+
+    $booking = Booking::query()->where('member_id', $member->id)
+        ->where('trainer_id', $trainer->id)
+        ->whereDate('start_date', Carbon::today()->addMonths(3))
+        ->latest('created_at')
+        ->first();
+
+    expect($booking->is_paid)->toBeFalse();
 });

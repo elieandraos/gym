@@ -38,13 +38,18 @@ class UserSeeder extends Seeder
         /** @var User $randomTrainer */
         $randomTrainer = $trainers->random();
 
+        $factory = Booking::factory()->active();
+        
+        // Make some active bookings unpaid (approximately 20%)
+        if (fake()->boolean(20)) {
+            $factory = $factory->unpaid();
+        }
+
         /** @var Booking $booking */
-        $booking = Booking::factory()
-            ->active()
-            ->create([
-                'member_id' => $user->id,
-                'trainer_id' => $randomTrainer->id,
-            ]);
+        $booking = $factory->create([
+            'member_id' => $user->id,
+            'trainer_id' => $randomTrainer->id,
+        ]);
 
         $bookingSlots = BookingSlot::factory($booking->nb_sessions)
             ->forBooking($booking)

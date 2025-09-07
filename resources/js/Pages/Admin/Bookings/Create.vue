@@ -43,6 +43,14 @@
                 <InputError :message="form.errors.nb_sessions" />
             </FormSection>
 
+            <FormSection title="Payment status" description="Mark whether this training has been paid for.">
+                <div class="flex items-center gap-3">
+                    <SwitchInput v-model="form.is_paid" />
+                    <span class="text-sm text-zinc-600">{{ form.is_paid ? 'Paid' : 'Unpaid' }}</span>
+                </div>
+                <InputError :message="form.errors.is_paid" />
+            </FormSection>
+
             <FormSection title="Schedule" description="Plan the training days for the upcoming weeks.">
                 <booking-schedule></booking-schedule>
             </FormSection>
@@ -62,6 +70,7 @@ import DateInput from '@/Components/Form/DateInput.vue'
 import FormSection from '@/Components/Form/FormSection.vue'
 import InputAutocomplete from '@/Components/Form/InputAutocomplete.vue'
 import InputError from '@/Components/Form/InputError.vue'
+import SwitchInput from '@/Components/Form/SwitchInput.vue'
 import TextInput from '@/Components/Form/TextInput.vue'
 import Container from '@/Components/Layout/Container.vue'
 import PageHeader from '@/Components/Layout/PageHeader.vue'
@@ -80,6 +89,7 @@ const form = useForm({
     trainer_id: null,
     start_date: new Date(),
     nb_sessions: 12,
+    is_paid: true,
     days: [],
 })
 

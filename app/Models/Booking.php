@@ -21,12 +21,14 @@ class Booking extends Model
         'trainer_id',
         'start_date',
         'end_date',
+        'is_paid',
     ];
 
     protected $casts = [
         'start_date' => 'date',
         'end_date' => 'date',
         'nb_sessions' => 'integer',
+        'is_paid' => 'boolean',
     ];
 
     public function member(): BelongsTo

@@ -33,6 +33,7 @@ class BookingResource extends JsonResource
             'nb_sessions' => $this->nb_sessions,
             'start_date' => $this->start_date,
             'end_date' => $this->end_date,
+            'is_paid' => $this->is_paid,
             'status' => $status,
             'title' => Carbon::parse($this->start_date)->format('M j').' - '.Carbon::parse($this->end_date)->format('M j').', '.Carbon::parse($this->end_date)->format('Y'),
             'formatted_start_date' => Carbon::parse($this->start_date)->isoFormat('MMM Do'),
