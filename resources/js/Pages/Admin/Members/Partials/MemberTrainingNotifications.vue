@@ -55,7 +55,6 @@
                 </p>
             </div>
 
-            <!-- Mark as Paid Button -->
             <button
                 v-if="!active_booking.is_paid"
                 @click="markAsPaid"

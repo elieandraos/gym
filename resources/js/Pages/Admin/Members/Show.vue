@@ -5,7 +5,7 @@
                 <MemberHeader :member="member"></MemberHeader>
             </PageHeader>
 
-            <TrainingStatus :member="member"  v-if="isTraining" class="mb-12"></TrainingStatus>
+            <MemberTrainingStatus :member="member"  v-if="isTraining" class="mb-12"></MemberTrainingStatus>
 
             <MemberTrainingNotifications :member="member" class="mb-12"></MemberTrainingNotifications>
 
@@ -27,7 +27,7 @@ import AppLayout from '@/Layouts/AppLayout.vue'
 import PageHeader from '@/Components/Layout/PageHeader.vue'
 import MemberHeader from '@/Pages/Admin/Members/Partials/MemberHeader.vue'
 import MemberTrainingNotifications from '@/Pages/Admin/Members/Partials/MemberTrainingNotifications.vue'
-import TrainingStatus from '@/Pages/Admin/Members/Partials/TrainingStatus.vue'
+import MemberTrainingStatus from '@/Pages/Admin/Members/Partials/MemberTrainingStatus.vue'
 import Container from '@/Components/Layout/Container.vue'
 import UserContact from '@/Pages/Admin/Users/Partials/UserContact.vue'
 import UserProfile from '@/Pages/Admin/Users/Partials/UserProfile.vue'
