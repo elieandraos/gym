@@ -2,7 +2,7 @@
     <div>
         <Head :title="title" ><title>{{ title }}</title></Head>
 
-        <Banner />
+        <FlashBanner />
 
         <div class="bg-zinc-100 text-black relative">
             <div class="flex">
@@ -38,7 +38,7 @@ import { Head, usePage } from '@inertiajs/vue3'
 import { ref, provide } from 'vue'
 
 import AnimatedMenuIcon from '@/Components/Layout/AnimatedMenuIcon.vue'
-import Banner from '@/Components/Layout/Banner.vue'
+import FlashBanner from '@/Components/Layout/FlashBanner.vue'
 import OverlayMenu from '@/Layouts/OverlayMenu.vue'
 import Sidebar from '@/Layouts/Sidebar.vue'
 

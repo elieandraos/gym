@@ -48,7 +48,7 @@ class BookingsController extends Controller
         $booking->bookingSlots()->saveMany($bookingSlots);
 
         return redirect(route('admin.members.show', [$booking->member_id]))
-            ->with('flash.banner', 'Booking created successfully')
+            ->with('flash.banner', 'Training created successfully')
             ->with('flash.bannerStyle', 'success');
     }
 
