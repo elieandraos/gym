@@ -1,13 +1,20 @@
 <template>
     <AppLayout title="Profile">
         <Container>
-            <PageHeader :sticky="true" :bordered="!isTraining" :bottom-gap="!isTraining">
+            <PageHeader :sticky="true">
                 <MemberHeader :member="member"></MemberHeader>
             </PageHeader>
 
-            <MemberTrainingStatus :member="member"  v-if="isTraining" class="mb-12"></MemberTrainingStatus>
-
-            <MemberTrainingNotifications :member="member" class="mb-12"></MemberTrainingNotifications>
+            <div class="bg-white rounded-lg mb-12">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <TrainingStatusItem :member="member" />
+                    <PaymentStatusItem :member="member" />
+                    <TrainerItem :member="member" />
+                    <RemainingSessionsItem :member="member" />
+                    <UpcomingSessionItem :member="member" />
+                    <ScheduledBookingItem :member="member" />
+                </div>
+            </div>
 
             <div class="flex flex-col md:flex-row md:justify-between gap-6 md:gap-12">
                 <div class="bg-stone-50 w-full p-4 rounded-lg">
@@ -26,19 +33,17 @@
 import AppLayout from '@/Layouts/AppLayout.vue'
 import PageHeader from '@/Components/Layout/PageHeader.vue'
 import MemberHeader from '@/Pages/Admin/Members/Partials/MemberHeader.vue'
-import MemberTrainingNotifications from '@/Pages/Admin/Members/Partials/MemberTrainingNotifications.vue'
-import MemberTrainingStatus from '@/Pages/Admin/Members/Partials/MemberTrainingStatus.vue'
+import TrainingStatusItem from '@/Pages/Admin/Members/Partials/TrainingStatusItem.vue'
+import ScheduledBookingItem from '@/Pages/Admin/Members/Partials/ScheduledBookingItem.vue'
+import PaymentStatusItem from '@/Pages/Admin/Members/Partials/PaymentStatusItem.vue'
+import TrainerItem from '@/Pages/Admin/Members/Partials/TrainerItem.vue'
+import UpcomingSessionItem from '@/Pages/Admin/Members/Partials/UpcomingSessionItem.vue'
+import RemainingSessionsItem from '@/Pages/Admin/Members/Partials/RemainingSessionsItem.vue'
 import Container from '@/Components/Layout/Container.vue'
 import UserContact from '@/Pages/Admin/Users/Partials/UserContact.vue'
 import UserProfile from '@/Pages/Admin/Users/Partials/UserProfile.vue'
 
-import { computed } from 'vue'
-
 const props = defineProps({
     member: { type: Object, required: true },
 })
-
-const { active_booking } = props.member
-
-const isTraining = computed(() => !!active_booking)
 </script>
