@@ -54,7 +54,6 @@ class BookingsController extends Controller
 
     public function show(Booking $booking): Response
     {
-        //todo load(['memberActiveBooking', 'memberScheduledBookings']);
         $booking->load(['member', 'member.memberActiveBooking',  'trainer', 'bookingSlots' => function ($query) {
             $query->orderBy('start_time');
         }]);

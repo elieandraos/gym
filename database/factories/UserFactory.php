@@ -22,7 +22,7 @@ class UserFactory extends Factory
 
         return [
             // jetstream defaults
-            'name' => fake()->name($gender),
+            'name' => fake()->firstName($gender).' '.fake()->lastName($gender),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
