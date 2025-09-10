@@ -27,6 +27,8 @@
                     <a :href="route('admin.bookings-slots.workout.create', id)" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">Add workouts</a>
                     <Link :href="route('admin.change-booking-slot-date-time.edit', id)" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">Change date & time</Link>
                     <hr class="border-gray-200">
+                    <Link :href="route('admin.members.show', { user: booking.member.id })" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">{{ booking.member.name.split(' ')[0] }}'s profile</Link>
+                    <hr class="border-gray-200">
                     <a :href="route('admin.bookings-slots.cancel.index', id)" class="block p-2 text-red-500 hover:bg-red-50 hover:rounded-lg">Cancel session</a>
                 </div>
             </dropdown>
