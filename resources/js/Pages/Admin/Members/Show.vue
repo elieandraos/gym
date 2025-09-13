@@ -5,13 +5,10 @@
                 <MemberHeader :member="member"></MemberHeader>
             </PageHeader>
 
-            <div class="bg-white rounded-lg mb-12">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <TrainingStatusItem :member="member" />
-                    <PaymentStatusItem :member="member" />
-                    <TrainerItem :member="member" />
-                    <RemainingSessionsItem :member="member" />
-                </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+                <TrainingStatusWidget :member="member" />
+                <PaymentStatusWidget :member="member" />
+                <RemainingSessionsWidget :member="member" />
             </div>
 
             <UpcomingSessionItem :member="member" />
@@ -34,12 +31,11 @@
 import AppLayout from '@/Layouts/AppLayout.vue'
 import PageHeader from '@/Components/Layout/PageHeader.vue'
 import MemberHeader from '@/Pages/Admin/Members/Partials/MemberHeader.vue'
-import TrainingStatusItem from '@/Pages/Admin/Members/Partials/TrainingStatusItem.vue'
+import TrainingStatusWidget from '@/Pages/Admin/Members/Partials/TrainingStatusWidget.vue'
 import ScheduledBookingItem from '@/Pages/Admin/Members/Partials/ScheduledBookingItem.vue'
-import PaymentStatusItem from '@/Pages/Admin/Members/Partials/PaymentStatusItem.vue'
-import TrainerItem from '@/Pages/Admin/Members/Partials/TrainerItem.vue'
+import PaymentStatusWidget from '@/Pages/Admin/Members/Partials/PaymentStatusWidget.vue'
 import UpcomingSessionItem from '@/Pages/Admin/Members/Partials/UpcomingSessionItem.vue'
-import RemainingSessionsItem from '@/Pages/Admin/Members/Partials/RemainingSessionsItem.vue'
+import RemainingSessionsWidget from '@/Pages/Admin/Members/Partials/RemainingSessionsWidget.vue'
 import Container from '@/Components/Layout/Container.vue'
 import UserContact from '@/Pages/Admin/Users/Partials/UserContact.vue'
 import UserProfile from '@/Pages/Admin/Users/Partials/UserProfile.vue'
