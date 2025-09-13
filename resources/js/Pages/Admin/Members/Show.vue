@@ -11,16 +11,17 @@
                     <PaymentStatusItem :member="member" />
                     <TrainerItem :member="member" />
                     <RemainingSessionsItem :member="member" />
-                    <UpcomingSessionItem :member="member" />
-                    <ScheduledBookingItem :member="member" />
                 </div>
             </div>
 
+            <UpcomingSessionItem :member="member" />
+            <ScheduledBookingItem :member="member" />
+
             <div class="flex flex-col md:flex-row md:justify-between gap-6 md:gap-12">
-                <div class="bg-stone-50 w-full p-4 rounded-lg">
+                <div class="w-full p-4">
                     <user-profile :user="member"></user-profile>
                 </div>
-                <div class="bg-stone-50 w-full p-4 rounded-lg">
+                <div class="w-full p-4">
                     <user-contact :user="member"></user-contact>
                 </div>
             </div>
