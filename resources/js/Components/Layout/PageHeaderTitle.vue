@@ -1,5 +1,5 @@
 <template>
-    <div class="w-full text-2xl/8 font-bold text-zinc-950 sm:text-xl/8 capitalize">
+    <div class="w-full text-[20px] font-[600] leading-[32px] capitalize">
         <slot />
     </div>
 </template>

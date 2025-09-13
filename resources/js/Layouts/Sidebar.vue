@@ -12,11 +12,11 @@
             <div class="space-y-6">
                 <!-- Quick Links -->
                 <div>
-                    <h3 class="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">Quick Links</h3>
-                    <div class="space-y-1 capitalize text-sm font-semibold">
+                    <h3 class="text-[12px] font-[500] text-[#71717b] capitalize mb-1">Quick Links</h3>
+                    <div class="space-y-1 capitalize leading-[20px] font-[500]">
                         <div v-for="item in quickLinks" :key="item.name">
                             <NavLink :href="item.url" :active="isActive(item)">
-                                <component :is="item.icon" :class="[isActive(item) ? 'text-zinc-900' : 'text-zinc-500', 'w-5 h-5 group-hover:text-zinc-900']"></component>
+                                <component :is="item.icon" :class="[isActive(item) ? 'text-zinc-950' : 'text-zinc-500', 'w-5 h-5 group-hover:text-zinc-950']"></component>
                                 {{  item.name }}
                             </NavLink>
                         </div>
@@ -25,11 +25,11 @@
 
                 <!-- Administration -->
                 <div>
-                    <h3 class="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">Administration</h3>
-                    <div class="space-y-1 capitalize text-sm font-semibold">
+                    <h3 class="text-[12px] font-[500] text-[#71717b] capitalize mb-1">Administration</h3>
+                    <div class="space-y-1 capitalize leading-[20px] font-[500]">
                         <div v-for="item in administrationLinks" :key="item.name">
                             <NavLink :href="item.url" :active="isActive(item)">
-                                <component :is="item.icon" :class="[isActive(item) ? 'text-zinc-900' : 'text-zinc-500', 'w-5 h-5 group-hover:text-zinc-900']"></component>
+                                <component :is="item.icon" :class="[isActive(item) ? 'text-zinc-950' : 'text-zinc-500', 'w-5 h-5 group-hover:text-zinc-950']"></component>
                                 {{  item.name }}
                             </NavLink>
                         </div>
@@ -45,10 +45,10 @@
             </div>
 
             <div>
-                <div class="font-medium text-sm text-zinc-900">{{ name }}</div>
+                <div class="font-medium text-sm">{{ name }}</div>
                 <div>
                     <form @submit.prevent="logout">
-                        <button type="submit" class="text-sm text-zinc-500 border-b border-b-zinc-400 hover:text-zinc-900 hover:border-b-zinc-900 lowercase">Logout </button>
+                        <button type="submit" class="text-sm text-zinc-500 border-b border-b-zinc-400 hover:text-zinc-950 hover:border-b-zinc-950 lowercase cursor-pointer">Logout </button>
                     </form>
                 </div>
             </div>

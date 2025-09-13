@@ -1,10 +1,10 @@
 <template>
     <section class="grid gap-x-8 gap-y-6 sm:grid-cols-2">
         <div class="space-y-1">
-            <h2 class="font-bold text-zinc-950 sm:text-sm">
+            <h2 class="font-[600]">
                 {{ title }}
             </h2>
-            <p class="text-zinc-500 sm:text-sm">
+            <p class="text-[#71717b]">
                 {{  description }}
             </p>
         </div>

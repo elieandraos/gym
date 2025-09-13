@@ -1,8 +1,8 @@
 <template>
-    <table class="min-w-full text-left hidden lg:table text-sm bg-white">
+    <table class="min-w-full text-left bg-white hidden sm:table lg:table">
         <thead class="text-zinc-400 ">
             <tr>
-                <th class="border-b border-b-zinc-200 px-4 py-2 text-sm font-medium" v-for="header in headers" :key="header">
+                <th class="border-b border-b-zinc-200 py-2 font-[500] text-[#71717b]" v-for="header in headers" :key="header">
                     {{ header }}
                 </th>
             </tr>
@@ -16,20 +16,20 @@
                 <img class="h-8 w-8 rounded-full object-cover" :src="profile_photo_url" :alt="name">
                 {{ name }}
             </td>
-            <td class="text-zinc-400 p-4">
+            <td class="text-[#71717b]">
                 {{ since }}
             </td>
-            <td class="p-4">
+            <td>
                 {{ phone_number }}
             </td>
-            <td class="p-4">
+            <td>
                 {{ age }} years old
             </td>
         </tr>
         </tbody>
     </table>
 
-    <ul class="lg:hidden flex flex-col gap-6">
+    <ul class="lg:hidden sm:hidden flex flex-col gap-6">
         <li
             v-for="{ id, since, name, profile_photo_url, age } in data"
             :key="id"

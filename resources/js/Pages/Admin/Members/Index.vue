@@ -13,7 +13,7 @@
                         </div>
                         <div class="flex items-center gap-2">
                             <switch-input v-model="activeTraining" @change="performSearch" />
-                            <label class="text-sm text-zinc-600">Showing members currently training</label>
+                            <label class="text-[#71717b]">Showing members currently training</label>
                         </div>
                     </div>
 

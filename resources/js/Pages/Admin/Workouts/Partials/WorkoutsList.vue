@@ -2,7 +2,7 @@
     <table class="min-w-full text-left hidden lg:table text-sm">
         <thead class="text-zinc-400">
             <tr>
-                <th class="border-b border-b-zinc-200 px-4 py-2 text-sm font-medium" v-for="header in headers" :key="header">
+                <th class="border-b border-b-zinc-200 py-2 text-[#71717b] font-[500]" v-for="header in headers" :key="header">
                     {{ header }}
                 </th>
             </tr>
@@ -14,7 +14,7 @@
             <td class="p-3 relative flex gap-2 items-center">
                 {{ name }}
             </td>
-            <td class="text-zinc-400 p-4">
+            <td class="text-[#71717b]">
                 {{ category }}
             </td>
             <td>
@@ -24,7 +24,7 @@
                             Edit
                         </Link>
                         <hr class="border-gray-200">
-                        <button @click="deleteWorkout(id)" class="block w-full text-left p-2 text-red-500 hover:bg-red-50 hover:rounded-lg">
+                        <button @click="deleteWorkout(id)" class="cursor-pointer block w-full text-left p-2 text-red-500 hover:bg-red-50 hover:rounded-lg">
                             Delete
                         </button>
                     </div>

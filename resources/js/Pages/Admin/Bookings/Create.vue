@@ -6,13 +6,13 @@
             </PageHeader>
 
             <FormSection title="Member" description="Choose the member receiving the training.">
-                <InputAutocomplete :options="membersList" v-model="form.member_id" placeholder="Choose member">
+                <InputAutocomplete :options="membersList" v-model="form.member_id" placeholder="">
                     <template #list-item-preview="{ options, selectOption, searchString, highlightSearch }">
                         <li v-for="option in options" :key="option.value"
-                            class="flex items-center gap-4 cursor-pointer p-2 text-sm hover:bg-indigo-200"
+                            class="flex items-center gap-4 cursor-pointer p-2 text-zinc-500 hover:bg-zinc-100"
                             @mousedown.prevent="selectOption(option)">
-                            <img :src="option.profile_photo_url"  alt="" class="w-6 h-6 rounded-full"/>
-                            <span v-html="highlightSearch(option.label, searchString)" class="text-zinc-950"></span>
+                            <img :src="option.profile_photo_url"  alt="" class="size-6 rounded-full"/>
+                            <span v-html="highlightSearch(option.label, searchString)"></span>
                         </li>
                     </template>
                 </InputAutocomplete>
@@ -20,13 +20,13 @@
             </FormSection>
 
             <FormSection title="Trainer" description="Choose the trainer giving the training.">
-                <InputAutocomplete :options="trainersList" v-model="form.trainer_id" placeholder="Choose trainer">
+                <InputAutocomplete :options="trainersList" v-model="form.trainer_id" placeholder="">
                     <template #list-item-preview="{ options, selectOption, searchString, highlightSearch }">
                         <li v-for="option in options" :key="option.value"
-                            class="flex items-center gap-4 cursor-pointer p-2 text-sm hover:bg-indigo-200"
+                            class="flex items-center gap-4 cursor-pointer p-2 text-zinc-500 hover:bg-zinc-100"
                             @mousedown.prevent="selectOption(option)">
-                            <img :src="option.profile_photo_url"  alt="" class="w-6 h-6 text-indigo-700 rounded-full"/>
-                            <span v-html="highlightSearch(option.label, searchString)" class="text-zinc-950"></span>
+                            <img :src="option.profile_photo_url"  alt="" class="size-6 rounded-full"/>
+                            <span v-html="highlightSearch(option.label, searchString)"></span>
                         </li>
                     </template>
                 </InputAutocomplete>
@@ -46,7 +46,7 @@
             <FormSection title="Payment status" description="Mark whether this training has been paid for.">
                 <div class="flex items-center gap-3">
                     <SwitchInput v-model="form.is_paid" />
-                    <span class="text-sm text-zinc-600">{{ form.is_paid ? 'Paid' : 'Unpaid' }}</span>
+                    <span class="text-[#71717b]">{{ form.is_paid ? 'Paid' : 'Unpaid' }}</span>
                 </div>
                 <InputError :message="form.errors.is_paid" />
             </FormSection>
