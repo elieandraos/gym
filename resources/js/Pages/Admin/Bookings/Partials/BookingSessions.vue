@@ -1,5 +1,32 @@
 <template>
-    <ul class="lg:hidden">
+    <table class="min-w-full text-left hidden lg:table sm:table">
+        <thead class="text-zinc-400">
+            <tr>
+                <th class="px-4 py-2 font-[500] text-[#71717b] border-b border-zinc-200" v-for="header in headers" :key="header">
+                    {{ header }}
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr
+                v-for="{ id, formatted_date, start_time, status} in bookingSlots"
+                :key="id"
+                class="border-b border-zinc-100 hover:bg-zinc-100 hover:cursor-pointer"
+                @click="goToBookingSlot(id)">
+                <td class="text-[#71717b] p-3">
+                    {{ formatted_date }}
+                </td>
+                <td>
+                    {{ start_time }}
+                </td>
+                <td>
+                    <Badge :type="statusBadgeType(status)">{{ status }}</Badge>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <ul class="lg:hidden sm:hidden">
         <li
             v-for="{ id, formatted_date, start_time, status} in bookingSlots"
             :key="id"
@@ -23,33 +50,6 @@
 
         </li>
     </ul>
-
-    <table class="min-w-full text-left lg:table text-sm">
-        <thead class="text-zinc-400">
-            <tr>
-                <th class="px-4 py-2 text-sm font-medium" v-for="header in headers" :key="header">
-                    {{ header }}
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr
-                v-for="{ id, formatted_date, start_time, status} in bookingSlots"
-                :key="id"
-                class="border-b border-zinc-100 hover:bg-zinc-100 hover:cursor-pointer"
-                @click="goToBookingSlot(id)">
-                <td class="text-zinc-400 p-4">
-                    {{ formatted_date }}
-                </td>
-                <td class="text-zinc-900 p-4 font-medium">
-                    {{ start_time }}
-                </td>
-                <td class="text-zinc-900 p-4">
-                    <Badge :type="statusBadgeType(status)">{{ status }}</Badge>
-                </td>
-            </tr>
-        </tbody>
-    </table>
 </template>
 
 <script setup>

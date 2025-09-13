@@ -2,20 +2,20 @@
     <div class="flex justify-between items-end font-normal">
         <div class="grow">
             <div class="flex gap-x-4">
-                <h1 class="text-xl font-bold text-zinc-950">Session Details</h1>
+                <h1 class="text-[20px] font-[600] leading-[32px]">Session Details</h1>
                 <Badge :type="badge_type">{{ status }}</Badge>
             </div>
-            <div class="flex gap-x-12 mt-3 text-sm text-zinc-500">
+            <div class="flex gap-x-12 mt-1 text-[#71717b]">
                 <div class="flex gap-x-2">
                     <UsersIcon class="w-4 text-zinc-500"></UsersIcon>
                     <span>
-                        <Link class="text-sky-500 hover:text-sky-700 font-medium text-sm" :href="route('admin.members.show', { user: booking.member.id })"> {{ booking.member.name}}</Link>
+                        <Link class="text-sky-500 hover:text-sky-700" :href="route('admin.members.show', { user: booking.member.id })"> {{ booking.member.name}}</Link>
                         ·
-                        <Link class="text-sky-500 hover:text-sky-700 font-medium text-sm" :href="route('admin.trainers.show', { user: booking.trainer.id })"> {{ booking.trainer.name}}</Link>
+                        <Link class="text-sky-500 hover:text-sky-700" :href="route('admin.trainers.show', { user: booking.trainer.id })"> {{ booking.trainer.name}}</Link>
                     </span>
                 </div>
                 <div class="flex gap-x-2">
-                    <ClockIcon class="w-4 text-zinc-500"></ClockIcon>
+                    <ClockIcon class="w-4 text-[#71717b]"></ClockIcon>
                     <span>{{ formatted_date }} · {{ start_time }}</span>
                 </div>
             </div>

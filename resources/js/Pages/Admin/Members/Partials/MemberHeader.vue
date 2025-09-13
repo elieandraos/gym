@@ -37,7 +37,7 @@ const props = defineProps({
     member: { type: Object, required: true },
 })
 
-const { id, name, first_name, profile_photo_url, in_house, age, since, active_booking } = props.member
+const { id, name, first_name, profile_photo_url, age, since, active_booking } = props.member
 
 const isTraining = computed(() => !!active_booking)
 const isMemberShowPage = computed(() => $page.url === '/members/' + id)

@@ -5,10 +5,10 @@
                 <MemberHeader :member="member"></MemberHeader>
             </PageHeader>
 
-            <table class="min-w-full text-left lg:table text-sm">
-                <thead class="text-zinc-400">
+            <table class="min-w-full text-left lg:table sm:table hidden">
+                <thead class="text-[#71717b]">
                     <tr>
-                        <th class="px-4 py-2 text-sm font-medium" v-for="header in headers" :key="header">
+                        <th class="py-2 border-b-zinc-200 font-[500]" v-for="header in headers" :key="header">
                             {{ header }}
                         </th>
                     </tr>
@@ -20,7 +20,7 @@
                         class="border-b border-zinc-100 hover:bg-zinc-100 hover:cursor-pointer"
                         @click="goToBooking(id)"
                     >
-                        <td class="text-zinc-400 p-4">
+                        <td class="text-zinc-400 p-3">
                             <div class="flex items-center gap-2">
                                 {{ title }}
                                 <Badge :type="is_paid ? 'success' : 'error'">
@@ -28,11 +28,11 @@
                                 </Badge>
                             </div>
                         </td>
-                        <td class="text-zinc-900 font-medium p-4 flex gap-2 items-center">
-                            <img class="w-8 h-8 rounded-full" :src="trainer.profile_photo_url"  alt=""/>
+                        <td class="flex gap-2 items-center mt-2">
+                            <img class="size-8 rounded-full" :src="trainer.profile_photo_url"  alt=""/>
                             <Link :href="route('admin.trainers.show', { user: trainer.id })" class="text-sky-500 hover:text-sky-700 font-medium">{{ trainer.name }}</Link>
                         </td>
-                        <td class="text-zinc-900 p-4 font-medium">{{ nb_sessions }}</td>
+                        <td>{{ nb_sessions }}</td>
                     </tr>
                 </tbody>
             </table>

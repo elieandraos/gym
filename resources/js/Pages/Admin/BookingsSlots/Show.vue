@@ -5,21 +5,21 @@
                 <BookingSlotHeader :booking-slot="bookingSlot" :with-menu="true"></BookingSlotHeader>
             </PageHeader>
 
-            <div v-if="Object.keys(groupedWorkouts).length" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div v-if="Object.keys(groupedWorkouts).length" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-6">
                     <div v-for="(items, category) in groupedWorkouts" :key="category" class="bg-stone-50 border border-stone-100 rounded-lg p-4">
-                        <h3 class="font-semibold text-sm text-black bg-white px-3 py-2 rounded-lg mb-4 text-center">{{ category }}</h3>
+                        <h3 class="font-[500] text-[#71717b] bg-white px-3 py-2 rounded-lg mb-4 text-center">{{ category }}</h3>
                         <TransitionGroup name="fade" tag="div" class="space-y-4">
                             <div v-for="workout in items" :key="workout.id" class="bg-white rounded-lg p-4 space-y-3">
                                 <div class="flex justify-between items-center">
-                                    <h4 class="font-semibold text-sm text-zinc-600">{{ workout.name }}</h4>
+                                    <h4 class="font-[600]">{{ workout.name }}</h4>
                                     <div class="flex items-center gap-2">
                                         <button type="button" @click="confirmRemoveWorkout(workout)" class="text-red-300 hover:text-red-700 p-1.5 hover:bg-red-50 hover:rounded cursor-pointer">
-                                            <TrashIcon class="w-4 h-4" />
+                                            <TrashIcon class="size-4" />
                                         </button>
                                     </div>
                                 </div>
                                 <div v-if="workout.sets && workout.sets.length" class="space-y-2">
-                                    <div v-for="(set, index) in workout.sets" :key="index" class="flex items-center gap-2 text-sm text-gray-600">
+                                    <div v-for="(set, index) in workout.sets" :key="index" class="flex items-center gap-2 text-[#71717b]">
                                         <span v-if="set.weight_in_kg">{{ set.weight_in_kg }} kg</span>
                                         <span v-if="set.weight_in_kg && set.reps">×</span>
                                         <span v-if="set.reps">{{ set.reps }} reps</span>

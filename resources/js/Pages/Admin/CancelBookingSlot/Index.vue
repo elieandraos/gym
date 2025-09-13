@@ -5,14 +5,14 @@
                 <BookingSlotHeader :booking-slot="bookingSlot"></BookingSlotHeader>
             </PageHeader>
 
-            <div class="flex justify-start items-center gap-4">
-                <div class="text-zinc-500">Are you sure you want to cancel this session?</div>
+            <div class="space-y-8">
+                <div class="">Are you sure you want to cancel this session?</div>
 
-                <div class="flex justify-end gap-4">
+                <div class="flex gap-4">
                     <primary-button @click="cancelBookingSlot">Affirmative!</primary-button>
 
                     <Link :href="route('admin.bookings-slots.show', id)">
-                        <TransparentButton>No, I have changed my mind</TransparentButton>
+                        <TransparentButton>No</TransparentButton>
                     </Link>
                 </div>
             </div>
