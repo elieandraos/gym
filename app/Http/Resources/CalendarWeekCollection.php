@@ -15,8 +15,8 @@ class CalendarWeekCollection extends ResourceCollection
         $today = Carbon::today();
         $monday = $today->copy()->startOfWeek(CarbonInterface::MONDAY);
         $saturday = $monday->copy()->addDays(5);
-        $spanStart = $monday->copy()->subWeeks(3);
-        $spanEnd = $saturday->copy()->addWeeks(3);
+        $spanStart = $monday->copy()->subWeeks(5);
+        $spanEnd = $saturday->copy()->addWeeks(8);
 
         $weeks = [];
         $cursor = $spanStart->copy();
