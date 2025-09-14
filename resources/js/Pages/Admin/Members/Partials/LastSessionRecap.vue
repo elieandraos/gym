@@ -2,10 +2,10 @@
     <div class="flex items-start gap-2">
         <DocumentIcon class="size-6 text-[#71717b] flex-shrink-0 hidden lg:block" />
         <div class="flex-grow">
-            <p class="text-zinc-950 font-[500]">Recent workouts</p>
+            <p class="text-zinc-950 font-[400]">Recent workouts</p>
             <div v-if="hasCompletedSessions" class="text-sm text-[#71717b]">
                 <span v-for="(session, index) in sessionRecap" :key="session.id">
-                    <span class="font-[500] text-zinc-950">{{ session.day }}: </span>
+                    <span class="font-[600] text-zinc-950">{{ session.day }}: </span>
                     <span>{{ session.categories }}</span>
                     <span class="text-zinc-950" v-if="index < sessionRecap.length - 1">&nbsp;&nbsp;</span>
                 </span>

@@ -11,7 +11,7 @@
                 <RemainingSessionsWidget :member="member" />
             </div>
 
-            <div class="mb-8 bg-sky-50 border border-sky-100 flex flex-col md:flex-row lg:flex-row justify-between rounded-lg py-3 px-4">
+            <div v-if="isTraining" class="mb-8 bg-sky-50 border border-sky-100 flex flex-col md:flex-row lg:flex-row justify-between rounded-lg py-3 px-4">
                 <div class="space-y-1.5">
                     <UpcomingSessionItem :member="member" />
                     <ScheduledBookingItem :member="member" />
@@ -35,7 +35,6 @@
 </template>
 
 <script setup>
-import Banner from '@/Components/Banner.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import PageHeader from '@/Components/Layout/PageHeader.vue'
 import MemberHeader from '@/Pages/Admin/Members/Partials/MemberHeader.vue'
@@ -48,8 +47,12 @@ import Container from '@/Components/Layout/Container.vue'
 import UserContact from '@/Pages/Admin/Users/Partials/UserContact.vue'
 import UserProfile from '@/Pages/Admin/Users/Partials/UserProfile.vue'
 import LastSessionRecap from '@/Pages/Admin/Members/Partials/LastSessionRecap.vue'
+import {computed} from 'vue'
 
 const props = defineProps({
     member: { type: Object, required: true },
 })
+
+const { active_booking: activeBooking } = props.member || {}
+const isTraining = computed(() => !!activeBooking)
 </script>
