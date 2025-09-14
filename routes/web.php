@@ -2,8 +2,8 @@
 
 use App\Http\Controllers\Admin\BookingsController;
 use App\Http\Controllers\Admin\BookingSlotsController;
-use App\Http\Controllers\Admin\CancelBookingSlotController;
 use App\Http\Controllers\Admin\BookingSlotWorkoutController;
+use App\Http\Controllers\Admin\CancelBookingSlotController;
 use App\Http\Controllers\Admin\ChangeBookingSlotDateTimeController;
 use App\Http\Controllers\Admin\MarkBookingAsPaidController;
 use App\Http\Controllers\Admin\MemberBookingHistoryController;
@@ -11,7 +11,6 @@ use App\Http\Controllers\Admin\MembersController;
 use App\Http\Controllers\Admin\TrainersController;
 use App\Http\Controllers\Admin\WeeklyCalendarController;
 use App\Http\Controllers\Admin\WorkoutController;
-use App\Http\Controllers\UserBookingsHistoryController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 

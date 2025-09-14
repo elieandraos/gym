@@ -2,7 +2,6 @@
 
 use App\Http\Resources\BookingResource;
 use App\Models\Booking;
-use App\Models\BookingSlot;
 use App\Models\User;
 use App\Services\BookingManager;
 use Carbon\Carbon;
@@ -158,6 +157,6 @@ test('it can mark a booking as paid', function () {
         ->assertRedirect();
 
     $booking->refresh();
-    
+
     expect($booking->is_paid)->toBeTrue();
 });

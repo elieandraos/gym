@@ -93,7 +93,6 @@ test('it creates booking slot workouts with empty payload', function () {
     expect(BookingSlotWorkout::query()->where('booking_slot_id', $bookingSlot->id)->count())->toBe(0);
 });
 
-
 test('it deletes a booking slot workout', function () {
     $bookingSlot = BookingSlot::query()->first();
     $workout = Workout::factory()->create();

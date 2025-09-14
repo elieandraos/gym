@@ -4,7 +4,6 @@ namespace App\Http\Resources;
 
 use App\Enums\Status;
 use App\Models\BookingSlot;
-use App\Http\Resources\BookingSlotWorkoutResource;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -31,7 +30,7 @@ class BookingSlotResource extends JsonResource
             'status' => $this->status,
             'formatted_date' => $this->formatDateWithSuffix($startTime),
             'booking' => new BookingResource($this->whenLoaded('booking')),
-            'workouts' => $this->whenLoaded('bookingSlotWorkouts', fn() => BookingSlotWorkoutResource::collection($this->bookingSlotWorkouts)),
+            'workouts' => $this->whenLoaded('bookingSlotWorkouts', fn () => BookingSlotWorkoutResource::collection($this->bookingSlotWorkouts)),
             'badge_type' => match ($this->status) {
                 Status::Upcoming => 'warning',
                 Status::Cancelled => 'error',

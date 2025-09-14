@@ -16,7 +16,7 @@ class BookingSlotWorkoutResource extends JsonResource
             'name' => $this->whenLoaded('workout', fn () => $this->workout->name),
             'category' => $this->whenLoaded('workout', fn () => $this->workout->category->value),
             'sets' => $this->whenLoaded('sets', function () {
-                return $this->sets->map(fn($set) => [
+                return $this->sets->map(fn ($set) => [
                     'reps' => $set->reps,
                     'weight_in_kg' => $set->weight_in_kg,
                     'duration_in_seconds' => $set->duration_in_seconds,

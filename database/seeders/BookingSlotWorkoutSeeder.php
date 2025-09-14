@@ -65,7 +65,7 @@ class BookingSlotWorkoutSeeder extends Seeder
         $faker = fake();
         $setsCount = 3;
         $isWeighted = $faker->boolean(70);
-        $isTimed = !$isWeighted;
+        $isTimed = ! $isWeighted;
 
         for ($i = 0; $i < $setsCount; $i++) {
             BookingSlotWorkoutSet::query()->create([

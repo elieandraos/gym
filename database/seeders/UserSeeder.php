@@ -39,7 +39,7 @@ class UserSeeder extends Seeder
         $randomTrainer = $trainers->random();
 
         $factory = Booking::factory()->active();
-        
+
         // Make some active bookings unpaid (approximately 20%)
         if (fake()->boolean(20)) {
             $factory = $factory->unpaid();

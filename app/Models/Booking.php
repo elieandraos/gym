@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * @property-read boolean $is_paid
+ * @property-read bool $is_paid
  */
 class Booking extends Model
 {

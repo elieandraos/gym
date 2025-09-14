@@ -19,7 +19,7 @@ class ChangeBookingSlotDateTimeController extends Controller
         $bookingSlot->load([
             'booking',
             'booking.member',
-            'booking.trainer'
+            'booking.trainer',
         ]);
 
         return Inertia::render('Admin/ChangeBookingSlotDateTime/Edit', [

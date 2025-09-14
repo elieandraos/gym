@@ -98,7 +98,13 @@ test('it validates member creation', function () {
 
 test('it shows member information', function () {
     $member = User::query()->members()->first();
-    $member->load(['memberActiveBooking', 'memberScheduledBookings']);
+    $member->load([
+        'memberActiveBooking.bookingSlots' => function ($query) {
+            $query->orderBy('start_time')
+                ->with(['bookingSlotWorkouts.workout']);
+        },
+        'memberScheduledBookings',
+    ]);
 
     actingAsAdmin()
         ->get(route('admin.members.show', $member))

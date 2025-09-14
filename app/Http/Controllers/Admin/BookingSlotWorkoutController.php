@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\BookingSlotWorkoutRequest;
 use App\Http\Resources\BookingSlotResource;
 use App\Http\Resources\WorkoutResource;
-use App\Http\Resources\BookingSlotWorkoutResource;
 use App\Models\BookingSlot;
 use App\Models\BookingSlotWorkout;
 use App\Models\Workout;
@@ -21,7 +20,7 @@ class BookingSlotWorkoutController extends Controller
         $bookingSlot->load([
             'booking',
             'booking.member',
-            'booking.trainer'
+            'booking.trainer',
         ]);
 
         $workouts = Workout::query()->orderBy('category')->orderBy('name')->get();
@@ -32,7 +31,7 @@ class BookingSlotWorkoutController extends Controller
         ]);
     }
 
-    public function store(BookingSlotWorkoutRequest $request, BookingSlot $bookingSlot) : RedirectResponse
+    public function store(BookingSlotWorkoutRequest $request, BookingSlot $bookingSlot): RedirectResponse
     {
         foreach ($request->input('workouts', []) as $workoutData) {
             $bookingSlotWorkout = BookingSlotWorkout::query()->create([
@@ -61,7 +60,6 @@ class BookingSlotWorkoutController extends Controller
 
         return redirect()->route('admin.bookings-slots.show', $bookingSlot->id);
     }
-
 
     public function destroy(BookingSlotWorkout $bookingSlotWorkout): RedirectResponse
     {

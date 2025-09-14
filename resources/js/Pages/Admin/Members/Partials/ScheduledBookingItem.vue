@@ -1,6 +1,6 @@
 <template>
-    <div class="flex items-center gap-3">
-        <BellIcon class="size-6 text-[#71717b] flex-shrink-0" />
+    <div class="flex items-center gap-2">
+        <BellIcon class="size-6 text-[#71717b] flex-shrink-0 hidden lg:block" />
         <div class="flex-grow">
             <span v-if="hasScheduledBooking">
                 <Link :href="route('admin.bookings.show', scheduledBooking.id)" class="text-sky-500 hover:text-sky-700 font-[500]">

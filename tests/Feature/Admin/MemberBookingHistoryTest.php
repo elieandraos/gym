@@ -2,7 +2,6 @@
 
 use App\Http\Resources\MemberResource;
 use App\Models\User;
-use Illuminate\Http\Request;
 
 beforeEach(function () {
     setupUsersAndBookings();

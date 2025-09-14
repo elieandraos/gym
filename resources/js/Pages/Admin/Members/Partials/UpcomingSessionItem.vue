@@ -1,6 +1,6 @@
 <template>
-    <div v-if="isTraining && upcomingSessionDate" class="flex items-center gap-3">
-        <ClockIcon class="size-6 text-[#71717b] flex-shrink-0" />
+    <div v-if="isTraining && upcomingSessionDate" class="flex items-center gap-2">
+        <ClockIcon class="size-6 text-[#71717b] flex-shrink-0 hidden lg:block" />
         <div class="flex-grow">
             <span>
                 <Link :href="upcomingSessionUrl" class="text-sky-500 hover:text-sky-700 font-[500]">

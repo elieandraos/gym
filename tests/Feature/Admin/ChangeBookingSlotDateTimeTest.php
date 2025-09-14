@@ -61,7 +61,6 @@ test('it sets status to complete when new start time is in the past', function (
     expect($bookingSlot->status)->toBe(Status::Complete);
 });
 
-
 test('it validates request data', function () {
     $bookingSlot = BookingSlot::query()->firstOrFail();
 
@@ -84,4 +83,3 @@ test('it validates date format', function () {
         ->assertSessionHasErrors(['start_time', 'end_time'])
         ->assertStatus(302);
 });
-
