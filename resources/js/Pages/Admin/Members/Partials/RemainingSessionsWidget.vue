@@ -35,16 +35,19 @@ const props = defineProps({
     member: { type: Object, required: true },
 })
 
-const { active_booking: activeBooking } = props.member
+const { active_booking: activeBooking } = props.member || {}
+const { nb_remaining_sessions } = activeBooking
 
 const isTraining = computed(() => !!activeBooking)
 const totalSessions = computed(() => activeBooking?.nb_sessions || 0)
+
 const remainingSessions = computed(() => {
     if (!activeBooking) return 0
-    const remaining = String(activeBooking.nb_remaining_sessions).split(' ')[0]
+    const remaining = String(nb_remaining_sessions).split(' ')[0]
     return parseInt(remaining) || 0
 })
 const completedSessions = computed(() => totalSessions.value - remainingSessions.value)
+
 const progressPercentage = computed(() => {
     if (!totalSessions.value) return 0
     return Math.round((completedSessions.value / totalSessions.value) * 100)

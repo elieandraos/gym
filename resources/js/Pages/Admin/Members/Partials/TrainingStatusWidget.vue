@@ -7,7 +7,7 @@
             <div class="flex-1 text-[#71717b]">
                 <div v-if="isTraining" class="space-y-1">
                     <p>
-                        Training until <span class="font-[600] text-zinc-950">{{ activeBooking.formatted_end_date }}</span>
+                        Training until <span class="font-[600] text-zinc-950">{{ formatted_end_date }}</span>
                     </p>
                     <p>
                         with
@@ -35,7 +35,8 @@ const props = defineProps({
     member: { type: Object, required: true },
 })
 
-const { active_booking: activeBooking } = props.member
+const { active_booking: activeBooking } = props.member || {}
+const { formatted_end_date } = activeBooking
 
 const isTraining = computed(() => !!activeBooking)
 const trainer = computed(() => activeBooking?.trainer)
