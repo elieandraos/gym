@@ -19,11 +19,10 @@ import {DocumentIcon } from '@heroicons/vue/24/outline'
 import { computed } from 'vue'
 
 const props = defineProps({
-    member: { type: Object, required: true },
+    activeBooking: { type: Object, default: null },
 })
 
-const { active_booking: activeBooking } = props.member || {}
-const bookingSlots = activeBooking?.bookingSlots || []
+const bookingSlots = props.activeBooking?.bookingSlots || []
 
 const completedSessions = computed(() =>
     bookingSlots

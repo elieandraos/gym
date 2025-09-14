@@ -24,11 +24,10 @@ import { computed } from 'vue'
 const { route } = window
 
 const props = defineProps({
-    member: { type: Object, required: true },
+    scheduledBookings: { type: Array, default: () => [] },
 })
 
-const { scheduled_bookings: scheduledBookings } = props.member
-const hasScheduledBooking = computed(() => scheduledBookings && scheduledBookings.length > 0)
-const scheduledBooking = computed(() => scheduledBookings?.[0])
+const hasScheduledBooking = computed(() => props.scheduledBookings && props.scheduledBookings.length > 0)
+const scheduledBooking = computed(() => props.scheduledBookings?.[0])
 const {formatted_start_date, formatted_end_date} = scheduledBooking.value || {}
 </script>

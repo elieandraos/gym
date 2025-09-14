@@ -5,7 +5,7 @@
                 <ArrowTrendingDownIcon class="size-12 text-zinc-200" />
             </div>
             <div class="flex-1">
-                <div v-if="isTraining">
+                <div v-if="props.isTraining">
                     <div class="flex justify-between items-center mb-2">
                         <span class="">Sessions completed</span>
                         <span class="font-[600] text-zinc-950">{{ completedSessions }} / {{ totalSessions }}</span>
@@ -32,17 +32,16 @@ import { ArrowTrendingDownIcon } from '@heroicons/vue/24/outline'
 import { computed } from 'vue'
 
 const props = defineProps({
-    member: { type: Object, required: true },
+    isTraining: { type: Boolean, required: true },
+    activeBooking: { type: Object, default: null },
 })
 
-const { active_booking: activeBooking } = props.member || {}
-const { nb_remaining_sessions } = activeBooking
+const { nb_remaining_sessions } = props.activeBooking || {}
 
-const isTraining = computed(() => !!activeBooking)
-const totalSessions = computed(() => activeBooking?.nb_sessions || 0)
+const totalSessions = computed(() => props.activeBooking?.nb_sessions || 0)
 
 const remainingSessions = computed(() => {
-    if (!activeBooking) return 0
+    if (!props.activeBooking) return 0
     const remaining = String(nb_remaining_sessions).split(' ')[0]
     return parseInt(remaining) || 0
 })

@@ -5,7 +5,7 @@
                 <CalendarDaysIcon class="size-12 text-zinc-200" />
             </div>
             <div class="flex-1 text-[#71717b]">
-                <div v-if="isTraining" class="space-y-1">
+                <div v-if="props.isTraining" class="space-y-1">
                     <p>
                         Training until <span class="font-[600] text-zinc-950">{{ formatted_end_date }}</span>
                     </p>
@@ -32,12 +32,10 @@ import { computed } from 'vue'
 const { route } = window
 
 const props = defineProps({
-    member: { type: Object, required: true },
+    isTraining: { type: Boolean, required: true },
+    activeBooking: { type: Object, default: null },
 })
 
-const { active_booking: activeBooking } = props.member || {}
-const { formatted_end_date } = activeBooking
-
-const isTraining = computed(() => !!activeBooking)
-const trainer = computed(() => activeBooking?.trainer)
+const { formatted_end_date } = props.activeBooking || {}
+const trainer = computed(() => props.activeBooking?.trainer)
 </script>
