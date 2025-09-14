@@ -11,8 +11,18 @@
                 <RemainingSessionsWidget :member="member" />
             </div>
 
-            <UpcomingSessionItem :member="member" />
-            <ScheduledBookingItem :member="member" />
+            <Banner class="mb-8 flex justify-between items-center gap-6">
+                <div class="space-y-1.5">
+                    <UpcomingSessionItem :member="member" />
+                    <ScheduledBookingItem :member="member" />
+                </div>
+                <div class="text-[#71717b]">
+                    <!-- @todo: add last (up to 3) sessions workouts day and  category.
+                    for ex: Mon: Biceps,Back  · Wed:Legs,Core,Triceps · Fri: Shoulders,Back
+                    have its own component named 'LastSessionRecap'
+                    -->
+                </div>
+            </Banner>
 
             <div class="flex flex-col md:flex-row md:justify-between gap-6 md:gap-12">
                 <div class="w-full p-4">
@@ -28,6 +38,7 @@
 </template>
 
 <script setup>
+import Banner from '@/Components/Banner.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import PageHeader from '@/Components/Layout/PageHeader.vue'
 import MemberHeader from '@/Pages/Admin/Members/Partials/MemberHeader.vue'

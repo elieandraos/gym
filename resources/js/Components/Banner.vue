@@ -52,12 +52,12 @@ const bannerClasses = computed(() => {
             return `${baseClasses} bg-yellow-100 border border-yellow-300`
         case 'info':
         default:
-            return `${baseClasses} bg-blue-100 border border-blue-300`
+            return `${baseClasses} bg-sky-50 border border-sky-100`
     }
 })
 
 const textClasses = computed(() => {
-    const baseClasses = 'ms-3 font-medium text-sm'
+    const baseClasses = 'ms-3'
 
     switch (props.type) {
         case 'success':
@@ -68,7 +68,7 @@ const textClasses = computed(() => {
             return `${baseClasses} text-yellow-800`
         case 'info':
         default:
-            return `${baseClasses} text-blue-800`
+            return `${baseClasses} text-zinc-900`
     }
 })
 

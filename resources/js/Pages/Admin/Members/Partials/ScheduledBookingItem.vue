@@ -1,13 +1,13 @@
 <template>
     <div class="flex items-center gap-3">
-        <BellIcon class="size-6 text-gray-500 flex-shrink-0" />
+        <BellIcon class="size-6 text-[#71717b] flex-shrink-0" />
         <div class="flex-grow">
             <span v-if="hasScheduledBooking">
-                Scheduled
                 <Link :href="route('admin.bookings.show', scheduledBooking.id)" class="text-sky-500 hover:text-sky-700 font-[500]">
-                    training
+                    Scheduled training
                 </Link>
-                from {{ scheduledBooking.formatted_start_date }} until {{ scheduledBooking.formatted_end_date }}
+                from <span class="font-[600] text-indigo-950">{{ formatted_start_date }}</span>
+                until <span class="font-[600] text-indigo-950">{{ formatted_end_date }}</span>
             </span>
             <span v-else>
                 No scheduled training
@@ -30,4 +30,5 @@ const props = defineProps({
 const { scheduled_bookings: scheduledBookings } = props.member
 const hasScheduledBooking = computed(() => scheduledBookings && scheduledBookings.length > 0)
 const scheduledBooking = computed(() => scheduledBookings?.[0])
+const {formatted_start_date, formatted_end_date} = scheduledBooking.value || {}
 </script>
