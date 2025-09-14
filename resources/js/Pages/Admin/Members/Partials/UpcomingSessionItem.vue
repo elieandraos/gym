@@ -4,7 +4,7 @@
         <div class="flex-grow">
             <span>
                 Upcoming session on
-                <Link :href="upcomingSessionUrl" class="text-blue-600 hover:text-blue-800 font-medium">
+                <Link :href="upcomingSessionUrl" class="text-sky-500 hover:text-sky-700 font-[500]">
                     {{ upcomingSessionDate }} {{ upcomingSessionTime }}
                 </Link>
             </span>

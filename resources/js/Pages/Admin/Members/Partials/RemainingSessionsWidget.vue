@@ -1,16 +1,16 @@
 <template>
     <div class="bg-white rounded-lg text-[#71717b]">
-        <div class="flex items-start gap-4">
+        <div class="flex items-center gap-2">
             <div class="flex-shrink-0">
-                <ChartBarIcon class="size-8" />
+                <ArrowTrendingDownIcon class="size-12 text-zinc-200" />
             </div>
             <div class="flex-1">
                 <div v-if="isTraining">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="">Sessions completed</span>
+                        <span class="font-[600] text-zinc-950">{{ completedSessions }} / {{ totalSessions }}</span>
+                    </div>
                     <div class="mb-3">
-                        <div class="flex justify-between mb-1">
-                            <span>{{ remainingSessions }} of {{ totalSessions }} sessions remaining</span>
-                            <span>{{ progressPercentage }}%</span>
-                        </div>
                         <div class="w-full bg-gray-200 rounded-full h-2">
                             <div
                                 class="bg-gradient-to-r from-zinc-800 to-zinc-950 h-2 rounded-full transition-all duration-500 ease-out"
@@ -18,9 +18,6 @@
                             ></div>
                         </div>
                     </div>
-                    <p class="text-sm text-gray-500">
-                        {{ completedSessions }} sessions completed
-                    </p>
                 </div>
                 <div v-else>
                     <p class="text-gray-500">No active training</p>
@@ -31,7 +28,7 @@
 </template>
 
 <script setup>
-import { ChartBarIcon } from '@heroicons/vue/24/outline'
+import { ArrowTrendingDownIcon } from '@heroicons/vue/24/outline'
 import { computed } from 'vue'
 
 const props = defineProps({

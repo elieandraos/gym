@@ -4,7 +4,7 @@
         <div class="flex-grow">
             <span v-if="hasScheduledBooking">
                 Scheduled
-                <Link :href="route('admin.bookings.show', scheduledBooking.id)" class="text-blue-600 hover:text-blue-800 font-medium">
+                <Link :href="route('admin.bookings.show', scheduledBooking.id)" class="text-sky-500 hover:text-sky-700 font-[500]">
                     training
                 </Link>
                 from {{ scheduledBooking.formatted_start_date }} until {{ scheduledBooking.formatted_end_date }}

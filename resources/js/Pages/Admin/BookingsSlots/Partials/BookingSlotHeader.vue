@@ -9,9 +9,9 @@
                 <div class="flex gap-x-2">
                     <UsersIcon class="w-4 text-zinc-500"></UsersIcon>
                     <span>
-                        <Link class="text-sky-500 hover:text-sky-700" :href="route('admin.members.show', { user: booking.member.id })"> {{ booking.member.name}}</Link>
+                        <Link class="text-sky-500 hover:text-sky-700 font-[500]" :href="route('admin.members.show', { user: booking.member.id })"> {{ booking.member.name}}</Link>
                         ·
-                        <Link class="text-sky-500 hover:text-sky-700" :href="route('admin.trainers.show', { user: booking.trainer.id })"> {{ booking.trainer.name}}</Link>
+                        <Link class="text-sky-500 hover:text-sky-700 font-[500]" :href="route('admin.trainers.show', { user: booking.trainer.id })"> {{ booking.trainer.name}}</Link>
                     </span>
                 </div>
                 <div class="flex gap-x-2">

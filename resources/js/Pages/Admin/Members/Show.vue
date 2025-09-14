@@ -5,7 +5,7 @@
                 <MemberHeader :member="member"></MemberHeader>
             </PageHeader>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-6 mb-12">
                 <TrainingStatusWidget :member="member" />
                 <PaymentStatusWidget :member="member" />
                 <RemainingSessionsWidget :member="member" />

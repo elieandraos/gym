@@ -1,26 +1,25 @@
 <template>
     <div class="bg-white rounded-lg text-[#71717b]">
-        <div class="flex items-start gap-4">
+        <div class="flex items-center gap-2">
             <div class="flex-shrink-0">
-                <CurrencyDollarIcon class="size-8" />
+                <CurrencyDollarIcon class="size-12 text-zinc-200" />
             </div>
             <div class="flex-1">
                 <div v-if="isTraining">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-2">
-                            <span>Current training is</span>
-                            <Badge :type="activeBooking.is_paid ? 'success' : 'error'">
-                                {{ activeBooking.is_paid ? 'paid' : 'not paid' }}
-                            </Badge>
-                        </div>
-                        <button
-                            v-if="!activeBooking.is_paid"
-                            @click="markAsPaid"
-                            class="text-blue-600 hover:text-blue-800 font-medium text-sm px-3 py-1 rounded-md border border-blue-200 hover:border-blue-300 transition-colors"
-                        >
-                            Mark as paid
-                        </button>
+                    <div class="flex items-center gap-2">
+                        <span>Current training is</span>
+                        <Badge :type="activeBooking.is_paid ? 'success' : 'error'">
+                            {{ activeBooking.is_paid ? 'paid' : 'not paid' }}
+                        </Badge>
                     </div>
+                    <a
+                        v-if="!activeBooking.is_paid"
+                        @click="markAsPaid"
+                        href="#"
+                        class="text-sky-500 hover:text-sky-700 font-[500]"
+                    >
+                        Mark as paid
+                    </a>
                 </div>
                 <div v-else>
                     <p class="text-gray-500">No active training</p>

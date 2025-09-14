@@ -1,8 +1,8 @@
 <template>
     <div class="bg-white rounded-lg">
-        <div class="flex items-start gap-4">
+        <div class="flex items-center gap-2">
             <div class="flex-shrink-0">
-                <CalendarDaysIcon class="size-8 text-[#71717b]" />
+                <CalendarDaysIcon class="size-12 text-zinc-200" />
             </div>
             <div class="flex-1 text-[#71717b]">
                 <div v-if="isTraining" class="space-y-1">
@@ -11,7 +11,7 @@
                     </p>
                     <p>
                         with
-                        <Link :href="route('admin.trainers.show', { user: trainer.id })" class="text-blue-600 hover:text-blue-800 font-medium">
+                        <Link :href="route('admin.trainers.show', { user: trainer.id })" class="text-sky-500 hover:text-sky-700 font-[500]">
                             {{ trainer.name }}
                         </Link>
                     </p>
