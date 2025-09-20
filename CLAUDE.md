@@ -8,10 +8,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 # Frontend development
 npm run dev              # Start Vite dev server
 npm run build           # Build for production
-npm run eslint          # Run ESLint for JS/Vue files
 
 # Backend development  
-php artisan serve       # Start Laravel dev server
 php artisan test        # Run all tests (using Pest)
 ./vendor/bin/pint       # Run Laravel Pint code formatter
 
@@ -33,7 +31,7 @@ php artisan tinker      # Laravel REPL
 This is a gym management system centered around booking training sessions:
 
 **Core Entities:**
-- `User` - Members and trainers (role-based via `is_trainer` boolean)
+- `User` - Members and trainers (role-based via `is_trainer` boolean for now)
 - `Booking` - A scheduled training package (has multiple sessions)
 - `BookingSlot` - Individual training session within a booking
 - `Workout` - Exercise definition (categorized)
@@ -45,29 +43,6 @@ This is a gym management system centered around booking training sessions:
 - Booking has many BookingSlots (sessions)
 - BookingSlot has many BookingSlotWorkouts
 - BookingSlotWorkout has many BookingSlotWorkoutSets
-
-### Application Structure
-
-**Controllers (Admin namespace):**
-- `MembersController` / `TrainersController` - User management
-- `BookingsController` - Create training packages
-- `BookingSlotsController` - Individual session management  
-- `BookingSlotWorkoutController` - Add/edit workouts in sessions
-- `ChangeBookingSlotDateTimeController` - Reschedule sessions
-- `CancelBookingSlotController` - Cancel sessions
-- `WeeklyCalendarController` - Calendar view
-
-**Frontend Pages Structure:**
-- `/resources/js/Pages/Admin/` - All admin interfaces
-- Common patterns: Index (lists), Show (details), Create/Edit (forms)
-- Partials for reusable components
-
-**Key Vue Components:**
-- `SessionHeader` - Session info display
-- `MembersList` / `TrainersList` - User listings
-- `BookingSchedule` / `RepeatableScheduler` - Booking creation
-- Form components in `/Components/Form/`
-- Layout components in `/Components/Layout/`
 
 ### Routing Patterns
 All routes require authentication. Main patterns:
@@ -246,7 +221,7 @@ defineExpose({ focus: () => input.value.focus() })
 ```
 
 **Component Organization:**
-- Pages in `/resources/js/Pages/Admin/` with index/show/create/edit pattern
+- Pages in `/resources/js/Pages/[Namespace]/` with index/show/create/edit pattern
 - Reusable components in `/Components/Layout/` and `/Components/Form/`
 - Page-specific partials in `/Pages/Admin/[Module]/Partials/`
 - Use descriptive component names that indicate their purpose
@@ -264,6 +239,7 @@ defineExpose({ focus: () => input.value.focus() })
 - Test one concept per test method
 - Use descriptive test names that explain the expected behavior
 - Test both positive and negative scenarios
+- Testing philosophy: test the request, assert the response and database changes.
 
 ```php
 // ✅ Good - Descriptive test structure
