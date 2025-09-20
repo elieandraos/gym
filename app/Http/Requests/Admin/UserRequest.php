@@ -30,6 +30,7 @@ class UserRequest extends FormRequest
             'instagram_handle' => ['nullable', 'string'],
             'address' => ['nullable', 'string'],
             'emergency_contact' => ['nullable', 'string'],
+            'color' => ['required', 'string'],
         ];
     }
 }

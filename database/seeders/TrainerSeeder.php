@@ -10,8 +10,12 @@ class TrainerSeeder extends Seeder
 {
     public function run(): void
     {
-        User::factory(3)->create([
-            'role' => Role::Trainer,
-        ]);
+        $colors = ['bg-blue-50', 'bg-orange-100', 'bg-pink-50', 'bg-emerald-50', 'bg-purple-100', 'bg-yellow-100'];
+
+        User::factory(3)->sequence(
+            ['role' => Role::Trainer, 'color' => $colors[0]],
+            ['role' => Role::Trainer, 'color' => $colors[1]],
+            ['role' => Role::Trainer, 'color' => $colors[2]],
+        )->create();
     }
 }
