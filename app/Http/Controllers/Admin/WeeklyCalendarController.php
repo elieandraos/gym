@@ -19,7 +19,7 @@ class WeeklyCalendarController extends Controller
         $bookings = Booking::with([
             'bookingSlots' => fn ($q) => $q->between($spanStart, $spanEnd)->whereNot('status', Status::Cancelled),
             'member:id,name',
-            'trainer:id,name',
+            'trainer:id,name,color',
         ])
             ->between($spanStart, $spanEnd)
             ->get();

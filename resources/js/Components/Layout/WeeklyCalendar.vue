@@ -267,6 +267,21 @@ const goToBookingSlot = (memberName) => {
 // pick current week
 const selectedWeek = computed(() => props.weeks[currentWeekIndex.value])
 
+// color scheme utility
+const getColorScheme = (bgColor) => {
+    const colorMap = {
+        'bg-blue-50': { text: 'text-blue-700', hover: 'text-blue-700', hoverBg: 'hover:bg-blue-100' },
+        'bg-orange-100': { text: 'text-orange-700', hover: 'text-orange-700', hoverBg: 'hover:bg-orange-200' },
+        'bg-pink-50': { text: 'text-pink-700', hover: 'text-pink-700', hoverBg: 'hover:bg-pink-100' },
+        'bg-emerald-50': { text: 'text-emerald-700', hover: 'text-emerald-700', hoverBg: 'hover:bg-emerald-100' },
+        'bg-gray-100': { text: 'text-gray-700', hover: 'text-gray-700', hoverBg: 'hover:bg-gray-200' },
+        'bg-purple-100': { text: 'text-purple-700', hover: 'text-purple-700', hoverBg: 'hover:bg-purple-200' },
+        'bg-cyan-100': { text: 'text-cyan-700', hover: 'text-cyan-700', hoverBg: 'hover:bg-teal-200' },
+        'bg-yellow-100': { text: 'text-yellow-700', hover: 'text-yellow-700', hoverBg: 'hover:bg-yellow-200' },
+    }
+    return colorMap[bgColor] || { text: 'text-gray-700', hover: 'text-gray-700', hoverBg: 'hover:bg-gray-200' }
+}
+
 // month–day range label
 const monthLabel = computed(() => {
     const s = parseISO(selectedWeek.value.start)
@@ -311,16 +326,12 @@ const rawMerged = computed(() => {
             const col       = dayIx + 1
             const rowStart  = Math.floor((mins - 420) / 5) + 2
             const span      = Math.max(1, Math.ceil(differenceInMinutes(end, start) / 5))
-            const pal       = [
-                {bg:'bg-blue-50 hover:bg-blue-100',   text:'text-blue-700',  hover:'text-blue-700'},
-                {bg:'bg-orange-100 hover:bg-orange-200',  text:'text-orange-700',  hover:'text-orange-700'},
-                {bg:'bg-pink-50 hover:bg-pink-100',   text:'text-pink-700',  hover:'text-pink-700'},
-                {bg:'bg-emerald-50 hover:bg-emerald-100',   text:'text-emerald-700',  hover:'text-emerald-700'},
-                {bg:'bg-gray-100 hover:bg-gray-200',  text:'text-gray-700',  hover:'text-gray-700'},
-                {bg:'bg-purple-100 hover:bg-purple-200',text:'text-purple-700',hover:'text-purple-700'},
-                {bg:'bg-cyan-100 hover:bg-teal-200',  text:'text-cyan-700',  hover:'text-cyan-700'},
-                {bg:'bg-yellow-100 hover:bg-yellow-200',text:'text-yellow-700', hover:'text-yellow-700'},
-            ][bi % 8]
+            const colorScheme = getColorScheme(b.trainer_color)
+            const pal = {
+                bg: `${b.trainer_color} ${colorScheme.hoverBg}`,
+                text: colorScheme.text,
+                hover: colorScheme.hover
+            }
 
             return {
                 id:         s.id,
