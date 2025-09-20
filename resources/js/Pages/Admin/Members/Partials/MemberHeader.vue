@@ -14,6 +14,7 @@
             <div class="space-y-2 font-normal">
                 <Link v-if="isTraining && !isBookingShowPage" :href="route('admin.bookings.show', active_booking.id)" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">Training schedule</Link>
                 <Link v-if="!isMemberHistoryPage" :href="route('admin.members.bookings.history', { user: id })" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">Trainings history</Link>
+                <Link v-if="!isMemberPersonalInfoPage" :href="route('admin.members.personal-info', id)" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">Personal info</Link>
                 <template v-if="!isMemberShowPage">
                     <hr class="border-gray-200">
                     <Link :href="route('admin.members.show', id)" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">{{ first_name }}'s profile</Link>
@@ -43,4 +44,5 @@ const isTraining = computed(() => !!active_booking)
 const isMemberShowPage = computed(() => $page.url === '/members/' + id)
 const isBookingShowPage = computed(() => active_booking && $page.url.includes('/bookings/' + active_booking.id))
 const isMemberHistoryPage = computed(() => $page.url.includes('/members/' + id + '/bookings/history'))
+const isMemberPersonalInfoPage = computed(() => $page.url.includes('/members/' + id + '/personal-info'))
 </script>

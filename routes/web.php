@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\CancelBookingSlotController;
 use App\Http\Controllers\Admin\ChangeBookingSlotDateTimeController;
 use App\Http\Controllers\Admin\MarkBookingAsPaidController;
 use App\Http\Controllers\Admin\MemberBookingHistoryController;
+use App\Http\Controllers\Admin\MemberPersonalInfoController;
 use App\Http\Controllers\Admin\MembersController;
 use App\Http\Controllers\Admin\TrainersController;
 use App\Http\Controllers\Admin\WeeklyCalendarController;
@@ -25,6 +26,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         Route::get('/create', [MembersController::class, 'create'])->name('create');
         Route::post('/store', [MembersController::class, 'store'])->name('store');
         Route::get('/{user}', [MembersController::class, 'show'])->name('show');
+        Route::get('/{user}/personal-info', [MemberPersonalInfoController::class, 'index'])->name('personal-info');
         Route::get('/{user}/bookings/history', [MemberBookingHistoryController::class, 'index'])->name('bookings.history');
     });
 

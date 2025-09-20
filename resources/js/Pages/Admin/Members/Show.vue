@@ -11,25 +11,31 @@
                 <RemainingSessionsWidget :is-training="isTraining" :active-booking="activeBooking" />
             </div>
 
-            <div v-if="isTraining" class="mb-8 bg-sky-50 border border-sky-100 flex flex-col md:flex-row lg:flex-row justify-between rounded-lg py-3 px-4">
-                <div class="space-y-1.5">
-                    <UpcomingSession :is-training="isTraining" :active-booking="activeBooking" />
-                    <ScheduledBooking :scheduled-bookings="scheduledBookings" />
-                </div>
-                <div class="text-[#71717b]">
-                    <LastSessionRecap :active-booking="activeBooking" />
-                </div>
+            <div class="w-full p-4">
+                <h3 class="font-[600] mb-4">Training Overview</h3>
+                <table class="text-left text-sm w-full">
+                    <tbody>
+                        <tr class="border-b border-zinc-100">
+                            <td class="text-[#71717b] py-4">Upcoming Session</td>
+                            <td class="py-4">
+                                <UpcomingSession :is-training="isTraining" :active-booking="activeBooking" />
+                            </td>
+                        </tr>
+                        <tr class="border-b border-zinc-100">
+                            <td class="text-[#71717b] py-4">Recent workouts</td>
+                            <td class="py-4">
+                                <LastSessionRecap :active-booking="activeBooking" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-[#71717b] py-4">Scheduled Trainings</td>
+                            <td class="py-4">
+                                <ScheduledBooking :scheduled-bookings="scheduledBookings" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-
-            <div class="flex flex-col md:flex-row md:justify-between gap-6 md:gap-12">
-                <div class="w-full p-4">
-                    <user-profile :user="member"></user-profile>
-                </div>
-                <div class="w-full p-4">
-                    <user-contact :user="member"></user-contact>
-                </div>
-            </div>
-
         </Container>
     </AppLayout>
 </template>
@@ -44,8 +50,6 @@ import PaymentStatusWidget from '@/Pages/Admin/Members/Partials/PaymentStatusWid
 import UpcomingSession from '@/Pages/Admin/Members/Partials/UpcomingSession.vue'
 import RemainingSessionsWidget from '@/Pages/Admin/Members/Partials/RemainingSessionsWidget.vue'
 import Container from '@/Components/Layout/Container.vue'
-import UserContact from '@/Pages/Admin/Users/Partials/UserContact.vue'
-import UserProfile from '@/Pages/Admin/Users/Partials/UserProfile.vue'
 import LastSessionRecap from '@/Pages/Admin/Members/Partials/LastSessionRecap.vue'
 import {computed} from 'vue'
 
