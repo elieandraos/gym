@@ -33,6 +33,7 @@ const form = useForm({
     emergency_contact: null,
     in_house: true,
     registration_date: new Date(),
+    color: 'bg-blue-50',
 })
 
 provide('form', form)

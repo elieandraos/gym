@@ -70,6 +70,11 @@
             <InputError :message="form.errors.instagram_handle" />
         </FormSection>
 
+        <FormSection title="Calendar Color" description="Choose the color that will appear on the calendar for this trainer." >
+            <InlineColorPicker v-model="form.color" />
+            <InputError :message="form.errors.color" />
+        </FormSection>
+
         <div class="text-right">
             <Link :href="route('admin.trainers.index')" class="mr-4">
                 <TransparentButton>Cancel</TransparentButton>
@@ -92,6 +97,7 @@ import { inject, watch, nextTick } from 'vue'
 
 import DateInput from '@/Components/Form/DateInput.vue'
 import FormSection from '@/Components/Form/FormSection.vue'
+import InlineColorPicker from '@/Components/Form/InlineColorPicker.vue'
 import InputError from '@/Components/Form/InputError.vue'
 import SelectInput from '@/Components/Form/SelectInput.vue'
 import TextInput from '@/Components/Form/TextInput.vue'
