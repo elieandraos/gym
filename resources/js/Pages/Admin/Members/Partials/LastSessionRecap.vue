@@ -1,9 +1,9 @@
 <template>
     <div class="flex items-center gap-2">
         <div class="flex-grow">
-            <div v-if="hasCompletedSessions" class="text-sm text-[#71717b]">
+            <div v-if="hasCompletedSessions" class="text-zinc-950">
                 <span v-for="(session, index) in sessionRecap" :key="session.id">
-                    <span class="font-[600] text-zinc-950">{{ session.day }}: </span>
+                    <span class="font-[600]">{{ session.day }}: </span>
                     <span>{{ session.categories }}</span>
                     <span class="text-zinc-950" v-if="index < sessionRecap.length - 1">&nbsp;&nbsp;</span>
                 </span>

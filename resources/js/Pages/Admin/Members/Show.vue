@@ -12,7 +12,7 @@
             </div>
 
             <div class="w-full p-4">
-                <h3 class="font-[600] mb-4">Training Overview</h3>
+                <h3 class="font-[600] mb-4">Overview</h3>
                 <table class="text-left text-sm w-full">
                     <tbody>
                         <tr class="border-b border-zinc-100">
