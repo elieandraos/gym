@@ -68,7 +68,7 @@ const menu = [
         when: () => usePage().props.auth.user,
     },
     {
-        name: 'Training',
+        name: 'Private Training',
         url: route('admin.bookings.create'),
         icon: PlusCircleIcon,
         activeRoute: 'admin.bookings.create',

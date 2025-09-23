@@ -71,7 +71,7 @@ const { route } = window
 const { name, profile_photo_url } = usePage().props.auth.user
 
 const quickLinks = computed(() => {
-    return props.menu.filter(item => ['Home', 'Training', 'Calendar'].includes(item.name))
+    return props.menu.filter(item => ['Home', 'Private Training', 'Calendar'].includes(item.name))
 })
 
 const administrationLinks = computed(() => {
