@@ -1,7 +1,7 @@
 <?php
 
 use App\Enums\Category;
-use App\Http\Resources\Admin\WorkoutResource;
+use App\Http\Resources\WorkoutResource;
 use App\Models\Workout;
 
 beforeEach(function () {
