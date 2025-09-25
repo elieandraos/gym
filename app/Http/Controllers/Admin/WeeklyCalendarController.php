@@ -25,15 +25,7 @@ class WeeklyCalendarController extends Controller
             ? Carbon::parse($request->get('end'))
             : $start->copy()->addDays(5);
 
-        $bookings = Booking::with([
-            'bookingSlots' => fn ($q) => $q->between($start, $end)->whereNot('status', Status::Cancelled),
-            'member:id,name',
-            'trainer:id,name,color',
-        ])
-            ->between($start, $end)
-            ->get();
-
-        $events = $bookings->flatMap->bookingSlots;
+        $events = Booking::query()->forCalendar($start, $end)->get()->flatMap->bookingSlots;
 
         return Inertia::render('Admin/Calendar/Index', [
             'week' => new CalendarWeekEventsCollection($events, $start, $end),

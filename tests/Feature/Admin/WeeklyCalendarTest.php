@@ -18,12 +18,12 @@ test('calendar returns proper component', function () {
 test('calendar shows current week by default', function () {
     $start = Carbon::today()->startOfWeek();
     $end = $start->copy()->addDays(5);
-    $emptyEvents = collect();
+    $expectedEvents = Booking::query()->forCalendar($start, $end)->get()->flatMap->bookingSlots;
 
     $response = actingAsAdmin()->get(route('admin.weekly-calendar.index'));
 
     $response->assertOk()
-        ->assertHasResource('week', new CalendarWeekEventsCollection($emptyEvents, $start, $end));
+        ->assertHasResource('week', new CalendarWeekEventsCollection($expectedEvents, $start, $end));
 });
 
 test('calendar respects custom date parameters', function () {

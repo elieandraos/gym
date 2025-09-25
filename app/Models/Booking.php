@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\Status;
 use Carbon\Carbon;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Attributes\Scope as AsScope;
@@ -81,5 +82,15 @@ class Booking extends Model
             $q->whereBetween('start_date', [$start->toDateString(), $end->toDateString()])
                 ->orWhereBetween('end_date', [$start->toDateString(), $end->toDateString()]);
         });
+    }
+
+    #[AsScope]
+    public function forCalendar(Builder $query, Carbon $start, Carbon $end): Builder
+    {
+        return $query->with([
+            'bookingSlots' => fn ($q) => $q->between($start, $end)->whereNot('status', Status::Cancelled),
+            'member:id,name',
+            'trainer:id,name,color',
+        ])->between($start, $end);
     }
 }

@@ -24,15 +24,7 @@ class DailyCalendarController extends Controller
         $startOfDay = $date->copy()->startOfDay();
         $endOfDay = $date->copy()->endOfDay();
 
-        $bookings = Booking::with([
-            'bookingSlots' => fn ($q) => $q->between($startOfDay, $endOfDay)->whereNot('status', Status::Cancelled),
-            'member:id,name',
-            'trainer:id,name,color',
-        ])
-            ->between($startOfDay, $endOfDay)
-            ->get();
-
-        $events = $bookings->flatMap->bookingSlots;
+        $events = Booking::query()->forCalendar($startOfDay, $endOfDay)->get()->flatMap->bookingSlots;
 
         return Inertia::render('Admin/DailyCalendar/Index', [
             'day' => new CalendarDayEventsCollection($events, $date),
