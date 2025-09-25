@@ -16,8 +16,8 @@ class CalendarWeekEventsCollection extends ResourceCollection
     public function toArray(Request $request): array
     {
         $events = $this->collection
-            ->map(function ($slot) {
-                return new CalendarEventResource($slot);
+            ->map(function ($eventArray) {
+                return new CalendarEventResource($eventArray);
             })
             ->values();
 

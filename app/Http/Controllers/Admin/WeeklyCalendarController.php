@@ -33,10 +33,29 @@ class WeeklyCalendarController extends Controller
             ->between($start, $end)
             ->get();
 
-        $slots = $bookings->flatMap->bookingSlots;
+        $events = $bookings->flatMap(function($booking) {
+            return $booking->bookingSlots->map(function($slot) {
+                $minutes = $slot->start_time->minute;
+
+                return [
+                    'id' => $slot->id,
+                    'start_time' => $slot->start_time,
+                    'end_time' => $slot->end_time,
+                    'title' => explode(' ', $slot->booking->member->name)[0] . ' - ' . explode(' ', $slot->booking->trainer->name)[0],
+                    'meta_data' => [
+                        'member' => explode(' ', $slot->booking->member->name)[0],
+                        'trainer' => explode(' ', $slot->booking->trainer->name)[0],
+                        'trainer_color' => $slot->booking->trainer->color,
+                        'booking_id' => $slot->booking->id,
+                        'duration' => $slot->start_time->diffInMinutes($slot->end_time),
+                        'short_time' => $slot->start_time->format($minutes === 0 ? 'ga' : 'g:i a'),
+                    ]
+                ];
+            });
+        });
 
         return Inertia::render('Admin/Calendar/Index', [
-            'week' => new CalendarWeekEventsCollection($slots, $start, $end),
+            'week' => new CalendarWeekEventsCollection($events, $start, $end),
         ]);
     }
 }
