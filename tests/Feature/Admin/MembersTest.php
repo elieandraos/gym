@@ -53,6 +53,7 @@ test('it creates a member', function () {
         'instagram_handle' => 'elieandraos',
         'address' => 'aa',
         'emergency_contact' => 'dd',
+        'color' => 'bg-green-50',
     ];
 
     actingAsAdmin()

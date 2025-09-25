@@ -53,6 +53,7 @@ test('it creates a trainer', function () {
         'instagram_handle' => 'elie.trainer',
         'address' => 'somewhere',
         'emergency_contact' => 'someone',
+        'color' => 'bg-blue-50',
     ];
 
     actingAsAdmin()
