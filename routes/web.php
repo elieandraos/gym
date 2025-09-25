@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\MemberPersonalInfoController;
 use App\Http\Controllers\Admin\MembersController;
 use App\Http\Controllers\Admin\TrainersController;
 use App\Http\Controllers\Admin\WeeklyCalendarController;
+use App\Http\Controllers\Admin\DailyCalendarController;
 use App\Http\Controllers\Admin\WorkoutController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -68,5 +69,8 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     Route::delete('/bookings-slots/workout/{bookingSlotWorkout}', [BookingSlotWorkoutController::class, 'destroy'])->name('admin.bookings-slots.workout.destroy');
 
     // Weekly Calendar
-    Route::get('/calendar', [WeeklyCalendarController::class, 'index'])->name('admin.weekly-calendar.index');
+    Route::get('/weekly-calendar', [WeeklyCalendarController::class, 'index'])->name('admin.weekly-calendar.index');
+
+    // Daily Calendar
+    Route::get('/daily-calendar', [DailyCalendarController::class, 'index'])->name('admin.daily-calendar.index');
 });
