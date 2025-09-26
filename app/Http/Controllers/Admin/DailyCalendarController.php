@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Enums\Status;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\CalendarDayEventsCollection;
+use App\Http\Resources\Calendar\DayEventsCollection;
 use App\Models\Booking;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -27,7 +27,7 @@ class DailyCalendarController extends Controller
         $events = Booking::query()->forCalendar($startOfDay, $endOfDay)->get()->flatMap->bookingSlots;
 
         return Inertia::render('Admin/DailyCalendar/Index', [
-            'day' => new CalendarDayEventsCollection($events, $date),
+            'day' => new DayEventsCollection($events, $date),
         ]);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Resources\CalendarDayEventsCollection;
+use App\Http\Resources\Calendar\DayEventsCollection;
 use App\Models\Booking;
 use Carbon\Carbon;
 
@@ -22,7 +22,7 @@ test('daily calendar shows today by default', function () {
     $response = actingAsAdmin()->get(route('admin.daily-calendar.index'));
 
     $response->assertOk()
-        ->assertHasResource('day', new CalendarDayEventsCollection($emptyEvents, $today));
+        ->assertHasResource('day', new DayEventsCollection($emptyEvents, $today));
 });
 
 test('daily calendar respects custom date parameter', function () {
@@ -34,7 +34,7 @@ test('daily calendar respects custom date parameter', function () {
     ]));
 
     $response->assertOk()
-        ->assertHasResource('day', new CalendarDayEventsCollection($emptyEvents, $customDate));
+        ->assertHasResource('day', new DayEventsCollection($emptyEvents, $customDate));
 });
 
 test('daily calendar handles empty dates gracefully', function () {
@@ -46,7 +46,7 @@ test('daily calendar handles empty dates gracefully', function () {
     ]));
 
     $response->assertOk()
-        ->assertHasResource('day', new CalendarDayEventsCollection($emptyEvents, $futureDate));
+        ->assertHasResource('day', new DayEventsCollection($emptyEvents, $futureDate));
 });
 
 test('daily calendar processes seeded booking data correctly', function () {

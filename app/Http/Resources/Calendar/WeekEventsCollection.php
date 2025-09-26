@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\Calendar;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class CalendarWeekEventsCollection extends ResourceCollection
+class WeekEventsCollection extends ResourceCollection
 {
     public function __construct($resource, protected Carbon $start, protected Carbon $end)
     {
@@ -17,7 +17,7 @@ class CalendarWeekEventsCollection extends ResourceCollection
     {
         $events = $this->collection
             ->map(function ($eventArray) {
-                return new CalendarEventResource($eventArray);
+                return new EventResource($eventArray);
             })
             ->values();
 

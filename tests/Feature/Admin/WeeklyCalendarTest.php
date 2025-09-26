@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Resources\CalendarWeekEventsCollection;
+use App\Http\Resources\Calendar\WeekEventsCollection;
 use App\Models\Booking;
 use Carbon\Carbon;
 
@@ -23,7 +23,7 @@ test('calendar shows current week by default', function () {
     $response = actingAsAdmin()->get(route('admin.weekly-calendar.index'));
 
     $response->assertOk()
-        ->assertHasResource('week', new CalendarWeekEventsCollection($expectedEvents, $start, $end));
+        ->assertHasResource('week', new WeekEventsCollection($expectedEvents, $start, $end));
 });
 
 test('calendar respects custom date parameters', function () {
@@ -37,7 +37,7 @@ test('calendar respects custom date parameters', function () {
     ]));
 
     $response->assertOk()
-        ->assertHasResource('week', new CalendarWeekEventsCollection($emptyEvents, $customStart, $customEnd));
+        ->assertHasResource('week', new WeekEventsCollection($emptyEvents, $customStart, $customEnd));
 });
 
 test('calendar handles empty date ranges gracefully', function () {
@@ -51,7 +51,7 @@ test('calendar handles empty date ranges gracefully', function () {
     ]));
 
     $response->assertOk()
-        ->assertHasResource('week', new CalendarWeekEventsCollection($emptyEvents, $futureStart, $futureEnd));
+        ->assertHasResource('week', new WeekEventsCollection($emptyEvents, $futureStart, $futureEnd));
 });
 
 test('calendar processes seeded booking data correctly', function () {
@@ -59,10 +59,6 @@ test('calendar processes seeded booking data correctly', function () {
     $booking = Booking::with(['member', 'trainer', 'bookingSlots'])
         ->whereHas('bookingSlots')
         ->first();
-
-    if (!$booking) {
-        $this->markTestSkipped('No seeded bookings with slots available');
-    }
 
     $slot = $booking->bookingSlots->first();
     $weekStart = $slot->start_time->copy()->startOfWeek();

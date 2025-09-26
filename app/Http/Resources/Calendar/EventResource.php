@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\Calendar;
 
 use App\Models\BookingSlot;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use InvalidArgumentException;
 
-class CalendarEventResource extends JsonResource
+class EventResource extends JsonResource
 {
     public function toArray(Request $request): array
     {

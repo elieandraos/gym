@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Enums\Status;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\CalendarWeekEventsCollection;
+use App\Http\Resources\Calendar\WeekEventsCollection;
 use App\Models\Booking;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -28,7 +28,7 @@ class WeeklyCalendarController extends Controller
         $events = Booking::query()->forCalendar($start, $end)->get()->flatMap->bookingSlots;
 
         return Inertia::render('Admin/Calendar/Index', [
-            'week' => new CalendarWeekEventsCollection($events, $start, $end),
+            'week' => new WeekEventsCollection($events, $start, $end),
         ]);
     }
 }
