@@ -18,18 +18,21 @@ test('calendar returns proper component', function () {
 test('calendar shows current week by default', function () {
     $start = Carbon::today()->startOfWeek();
     $end = $start->copy()->addDays(5);
-    $expectedEvents = Booking::query()->forCalendar($start, $end)->get()->flatMap->bookingSlots;
+    $bookings = Booking::query()->forCalendar($start, $end)->get();
+    $expectedEvents = $bookings->flatMap->bookingSlots;
+    $trainers = $bookings->map(fn ($booking) => $booking->trainer->name)->unique()->sort()->values();
 
     $response = actingAsAdmin()->get(route('admin.weekly-calendar.index'));
 
     $response->assertOk()
-        ->assertHasResource('week', new WeekEventsCollection($expectedEvents, $start, $end));
+        ->assertHasResource('events', new WeekEventsCollection($expectedEvents, $start, $end, $trainers));
 });
 
 test('calendar respects custom date parameters', function () {
     $customStart = Carbon::parse('2024-06-03');
     $customEnd = $customStart->copy()->addDays(5);
     $emptyEvents = collect();
+    $emptyTrainers = collect();
 
     $response = actingAsAdmin()->get(route('admin.weekly-calendar.index', [
         'start' => $customStart->toDateString(),
@@ -37,13 +40,14 @@ test('calendar respects custom date parameters', function () {
     ]));
 
     $response->assertOk()
-        ->assertHasResource('week', new WeekEventsCollection($emptyEvents, $customStart, $customEnd));
+        ->assertHasResource('events', new WeekEventsCollection($emptyEvents, $customStart, $customEnd, $emptyTrainers));
 });
 
 test('calendar handles empty date ranges gracefully', function () {
     $futureStart = Carbon::parse('2030-01-01');
     $futureEnd = $futureStart->copy()->addDays(5);
     $emptyEvents = collect();
+    $emptyTrainers = collect();
 
     $response = actingAsAdmin()->get(route('admin.weekly-calendar.index', [
         'start' => $futureStart->toDateString(),
@@ -51,7 +55,7 @@ test('calendar handles empty date ranges gracefully', function () {
     ]));
 
     $response->assertOk()
-        ->assertHasResource('week', new WeekEventsCollection($emptyEvents, $futureStart, $futureEnd));
+        ->assertHasResource('events', new WeekEventsCollection($emptyEvents, $futureStart, $futureEnd, $emptyTrainers));
 });
 
 test('calendar processes seeded booking data correctly', function () {
@@ -71,17 +75,18 @@ test('calendar processes seeded booking data correctly', function () {
 
     $response->assertOk()
         ->assertInertia(function ($inertia) use ($weekStart, $weekEnd, $slot) {
-            $inertia->has('week')
-                ->where('week.start', $weekStart->toDateString())
-                ->where('week.end', $weekEnd->toDateString())
-                ->has('week.events')
-                ->where('week.events', function ($events) use ($slot) {
+            $inertia->has('events')
+                ->where('events.start', $weekStart->toDateString())
+                ->where('events.end', $weekEnd->toDateString())
+                ->has('events.events')
+                ->has('events.trainers')
+                ->where('events.events', function ($events) use ($slot) {
                     // If events exist, verify structure
                     if (count($events) > 0) {
                         $event = collect($events)->firstWhere('id', $slot->id);
                         if ($event) {
-                            expect($event)->toHaveKeys(['id', 'start_time', 'end_time', 'title', 'meta_data'])
-                                ->and($event['meta_data'])->toHaveKeys(['member', 'trainer', 'trainer_color', 'booking_id']);
+                            expect($event)->toHaveKeys(['id', 'start_time', 'end_time', 'title', 'url', 'meta_data'])
+                                ->and($event['meta_data'])->toHaveKeys(['member', 'trainer', 'trainer_color', 'booking_id', 'short_time']);
                         }
                     }
 

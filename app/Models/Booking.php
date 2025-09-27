@@ -79,8 +79,8 @@ class Booking extends Model
         $end = Carbon::instance($end);
 
         return $query->where(function ($q) use ($start, $end) {
-            $q->whereBetween('start_date', [$start->toDateString(), $end->toDateString()])
-                ->orWhereBetween('end_date', [$start->toDateString(), $end->toDateString()]);
+            $q->where('start_date', '<=', $end->toDateString())
+                ->where('end_date', '>=', $start->toDateString());
         });
     }
 

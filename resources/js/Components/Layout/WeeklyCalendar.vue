@@ -5,24 +5,7 @@
             class="sticky top-0 z-50 flex items-center justify-between border-b border-gray-200 bg-white pb-2 pt-4 -mt-6"
         >
             <div class="flex items-center space-x-2">
-                <button
-                    @click="prevWeek"
-                    :disabled="currentWeekIndex === 0"
-                    :class="currentWeekIndex === 0
-                        ? 'text-gray-200 cursor-default'
-                        : 'text-gray-500 cursor-pointer'"
-                >
-                    <ChevronLeftIcon class="size-6" aria-hidden="true" />
-                </button>
-                <button
-                    @click="nextWeek"
-                    :disabled="currentWeekIndex === weeks.length - 1"
-                    :class="currentWeekIndex === weeks.length - 1
-                        ? 'text-gray-200 cursor-default'
-                        : 'text-gray-500 cursor-pointer'"
-                >
-                    <ChevronRightIcon class="size-6" aria-hidden="true" />
-                </button>
+                <!-- Navigation removed for single week view -->
                 <span class="text-gray-200 uppercase text-xl font-medium">
                     {{ monthLabel }}
                 </span>
@@ -126,7 +109,7 @@
                                 <component
                                     :is="slot.members.length === 1 ? 'a' : 'div'"
                                     v-bind="slot.members.length === 1
-                                        ? { href: route('admin.bookings-slots.show', slot.id) }
+                                        ? { href: slot.url }
                                         : {}"
                                     @click="slot.members.length > 1 ? openMembersPopup(slot) : null"
                                     class="group absolute inset-y-2 flex flex-col overflow-y-auto rounded-lg p-2 text-xs hover:opacity-90 cursor-pointer"
@@ -221,19 +204,15 @@ import {
     differenceInCalendarDays, differenceInMinutes
 } from 'date-fns'
 
-const props = defineProps({ events: Array, default: [] })
-const { route } = window
+const props = defineProps({ data: Object, required: true })
 
 // state
-const currentWeekIndex = ref(props.weeks.findIndex(w => w.is_current))
 const today            = new Date()
 const selectedTrainers = ref([])
 const showMembersPopup = ref(false)
 const selectedSlot = ref(null)
 
-// navigation
-const prevWeek = () => currentWeekIndex.value > 0 && currentWeekIndex.value--
-const nextWeek = () => currentWeekIndex.value < props.weeks.length - 1 && currentWeekIndex.value++
+// navigation (removed - single week view)
 
 // popup methods
 const openMembersPopup = (slot) => {
@@ -247,25 +226,20 @@ const closeMembersPopup = () => {
 }
 
 const goToBookingSlot = (memberName) => {
-    // Find the booking slot id for this specific member
-    const booking = selectedWeek.value.bookings.find(b =>
-        b.member === memberName &&
-        b.trainer === selectedSlot.value.trainer
+    // Find the event for this specific member and use its direct URL
+    const event = selectedWeek.value.events.find(e =>
+        e.meta_data.member === memberName &&
+        e.meta_data.trainer === selectedSlot.value.trainer &&
+        e.start_time === selectedSlot.value.start_time
     )
 
-    if (booking) {
-        const slot = booking.booking_slots.find(s =>
-            s.start_time === selectedSlot.value.start_time
-        )
-
-        if (slot) {
-            window.location.href = route('admin.bookings-slots.show', slot.id)
-        }
+    if (event) {
+        window.location.href = event.url
     }
 }
 
-// pick current week
-const selectedWeek = computed(() => props.weeks[currentWeekIndex.value])
+// current week data
+const selectedWeek = computed(() => props.data)
 
 // color scheme utility
 const getColorScheme = (bgColor) => {
@@ -292,9 +266,7 @@ const monthLabel = computed(() => {
 })
 
 // trainers list
-const trainers = computed(() =>
-    Array.from(new Set(selectedWeek.value.bookings.map(b => b.trainer)))
-)
+const trainers = computed(() => props.data.trainers || [])
 
 // header days
 const headerDays = computed(() => {
@@ -315,36 +287,35 @@ const hours = computed(() =>
 // 1) raw + merge same‐trainer+slot
 const rawMerged = computed(() => {
     const weekStart = parseISO(selectedWeek.value.start)
-    const slots = selectedWeek.value.bookings.flatMap((b, bi) => {
-        return b.booking_slots.map(s => {
-            const start  = parseISO(s.start_time)
-            const end    = parseISO(s.end_time)
-            const mins   = differenceInMinutes(start, startOfDay(start))
-            const dayIx  = differenceInCalendarDays(start, weekStart)
-            if (mins < 420 || mins >= 1320 || dayIx < 0 || dayIx > 5) return null
+    const slots = selectedWeek.value.events.map(event => {
+        const start  = parseISO(event.start_time)
+        const end    = parseISO(event.end_time)
+        const mins   = differenceInMinutes(start, startOfDay(start))
+        const dayIx  = differenceInCalendarDays(start, weekStart)
+        if (mins < 420 || mins >= 1320 || dayIx < 0 || dayIx > 5) return null
 
-            const col       = dayIx + 1
-            const rowStart  = Math.floor((mins - 420) / 5) + 2
-            const span      = Math.max(1, Math.ceil(differenceInMinutes(end, start) / 5))
-            const colorScheme = getColorScheme(b.trainer_color)
-            const pal = {
-                bg: `${b.trainer_color} ${colorScheme.hoverBg}`,
-                text: colorScheme.text,
-                hover: colorScheme.hover
-            }
+        const col       = dayIx + 1
+        const rowStart  = Math.floor((mins - 420) / 5) + 2
+        const span      = Math.max(1, Math.ceil(differenceInMinutes(end, start) / 5))
+        const colorScheme = getColorScheme(event.meta_data.trainer_color)
+        const pal = {
+            bg: `${event.meta_data.trainer_color} ${colorScheme.hoverBg}`,
+            text: colorScheme.text,
+            hover: colorScheme.hover
+        }
 
-            return {
-                id:         s.id,
-                trainer:    b.trainer,
-                start_time: s.start_time,
-                short_time: s.short_time,
-                col, rowStart, span,
-                bgClass:    pal.bg,
-                textClass:  pal.text,
-                hoverText:  pal.hover,
-                member:     b.member
-            }
-        })
+        return {
+            id:         event.id,
+            url:        event.url,
+            trainer:    event.meta_data.trainer,
+            start_time: event.start_time,
+            short_time: event.meta_data.short_time,
+            col, rowStart, span,
+            bgClass:    pal.bg,
+            textClass:  pal.text,
+            hoverText:  pal.hover,
+            member:     event.meta_data.member
+        }
     }).filter(Boolean)
 
     // merge identical

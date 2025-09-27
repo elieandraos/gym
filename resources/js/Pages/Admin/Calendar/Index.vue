@@ -1,7 +1,7 @@
 <template>
     <AppLayout title="Calendar">
         <Container>
-            <weekly-calendar :events="events"></weekly-calendar>
+            <weekly-calendar :data="events"></weekly-calendar>
         </Container>
     </AppLayout>
 </template>

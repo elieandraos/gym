@@ -24,10 +24,12 @@ class WeeklyCalendarController extends Controller
             ? Carbon::parse($request->get('end'))
             : $start->copy()->addDays(5);
 
-        $events = Booking::query()->forCalendar($start, $end)->get()->flatMap->bookingSlots;
+        $bookings = Booking::query()->forCalendar($start, $end)->get();
+        $events = $bookings->flatMap->bookingSlots;
+        $trainers = $bookings->map(fn ($booking) => $booking->trainer->name)->unique()->sort()->values();
 
         return Inertia::render('Admin/Calendar/Index', [
-            'events' => new WeekEventsCollection($events, $start, $end),
+            'events' => new WeekEventsCollection($events, $start, $end, $trainers),
         ]);
     }
 }

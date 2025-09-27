@@ -29,6 +29,7 @@ class EventResource extends JsonResource
             'start_time' => $slot->start_time->toIso8601String(),
             'end_time' => $slot->end_time->toIso8601String(),
             'title' => explode(' ', $slot->booking->member->name)[0].' - '.explode(' ', $slot->booking->trainer->name)[0],
+            'url' => route('admin.bookings-slots.show', $slot->id),
             'meta_data' => [
                 'member' => explode(' ', $slot->booking->member->name)[0],
                 'trainer' => explode(' ', $slot->booking->trainer->name)[0],

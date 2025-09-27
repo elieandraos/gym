@@ -8,7 +8,7 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class WeekEventsCollection extends ResourceCollection
 {
-    public function __construct($resource, protected Carbon $start, protected Carbon $end)
+    public function __construct($resource, protected Carbon $start, protected Carbon $end, protected $trainers = [])
     {
         parent::__construct($resource);
     }
@@ -25,6 +25,7 @@ class WeekEventsCollection extends ResourceCollection
             'start' => $this->start->toDateString(),
             'end' => $this->end->toDateString(),
             'is_current' => $this->start->isSameWeek(Carbon::today()),
+            'trainers' => $this->trainers,
             'events' => $events,
         ];
     }
