@@ -221,7 +221,7 @@ import {
     differenceInCalendarDays, differenceInMinutes
 } from 'date-fns'
 
-const props = defineProps({ weeks: Array })
+const props = defineProps({ events: Array, default: [] })
 const { route } = window
 
 // state

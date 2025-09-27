@@ -1,7 +1,7 @@
 <template>
     <AppLayout title="Calendar">
         <Container>
-            <weekly-calendar :weeks="weeks"></weekly-calendar>
+            <weekly-calendar :events="events"></weekly-calendar>
         </Container>
     </AppLayout>
 </template>
@@ -12,6 +12,6 @@ import WeeklyCalendar from '@/Components/Layout/WeeklyCalendar.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
 
 const props = defineProps({
-    weeks: { type: Array, required: true }
+    events: { type: Array, required: true }
 })
 </script>
