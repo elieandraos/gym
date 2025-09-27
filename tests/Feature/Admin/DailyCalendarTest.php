@@ -17,12 +17,14 @@ test('daily calendar returns proper component', function () {
 
 test('daily calendar shows today by default', function () {
     $today = Carbon::today();
-    $emptyEvents = collect();
+    $startOfDay = $today->copy()->startOfDay();
+    $endOfDay = $today->copy()->endOfDay();
+    $expectedEvents = Booking::query()->forCalendar($startOfDay, $endOfDay)->get()->flatMap->bookingSlots;
 
     $response = actingAsAdmin()->get(route('admin.daily-calendar.index'));
 
     $response->assertOk()
-        ->assertHasResource('day', new DayEventsCollection($emptyEvents, $today));
+        ->assertHasResource('day', new DayEventsCollection($expectedEvents, $today));
 });
 
 test('daily calendar respects custom date parameter', function () {

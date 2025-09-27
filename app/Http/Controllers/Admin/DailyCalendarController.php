@@ -23,7 +23,10 @@ class DailyCalendarController extends Controller
         $startOfDay = $date->copy()->startOfDay();
         $endOfDay = $date->copy()->endOfDay();
 
-        $events = Booking::query()->forCalendar($startOfDay, $endOfDay)->get()->flatMap->bookingSlots;
+        $events = Booking::query()->forCalendar($startOfDay, $endOfDay)->get()->flatMap->bookingSlots
+            ->filter(function ($slot) use ($startOfDay, $endOfDay) {
+                return $slot->start_time >= $startOfDay && $slot->start_time <= $endOfDay;
+            });
 
         return Inertia::render('Admin/DailyCalendar/Index', [
             'day' => new DayEventsCollection($events, $date),
