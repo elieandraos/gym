@@ -33,7 +33,7 @@ test('calendar respects custom date parameters', function () {
 
     $response = actingAsAdmin()->get(route('admin.weekly-calendar.index', [
         'start' => $customStart->toDateString(),
-        'end' => $customEnd->toDateString()
+        'end' => $customEnd->toDateString(),
     ]));
 
     $response->assertOk()
@@ -47,7 +47,7 @@ test('calendar handles empty date ranges gracefully', function () {
 
     $response = actingAsAdmin()->get(route('admin.weekly-calendar.index', [
         'start' => $futureStart->toDateString(),
-        'end' => $futureEnd->toDateString()
+        'end' => $futureEnd->toDateString(),
     ]));
 
     $response->assertOk()
@@ -66,7 +66,7 @@ test('calendar processes seeded booking data correctly', function () {
 
     $response = actingAsAdmin()->get(route('admin.weekly-calendar.index', [
         'start' => $weekStart->toDateString(),
-        'end' => $weekEnd->toDateString()
+        'end' => $weekEnd->toDateString(),
     ]));
 
     $response->assertOk()
@@ -84,6 +84,7 @@ test('calendar processes seeded booking data correctly', function () {
                                 ->and($event['meta_data'])->toHaveKeys(['member', 'trainer', 'trainer_color', 'booking_id']);
                         }
                     }
+
                     return true;
                 });
         });

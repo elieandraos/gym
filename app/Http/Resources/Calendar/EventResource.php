@@ -14,7 +14,7 @@ class EventResource extends JsonResource
         return match (true) {
             $this->resource instanceof BookingSlot => $this->fromBookingSlot(),
             is_array($this->resource) => $this->fromArray(),
-            default => throw new InvalidArgumentException('Unsupported model type for calendar event: ' . get_class($this->resource)),
+            default => throw new InvalidArgumentException('Unsupported model type for calendar event: '.get_class($this->resource)),
         };
     }
 
@@ -28,7 +28,7 @@ class EventResource extends JsonResource
             'id' => $slot->id,
             'start_time' => $slot->start_time->toIso8601String(),
             'end_time' => $slot->end_time->toIso8601String(),
-            'title' => explode(' ', $slot->booking->member->name)[0] . ' - ' . explode(' ', $slot->booking->trainer->name)[0],
+            'title' => explode(' ', $slot->booking->member->name)[0].' - '.explode(' ', $slot->booking->trainer->name)[0],
             'meta_data' => [
                 'member' => explode(' ', $slot->booking->member->name)[0],
                 'trainer' => explode(' ', $slot->booking->trainer->name)[0],
@@ -36,7 +36,7 @@ class EventResource extends JsonResource
                 'booking_id' => $slot->booking->id,
                 'duration' => $slot->start_time->diffInMinutes($slot->end_time),
                 'short_time' => $slot->start_time->format($minutes === 0 ? 'ga' : 'g:i a'),
-            ]
+            ],
         ];
     }
 

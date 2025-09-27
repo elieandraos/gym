@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Enums\Status;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Calendar\DayEventsCollection;
 use App\Models\Booking;

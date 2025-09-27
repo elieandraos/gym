@@ -30,7 +30,7 @@ test('daily calendar respects custom date parameter', function () {
     $emptyEvents = collect();
 
     $response = actingAsAdmin()->get(route('admin.daily-calendar.index', [
-        'date' => $customDate->toDateString()
+        'date' => $customDate->toDateString(),
     ]));
 
     $response->assertOk()
@@ -42,7 +42,7 @@ test('daily calendar handles empty dates gracefully', function () {
     $emptyEvents = collect();
 
     $response = actingAsAdmin()->get(route('admin.daily-calendar.index', [
-        'date' => $futureDate->toDateString()
+        'date' => $futureDate->toDateString(),
     ]));
 
     $response->assertOk()
@@ -55,7 +55,7 @@ test('daily calendar processes seeded booking data correctly', function () {
         ->whereHas('bookingSlots')
         ->first();
 
-    if (!$booking) {
+    if (! $booking) {
         $this->markTestSkipped('No seeded bookings with slots available');
     }
 
@@ -63,7 +63,7 @@ test('daily calendar processes seeded booking data correctly', function () {
     $slotDate = $slot->start_time->toDateString();
 
     $response = actingAsAdmin()->get(route('admin.daily-calendar.index', [
-        'date' => $slotDate
+        'date' => $slotDate,
     ]));
 
     $response->assertOk()
@@ -80,6 +80,7 @@ test('daily calendar processes seeded booking data correctly', function () {
                                 ->and($event['meta_data'])->toHaveKeys(['member', 'trainer', 'trainer_color', 'booking_id']);
                         }
                     }
+
                     return true;
                 });
         });
@@ -100,7 +101,7 @@ test('daily calendar only shows events for specified date', function () {
     $targetDate = $targetSlot->start_time->toDateString();
 
     $response = actingAsAdmin()->get(route('admin.daily-calendar.index', [
-        'date' => $targetDate
+        'date' => $targetDate,
     ]));
 
     $response->assertOk()
@@ -114,6 +115,7 @@ test('daily calendar only shows events for specified date', function () {
                         $eventDate = Carbon::parse($event['start_time'])->toDateString();
                         expect($eventDate)->toBe($targetDate);
                     }
+
                     return true;
                 });
         });
