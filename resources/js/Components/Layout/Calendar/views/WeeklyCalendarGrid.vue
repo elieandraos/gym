@@ -16,7 +16,7 @@
                         class="col-start-1 col-end-2 row-start-1 grid divide-y divide-gray-100"
                         style="grid-template-rows: repeat(34, minmax(3.5rem,1fr))"
                     >
-                        <div ref="containerOffset" class="row-end-1 h-7"></div>
+                        <div ref="containerOffset" class="row-end-1 h-16"></div>
                         <template v-for="(hour, idx) in hours" :key="idx">
                             <div class="relative">
                                 <div
@@ -48,7 +48,7 @@
                     <!-- events -->
                     <ol
                         class="col-start-1 col-end-2 row-start-1 grid sm:grid-cols-6 sm:pr-8"
-                        style="grid-template-rows: 1.75rem repeat(34, minmax(3.5rem,1fr)) auto"
+                        style="grid-template-rows: 4rem repeat(34, minmax(3.5rem,1fr)) auto"
                     >
                         <li
                             v-for="slot in filteredEvents"
