@@ -22,7 +22,7 @@ class DailyCalendarController extends Controller
             : $today;
 
         $selectedTrainerIds = $request->has('trainers')
-            ? array_filter(explode(',', $request->get('trainers')))
+            ? array_map('intval', array_filter(explode(',', $request->get('trainers'))))
             : [];
 
         $startOfDay = $date->copy()->startOfDay();

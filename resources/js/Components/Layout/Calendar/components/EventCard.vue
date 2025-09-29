@@ -5,7 +5,7 @@
             ? { href: slot.url }
             : {}"
         @click="slot.members.length > 1 ? $emit('openModal', slot) : null"
-        class="group absolute inset-y-2 flex flex-col overflow-y-auto rounded-lg p-2 text-xs hover:opacity-90 cursor-pointer"
+        class="group absolute flex flex-col overflow-y-auto rounded-lg p-2 text-xs hover:opacity-90 cursor-pointer"
         :class="slot.bgClass"
         :style="{
             left: slot.overlapCount > 1
@@ -14,6 +14,8 @@
             width: slot.overlapCount > 1
               ? 'calc((100%/' + slot.overlapCount + ') - 0.5rem)'
               : 'calc(100% - 0.5rem)',
+            top: 'calc(' + slot.topPercent + '% + 1px)',
+            height: 'calc(' + slot.heightPercent + '% - 2px)',
             zIndex: slot.overlapCount - slot.overlapIndex
           }"
     >

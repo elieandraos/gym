@@ -2,7 +2,7 @@ import { computed } from 'vue'
 import { parseISO, format, addDays, isSameDay, startOfDay, setHours, setMinutes, differenceInCalendarDays, differenceInMinutes } from 'date-fns'
 import { useColorScheme } from './useColorScheme.js'
 
-export function useCalendarEvents(events, filters) {
+export function useCalendarEvents(events, filters, startHour = 6, endHour = 22) {
     const { getColorScheme } = useColorScheme()
     const today = new Date()
 
@@ -26,12 +26,13 @@ export function useCalendarEvents(events, filters) {
         })
     })
 
-    // Times gutter for weekly view
-    const hours = computed(() =>
-        Array.from({ length: 16 }).map((_, i) =>
-            setMinutes(setHours(startOfDay(new Date()), 7 + i), 0)
+    // Times gutter for weekly view (configurable range)
+    const hours = computed(() => {
+        const hourCount = endHour - startHour + 1
+        return Array.from({ length: hourCount }).map((_, i) =>
+            setMinutes(setHours(startOfDay(new Date()), startHour + i), 0)
         )
-    )
+    })
 
     // Raw event processing and merging for weekly view
     const rawMerged = computed(() => {
@@ -42,11 +43,21 @@ export function useCalendarEvents(events, filters) {
             const end    = parseISO(event.end_time)
             const mins   = differenceInMinutes(start, startOfDay(start))
             const dayIx  = differenceInCalendarDays(start, weekStart)
-            if (mins < 420 || mins >= 1320 || dayIx < 0 || dayIx > 5) return null
+            const startMinutes = startHour * 60
+            const endMinutes = endHour * 60
+
+            if (mins < startMinutes || mins >= endMinutes || dayIx < 0 || dayIx > 5) return null
 
             const col       = dayIx + 1
-            const rowStart  = Math.floor((mins - 420) / 5) + 2
-            const span      = Math.max(1, Math.ceil(differenceInMinutes(end, start) / 5))
+            const halfHourFromStart = Math.floor((mins - startMinutes) / 30)
+            const minuteInHalfHour = (mins - startMinutes) % 30
+            const rowStart  = halfHourFromStart + 2  // +2 for header offset
+            const durationInMinutes = differenceInMinutes(end, start)
+            const span      = Math.max(1, Math.ceil(durationInMinutes / 30))
+
+            // Calculate precise positioning within the 30-minute block (0-100%)
+            const topPercent = (minuteInHalfHour / 30) * 100
+            const heightPercent = Math.min((durationInMinutes / 30) * 100, 100)
             const colorScheme = getColorScheme(event.meta_data.trainer_color)
             const pal = {
                 bg: `${event.meta_data.trainer_color} ${colorScheme.hoverBg}`,
@@ -64,7 +75,9 @@ export function useCalendarEvents(events, filters) {
                 bgClass:    pal.bg,
                 textClass:  pal.text,
                 hoverText:  pal.hover,
-                member:     event.meta_data.member
+                member:     event.meta_data.member,
+                topPercent,
+                heightPercent
             }
         }).filter(Boolean)
 

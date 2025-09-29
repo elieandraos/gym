@@ -2,9 +2,9 @@
     <div class="flex h-full flex-col">
         <!-- Calendar Header with navigation and filters -->
         <CalendarHeader
-            :label="monthLabel"
-            @prev-click="prevWeek"
-            @next-click="nextWeek"
+            :label="dateLabel"
+            @prev-click="prevDay"
+            @next-click="nextDay"
         >
             <template #filters>
                 <TrainerFilter
@@ -16,9 +16,9 @@
             </template>
         </CalendarHeader>
 
-        <!-- Weekly Grid -->
-        <WeeklyCalendarGrid
-            :header-days="headerDays"
+        <!-- Daily Grid -->
+        <DailyCalendarGrid
+            :date="dateLabel"
             :hours="hours"
             :filtered-events="filteredEvents"
             @open-modal="openMembersPopup"
@@ -42,19 +42,19 @@ import { parseISO, format } from 'date-fns'
 // Components
 import CalendarHeader from '../components/CalendarHeader.vue'
 import TrainerFilter from '../components/TrainerFilter.vue'
-import WeeklyCalendarGrid from './WeeklyCalendarGrid.vue'
+import DailyCalendarGrid from './DailyCalendarGrid.vue'
 import EventModal from '../components/EventModal.vue'
 
 // Composables
-import { useCalendarNavigation } from '../composables/useCalendarNavigation.js'
+import { useDailyCalendarNavigation } from '../composables/useDailyCalendarNavigation.js'
 import { useTrainerFiltering } from '../composables/useTrainerFiltering.js'
-import { useCalendarEvents } from '../composables/useCalendarEvents.js'
+import { useDailyCalendarEvents } from '../composables/useDailyCalendarEvents.js'
 import { useEventPositioning } from '../composables/useEventPositioning.js'
 import { useEventModal } from '../composables/useEventModal.js'
 
 const props = defineProps({
     events: Array,
-    is_current: Boolean,
+    is_today: Boolean,
     available_trainers: Array,
     filters: { type: Object, default: () => ({}) },
     startHour: { type: Number, default: 6 },
@@ -67,18 +67,18 @@ const { route } = window
 const { selectedTrainers } = useTrainerFiltering(
     props.filters,
     null, // getNavParams not needed for state setup
-    'admin.weekly-calendar.index'
+    'admin.daily-calendar.index'
 )
 
 // Set up navigation with trainer filtering
-const { prevWeek, nextWeek } = useCalendarNavigation(
+const { prevDay, nextDay } = useDailyCalendarNavigation(
     props.filters,
     selectedTrainers,
-    'admin.weekly-calendar.index'
+    'admin.daily-calendar.index'
 )
 
 // Set up calendar events
-const { monthLabel, headerDays, hours, rawMerged } = useCalendarEvents(
+const { dateLabel, hours, rawMerged } = useDailyCalendarEvents(
     props.events,
     props.filters,
     props.startHour,
@@ -98,21 +98,19 @@ const availableTrainers = computed(() => props.available_trainers || [])
 const updateTrainerSelection = (newSelection) => {
     selectedTrainers.value = newSelection
 
-    if (props.filters?.start && props.filters?.end) {
-        const currentStart = parseISO(props.filters.start)
-        const currentEnd = parseISO(props.filters.end)
+    if (props.filters?.date) {
+        const currentDate = parseISO(props.filters.date)
 
         // Build params with the new selection
         const params = {
-            start: format(currentStart, 'yyyy-MM-dd'),
-            end: format(currentEnd, 'yyyy-MM-dd')
+            date: format(currentDate, 'yyyy-MM-dd')
         }
 
         if (newSelection.length > 0) {
             params.trainers = newSelection.join(',')
         }
 
-        router.get(route('admin.weekly-calendar.index'), params, {
+        router.get(route('admin.daily-calendar.index'), params, {
             preserveState: false,
             preserveScroll: true
         })
