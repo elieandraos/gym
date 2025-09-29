@@ -1,0 +1,92 @@
+<template>
+    <div class="flex h-full flex-col">
+        <!-- Calendar Header with navigation and filters -->
+        <CalendarHeader
+            :label="monthLabel"
+            @prev-click="prevWeek"
+            @next-click="nextWeek"
+        >
+            <template #filters>
+                <TrainerFilter
+                    v-model="selectedTrainers"
+                    :available-trainers="availableTrainers"
+                    @filter-change="handleFilterChange"
+                />
+            </template>
+        </CalendarHeader>
+
+        <!-- Weekly Grid -->
+        <WeeklyCalendarGrid
+            :header-days="headerDays"
+            :hours="hours"
+            :filtered-events="filteredEvents"
+            @open-modal="openMembersPopup"
+        />
+
+        <!-- Members Modal -->
+        <EventModal
+            :is-open="showMembersPopup"
+            :selected-slot="selectedSlot"
+            @close="closeMembersPopup"
+            @go-to-member="goToBookingSlot"
+        />
+    </div>
+</template>
+
+<script setup>
+import { computed } from 'vue'
+
+// Components
+import CalendarHeader from '../components/CalendarHeader.vue'
+import TrainerFilter from '../components/TrainerFilter.vue'
+import WeeklyCalendarGrid from './WeeklyCalendarGrid.vue'
+import EventModal from '../components/EventModal.vue'
+
+// Composables
+import { useCalendarNavigation } from '../composables/useCalendarNavigation.js'
+import { useTrainerFiltering } from '../composables/useTrainerFiltering.js'
+import { useCalendarEvents } from '../composables/useCalendarEvents.js'
+import { useEventPositioning } from '../composables/useEventPositioning.js'
+import { useEventModal } from '../composables/useEventModal.js'
+
+const props = defineProps({
+    events: Array,
+    is_current: Boolean,
+    available_trainers: Array,
+    filters: { type: Object, default: () => ({}) }
+})
+
+// Set up trainer filtering first
+const { selectedTrainers, applyTrainerFilter } = useTrainerFiltering(
+    props.filters,
+    null, // getNavParams will be passed later
+    'admin.weekly-calendar.index'
+)
+
+// Set up navigation with trainer filtering
+const { prevWeek, nextWeek, getNavParams } = useCalendarNavigation(
+    props.filters,
+    selectedTrainers,
+    'admin.weekly-calendar.index'
+)
+
+// Set up calendar events
+const { monthLabel, headerDays, hours, rawMerged } = useCalendarEvents(
+    props.events,
+    props.filters
+)
+
+// Set up event positioning
+const { filteredEvents } = useEventPositioning(rawMerged)
+
+// Set up modal
+const { showMembersPopup, selectedSlot, openMembersPopup, closeMembersPopup, goToBookingSlot } = useEventModal(props.events)
+
+// Computed properties
+const availableTrainers = computed(() => props.available_trainers || [])
+
+// Apply filter function that uses current filters
+const handleFilterChange = () => {
+    applyTrainerFilter(props.filters)
+}
+</script>

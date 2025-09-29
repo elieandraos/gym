@@ -13,7 +13,7 @@
 
 <script setup>
 import Container from '@/Components/Layout/Container.vue'
-import WeeklyCalendar from '@/Components/Layout/WeeklyCalendar.vue'
+import { WeeklyCalendar } from '@/Components/Layout/Calendar'
 import AppLayout from '@/Layouts/AppLayout.vue'
 
 const props = defineProps({
