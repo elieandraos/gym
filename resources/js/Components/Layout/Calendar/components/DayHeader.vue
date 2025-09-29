@@ -1,6 +1,6 @@
 <template>
     <div
-        class="sticky top-[12px] z-40 flex-none bg-white shadow ring-1 ring-black/5 sm:pr-8"
+        class="sticky top-[1px] z-40 flex-none bg-white shadow ring-1 ring-black/5 sm:pr-8"
     >
         <div
             class="-mr-px hidden grid-cols-6 divide-x divide-gray-100 border-r border-gray-100 text-sm text-gray-500 sm:grid"

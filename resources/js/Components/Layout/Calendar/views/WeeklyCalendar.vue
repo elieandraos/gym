@@ -3,6 +3,7 @@
         <!-- Calendar Header with navigation and filters -->
         <CalendarHeader
             :label="monthLabel"
+            :header-days="headerDays"
             @prev-click="prevWeek"
             @next-click="nextWeek"
         >

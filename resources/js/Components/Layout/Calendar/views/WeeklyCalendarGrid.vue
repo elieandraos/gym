@@ -1,9 +1,6 @@
 <template>
     <div ref="container" class="isolate flex flex-auto flex-col bg-white overflow-x-auto scroll-smooth">
         <div class="flex min-w-[800px] flex-none flex-col">
-            <!-- days header -->
-            <DayHeader :header-days="headerDays" />
-
             <!-- grid container -->
             <div class="flex flex-auto min-h-0">
                 <!-- time gutter -->
@@ -16,7 +13,7 @@
                         class="col-start-1 col-end-2 row-start-1 grid divide-y divide-gray-100"
                         style="grid-template-rows: repeat(34, minmax(3.5rem,1fr))"
                     >
-                        <div ref="containerOffset" class="row-end-1 h-16"></div>
+                        <div ref="containerOffset" class="row-end-1 h-4"></div>
                         <template v-for="(hour, idx) in hours" :key="idx">
                             <div class="relative">
                                 <div
@@ -48,7 +45,7 @@
                     <!-- events -->
                     <ol
                         class="col-start-1 col-end-2 row-start-1 grid sm:grid-cols-6 sm:pr-8"
-                        style="grid-template-rows: 4rem repeat(34, minmax(3.5rem,1fr)) auto"
+                        style="grid-template-rows: 1rem repeat(34, minmax(3.5rem,1fr)) auto"
                     >
                         <li
                             v-for="slot in filteredEvents"
@@ -75,7 +72,6 @@
 import { ref } from 'vue'
 import { format } from 'date-fns'
 
-import DayHeader from '../components/DayHeader.vue'
 import TimeGutter from '../components/TimeGutter.vue'
 import EventCard from '../components/EventCard.vue'
 
