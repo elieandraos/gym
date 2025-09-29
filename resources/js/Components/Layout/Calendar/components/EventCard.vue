@@ -14,8 +14,8 @@
             width: slot.overlapCount > 1
               ? 'calc((100%/' + slot.overlapCount + ') - 0.5rem)'
               : 'calc(100% - 0.5rem)',
-            top: 'calc(' + slot.topPercent + '% + 1px)',
-            height: 'calc(' + slot.heightPercent + '% - 2px)',
+            top: 'calc(' + slot.topPercent + '% + 3px)',
+            height: 'calc(' + slot.heightPercent + '% - 6px)',
             zIndex: slot.overlapCount - slot.overlapIndex
           }"
     >
