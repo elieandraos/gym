@@ -19,12 +19,22 @@ test('daily calendar shows today by default', function () {
     $today = Carbon::today();
     $startOfDay = $today->copy()->startOfDay();
     $endOfDay = $today->copy()->endOfDay();
-    $expectedEvents = Booking::query()->forCalendar($startOfDay, $endOfDay)->get()->flatMap->bookingSlots;
+    $expectedEvents = Booking::query()->forCalendar($startOfDay, $endOfDay)->get()->flatMap->bookingSlots
+        ->filter(function ($slot) use ($startOfDay, $endOfDay) {
+            return $slot->start_time >= $startOfDay && $slot->start_time <= $endOfDay;
+        });
 
     $response = actingAsAdmin()->get(route('admin.daily-calendar.index'));
 
     $response->assertOk()
-        ->assertHasResource('day', new DayEventsCollection($expectedEvents, $today));
+        ->assertHasResource('events', new DayEventsCollection($expectedEvents))
+        ->assertInertia(function ($inertia) use ($today) {
+            $inertia->has('filters')
+                ->where('filters.date', $today->toDateString())
+                ->has('filters.trainers')
+                ->where('is_today', $today->isSameDay(Carbon::today()))
+                ->has('available_trainers');
+        });
 });
 
 test('daily calendar respects custom date parameter', function () {
@@ -36,7 +46,14 @@ test('daily calendar respects custom date parameter', function () {
     ]));
 
     $response->assertOk()
-        ->assertHasResource('day', new DayEventsCollection($emptyEvents, $customDate));
+        ->assertHasResource('events', new DayEventsCollection($emptyEvents))
+        ->assertInertia(function ($inertia) use ($customDate) {
+            $inertia->has('filters')
+                ->where('filters.date', $customDate->toDateString())
+                ->has('filters.trainers')
+                ->where('is_today', $customDate->isSameDay(Carbon::today()))
+                ->has('available_trainers');
+        });
 });
 
 test('daily calendar handles empty dates gracefully', function () {
@@ -48,7 +65,14 @@ test('daily calendar handles empty dates gracefully', function () {
     ]));
 
     $response->assertOk()
-        ->assertHasResource('day', new DayEventsCollection($emptyEvents, $futureDate));
+        ->assertHasResource('events', new DayEventsCollection($emptyEvents))
+        ->assertInertia(function ($inertia) use ($futureDate) {
+            $inertia->has('filters')
+                ->where('filters.date', $futureDate->toDateString())
+                ->has('filters.trainers')
+                ->where('is_today', $futureDate->isSameDay(Carbon::today()))
+                ->has('available_trainers');
+        });
 });
 
 test('daily calendar processes seeded booking data correctly', function () {
@@ -70,10 +94,11 @@ test('daily calendar processes seeded booking data correctly', function () {
 
     $response->assertOk()
         ->assertInertia(function ($inertia) use ($slotDate, $slot) {
-            $inertia->has('day')
-                ->where('day.date', $slotDate)
-                ->has('day.events')
-                ->where('day.events', function ($events) use ($slot) {
+            $inertia->has('events')
+                ->has('filters')
+                ->where('filters.date', $slotDate)
+                ->has('available_trainers')
+                ->where('events', function ($events) use ($slot) {
                     // If events exist, verify structure
                     if (count($events) > 0) {
                         $event = collect($events)->firstWhere('id', $slot->id);
@@ -108,10 +133,11 @@ test('daily calendar only shows events for specified date', function () {
 
     $response->assertOk()
         ->assertInertia(function ($inertia) use ($targetDate) {
-            $inertia->has('day')
-                ->where('day.date', $targetDate)
-                ->has('day.events')
-                ->where('day.events', function ($events) use ($targetDate) {
+            $inertia->has('events')
+                ->has('filters')
+                ->where('filters.date', $targetDate)
+                ->has('available_trainers')
+                ->where('events', function ($events) use ($targetDate) {
                     // Verify all events are within the target date
                     foreach ($events as $event) {
                         $eventDate = Carbon::parse($event['start_time'])->toDateString();
