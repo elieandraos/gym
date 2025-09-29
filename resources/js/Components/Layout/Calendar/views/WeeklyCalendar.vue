@@ -11,6 +11,7 @@
                     v-model="selectedTrainers"
                     :available-trainers="availableTrainers"
                     @filter-change="handleFilterChange"
+                    @update:modelValue="updateTrainerSelection"
                 />
             </template>
         </CalendarHeader>
@@ -35,6 +36,8 @@
 
 <script setup>
 import { computed } from 'vue'
+import { router } from '@inertiajs/vue3'
+import { parseISO, format } from 'date-fns'
 
 // Components
 import CalendarHeader from '../components/CalendarHeader.vue'
@@ -56,15 +59,17 @@ const props = defineProps({
     filters: { type: Object, default: () => ({}) }
 })
 
-// Set up trainer filtering first
-const { selectedTrainers, applyTrainerFilter } = useTrainerFiltering(
+const { route } = window
+
+// Set up trainer filtering state first
+const { selectedTrainers } = useTrainerFiltering(
     props.filters,
-    null, // getNavParams will be passed later
+    null, // getNavParams not needed for state setup
     'admin.weekly-calendar.index'
 )
 
 // Set up navigation with trainer filtering
-const { prevWeek, nextWeek, getNavParams } = useCalendarNavigation(
+const { prevWeek, nextWeek } = useCalendarNavigation(
     props.filters,
     selectedTrainers,
     'admin.weekly-calendar.index'
@@ -85,8 +90,33 @@ const { showMembersPopup, selectedSlot, openMembersPopup, closeMembersPopup, goT
 // Computed properties
 const availableTrainers = computed(() => props.available_trainers || [])
 
+// Update trainer selection and navigate immediately
+const updateTrainerSelection = (newSelection) => {
+    selectedTrainers.value = newSelection
+
+    if (props.filters?.start && props.filters?.end) {
+        const currentStart = parseISO(props.filters.start)
+        const currentEnd = parseISO(props.filters.end)
+
+        // Build params with the new selection
+        const params = {
+            start: format(currentStart, 'yyyy-MM-dd'),
+            end: format(currentEnd, 'yyyy-MM-dd')
+        }
+
+        if (newSelection.length > 0) {
+            params.trainers = newSelection.join(',')
+        }
+
+        router.get(route('admin.weekly-calendar.index'), params, {
+            preserveState: false,
+            preserveScroll: true
+        })
+    }
+}
+
 // Apply filter function that uses current filters
 const handleFilterChange = () => {
-    applyTrainerFilter(props.filters)
+    // This is now handled by updateTrainerSelection
 }
 </script>

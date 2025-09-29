@@ -30,7 +30,7 @@ class DailyCalendarController extends Controller
 
         $bookings = Booking::query()
             ->forCalendar($startOfDay, $endOfDay)
-            ->when(!empty($selectedTrainerIds), function ($query) use ($selectedTrainerIds) {
+            ->when(! empty($selectedTrainerIds), function ($query) use ($selectedTrainerIds) {
                 $query->whereIn('trainer_id', $selectedTrainerIds);
             })
             ->get();

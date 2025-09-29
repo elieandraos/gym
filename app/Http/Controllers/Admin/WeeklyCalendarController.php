@@ -26,12 +26,12 @@ class WeeklyCalendarController extends Controller
             : $start->copy()->addDays(5);
 
         $selectedTrainerIds = $request->has('trainers')
-            ? array_filter(explode(',', $request->get('trainers')))
+            ? array_map('intval', array_filter(explode(',', $request->get('trainers'))))
             : [];
 
         $bookings = Booking::query()
             ->forCalendar($start, $end)
-            ->when(!empty($selectedTrainerIds), function ($query) use ($selectedTrainerIds) {
+            ->when(! empty($selectedTrainerIds), function ($query) use ($selectedTrainerIds) {
                 $query->whereIn('trainer_id', $selectedTrainerIds);
             })
             ->get();

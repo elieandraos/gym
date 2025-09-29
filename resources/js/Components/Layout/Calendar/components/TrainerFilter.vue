@@ -5,7 +5,7 @@
                 <input
                     type="checkbox"
                     :value="id"
-                    :checked="modelValue.includes(id)"
+                    :checked="modelValue.includes(Number(id))"
                     @change="updateSelection(id, $event)"
                     class="h-4 w-4 rounded border-gray-300 accent-black focus:ring-black cursor-pointer"
                 />
@@ -32,12 +32,15 @@ const emit = defineEmits(['update:modelValue', 'filterChange'])
 const updateSelection = (trainerId, event) => {
     const newSelection = [...props.modelValue]
 
+    // Ensure trainerId is a number to match backend format
+    const trainerIdNumber = Number(trainerId)
+
     if (event.target.checked) {
-        if (!newSelection.includes(trainerId)) {
-            newSelection.push(trainerId)
+        if (!newSelection.includes(trainerIdNumber)) {
+            newSelection.push(trainerIdNumber)
         }
     } else {
-        const index = newSelection.indexOf(trainerId)
+        const index = newSelection.indexOf(trainerIdNumber)
         if (index > -1) {
             newSelection.splice(index, 1)
         }
