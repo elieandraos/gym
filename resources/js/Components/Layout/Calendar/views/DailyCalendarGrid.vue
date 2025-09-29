@@ -1,20 +1,8 @@
 <template>
-    <div ref="container" class="isolate flex flex-auto flex-col bg-white scroll-smooth">
-        <div class="flex w-full max-w-full flex-none flex-col">
-            <!-- Date header -->
-            <div class="sticky top-0 z-30 bg-white shadow-sm">
-                <div class="flex">
-                    <div class="flex-none w-14 bg-white"></div>
-                    <div class="flex-auto">
-                        <div class="flex h-14 items-center justify-center border-b border-gray-200">
-                            <h3 class="text-sm font-semibold text-gray-900">{{ date }}</h3>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+    <div ref="container" class="isolate bg-white">
+        <div class="flex w-full flex-col">
             <!-- Grid container -->
-            <div class="flex flex-auto">
+            <div class="flex" style="min-height: 2000px;">
                 <!-- time gutter -->
                 <TimeGutter />
 
@@ -77,10 +65,6 @@ import TimeGutter from '../components/TimeGutter.vue'
 import EventCard from '../components/EventCard.vue'
 
 defineProps({
-    date: {
-        type: String,
-        default: ''
-    },
     hours: {
         type: Array,
         default: () => []

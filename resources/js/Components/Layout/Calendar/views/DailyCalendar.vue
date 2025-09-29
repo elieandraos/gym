@@ -1,24 +1,53 @@
 <template>
-    <div class="flex h-full flex-col">
+    <div>
         <!-- Calendar Header with navigation and filters -->
-        <CalendarHeader
-            :label="dateLabel"
-            @prev-click="prevDay"
-            @next-click="nextDay"
-        >
-            <template #filters>
+        <div class="sticky top-0 z-50 bg-white px-8 py-3 border-b border-gray-200 shadow-sm">
+            <div class="flex items-center justify-between max-w-7xl">
+                <div class="flex items-center space-x-2">
+                    <button
+                        @click="prevDay"
+                        class="text-gray-500 hover:text-gray-700 cursor-pointer"
+                    >
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <button
+                        @click="nextDay"
+                        class="text-gray-500 hover:text-gray-700 cursor-pointer"
+                    >
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
+                    <span class="text-gray-900 text-lg font-medium ml-4">
+                        {{ dateLabel }}
+                    </span>
+                </div>
+
                 <TrainerFilter
                     v-model="selectedTrainers"
                     :available-trainers="availableTrainers"
                     @filter-change="handleFilterChange"
                     @update:modelValue="updateTrainerSelection"
                 />
-            </template>
-        </CalendarHeader>
+            </div>
+        </div>
+
+        <!-- Sticky Days Header -->
+        <div class="sticky top-[4.5rem] z-30 bg-white shadow-sm border-b border-gray-200">
+            <div class="flex">
+                <div class="flex-none w-14 bg-white"></div>
+                <div class="flex-auto">
+                    <div class="flex h-14 items-center justify-center">
+                        <h3 class="text-sm font-semibold text-gray-900">{{ dateLabel }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Daily Grid -->
         <DailyCalendarGrid
-            :date="dateLabel"
             :hours="hours"
             :filtered-events="filteredEvents"
             @open-modal="openMembersPopup"
@@ -115,10 +144,5 @@ const updateTrainerSelection = (newSelection) => {
             preserveScroll: true
         })
     }
-}
-
-// Apply filter function that uses current filters
-const handleFilterChange = () => {
-    // This is now handled by updateTrainerSelection
 }
 </script>

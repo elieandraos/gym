@@ -1,6 +1,6 @@
 <template>
     <header
-        class="sticky top-0 z-50 flex items-center justify-between border-b border-gray-200 bg-white pb-2 pt-4 -mt-6"
+        class="sticky top-0 z-50 flex items-center justify-between bg-white py-2"
     >
         <div class="flex items-center space-x-2">
             <button
