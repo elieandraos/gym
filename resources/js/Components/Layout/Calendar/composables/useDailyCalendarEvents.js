@@ -1,5 +1,5 @@
 import { computed } from 'vue'
-import { parseISO, format, setHours, setMinutes, startOfDay } from 'date-fns'
+import { parseISO, format, setHours, setMinutes, startOfDay, differenceInMinutes } from 'date-fns'
 import { useColorScheme } from './useColorScheme.js'
 
 export function useDailyCalendarEvents(events, filters, startHour = 6, endHour = 22) {
@@ -34,8 +34,16 @@ export function useDailyCalendarEvents(events, filters, startHour = 6, endHour =
 
             if (mins < startMinutes || mins >= endMinutes) return null
 
-            const rowStart = Math.floor((mins - startMinutes) / 5) + 2
-            const span = Math.max(1, Math.ceil((end.getTime() - start.getTime()) / (5 * 60 * 1000)))
+            const halfHourFromStart = Math.floor((mins - startMinutes) / 30)
+            const minuteInHalfHour = (mins - startMinutes) % 30
+            const rowStart = halfHourFromStart + 2  // +2 for header offset (matching weekly calendar)
+            const durationInMinutes = differenceInMinutes(end, start)
+            const span = Math.max(1, Math.ceil(durationInMinutes / 30))
+
+            // Calculate positioning percentages for EventCard (matching weekly calendar)
+            const topPercent = (minuteInHalfHour / 30) * 100
+            const heightPercent = Math.min((durationInMinutes / 30) * 100, 100)
+
             const colorScheme = getColorScheme(event.meta_data?.trainer_color)
 
             const pal = {
@@ -53,6 +61,8 @@ export function useDailyCalendarEvents(events, filters, startHour = 6, endHour =
                 col: 1, // Single column for daily view
                 rowStart,
                 span,
+                topPercent,
+                heightPercent,
                 bgClass: pal.bg,
                 textClass: pal.text,
                 hoverText: pal.hover,

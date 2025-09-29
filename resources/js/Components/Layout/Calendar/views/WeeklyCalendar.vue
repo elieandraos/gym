@@ -1,7 +1,7 @@
 <template>
     <div class="flex h-full flex-col">
         <!-- Calendar Header with navigation and filters -->
-        <CalendarHeader
+        <WeeklyCalendarHeader
             :label="monthLabel"
             :header-days="headerDays"
             @prev-click="prevWeek"
@@ -15,7 +15,7 @@
                     @update:modelValue="updateTrainerSelection"
                 />
             </template>
-        </CalendarHeader>
+        </WeeklyCalendarHeader>
 
         <!-- Weekly Grid -->
         <WeeklyCalendarGrid
@@ -41,7 +41,7 @@ import { router } from '@inertiajs/vue3'
 import { parseISO, format } from 'date-fns'
 
 // Components
-import CalendarHeader from '../components/CalendarHeader.vue'
+import WeeklyCalendarHeader from '../components/WeeklyCalendarHeader.vue'
 import TrainerFilter from '../components/TrainerFilter.vue'
 import WeeklyCalendarGrid from './WeeklyCalendarGrid.vue'
 import EventModal from '../components/EventModal.vue'
