@@ -38,7 +38,7 @@
 
                     <!-- events -->
                     <ol
-                        class="col-start-1 col-end-2 row-start-1 grid grid-cols-1 pr-8"
+                        class="col-start-1 col-end-2 row-start-1 grid grid-cols-1"
                         style="grid-template-rows: 1.75rem repeat(34, minmax(3.5rem,1fr)) auto"
                     >
                         <li

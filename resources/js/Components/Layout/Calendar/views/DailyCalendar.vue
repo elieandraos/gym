@@ -10,7 +10,6 @@
                 <TrainerFilter
                     v-model="selectedTrainers"
                     :available-trainers="availableTrainers"
-                    @filter-change="handleFilterChange"
                     @update:modelValue="updateTrainerSelection"
                 />
             </template>
