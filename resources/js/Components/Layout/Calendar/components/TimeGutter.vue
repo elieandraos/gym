@@ -1,6 +1,6 @@
 <template>
     <div
-        class="sticky left-0 z-20 w-14 flex-none bg-white ring-1 ring-gray-100"
+        class="sticky left-0 z-20 w-14 flex-none bg-white border-r border-gray-100"
     ></div>
 </template>
 

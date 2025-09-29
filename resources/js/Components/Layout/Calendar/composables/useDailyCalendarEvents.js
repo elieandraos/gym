@@ -8,7 +8,7 @@ export function useDailyCalendarEvents(events, filters, startHour = 6, endHour =
     // Generate date label
     const dateLabel = computed(() => {
         if (!filters?.date) return ''
-        return format(parseISO(filters.date), 'EEEE, MMMM d, yyyy')
+        return format(parseISO(filters.date), 'EEE, MMM d')
     })
 
     // Generate hours for the day (configurable range) - matching weekly calendar exactly
