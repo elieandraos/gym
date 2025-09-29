@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Calendar\WeekEventsCollection;
 use App\Models\Booking;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -24,12 +25,38 @@ class WeeklyCalendarController extends Controller
             ? Carbon::parse($request->get('end'))
             : $start->copy()->addDays(5);
 
-        $bookings = Booking::query()->forCalendar($start, $end)->get();
+        $selectedTrainerIds = $request->has('trainers')
+            ? array_filter(explode(',', $request->get('trainers')))
+            : [];
+
+        $bookings = Booking::query()
+            ->forCalendar($start, $end)
+            ->when(!empty($selectedTrainerIds), function ($query) use ($selectedTrainerIds) {
+                $query->whereIn('trainer_id', $selectedTrainerIds);
+            })
+            ->get();
+
         $events = $bookings->flatMap->bookingSlots;
-        $trainers = $bookings->map(fn ($booking) => $booking->trainer->name)->unique()->sort()->values();
+
+        $trainers = User::query()
+            ->trainers()
+            ->get()
+            ->map(fn ($trainer) => [
+                'id' => $trainer->id,
+                'first_name' => explode(' ', $trainer->name)[0],
+            ])
+            ->sortBy('first_name')
+            ->values();
 
         return Inertia::render('Admin/Calendar/Index', [
-            'events' => new WeekEventsCollection($events, $start, $end, $trainers),
+            'events' => new WeekEventsCollection($events),
+            'is_current' => $start->isSameWeek(Carbon::today()),
+            'available_trainers' => $trainers,
+            'filters' => [
+                'start' => $start->toDateString(),
+                'end' => $end->toDateString(),
+                'trainers' => $selectedTrainerIds,
+            ],
         ]);
     }
 }

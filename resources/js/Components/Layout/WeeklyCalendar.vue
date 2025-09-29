@@ -5,7 +5,18 @@
             class="sticky top-0 z-50 flex items-center justify-between border-b border-gray-200 bg-white pb-2 pt-4 -mt-6"
         >
             <div class="flex items-center space-x-2">
-                <!-- Navigation removed for single week view -->
+                <button
+                    @click="prevWeek"
+                    class="text-gray-500 hover:text-gray-700 cursor-pointer"
+                >
+                    <ChevronLeftIcon class="size-6" aria-hidden="true" />
+                </button>
+                <button
+                    @click="nextWeek"
+                    class="text-gray-500 hover:text-gray-700 cursor-pointer"
+                >
+                    <ChevronRightIcon class="size-6" aria-hidden="true" />
+                </button>
                 <span class="text-gray-200 uppercase text-xl font-medium">
                     {{ monthLabel }}
                 </span>
@@ -13,15 +24,16 @@
 
             <!-- trainer filter checkboxes -->
             <div class="flex items-center space-x-4">
-                <template v-for="trainer in trainers" :key="trainer">
+                <template v-for="trainer in availableTrainers" :key="trainer.id">
                     <label class="inline-flex items-center text-sm cursor-pointer">
                         <input
                             type="checkbox"
                             v-model="selectedTrainers"
-                            :value="trainer"
+                            :value="trainer.id"
+                            @change="applyTrainerFilter"
                             class="h-4 w-4 rounded border-gray-300 accent-black focus:ring-black cursor-pointer"
                         />
-                        <span class="ml-2 text-gray-700 cursor-pointer">{{ trainer }}</span>
+                        <span class="ml-2 text-gray-700 cursor-pointer">{{ trainer.first_name }}</span>
                     </label>
                 </template>
             </div>
@@ -196,6 +208,7 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import { router } from '@inertiajs/vue3'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/20/solid'
 
 import {
@@ -204,15 +217,51 @@ import {
     differenceInCalendarDays, differenceInMinutes
 } from 'date-fns'
 
-const props = defineProps({ data: Object, required: true })
+const props = defineProps({
+    events: Array,
+    is_current: Boolean,
+    available_trainers: Array,
+    filters: { type: Object, default: () => ({}) }
+})
+const { route } = window
 
 // state
 const today            = new Date()
-const selectedTrainers = ref([])
+const selectedTrainers = ref(props.filters?.trainers || [])
 const showMembersPopup = ref(false)
 const selectedSlot = ref(null)
 
-// navigation (removed - single week view)
+// navigation
+const getNavParams = (start, end) => {
+    const params = {
+        start: format(start, 'yyyy-MM-dd'),
+        end: format(end, 'yyyy-MM-dd')
+    }
+
+    if (selectedTrainers.value.length > 0) {
+        params.trainers = selectedTrainers.value.join(',')
+    }
+
+    return params
+}
+
+const prevWeek = () => {
+    if (!props.filters?.start) return
+    const currentStart = parseISO(props.filters.start)
+    const newStart = addDays(currentStart, -7)
+    const newEnd = addDays(newStart, 5)
+
+    router.get(route('admin.weekly-calendar.index'), getNavParams(newStart, newEnd))
+}
+
+const nextWeek = () => {
+    if (!props.filters?.start) return
+    const currentStart = parseISO(props.filters.start)
+    const newStart = addDays(currentStart, 7)
+    const newEnd = addDays(newStart, 5)
+
+    router.get(route('admin.weekly-calendar.index'), getNavParams(newStart, newEnd))
+}
 
 // popup methods
 const openMembersPopup = (slot) => {
@@ -227,7 +276,7 @@ const closeMembersPopup = () => {
 
 const goToBookingSlot = (memberName) => {
     // Find the event for this specific member and use its direct URL
-    const event = selectedWeek.value.events.find(e =>
+    const event = props.events.find(e =>
         e.meta_data.member === memberName &&
         e.meta_data.trainer === selectedSlot.value.trainer &&
         e.start_time === selectedSlot.value.start_time
@@ -238,8 +287,8 @@ const goToBookingSlot = (memberName) => {
     }
 }
 
-// current week data
-const selectedWeek = computed(() => props.data)
+// available trainers
+const availableTrainers = computed(() => props.available_trainers || [])
 
 // color scheme utility
 const getColorScheme = (bgColor) => {
@@ -258,19 +307,30 @@ const getColorScheme = (bgColor) => {
 
 // month–day range label
 const monthLabel = computed(() => {
-    const s = parseISO(selectedWeek.value.start)
-    const e = parseISO(selectedWeek.value.end)
+    if (!props.filters?.start || !props.filters?.end) return ''
+    const s = parseISO(props.filters.start)
+    const e = parseISO(props.filters.end)
     const startFmt = format(s, 'MMM d')
     const endFmt = format(e, 'MMM d')
     return `${startFmt} - ${endFmt}`
 })
 
-// trainers list
-const trainers = computed(() => props.data.trainers || [])
+// apply trainer filter
+const applyTrainerFilter = () => {
+    if (!props.filters?.start || !props.filters?.end) return
+    const currentStart = parseISO(props.filters.start)
+    const currentEnd = parseISO(props.filters.end)
+
+    router.get(route('admin.weekly-calendar.index'), getNavParams(currentStart, currentEnd), {
+        preserveState: true,
+        preserveScroll: true
+    })
+}
 
 // header days
 const headerDays = computed(() => {
-    const start = parseISO(selectedWeek.value.start)
+    if (!props.filters?.start) return []
+    const start = parseISO(props.filters.start)
     return Array.from({ length: 6 }).map((_, i) => {
         const d = addDays(start, i)
         return { short: format(d,'EEE'), day: format(d,'d'), isToday: isSameDay(d, today) }
@@ -286,8 +346,9 @@ const hours = computed(() =>
 
 // 1) raw + merge same‐trainer+slot
 const rawMerged = computed(() => {
-    const weekStart = parseISO(selectedWeek.value.start)
-    const slots = selectedWeek.value.events.map(event => {
+    if (!props.filters?.start || !props.events) return []
+    const weekStart = parseISO(props.filters.start)
+    const slots = props.events.map(event => {
         const start  = parseISO(event.start_time)
         const end    = parseISO(event.end_time)
         const mins   = differenceInMinutes(start, startOfDay(start))
@@ -328,12 +389,8 @@ const rawMerged = computed(() => {
     return Object.values(map)
 })
 
-// 2) apply trainer filter
-const filteredRaw = computed(() =>
-    selectedTrainers.value.length
-        ? rawMerged.value.filter(e => selectedTrainers.value.includes(e.trainer))
-        : rawMerged.value
-)
+// 2) events are already filtered on backend, no need for frontend filtering
+const filteredRaw = computed(() => rawMerged.value)
 
 // 3) cluster and position
 const filteredEvents = computed(() => {
