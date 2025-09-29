@@ -20,6 +20,9 @@
                 </span>
             </div>
 
+            <!-- View switcher -->
+            <a href="/daily-calendar" class="text-sm text-sky-500 hover:text-sky-700 font-[500]">switch to day view</a>
+
             <slot name="filters"></slot>
         </div>
 

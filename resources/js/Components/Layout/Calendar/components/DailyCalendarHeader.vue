@@ -20,6 +20,9 @@
                 </span>
             </div>
 
+            <!-- View switcher -->
+            <a href="/weekly-calendar" class="text-sm text-sky-500 hover:text-sky-700 font-[500]">switch to week view</a>
+
             <slot name="filters"></slot>
         </div>
     </header>
