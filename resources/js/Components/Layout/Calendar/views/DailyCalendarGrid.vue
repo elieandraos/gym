@@ -1,5 +1,5 @@
 <template>
-    <div ref="container" class="isolate bg-white">
+    <div ref="container" class="isolate flex flex-auto flex-col bg-white overflow-auto scroll-smooth">
         <div class="flex w-full flex-col">
             <!-- Grid container -->
             <div class="flex" style="min-height: 2000px;">
@@ -68,8 +68,9 @@ import { format } from 'date-fns'
 
 import TimeGutter from '../components/TimeGutter.vue'
 import EventCard from '../components/EventCard.vue'
+import { useCalendarAutoScroll } from '../composables/useCalendarAutoScroll.js'
 
-defineProps({
+const props = defineProps({
     hours: {
         type: Array,
         default: () => []
@@ -77,6 +78,18 @@ defineProps({
     filteredEvents: {
         type: Array,
         default: () => []
+    },
+    startHour: {
+        type: Number,
+        default: 6
+    },
+    endHour: {
+        type: Number,
+        default: 22
+    },
+    autoScrollToTime: {
+        type: Boolean,
+        default: true
     }
 })
 
@@ -85,4 +98,7 @@ defineEmits(['openModal'])
 // Template refs
 const container = ref(null)
 const containerOffset = ref(null)
+
+// Auto-scroll to current time
+useCalendarAutoScroll(container, props.startHour, props.endHour, props.autoScrollToTime)
 </script>

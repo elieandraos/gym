@@ -1,5 +1,5 @@
 <template>
-    <div class="flex h-full flex-col">
+    <div class="flex h-[calc(100vh-4rem)] flex-col">
         <!-- Daily Calendar Header with navigation and filters -->
         <DailyCalendarHeader
             :date-label="dateLabel"
@@ -19,6 +19,9 @@
         <DailyCalendarGrid
             :hours="hours"
             :filtered-events="filteredEvents"
+            :start-hour="startHour"
+            :end-hour="endHour"
+            :auto-scroll-to-time="autoScrollToTime"
             @open-modal="openMembersPopup"
         />
 
@@ -56,7 +59,8 @@ const props = defineProps({
     available_trainers: Array,
     filters: { type: Object, default: () => ({}) },
     startHour: { type: Number, default: 6 },
-    endHour: { type: Number, default: 22 }
+    endHour: { type: Number, default: 22 },
+    autoScrollToTime: { type: Boolean, default: true }
 })
 
 const { route } = window

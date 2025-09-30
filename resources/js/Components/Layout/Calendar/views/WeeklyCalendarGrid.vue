@@ -69,11 +69,12 @@
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick } from 'vue'
+import { ref } from 'vue'
 import { format } from 'date-fns'
 
 import TimeGutter from '../components/TimeGutter.vue'
 import EventCard from '../components/EventCard.vue'
+import { useCalendarAutoScroll } from '../composables/useCalendarAutoScroll.js'
 
 const props = defineProps({
     headerDays: {
@@ -95,6 +96,10 @@ const props = defineProps({
     endHour: {
         type: Number,
         default: 22
+    },
+    autoScrollToTime: {
+        type: Boolean,
+        default: true
     }
 })
 
@@ -105,31 +110,5 @@ const container = ref(null)
 const containerOffset = ref(null)
 
 // Auto-scroll to current time
-onMounted(async () => {
-    await nextTick()
-
-    const now = new Date()
-    const currentHour = now.getHours()
-    const currentMinutes = now.getMinutes()
-
-    // Only scroll if current time is within calendar hours
-    if (currentHour >= props.startHour && currentHour < props.endHour) {
-        // Small delay to ensure layout is complete
-        setTimeout(() => {
-            // Calculate position: each hour has 2 rows (hour + 30min marker) at 3.5rem each
-            const hoursSinceStart = currentHour - props.startHour
-            const minuteProgress = currentMinutes / 60
-            const rowsFromStart = hoursSinceStart * 2 + minuteProgress * 2
-
-            // Each row is 3.5rem, plus 1rem offset at the top
-            const remInPixels = parseFloat(getComputedStyle(document.documentElement).fontSize)
-            const scrollPosition = (1 + rowsFromStart * 3.5) * remInPixels
-
-            // Scroll to position minus some offset for better visibility
-            if (container.value) {
-                container.value.scrollTop = scrollPosition - 100
-            }
-        }, 100)
-    }
-})
+useCalendarAutoScroll(container, props.startHour, props.endHour, props.autoScrollToTime)
 </script>

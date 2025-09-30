@@ -1,13 +1,15 @@
 <template>
     <AppLayout title="Daily Calendar">
-        <Container>
-            <daily-calendar
-                :events="events"
-                :is_today="is_today"
-                :available_trainers="available_trainers"
-                :filters="filters">
-            </daily-calendar>
-        </Container>
+        <div class="h-full overflow-hidden">
+            <Container>
+                <daily-calendar
+                    :events="events"
+                    :is_today="is_today"
+                    :available_trainers="available_trainers"
+                    :filters="filters">
+                </daily-calendar>
+            </Container>
+        </div>
     </AppLayout>
 </template>
 

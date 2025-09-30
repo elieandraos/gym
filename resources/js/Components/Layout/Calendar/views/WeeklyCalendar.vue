@@ -24,6 +24,7 @@
             :filtered-events="filteredEvents"
             :start-hour="startHour"
             :end-hour="endHour"
+            :auto-scroll-to-time="autoScrollToTime"
             @open-modal="openMembersPopup"
         />
 
@@ -61,7 +62,8 @@ const props = defineProps({
     available_trainers: Array,
     filters: { type: Object, default: () => ({}) },
     startHour: { type: Number, default: 6 },
-    endHour: { type: Number, default: 22 }
+    endHour: { type: Number, default: 22 },
+    autoScrollToTime: { type: Boolean, default: true }
 })
 
 const { route } = window
