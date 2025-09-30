@@ -1,5 +1,5 @@
 <template>
-    <div class="flex h-full flex-col">
+    <div class="flex h-[calc(100vh-4rem)] flex-col">
         <!-- Calendar Header with navigation and filters -->
         <WeeklyCalendarHeader
             :label="monthLabel"
@@ -22,6 +22,8 @@
             :header-days="headerDays"
             :hours="hours"
             :filtered-events="filteredEvents"
+            :start-hour="startHour"
+            :end-hour="endHour"
             @open-modal="openMembersPopup"
         />
 

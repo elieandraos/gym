@@ -1,13 +1,15 @@
 <template>
     <AppLayout title="Calendar">
-        <Container>
-            <weekly-calendar
-                :events="events"
-                :is_current="is_current"
-                :available_trainers="available_trainers"
-                :filters="filters">
-            </weekly-calendar>
-        </Container>
+        <div class="h-full overflow-hidden">
+            <Container>
+                <weekly-calendar
+                    :events="events"
+                    :is_current="is_current"
+                    :available_trainers="available_trainers"
+                    :filters="filters">
+                </weekly-calendar>
+            </Container>
+        </div>
     </AppLayout>
 </template>
 
