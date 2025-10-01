@@ -84,7 +84,7 @@
                 @click="saveUser"
                 :class="{ 'opacity-25': form.processing }"
                 :disabled="form.processing">
-                    Save Trainer
+                    {{ buttonText }}
             </primary-button>
         </div>
     </div>
@@ -93,7 +93,7 @@
 <script setup>
 import TransparentButton from '@/Components/Layout/TransparentButton.vue'
 import {Link} from '@inertiajs/vue3'
-import { inject, watch, nextTick } from 'vue'
+import { inject, watch, nextTick, computed } from 'vue'
 
 import DateInput from '@/Components/Form/DateInput.vue'
 import FormSection from '@/Components/Form/FormSection.vue'
@@ -103,7 +103,12 @@ import SelectInput from '@/Components/Form/SelectInput.vue'
 import TextInput from '@/Components/Form/TextInput.vue'
 import PrimaryButton from '@/Components/Layout/PrimaryButton.vue'
 
+const props = defineProps({
+    isEdit: { type: Boolean, default: false },
+})
+
 const form = inject('form')
+const userId = inject('userId', null)
 
 const { route } = window
 
@@ -116,11 +121,19 @@ const scrollToFirstError = () => {
     })
 }
 
-const saveUser = () => form.post(route('admin.trainers.store'), {
-    preserveScroll: true,
-    onFinish: () => {
-        // form.reset()
-    },
-    onError: () => scrollToFirstError(),
-})
+const saveUser = () => {
+    const routeName = props.isEdit ? 'admin.trainers.update' : 'admin.trainers.store'
+    const routeParams = props.isEdit ? [userId] : []
+    const method = props.isEdit ? 'put' : 'post'
+
+    form[method](route(routeName, ...routeParams), {
+        preserveScroll: true,
+        onFinish: () => {
+            // form.reset()
+        },
+        onError: () => scrollToFirstError(),
+    })
+}
+
+const buttonText = computed(() => props.isEdit ? 'Update Trainer' : 'Save Trainer')
 </script>

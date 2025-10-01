@@ -27,6 +27,8 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         Route::get('/create', [MembersController::class, 'create'])->name('create');
         Route::post('/store', [MembersController::class, 'store'])->name('store');
         Route::get('/{user}', [MembersController::class, 'show'])->name('show');
+        Route::get('/{user}/edit', [MembersController::class, 'edit'])->name('edit');
+        Route::put('/{user}', [MembersController::class, 'update'])->name('update');
         Route::get('/{user}/personal-info', [MemberPersonalInfoController::class, 'index'])->name('personal-info');
         Route::get('/{user}/bookings/history', [MemberBookingHistoryController::class, 'index'])->name('bookings.history');
     });
@@ -37,6 +39,8 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         Route::get('/create', [TrainersController::class, 'create'])->name('create');
         Route::post('/store', [TrainersController::class, 'store'])->name('store');
         Route::get('/{user}', [TrainersController::class, 'show'])->name('show');
+        Route::get('/{user}/edit', [TrainersController::class, 'edit'])->name('edit');
+        Route::put('/{user}', [TrainersController::class, 'update'])->name('update');
     });
 
     // Workouts

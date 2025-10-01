@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Enums\Role;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\UpdateUserRequest;
 use App\Http\Requests\Admin\UserRequest;
 use App\Http\Resources\TrainerResource;
 use App\Models\User;
@@ -55,6 +56,22 @@ class TrainersController extends Controller
 
         return redirect()->route('admin.trainers.index')
             ->with('flash.banner', 'Trainer created successfully')
+            ->with('flash.bannerStyle', 'success');
+    }
+
+    public function edit(User $user): Response
+    {
+        return Inertia::render('Admin/Trainers/Edit', [
+            'trainer' => TrainerResource::make($user),
+        ]);
+    }
+
+    public function update(UpdateUserRequest $request, User $user): RedirectResponse
+    {
+        $user->update($request->validated());
+
+        return redirect()->route('admin.trainers.show', $user)
+            ->with('flash.banner', 'Trainer updated successfully')
             ->with('flash.bannerStyle', 'success');
     }
 }

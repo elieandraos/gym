@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Enums\Role;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\UpdateUserRequest;
 use App\Http\Requests\Admin\UserRequest;
 use App\Http\Resources\MemberResource;
 use App\Models\User;
@@ -71,6 +72,22 @@ class MembersController extends Controller
 
         return redirect()->route('admin.members.index')
             ->with('flash.banner', 'Member created successfully')
+            ->with('flash.bannerStyle', 'success');
+    }
+
+    public function edit(User $user): Response
+    {
+        return Inertia::render('Admin/Members/Edit', [
+            'member' => MemberResource::make($user),
+        ]);
+    }
+
+    public function update(UpdateUserRequest $request, User $user): RedirectResponse
+    {
+        $user->update($request->validated());
+
+        return redirect()->route('admin.members.show', $user)
+            ->with('flash.banner', 'Member updated successfully')
             ->with('flash.bannerStyle', 'success');
     }
 }
