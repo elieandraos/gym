@@ -1,5 +1,15 @@
 <template>
     <div class="">
+        <FormSection v-if="isEdit" title="Profile Photo" description="Upload a profile photo for the member.">
+            <InputPhotoUpload
+                :photo_url="profilePhotoUrl"
+                :photo_path="profilePhotoPath"
+                :name="form.name"
+                @upload="(file) => { form.photo = file; form.remove_photo = false; }"
+                @remove="() => { form.photo = null; form.remove_photo = true; }" />
+            <InputError :message="form.errors.photo" />
+        </FormSection>
+
         <FormSection title="In-house" description="Is the member a direct lift station customer?">
             <SwitchInput v-model="form.in_house" class="mt-4"/>
         </FormSection>
@@ -97,6 +107,7 @@ import { inject, nextTick, computed } from 'vue'
 import DateInput from '@/Components/Form/DateInput.vue'
 import FormSection from '@/Components/Form/FormSection.vue'
 import InputError from '@/Components/Form/InputError.vue'
+import InputPhotoUpload from '@/Components/Form/InputPhotoUpload.vue'
 import SelectInput from '@/Components/Form/SelectInput.vue'
 import SwitchInput from '@/Components/Form/SwitchInput.vue'
 import TextInput from '@/Components/Form/TextInput.vue'
@@ -108,6 +119,8 @@ const props = defineProps({
 
 const form = inject('form')
 const userId = inject('userId', null)
+const profilePhotoUrl = inject('profilePhotoUrl', '')
+const profilePhotoPath = inject('profilePhotoPath', '')
 
 const { route } = window
 
@@ -123,15 +136,26 @@ const scrollToFirstError = () => {
 const saveMember = () => {
     const routeName = props.isEdit ? 'admin.members.update' : 'admin.members.store'
     const routeParams = props.isEdit ? [userId] : []
-    const method = props.isEdit ? 'put' : 'post'
 
-    form[method](route(routeName, ...routeParams), {
-        preserveScroll: true,
-        onFinish: () => {
-            // form.reset()
-        },
-        onError: () => scrollToFirstError(),
-    })
+    if (props.isEdit) {
+        // For updates, use POST with _method spoofing to support file uploads
+        form.post(route(routeName, ...routeParams), {
+            _method: 'put',
+            preserveScroll: true,
+            onFinish: () => {
+                // form.reset()
+            },
+            onError: () => scrollToFirstError(),
+        })
+    } else {
+        form.post(route(routeName, ...routeParams), {
+            preserveScroll: true,
+            onFinish: () => {
+                // form.reset()
+            },
+            onError: () => scrollToFirstError(),
+        })
+    }
 }
 
 const buttonText = computed(() => props.isEdit ? 'Update Member' : 'Save Member')

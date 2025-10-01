@@ -42,8 +42,12 @@ const form = useForm({
     in_house: props.trainer.in_house,
     registration_date: props.trainer.registration_date,
     color: props.trainer.color,
+    photo: null,
+    remove_photo: false,
 })
 
 provide('form', form)
 provide('userId', props.trainer.id)
+provide('profilePhotoUrl', props.trainer.profile_photo_url)
+provide('profilePhotoPath', props.trainer.profile_photo_path)
 </script>

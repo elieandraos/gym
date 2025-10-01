@@ -19,6 +19,7 @@ class TrainerResource extends JsonResource
             'registration_date' => $this->registration_date,
             'since' => $this->since,
             'profile_photo_url' => $this->profile_photo_url,
+            'profile_photo_path' => $this->profile_photo_path,
             'in_house' => $this->in_house,
             'gender' => $this->gender,
             'weight' => $this->weight,

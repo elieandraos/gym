@@ -68,7 +68,15 @@ class TrainersController extends Controller
 
     public function update(UpdateUserRequest $request, User $user): RedirectResponse
     {
-        $user->update($request->validated());
+        if ($request->hasFile('photo')) {
+            $user->updateProfilePhoto($request->file('photo'));
+        }
+
+        if ($request->has('remove_photo') && $request->input('remove_photo') === true) {
+            $user->deleteProfilePhoto();
+        }
+
+        $user->update($request->except(['photo', 'remove_photo']));
 
         return redirect()->route('admin.trainers.show', $user)
             ->with('flash.banner', 'Trainer updated successfully')

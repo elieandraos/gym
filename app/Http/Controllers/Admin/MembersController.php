@@ -84,7 +84,15 @@ class MembersController extends Controller
 
     public function update(UpdateUserRequest $request, User $user): RedirectResponse
     {
-        $user->update($request->validated());
+        if ($request->hasFile('photo')) {
+            $user->updateProfilePhoto($request->file('photo'));
+        }
+
+        if ($request->has('remove_photo') && $request->input('remove_photo') === true) {
+            $user->deleteProfilePhoto();
+        }
+
+        $user->update($request->except(['photo', 'remove_photo']));
 
         return redirect()->route('admin.members.show', $user)
             ->with('flash.banner', 'Member updated successfully')
