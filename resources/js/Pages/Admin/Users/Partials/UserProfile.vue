@@ -11,7 +11,7 @@
                 </tr>
                 <tr class="border-b border-zinc-100">
                     <td class="text-zinc-400 w-32 lg:w-48 py-4">Birthdate</td>
-                    <td class="py-4">{{ birthdate }}</td>
+                    <td class="py-4">{{ birthdate_formatted }}</td>
                 </tr>
                 <tr class="border-b border-zinc-100">
                     <td class="text-zinc-400 w-32 lg:w-48 py-4">Weight</td>
@@ -36,6 +36,6 @@ const props = defineProps({
 })
 
 const {
-    gender, birthdate, weight, height, blood_type,
+    gender, birthdate_formatted, weight, height, blood_type,
 } = props.user
 </script>

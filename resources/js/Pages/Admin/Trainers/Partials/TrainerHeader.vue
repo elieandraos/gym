@@ -8,7 +8,7 @@
                     <div class="flex flex-wrap items-center gap-2">
                         <h1 class="text-[20px] font-[600] leading-[32px]">{{ name }}</h1>
                     </div>
-                    <div class="text-[#71717b]">{{ age }} years old · Member since {{  since }}</div>
+                    <div class="text-[#71717b]">{{ age }} years old · joined on {{  since }}</div>
                 </div>
             </div>
         </div>
