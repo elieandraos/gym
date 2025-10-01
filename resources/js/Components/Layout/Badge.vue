@@ -1,6 +1,6 @@
 <template>
     <span
-        class="inline-flex items-center gap-x-1.5 rounded-md px-2 py-1 text-xs lowercase font-[500] sm:text-sm forced-colors:outline"
+        class="inline-flex items-center gap-x-1.5 rounded-md px-2 py-1 text-xs lowercase font-[500] forced-colors:outline"
         :class="classList">
         <slot></slot>
     </span>

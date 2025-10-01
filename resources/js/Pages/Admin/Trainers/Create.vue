@@ -2,7 +2,10 @@
     <AppLayout>
         <Container>
             <PageHeader :sticky="true">
-                <PageHeaderTitle>New Trainer</PageHeaderTitle>
+                <div class="flex items-center gap-4">
+                    <PageBackButton />
+                    <PageHeaderTitle>New Trainer</PageHeaderTitle>
+                </div>
             </PageHeader>
             <TrainerForm></TrainerForm>
         </Container>
@@ -15,6 +18,7 @@ import { useForm } from '@inertiajs/vue3'
 import { provide } from 'vue'
 
 import Container from '@/Components/Layout/Container.vue'
+import PageBackButton from '@/Components/Layout/PageBackButton.vue'
 import PageHeader from '@/Components/Layout/PageHeader.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import TrainerForm from '@/Pages/Admin/Trainers/Partials/TrainerForm.vue'

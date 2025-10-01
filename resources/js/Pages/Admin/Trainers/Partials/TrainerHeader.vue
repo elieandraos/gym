@@ -1,18 +1,23 @@
 <template>
     <div class="flex justify-between items-center">
         <div class="flex flex-wrap grow items-center gap-4">
-            <img class="h-16 w-16 flex-shrink-0 rounded-full object-cover" :src="profile_photo_url" :alt="name">
-            <div>
-                <div class="flex flex-wrap items-center gap-2">
-                    <h1 class="text-xl/8 font-bold text-zinc-950">{{ name }}</h1>
+            <PageBackButton />
+            <div class="flex gap-2 items-center">
+                <img class="size-12 flex-shrink-0 rounded-full object-cover" :src="profile_photo_url" :alt="name">
+                <div>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <h1 class="text-[20px] font-[600] leading-[32px]">{{ name }}</h1>
+                    </div>
+                    <div class="text-[#71717b]">{{ age }} years old · Member since {{  since }}</div>
                 </div>
-                <div class="mt-1 text-sm text-zinc-500">{{ age }} years old · Member since {{  since }}</div>
             </div>
         </div>
     </div>
 </template>
 
 <script setup>
+import PageBackButton from '@/Components/Layout/PageBackButton.vue'
+
 const props = defineProps({
     trainer: { type: Object, required: true },
     bordered: { type: Boolean, default: false },

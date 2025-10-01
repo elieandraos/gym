@@ -2,7 +2,10 @@
     <AppLayout title="New Training">
         <Container>
             <PageHeader :sticky="true">
-                <PageHeaderTitle>New training</PageHeaderTitle>
+                <div class="flex items-center gap-4">
+                    <PageBackButton />
+                    <PageHeaderTitle>New training</PageHeaderTitle>
+                </div>
             </PageHeader>
 
             <FormSection title="Member" description="Choose the member receiving the training.">
@@ -73,6 +76,7 @@ import InputError from '@/Components/Form/InputError.vue'
 import SwitchInput from '@/Components/Form/SwitchInput.vue'
 import TextInput from '@/Components/Form/TextInput.vue'
 import Container from '@/Components/Layout/Container.vue'
+import PageBackButton from '@/Components/Layout/PageBackButton.vue'
 import PageHeader from '@/Components/Layout/PageHeader.vue'
 import PageHeaderTitle from '@/Components/Layout/PageHeaderTitle.vue'
 import PrimaryButton from '@/Components/Layout/PrimaryButton.vue'

@@ -2,7 +2,10 @@
     <AppLayout>
         <Container :centered="false">
             <PageHeader :sticky="true">
-                <PageHeaderTitle>New member</PageHeaderTitle>
+                <div class="flex items-center gap-4">
+                    <PageBackButton />
+                    <PageHeaderTitle>New member</PageHeaderTitle>
+                </div>
             </PageHeader>
             <MemberForm></MemberForm>
         </Container>
@@ -16,6 +19,7 @@ import { useForm } from '@inertiajs/vue3'
 import { provide } from 'vue'
 
 import Container from '@/Components/Layout/Container.vue'
+import PageBackButton from '@/Components/Layout/PageBackButton.vue'
 import PageHeader from '@/Components/Layout/PageHeader.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
 

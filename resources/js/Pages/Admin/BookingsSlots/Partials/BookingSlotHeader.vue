@@ -1,9 +1,11 @@
 <template>
-    <div class="flex justify-between items-end font-normal">
+    <div class="flex justify-between items-center font-normal gap-4">
+        <PageBackButton />
+
         <div class="grow">
-            <div class="flex gap-x-4">
+            <div class="flex gap-x-4 items-center">
                 <h1 class="text-[20px] font-[600] leading-[32px]">Session Details</h1>
-                <Badge :type="badge_type">{{ status }}</Badge>
+                <Badge class="text-xs" :type="badge_type">{{ status }}</Badge>
             </div>
             <div class="flex gap-x-12 mt-1 text-[#71717b]">
                 <div class="flex gap-x-2">
@@ -39,6 +41,7 @@
 <script setup>
 import Badge from '@/Components/Layout/Badge.vue'
 import Dropdown from '@/Components/Layout/Dropdown.vue'
+import PageBackButton from '@/Components/Layout/PageBackButton.vue'
 import { ClockIcon, UsersIcon } from '@heroicons/vue/24/solid'
 
 import { Link } from '@inertiajs/vue3'

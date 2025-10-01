@@ -1,21 +1,11 @@
 <template>
-    <div class="mb-6">
-        <div class="inline-flex gap-1 items-center group cursor-pointer" @click="goTo">
-            <chevron-left-icon class="w-3 h-3 text-zinc-400 group-hover:text-zinc-500"></chevron-left-icon>
-            <span class="inline-flex text-zinc-400 text-sm font-semibold leading-relaxed group-hover:text-zinc-500">
-                <slot></slot>
-            </span>
-        </div>
-    </div>
+    <button @click="goBack" class="flex-shrink-0 p-2 -ml-2 cursor-pointer bg-zinc-100 hover:bg-zinc-200 rounded-lg transition-colors">
+        <ChevronLeftIcon class="w-5 h-5 text-zinc-600" />
+    </button>
 </template>
 
 <script setup>
-import { ChevronLeftIcon } from '@heroicons/vue/24/solid'
-import { router } from '@inertiajs/vue3'
+import { ChevronLeftIcon } from '@heroicons/vue/24/outline'
 
-const props = defineProps({
-    url: { type: String, required: false },
-})
-
-const goTo = () => (props.url ? router.visit(props.url) : window.history.back())
+const goBack = () => window.history.back()
 </script>
