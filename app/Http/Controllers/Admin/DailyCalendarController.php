@@ -46,6 +46,7 @@ class DailyCalendarController extends Controller
             ->map(fn ($trainer) => [
                 'id' => $trainer->id,
                 'first_name' => explode(' ', $trainer->name)[0],
+                'color' => $trainer->color,
             ])
             ->sortBy('first_name')
             ->values();
