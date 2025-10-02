@@ -18,12 +18,12 @@
                                         </button>
                                     </div>
                                 </div>
+
                                 <div v-if="workout.sets && workout.sets.length" class="space-y-2">
                                     <div v-for="(set, index) in workout.sets" :key="index" class="flex items-center gap-2 text-[#71717b]">
                                         <span v-if="set.weight_in_kg">{{ set.weight_in_kg }} kg</span>
-                                        <span v-if="set.weight_in_kg && set.reps">×</span>
-                                        <span v-if="set.reps">{{ set.reps }} reps</span>
-                                        <span v-if="set.duration_in_seconds">{{ set.duration_in_seconds }}s</span>
+                                        <span v-if="set.reps && set.reps > 1">× {{ set.reps }}</span>
+                                        <span v-if="set.duration_in_seconds">{{ set.duration_in_seconds }} seconds</span>
                                     </div>
                                 </div>
                                 <div v-else class="text-sm text-gray-500">
@@ -67,9 +67,11 @@ const groupedWorkouts = computed(() => {
 })
 
 const confirmRemoveWorkout = (workout) => {
+    const { delete_url } = workout
+
     if (confirm(`Are you sure you want to remove "${workout.name}" from this session?`)) {
         removingWorkout.value = workout.id
-        router.delete(workout.delete_url, {
+        router.delete(delete_url, {
             preserveScroll: true,
             onSuccess: () => {
                 workouts.value = workouts.value.filter(w => w.id !== workout.id)
