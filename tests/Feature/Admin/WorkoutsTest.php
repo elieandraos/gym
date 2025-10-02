@@ -128,3 +128,37 @@ test('it deletes a workout', function () {
 
     $this->assertDatabaseMissing(Workout::class, ['id' => $workout->id]);
 });
+
+test('it filters workouts by search', function () {
+    Workout::factory()->create(['name' => 'Push-ups']);
+    Workout::factory()->create(['name' => 'Pull-ups']);
+    Workout::factory()->create(['name' => 'Squats']);
+
+    $workouts = Workout::query()
+        ->where('name', 'like', '%Push%')
+        ->orderBy('name')
+        ->paginate(10);
+
+    actingAsAdmin()
+        ->get(route('admin.workouts.index', ['search' => 'Push']))
+        ->assertHasComponent('Admin/Workouts/Index')
+        ->assertHasPaginatedResource('workouts', WorkoutResource::collection($workouts))
+        ->assertStatus(200);
+});
+
+test('it filters workouts by category', function () {
+    Workout::factory()->create(['category' => Category::Chest]);
+    Workout::factory()->create(['category' => Category::Legs]);
+    Workout::factory()->create(['category' => Category::Abs]);
+
+    $workouts = Workout::query()
+        ->where('category', Category::Chest->value)
+        ->orderBy('name')
+        ->paginate(10);
+
+    actingAsAdmin()
+        ->get(route('admin.workouts.index', ['category' => Category::Chest->value]))
+        ->assertHasComponent('Admin/Workouts/Index')
+        ->assertHasPaginatedResource('workouts', WorkoutResource::collection($workouts))
+        ->assertStatus(200);
+});

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Resources\Calendar\DayEventsCollection;
+use App\Http\Resources\Calendar\EventResource;
 use App\Models\Booking;
 use Carbon\Carbon;
 
@@ -88,23 +89,25 @@ test('daily calendar processes seeded booking data correctly', function () {
     $slot = $booking->bookingSlots->first();
     $slotDate = $slot->start_time->toDateString();
 
+    // Generate expected event structure using the actual resource
+    $expectedEvent = (new EventResource($slot))->toArray(request());
+
     $response = actingAsAdmin()->get(route('admin.daily-calendar.index', [
         'date' => $slotDate,
     ]));
 
     $response->assertOk()
-        ->assertInertia(function ($inertia) use ($slotDate, $slot) {
+        ->assertInertia(function ($inertia) use ($slotDate, $expectedEvent) {
             $inertia->has('events')
                 ->has('filters')
                 ->where('filters.date', $slotDate)
                 ->has('available_trainers')
-                ->where('events', function ($events) use ($slot) {
-                    // If events exist, verify structure
+                ->where('events', function ($events) use ($expectedEvent) {
+                    // If events exist, verify structure matches the resource
                     if (count($events) > 0) {
-                        $event = collect($events)->firstWhere('id', $slot->id);
+                        $event = collect($events)->firstWhere('id', $expectedEvent['id']);
                         if ($event) {
-                            expect($event)->toHaveKeys(['id', 'start_time', 'end_time', 'title', 'meta_data'])
-                                ->and($event['meta_data'])->toHaveKeys(['member', 'trainer', 'trainer_color', 'booking_id']);
+                            expect($event)->toMatchArray($expectedEvent);
                         }
                     }
 
@@ -142,6 +145,56 @@ test('daily calendar only shows events for specified date', function () {
                     foreach ($events as $event) {
                         $eventDate = Carbon::parse($event['start_time'])->toDateString();
                         expect($eventDate)->toBe($targetDate);
+                    }
+
+                    return true;
+                });
+        });
+});
+
+test('daily calendar filters events by trainer ids', function () {
+    // Get bookings with slots and trainers
+    $bookings = Booking::with(['bookingSlots', 'trainer'])
+        ->whereHas('bookingSlots')
+        ->get();
+
+    if ($bookings->count() < 2) {
+        $this->markTestSkipped('Need at least 2 bookings with different trainers');
+    }
+
+    // Pick a slot and filter by its trainer
+    $booking = $bookings->first();
+    $slot = $booking->bookingSlots->first();
+    $trainerId = $booking->trainer_id;
+    $slotDate = $slot->start_time->toDateString();
+
+    // Get bookings for this trainer on this date to verify
+    $expectedBookingIds = Booking::query()
+        ->where('trainer_id', $trainerId)
+        ->whereHas('bookingSlots', function ($query) use ($slotDate) {
+            $startOfDay = Carbon::parse($slotDate)->startOfDay();
+            $endOfDay = Carbon::parse($slotDate)->endOfDay();
+            $query->whereBetween('start_time', [$startOfDay, $endOfDay]);
+        })
+        ->pluck('id')
+        ->toArray();
+
+    $response = actingAsAdmin()->get(route('admin.daily-calendar.index', [
+        'date' => $slotDate,
+        'trainers' => (string) $trainerId,
+    ]));
+
+    $response->assertOk()
+        ->assertInertia(function ($inertia) use ($slotDate, $trainerId, $expectedBookingIds) {
+            $inertia->has('events')
+                ->has('filters')
+                ->where('filters.date', $slotDate)
+                ->where('filters.trainers', [$trainerId])
+                ->has('available_trainers')
+                ->where('events', function ($events) use ($expectedBookingIds) {
+                    // All events should belong to bookings with the filtered trainer
+                    foreach ($events as $event) {
+                        expect($event['meta_data']['booking_id'])->toBeIn($expectedBookingIds);
                     }
 
                     return true;

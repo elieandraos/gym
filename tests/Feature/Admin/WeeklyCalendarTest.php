@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Resources\Calendar\EventResource;
 use App\Http\Resources\Calendar\WeekEventsCollection;
 use App\Models\Booking;
 use Carbon\Carbon;
@@ -89,26 +90,77 @@ test('calendar processes seeded booking data correctly', function () {
     $weekStart = $slot->start_time->copy()->startOfWeek();
     $weekEnd = $weekStart->copy()->addDays(5);
 
+    // Generate expected event structure using the actual resource
+    $expectedEvent = (new EventResource($slot))->toArray(request());
+
     $response = actingAsAdmin()->get(route('admin.weekly-calendar.index', [
         'start' => $weekStart->toDateString(),
         'end' => $weekEnd->toDateString(),
     ]));
 
     $response->assertOk()
-        ->assertInertia(function ($inertia) use ($weekStart, $weekEnd, $slot) {
+        ->assertInertia(function ($inertia) use ($weekStart, $weekEnd, $expectedEvent) {
             $inertia->has('events')
                 ->has('filters')
                 ->where('filters.start', $weekStart->toDateString())
                 ->where('filters.end', $weekEnd->toDateString())
                 ->has('available_trainers')
-                ->where('events', function ($events) use ($slot) {
-                    // If events exist, verify structure
+                ->where('events', function ($events) use ($expectedEvent) {
+                    // If events exist, verify structure matches the resource
                     if (count($events) > 0) {
-                        $event = collect($events)->firstWhere('id', $slot->id);
+                        $event = collect($events)->firstWhere('id', $expectedEvent['id']);
                         if ($event) {
-                            expect($event)->toHaveKeys(['id', 'start_time', 'end_time', 'title', 'url', 'meta_data'])
-                                ->and($event['meta_data'])->toHaveKeys(['member', 'trainer', 'trainer_color', 'booking_id', 'short_time']);
+                            expect($event)->toMatchArray($expectedEvent);
                         }
+                    }
+
+                    return true;
+                });
+        });
+});
+
+test('calendar filters events by trainer ids', function () {
+    // Get bookings with slots and trainers
+    $bookings = Booking::with(['bookingSlots', 'trainer'])
+        ->whereHas('bookingSlots')
+        ->get();
+
+    if ($bookings->count() < 2) {
+        $this->markTestSkipped('Need at least 2 bookings with different trainers');
+    }
+
+    // Pick a booking and filter by its trainer
+    $booking = $bookings->first();
+    $slot = $booking->bookingSlots->first();
+    $trainerId = $booking->trainer_id;
+    $weekStart = $slot->start_time->copy()->startOfWeek();
+    $weekEnd = $weekStart->copy()->addDays(5);
+
+    // Get bookings for this trainer in this week to verify
+    $expectedBookingIds = Booking::query()
+        ->where('trainer_id', $trainerId)
+        ->forCalendar($weekStart, $weekEnd)
+        ->pluck('id')
+        ->toArray();
+
+    $response = actingAsAdmin()->get(route('admin.weekly-calendar.index', [
+        'start' => $weekStart->toDateString(),
+        'end' => $weekEnd->toDateString(),
+        'trainers' => (string) $trainerId,
+    ]));
+
+    $response->assertOk()
+        ->assertInertia(function ($inertia) use ($weekStart, $weekEnd, $trainerId, $expectedBookingIds) {
+            $inertia->has('events')
+                ->has('filters')
+                ->where('filters.start', $weekStart->toDateString())
+                ->where('filters.end', $weekEnd->toDateString())
+                ->where('filters.trainers', [$trainerId])
+                ->has('available_trainers')
+                ->where('events', function ($events) use ($expectedBookingIds) {
+                    // All events should belong to bookings with the filtered trainer
+                    foreach ($events as $event) {
+                        expect($event['meta_data']['booking_id'])->toBeIn($expectedBookingIds);
                     }
 
                     return true;

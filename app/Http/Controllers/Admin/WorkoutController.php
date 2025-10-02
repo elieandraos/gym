@@ -42,13 +42,6 @@ class WorkoutController extends Controller
         ]);
     }
 
-    public function show(Workout $workout): Response
-    {
-        return Inertia::render('Admin/Workouts/Show', [
-            'workout' => new WorkoutResource($workout),
-        ]);
-    }
-
     public function store(WorkoutRequest $request): RedirectResponse
     {
         Workout::query()->create($request->validated());

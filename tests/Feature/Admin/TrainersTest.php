@@ -328,3 +328,30 @@ test('it removes trainer profile photo', function () {
     expect($trainer->profile_photo_path)->toBeNull();
     Storage::disk('public')->assertMissing($photoPath);
 });
+
+test('it filters trainers by search', function () {
+    User::factory()->create([
+        'role' => \App\Enums\Role::Trainer->value,
+        'name' => 'John Trainer',
+    ]);
+    User::factory()->create([
+        'role' => \App\Enums\Role::Trainer->value,
+        'name' => 'Jane Coach',
+    ]);
+    User::factory()->create([
+        'role' => \App\Enums\Role::Trainer->value,
+        'name' => 'Mike Fitness',
+    ]);
+
+    $trainers = User::query()
+        ->trainers()
+        ->where('name', 'like', '%John%')
+        ->orderBy('registration_date', 'DESC')
+        ->paginate(10);
+
+    actingAsAdmin()
+        ->get(route('admin.trainers.index', ['search' => 'John']))
+        ->assertHasComponent('Admin/Trainers/Index')
+        ->assertHasPaginatedResource('trainers', TrainerResource::collection($trainers))
+        ->assertStatus(200);
+});
