@@ -18,7 +18,7 @@ use Laravel\Jetstream\HasProfilePhoto;
  * @property-read int                              id
  * @property \Illuminate\Support\Carbon|mixed|null $birthdate
  * @property \Illuminate\Support\Carbon|mixed|null $registration_date
- * @property-read mixed                                 $memberCompletedBookings
+ * @property-read mixed                            $memberCompletedBookings
  */
 class User extends Authenticatable
 {
