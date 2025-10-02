@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -11,11 +12,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class BookingSlotWorkout extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'booking_slot_id',
         'workout_id',
-        'image',
-        'notes',
     ];
 
     public function bookingSlot(): BelongsTo

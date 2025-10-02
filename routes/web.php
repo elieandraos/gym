@@ -70,7 +70,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     // Bookings slot workouts
     Route::get('/bookings-slots/{bookingSlot}/workout/create', [BookingSlotWorkoutController::class, 'create'])->name('admin.bookings-slots.workout.create');
     Route::post('/bookings-slots/{bookingSlot}/workout/store', [BookingSlotWorkoutController::class, 'store'])->name('admin.bookings-slots.workout.store');
-    Route::delete('/bookings-slots/workout/{bookingSlotWorkout}', [BookingSlotWorkoutController::class, 'destroy'])->name('admin.bookings-slots.workout.destroy');
+    Route::delete('/bookings-slots/{bookingSlot}/workout/{bookingSlotWorkout}', [BookingSlotWorkoutController::class, 'destroy'])->name('admin.bookings-slots.workout.destroy');
 
     // Weekly Calendar
     Route::get('/weekly-calendar', [WeeklyCalendarController::class, 'index'])->name('admin.weekly-calendar.index');

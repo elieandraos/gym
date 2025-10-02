@@ -17,8 +17,6 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(BookingSlot::class);
             $table->foreignIdFor(Workout::class);
-            $table->string('image')->nullable();
-            $table->text('notes')->nullable();
             $table->timestamps();
         });
     }

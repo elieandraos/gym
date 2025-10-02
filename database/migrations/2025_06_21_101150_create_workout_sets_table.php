@@ -14,11 +14,9 @@ return new class extends Migration
     {
         Schema::create('booking_slot_workout_sets', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(BookingSlotWorkout::class);
-            $table->unsignedInteger('reps')->default(12)->nullable();
-            $table->boolean('is_timed')->default(false);
-            $table->boolean('is_weighted')->default(true);
-            $table->decimal('weight_in_kg', 5, 2)->nullable();
+            $table->foreignIdFor(BookingSlotWorkout::class)->onDelete('cascade');
+            $table->unsignedInteger('reps')->default(12);
+            $table->decimal('weight_in_kg', 5)->nullable();
             $table->unsignedInteger('duration_in_seconds')->nullable();
             $table->timestamps();
         });

@@ -70,10 +70,8 @@ class BookingSlotWorkoutSeeder extends Seeder
         for ($i = 0; $i < $setsCount; $i++) {
             BookingSlotWorkoutSet::query()->create([
                 'booking_slot_workout_id' => $bookingSlotWorkout->id,
-                'reps' => $isWeighted ? 12 : null,
-                'is_weighted' => $isWeighted,
+                'reps' => $isWeighted ? 12 : 1,
                 'weight_in_kg' => $isWeighted ? $this->generateWeight() : null,
-                'is_timed' => $isTimed,
                 'duration_in_seconds' => $isTimed ? $faker->numberBetween(30, 180) : null,
             ]);
         }
