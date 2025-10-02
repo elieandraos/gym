@@ -50,6 +50,7 @@ test('it creates booking slot workouts and sets', function () {
                 'id' => $workout2->id,
                 'type' => 'seconds',
                 'weight_in_kg' => ['', '', ''],
+                'reps' => [1, 1, 1],
                 'duration_in_seconds' => [30, 40, 50],
             ],
         ],
@@ -70,15 +71,30 @@ test('it creates booking slot workouts and sets', function () {
         'workout_id' => $workout2->id,
     ]);
 
-    $bookingSlotWorkout = BookingSlotWorkout::query()->where('booking_slot_id', $bookingSlot->id)
+    // Test weighted workout sets
+    $bookingSlotWorkout1 = BookingSlotWorkout::query()
+        ->where('booking_slot_id', $bookingSlot->id)
         ->where('workout_id', $workout1->id)
         ->first();
 
-    expect($bookingSlotWorkout->sets()->count())->toBe(3);
-    expect($bookingSlotWorkout->sets()->pluck('reps')->all())->toEqual([8, 10, 12]);
+    expect($bookingSlotWorkout1->sets()->count())->toBe(3)
+        ->and($bookingSlotWorkout1->sets()->pluck('reps')->all())->toEqual([8, 10, 12])
+        ->and($bookingSlotWorkout1->sets()->pluck('weight_in_kg')->all())->toEqual(['10.00', '12.00', '14.00'])
+        ->and($bookingSlotWorkout1->sets()->pluck('duration_in_seconds')->all())->toEqual([null, null, null]);
+
+    // Test timed workout sets
+    $bookingSlotWorkout2 = BookingSlotWorkout::query()
+        ->where('booking_slot_id', $bookingSlot->id)
+        ->where('workout_id', $workout2->id)
+        ->first();
+
+    expect($bookingSlotWorkout2->sets()->count())->toBe(3)
+        ->and($bookingSlotWorkout2->sets()->pluck('reps')->all())->toEqual([1, 1, 1])
+        ->and($bookingSlotWorkout2->sets()->pluck('weight_in_kg')->all())->toEqual([null, null, null])
+        ->and($bookingSlotWorkout2->sets()->pluck('duration_in_seconds')->all())->toEqual([30, 40, 50]);
 });
 
-test('it creates booking slot workouts with empty payload', function () {
+test('it does not create booking slot workouts with empty payload', function () {
     $bookingSlot = BookingSlot::query()->first();
 
     $data = [
@@ -102,7 +118,10 @@ test('it deletes a booking slot workout', function () {
     ]);
 
     actingAsAdmin()
-        ->delete(route('admin.bookings-slots.workout.destroy', $bookingSlotWorkout))
+        ->delete(route('admin.bookings-slots.workout.destroy', [
+            'bookingSlot' => $bookingSlot,
+            'bookingSlotWorkout' => $bookingSlotWorkout,
+        ]))
         ->assertRedirect(route('admin.bookings-slots.show', $bookingSlot->id));
 
     $this->assertDatabaseMissing(BookingSlotWorkout::class, [

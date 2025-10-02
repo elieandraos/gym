@@ -40,18 +40,15 @@ class BookingSlotWorkoutController extends Controller
             ]);
 
             $sets = [];
-            $type = $workoutData['type'];
             $weights = $workoutData['weight_in_kg'] ?? [];
             $durations = $workoutData['duration_in_seconds'] ?? [];
             $reps = $workoutData['reps'] ?? [];
 
-            for ($i = 0; $i < max(count($weights), count($durations)); $i++) {
+            for ($i = 0; $i < max(count($weights), count($durations), count($reps)); $i++) {
                 $sets[] = [
-                    'reps' => $reps[$i] ?? 12,
-                    'is_timed' => $type === 'seconds',
-                    'is_weighted' => $type === 'weight',
-                    'weight_in_kg' => $type === 'weight' ? ($weights[$i] !== '' ? $weights[$i] : null) : null,
-                    'duration_in_seconds' => $type === 'seconds' ? ($durations[$i] !== '' ? $durations[$i] : null) : null,
+                    'reps' => $reps[$i],
+                    'weight_in_kg' => $weights[$i] ?? null,
+                    'duration_in_seconds' => $durations[$i] ?? null,
                 ];
             }
 
@@ -61,11 +58,10 @@ class BookingSlotWorkoutController extends Controller
         return redirect()->route('admin.bookings-slots.show', $bookingSlot->id);
     }
 
-    public function destroy(BookingSlotWorkout $bookingSlotWorkout): RedirectResponse
+    public function destroy(BookingSlot $bookingSlot, BookingSlotWorkout $bookingSlotWorkout): RedirectResponse
     {
-        $bookingSlotId = $bookingSlotWorkout->booking_slot_id;
         $bookingSlotWorkout->delete();
 
-        return redirect()->route('admin.bookings-slots.show', $bookingSlotId);
+        return redirect()->route('admin.bookings-slots.show', $bookingSlot->id);
     }
 }

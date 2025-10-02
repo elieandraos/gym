@@ -12,14 +12,36 @@
                     class="bg-white p-4 rounded-lg space-y-3"
                 >
                     <div class="flex justify-between items-center">
-                        <span class="font-semibold">{{ selectedWorkout.name }}</span>
+                        <div class="flex items-center gap-2">
+                            <span class="font-semibold">{{ selectedWorkout.name }}</span>
+                            <div class="flex items-center gap-1">
+                                <button
+                                    type="button"
+                                    @click="addSet(workoutIndex)"
+                                    class="text-gray-400 hover:text-indigo-500 p-1 cursor-pointer hover:bg-indigo-50 rounded"
+                                    title="Add set"
+                                >
+                                    <PlusIcon class="w-4 h-4" />
+                                </button>
+                                <button
+                                    type="button"
+                                    @click="removeSet(workoutIndex)"
+                                    class="text-gray-400 hover:text-red-500 p-1 cursor-pointer hover:bg-red-50 rounded"
+                                    :disabled="selectedWorkout.weight_in_kg.length <= 1"
+                                    :class="{ 'opacity-50 cursor-not-allowed': selectedWorkout.weight_in_kg.length <= 1 }"
+                                    title="Remove set"
+                                >
+                                    <MinusIcon class="w-4 h-4" />
+                                </button>
+                            </div>
+                        </div>
                         <button type="button" @click="remove(workoutIndex)" class="text-red-300 hover:text-red-500 p-1.5 cursor-pointer hover:bg-red-50 hover:rounded-lg">
                             <TrashIcon class="w-4 h-4" />
                         </button>
                     </div>
 
-                    <div class="flex items-center gap-4 text-sm">
-                        <label class="flex items-center gap-1">
+                    <div class="flex items-center gap-4">
+                        <label class="flex items-center gap-1 text-[#71717b]">
                             <input
                                 type="radio"
                                 :name="'type-' + workoutIndex"
@@ -28,7 +50,7 @@
                             />
                             Weight
                         </label>
-                        <label class="flex items-center gap-1">
+                        <label class="flex items-center gap-1 text-[#71717b]">
                             <input
                                 type="radio"
                                 :name="'type-' + workoutIndex"
@@ -53,22 +75,22 @@
                                 v-model="selectedWorkout.reps[idx]"
                                 name="reps[]"
                                 type="number"
-                                placeholder="Reps"
+                                placeholder="Iterations"
                                 class="flex-1"
                             />
                         </div>
                     </div>
 
-                    <div v-if="selectedWorkout.type === 'seconds'" class="flex gap-2">
-                        <TextInput
-                            v-for="(value, idx) in selectedWorkout.duration_in_seconds"
-                            :key="idx"
-                            v-model="selectedWorkout.duration_in_seconds[idx]"
-                            name="duration_in_seconds[]"
-                            type="number"
-                            placeholder="Seconds"
-                            class="w-16"
-                        />
+                    <div v-if="selectedWorkout.type === 'seconds'" class="space-y-2">
+                        <div v-for="(value, idx) in selectedWorkout.duration_in_seconds" :key="idx">
+                            <TextInput
+                                v-model="selectedWorkout.duration_in_seconds[idx]"
+                                name="duration_in_seconds[]"
+                                type="number"
+                                placeholder="Seconds"
+                                class="w-full"
+                            />
+                        </div>
                     </div>
                 </div>
             </div>
@@ -89,10 +111,33 @@
 import TextInput from '@/Components/Form/TextInput.vue'
 import PrimaryButton from '@/Components/Layout/PrimaryButton.vue'
 import TransparentButton from '@/Components/Layout/TransparentButton.vue'
-import { TrashIcon } from '@heroicons/vue/24/solid'
+import { TrashIcon, PlusIcon, MinusIcon } from '@heroicons/vue/24/solid'
 import { Link } from '@inertiajs/vue3'
 import { inject } from 'vue'
 
 const { selectedWorkouts, drop, remove, saveWorkouts, form, bookingSlotId } = inject('workoutState')
 const { route } = window
+
+const addSet = (workoutIndex) => {
+    const workout = selectedWorkouts.value[workoutIndex]
+
+    if (workout.type === 'weight') {
+        workout.weight_in_kg.push('')
+        workout.reps.push('12')
+    } else {
+        workout.reps.push('1')
+    }
+
+    workout.duration_in_seconds.push('')
+}
+
+const removeSet = (workoutIndex) => {
+    const workout = selectedWorkouts.value[workoutIndex]
+
+    if (workout.weight_in_kg.length > 1) {
+        workout.weight_in_kg.pop()
+        workout.reps.pop()
+        workout.duration_in_seconds.pop()
+    }
+}
 </script>

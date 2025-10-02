@@ -22,7 +22,7 @@ import BookingSlotHeader from '@/Pages/Admin/BookingsSlots/Partials/BookingSlotH
 import SearchWorkouts from './Partials/SearchWorkouts.vue'
 import WorkoutSearchResults from './Partials/WorkoutSearchResults.vue'
 import WorkoutForm from './Partials/WorkoutForm.vue'
-import { ref, provide } from 'vue'
+import { ref, provide, watch } from 'vue'
 import { useForm } from '@inertiajs/vue3'
 
 const props = defineProps({
@@ -71,6 +71,24 @@ const saveWorkouts = () => {
         preserveScroll: true,
     })
 }
+
+// Watch for type changes and update reps accordingly
+watch(
+    () => selectedWorkouts.value.map(w => ({ id: w.id, type: w.type })),
+    (newWorkouts, oldWorkouts) => {
+        selectedWorkouts.value.forEach((workout) => {
+            const oldWorkout = oldWorkouts?.find(w => w.id === workout.id)
+            if (oldWorkout && oldWorkout.type !== workout.type) {
+                if (workout.type === 'seconds') {
+                    workout.reps = ['1', '1', '1']
+                } else if (workout.type === 'weight') {
+                    workout.reps = ['12', '12', '12']
+                }
+            }
+        })
+    },
+    { deep: true }
+)
 
 provide('workoutState', {
     search,
