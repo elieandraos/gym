@@ -11,9 +11,9 @@
                             <span>Training is</span>
                             <Badge type="info">frozen</Badge>
                         </div>
-                        <a href="#" class="text-sky-500 hover:text-sky-700 font-[500]">
+                        <Link :href="route('admin.bookings.unfreeze.index', activeBooking.id)" class="text-sky-500 hover:text-sky-700 font-[500]">
                             Unfreeze
-                        </a>
+                        </Link>
                     </div>
                     <div v-else>
                         <p>

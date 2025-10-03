@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\MemberBookingHistoryController;
 use App\Http\Controllers\Admin\MemberPersonalInfoController;
 use App\Http\Controllers\Admin\MembersController;
 use App\Http\Controllers\Admin\TrainersController;
+use App\Http\Controllers\Admin\UnfreezeBookingController;
 use App\Http\Controllers\Admin\WeeklyCalendarController;
 use App\Http\Controllers\Admin\WorkoutController;
 use Illuminate\Support\Facades\Route;
@@ -63,6 +64,8 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     // Freeze/Unfreeze booking
     Route::get('/bookings/{booking}/freeze', [FreezeBookingController::class, 'index'])->name('admin.bookings.freeze.index');
     Route::patch('/bookings/{booking}/freeze', [FreezeBookingController::class, 'update'])->name('admin.bookings.freeze.update');
+    Route::get('/bookings/{booking}/unfreeze', [UnfreezeBookingController::class, 'index'])->name('admin.bookings.unfreeze.index');
+    Route::patch('/bookings/{booking}/unfreeze', [UnfreezeBookingController::class, 'update'])->name('admin.bookings.unfreeze.update');
 
     // Bookings slot
     Route::get('/bookings-slots/{bookingSlot}/show', [BookingSlotsController::class, 'show'])->name('admin.bookings-slots.show');
