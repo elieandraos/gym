@@ -1,6 +1,9 @@
 <?php
 
+use App\Enums\Status;
 use App\Models\Booking;
+use App\Models\BookingSlot;
+use App\Models\User;
 use Carbon\Carbon;
 
 describe('active scope', function () {
@@ -99,5 +102,50 @@ describe('history scope', function () {
         $results = Booking::query()->history()->get();
 
         expect($results)->toHaveCount(0);
+    });
+});
+
+describe('forCalendar scope', function () {
+    it('excludes frozen booking slots from calendar', function () {
+        $member = User::factory()->create();
+        $trainer = User::factory()->create();
+
+        $booking = Booking::factory()->active()->create([
+            'member_id' => $member->id,
+            'trainer_id' => $trainer->id,
+        ]);
+
+        // Create upcoming slot
+        BookingSlot::factory()->create([
+            'booking_id' => $booking->id,
+            'status' => Status::Upcoming,
+            'start_time' => Carbon::now()->addDays(1),
+            'end_time' => Carbon::now()->addDays(1)->addHour(),
+        ]);
+
+        // Create frozen slot
+        BookingSlot::factory()->create([
+            'booking_id' => $booking->id,
+            'status' => Status::Frozen,
+            'start_time' => Carbon::now()->addDays(2),
+            'end_time' => Carbon::now()->addDays(2)->addHour(),
+        ]);
+
+        // Create cancelled slot
+        BookingSlot::factory()->create([
+            'booking_id' => $booking->id,
+            'status' => Status::Cancelled,
+            'start_time' => Carbon::now()->addDays(3),
+            'end_time' => Carbon::now()->addDays(3)->addHour(),
+        ]);
+
+        $start = Carbon::now()->startOfWeek();
+        $end = Carbon::now()->endOfWeek();
+
+        $results = Booking::query()->forCalendar($start, $end)->get();
+
+        expect($results)->toHaveCount(1);
+        expect($results->first()->bookingSlots)->toHaveCount(1);
+        expect($results->first()->bookingSlots->first()->status)->toBe(Status::Upcoming);
     });
 });

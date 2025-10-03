@@ -22,7 +22,7 @@
                             </td>
                         </tr>
                         <tr class="border-b border-zinc-100">
-                            <td class="text-[#71717b] py-4">Recent workouts</td>
+                            <td class="text-[#71717b] py-4">Last workouts</td>
                             <td class="py-4">
                                 <LastSessionRecap :active-booking="activeBooking" />
                             </td>

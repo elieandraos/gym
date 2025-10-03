@@ -16,8 +16,15 @@
         <Dropdown direction="right">
             <div class="space-y-2 font-normal">
                 <Link v-if="isTraining && !isBookingShowPage" :href="route('admin.bookings.show', active_booking.id)" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">Training schedule</Link>
-                <Link v-if="!isMemberHistoryPage" :href="route('admin.members.bookings.history', { user: id })" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">Trainings history</Link>
-                <Link v-if="!isMemberPersonalInfoPage" :href="route('admin.members.personal-info', id)" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">Personal info</Link>
+                <Link v-if="isTraining && !active_booking.is_frozen" :href="route('admin.bookings.freeze.index', active_booking.id)" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">Freeze training</Link>
+                <template v-if="!isMemberPersonalInfoPage">
+                    <hr class="border-gray-200">
+                    <Link :href="route('admin.members.personal-info', id)" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">Personal info</Link>
+                </template>
+                <template v-if="!isMemberHistoryPage">
+                    <hr class="border-gray-200">
+                    <Link :href="route('admin.members.bookings.history', { user: id })" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">Trainings history</Link>
+                </template>
                 <template v-if="!isMemberShowPage">
                     <hr class="border-gray-200">
                     <Link :href="route('admin.members.show', id)" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">{{ first_name }}'s profile</Link>

@@ -22,6 +22,7 @@ class BookingResource extends JsonResource
 
         $today = Carbon::today();
         $status = 'scheduled';
+
         if ($this->start_date <= $today && $this->end_date >= $today) {
             $status = 'active';
         } elseif ($this->end_date < $today) {
@@ -34,6 +35,8 @@ class BookingResource extends JsonResource
             'start_date' => $this->start_date,
             'end_date' => $this->end_date,
             'is_paid' => $this->is_paid,
+            'is_frozen' => $this->is_frozen,
+            'frozen_at' => $this->frozen_at,
             'status' => $status,
             'title' => Carbon::parse($this->start_date)->format('M j').' - '.Carbon::parse($this->end_date)->format('M j').', '.Carbon::parse($this->end_date)->format('Y'),
             'formatted_start_date' => Carbon::parse($this->start_date)->isoFormat('MMM Do'),

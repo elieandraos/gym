@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\BookingSlotWorkoutController;
 use App\Http\Controllers\Admin\CancelBookingSlotController;
 use App\Http\Controllers\Admin\ChangeBookingSlotDateTimeController;
 use App\Http\Controllers\Admin\DailyCalendarController;
+use App\Http\Controllers\Admin\FreezeBookingController;
 use App\Http\Controllers\Admin\MarkBookingAsPaidController;
 use App\Http\Controllers\Admin\MemberBookingHistoryController;
 use App\Http\Controllers\Admin\MemberPersonalInfoController;
@@ -57,7 +58,11 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     Route::get('/bookings/create', [BookingsController::class, 'create'])->name('admin.bookings.create');
     Route::post('/bookings/store', [BookingsController::class, 'store'])->name('admin.bookings.store');
     Route::get('/bookings/{booking}', [BookingsController::class, 'show'])->name('admin.bookings.show');
+    // Mark booking as paid
     Route::patch('/bookings/{booking}/mark-as-paid', MarkBookingAsPaidController::class)->name('admin.bookings.mark-as-paid');
+    // Freeze/Unfreeze booking
+    Route::get('/bookings/{booking}/freeze', [FreezeBookingController::class, 'index'])->name('admin.bookings.freeze.index');
+    Route::patch('/bookings/{booking}/freeze', [FreezeBookingController::class, 'update'])->name('admin.bookings.freeze.update');
 
     // Bookings slot
     Route::get('/bookings-slots/{bookingSlot}/show', [BookingSlotsController::class, 'show'])->name('admin.bookings-slots.show');

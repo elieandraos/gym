@@ -18,6 +18,8 @@ class BookingFactory extends Factory
             'start_date' => Carbon::today(),
             'end_date' => Carbon::today()->addDays(30),
             'is_paid' => $this->faker->boolean(80),
+            'is_frozen' => false,
+            'frozen_at' => null,
             'member_id' => User::factory(),
             'trainer_id' => User::factory(),
         ];

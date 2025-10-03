@@ -26,6 +26,8 @@ class Booking extends Model
         'start_date',
         'end_date',
         'is_paid',
+        'is_frozen',
+        'frozen_at',
     ];
 
     protected $casts = [
@@ -33,6 +35,8 @@ class Booking extends Model
         'end_date' => 'date',
         'nb_sessions' => 'integer',
         'is_paid' => 'boolean',
+        'is_frozen' => 'boolean',
+        'frozen_at' => 'datetime',
     ];
 
     public function member(): BelongsTo
@@ -88,7 +92,9 @@ class Booking extends Model
     public function forCalendar(Builder $query, Carbon $start, Carbon $end): Builder
     {
         return $query->with([
-            'bookingSlots' => fn ($q) => $q->between($start, $end)->whereNot('status', Status::Cancelled),
+            'bookingSlots' => fn ($q) => $q->between($start, $end)
+                ->whereNot('status', Status::Cancelled)
+                ->whereNot('status', Status::Frozen),
             'member:id,name',
             'trainer:id,name,color',
         ])->between($start, $end);
