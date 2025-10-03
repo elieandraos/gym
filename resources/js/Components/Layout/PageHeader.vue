@@ -1,6 +1,6 @@
 <template>
     <div ref="headerRef" :class="[
-        'w-full pb-4',
+        'w-full pb-4 pr-4 lg:pr-0',
         sticky && 'sticky top-0 z-20 bg-white',
         sticky && '-mt-6 lg:mt-0 pt-6 lg:pt-6',
         bordered && 'border-b border-zinc-200',

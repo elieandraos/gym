@@ -19,7 +19,7 @@
 
                     <Link :href="route('admin.members.create')">
                         <primary-button type="button" class="">
-                            Add member
+                            <PlusIcon class="size-5" />
                         </primary-button>
                     </Link>
                 </div>
@@ -33,6 +33,7 @@
 <script setup>
 import { Link, router } from '@inertiajs/vue3'
 import { ref, watch } from 'vue'
+import { PlusIcon } from '@heroicons/vue/24/solid'
 
 import Container from '@/Components/Layout/Container.vue'
 import PageHeader from '@/Components/Layout/PageHeader.vue'

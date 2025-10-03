@@ -23,7 +23,7 @@
 
                     <Link :href="route('admin.workouts.create')">
                         <primary-button type="button" class="">
-                            Add workout
+                            <PlusIcon class="size-5" />
                         </primary-button>
                     </Link>
                 </div>
@@ -37,6 +37,7 @@
 <script setup>
 import { Link, router } from '@inertiajs/vue3'
 import { ref, watch, computed } from 'vue'
+import { PlusIcon } from '@heroicons/vue/24/solid'
 
 import Container from '@/Components/Layout/Container.vue'
 import PageHeader from '@/Components/Layout/PageHeader.vue'
