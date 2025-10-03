@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\Status;
+use App\Models\Traits\UpdatesBookingEndDate;
 use Carbon\Carbon;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Attributes\Scope as AsScope;
@@ -17,7 +18,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Booking extends Model
 {
-    use HasFactory;
+    use HasFactory, UpdatesBookingEndDate;
 
     protected $fillable = [
         'nb_sessions',

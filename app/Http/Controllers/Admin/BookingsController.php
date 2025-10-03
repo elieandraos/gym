@@ -40,12 +40,12 @@ class BookingsController extends Controller
             ]);
         }
 
-        // set the booking end_date to the last session date
-        $request->merge(['end_date' => end($bookingSlots)->start_time->toDateString()]);
-
         // create the booking and its slots
         $booking = Booking::query()->create($request->all());
         $booking->bookingSlots()->saveMany($bookingSlots);
+
+        // set the booking end_date to the last session date
+        $booking->updateEndDateToLastSlot();
 
         return redirect(route('admin.members.show', [$booking->member_id]))
             ->with('flash.banner', 'Training created successfully')

@@ -83,3 +83,47 @@ test('it validates date format', function () {
         ->assertSessionHasErrors(['start_time', 'end_time'])
         ->assertStatus(302);
 });
+
+test('it updates booking end_date when changing the last slot', function () {
+    setupUsersAndBookings();
+
+    $booking = \App\Models\Booking::factory()->active()->create();
+
+    // Create 3 slots
+    $slot1 = BookingSlot::factory()->create([
+        'booking_id' => $booking->id,
+        'start_time' => now()->addDays(5),
+        'end_time' => now()->addDays(5)->addHour(),
+    ]);
+
+    $slot2 = BookingSlot::factory()->create([
+        'booking_id' => $booking->id,
+        'start_time' => now()->addDays(10),
+        'end_time' => now()->addDays(10)->addHour(),
+    ]);
+
+    $slot3 = BookingSlot::factory()->create([
+        'booking_id' => $booking->id,
+        'start_time' => now()->addDays(15), // This is the last slot
+        'end_time' => now()->addDays(15)->addHour(),
+    ]);
+
+    // Set initial booking end_date to last slot
+    $booking->updateEndDateToLastSlot();
+    expect($booking->fresh()->end_date->toDateString())->toBe(now()->addDays(15)->toDateString());
+
+    // Change the last slot to a new date
+    $newStartTime = now()->addDays(20)->setHour(10)->setMinute(0)->setSecond(0);
+    $newEndTime = $newStartTime->copy()->addHour();
+
+    $data = [
+        'start_time' => $newStartTime->format('Y-m-d H:i:s'),
+        'end_time' => $newEndTime->format('Y-m-d H:i:s'),
+    ];
+
+    actingAsAdmin()
+        ->put(route('admin.change-booking-slot-date-time.update', $slot3), $data);
+
+    // Booking end_date should now be updated to the new last slot date
+    expect($booking->fresh()->end_date->toDateString())->toBe(now()->addDays(20)->toDateString());
+});

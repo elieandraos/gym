@@ -49,14 +49,13 @@ class UnfreezeBookingController extends Controller
             ]);
         }
 
-        // Update booking end_date to the last slot's date
-        $lastSlot = $booking->bookingSlots()->orderBy('start_time', 'desc')->first();
-
         $booking->update([
             'is_frozen' => false,
             'frozen_at' => null,
-            'end_date' => $lastSlot->start_time->toDateString(),
         ]);
+
+        // Update booking end_date to the last slot's date
+        $booking->updateEndDateToLastSlot();
 
         return redirect()->route('admin.members.show', $booking->member_id)
             ->with('flash.banner', 'Booking unfrozen successfully')

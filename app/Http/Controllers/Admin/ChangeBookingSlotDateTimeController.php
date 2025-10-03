@@ -38,6 +38,9 @@ class ChangeBookingSlotDateTimeController extends Controller
             'status' => $start->isPast() ? Status::Complete : Status::Upcoming,
         ]);
 
+        // Update booking end_date if this is the last slot
+        $bookingSlot->booking->updateEndDateToLastSlot();
+
         return redirect()->route('admin.bookings-slots.show', $bookingSlot->id);
     }
 }
