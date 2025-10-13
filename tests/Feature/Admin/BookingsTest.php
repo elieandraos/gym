@@ -160,3 +160,102 @@ test('it can mark a booking as paid', function () {
 
     expect($booking->is_paid)->toBeTrue();
 });
+
+test('it loads create page with renew_from parameter and passes booking data', function () {
+    $member = User::query()->members()->first();
+    $trainer = User::query()->trainers()->first();
+
+    $expiringBooking = createExpiringBooking($member, $trainer);
+
+    $response = actingAsAdmin()
+        ->get(route('admin.bookings.create', ['renew_from' => $expiringBooking->id]))
+        ->assertStatus(200)
+        ->assertHasComponent('Admin/Bookings/Create');
+
+    $renewFromBooking = $response->viewData('page')['props']['renewFromBooking'];
+
+    expect($renewFromBooking)->not->toBeNull();
+    expect($renewFromBooking['id'])->toBe($expiringBooking->id);
+    expect($renewFromBooking['member']['id'])->toBe($member->id);
+    expect($renewFromBooking['trainer']['id'])->toBe($trainer->id);
+    expect($renewFromBooking['schedule_days'])->not->toBeNull();
+    expect($renewFromBooking['nb_sessions'])->toBe(12);
+});
+
+test('it saves schedule_days when creating a booking', function () {
+    $member = User::query()->members()->inRandomOrder()->first();
+    $trainer = User::query()->trainers()->inRandomOrder()->first();
+
+    $scheduleDays = [
+        ['day' => 'Monday', 'time' => '07:00 am'],
+        ['day' => 'Wednesday', 'time' => '07:00 am'],
+        ['day' => 'Friday', 'time' => '07:00 am'],
+    ];
+
+    $data = [
+        'start_date' => Carbon::today()->addMonths(2),
+        'member_id' => $member->id,
+        'trainer_id' => $trainer->id,
+        'nb_sessions' => 12,
+        'is_paid' => true,
+        'days' => $scheduleDays,
+    ];
+
+    actingAsAdmin()
+        ->post(route('admin.bookings.store'), $data)
+        ->assertSessionHasNoErrors()
+        ->assertRedirect(route('admin.members.show', ['user' => $member->id]));
+
+    $booking = Booking::query()
+        ->where('member_id', $member->id)
+        ->where('trainer_id', $trainer->id)
+        ->whereDate('start_date', Carbon::today()->addMonths(2))
+        ->latest('created_at')
+        ->firstOrFail();
+
+    expect($booking->schedule_days)->not->toBeNull();
+    expect($booking->schedule_days)->toBeArray();
+    expect($booking->schedule_days)->toHaveCount(3);
+    expect($booking->schedule_days[0]['day'])->toBe('Monday');
+    expect($booking->schedule_days[1]['day'])->toBe('Wednesday');
+    expect($booking->schedule_days[2]['day'])->toBe('Friday');
+});
+
+test('it creates a renewed booking with inherited schedule_days', function () {
+    $member = User::query()->members()->first();
+    $trainer = User::query()->trainers()->first();
+
+    $expiringBooking = createExpiringBooking($member, $trainer);
+
+    $originalScheduleDays = $expiringBooking->schedule_days;
+
+    expect($originalScheduleDays)->not->toBeNull();
+
+    // Start renewal booking 2 months after expiring booking ends to avoid overlap
+    $renewalData = [
+        'start_date' => Carbon::parse($expiringBooking->end_date)->addMonths(2),
+        'member_id' => $member->id,
+        'trainer_id' => $trainer->id,
+        'nb_sessions' => 12,
+        'is_paid' => true,
+        'days' => $originalScheduleDays,
+    ];
+
+    actingAsAdmin()
+        ->post(route('admin.bookings.store'), $renewalData)
+        ->assertSessionHasNoErrors()
+        ->assertRedirect(route('admin.members.show', ['user' => $member->id]));
+
+    $renewedBooking = Booking::query()
+        ->where('member_id', $member->id)
+        ->where('trainer_id', $trainer->id)
+        ->whereDate('start_date', '>=', Carbon::parse($expiringBooking->end_date)->addMonth())
+        ->latest('created_at')
+        ->firstOrFail();
+
+    expect($renewedBooking->id)->not->toBe($expiringBooking->id);
+    expect($renewedBooking->schedule_days)->toEqual($originalScheduleDays);
+    expect($renewedBooking->member_id)->toBe($expiringBooking->member_id);
+    expect($renewedBooking->trainer_id)->toBe($expiringBooking->trainer_id);
+    expect($renewedBooking->nb_sessions)->toBe(12);
+});

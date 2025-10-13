@@ -67,7 +67,7 @@
 
 <script setup>
 import { useForm } from '@inertiajs/vue3'
-import { computed, provide } from 'vue'
+import { computed, onMounted, provide } from 'vue'
 
 import DateInput from '@/Components/Form/DateInput.vue'
 import FormSection from '@/Components/Form/FormSection.vue'
@@ -86,6 +86,7 @@ import BookingSchedule from '@/Pages/Admin/Bookings/Partials/BookingSchedule.vue
 const props = defineProps({
     members: { type: Array, required: true },
     trainers: { type: Array, required: true },
+    renewFromBooking: { type: Object, default: null },
 })
 
 const form = useForm({
@@ -102,6 +103,55 @@ provide('form', form)
 const membersList = computed(() => props.members.map(({ id, name, profile_photo_url }) => ({ label: name, value: id, profile_photo_url })))
 
 const trainersList = computed(() => props.trainers.map(({ id, name, profile_photo_url }) => ({ label: name, value: id, profile_photo_url })))
+
+const calculateNextStartDate = (endDate, scheduleDays) => {
+    if (!endDate || !scheduleDays || scheduleDays.length === 0) {
+        return new Date()
+    }
+
+    const dayNameToNumber = {
+        'Sunday': 0, 'Monday': 1, 'Tuesday': 2, 'Wednesday': 3,
+        'Thursday': 4, 'Friday': 5, 'Saturday': 6
+    }
+
+    const end = new Date(endDate)
+    const dayAfterEnd = new Date(end)
+    dayAfterEnd.setDate(dayAfterEnd.getDate() + 1)
+
+    const scheduledDayNumbers = scheduleDays.map(sd => dayNameToNumber[sd.day]).sort((a, b) => a - b)
+    const currentDayNumber = dayAfterEnd.getDay()
+
+    let daysToAdd = null
+    for (const scheduledDay of scheduledDayNumbers) {
+        if (scheduledDay >= currentDayNumber) {
+            daysToAdd = scheduledDay - currentDayNumber
+            break
+        }
+    }
+
+    if (daysToAdd === null) {
+        daysToAdd = 7 - currentDayNumber + scheduledDayNumbers[0]
+    }
+
+    const nextStartDate = new Date(dayAfterEnd)
+    nextStartDate.setDate(nextStartDate.getDate() + daysToAdd)
+
+    return nextStartDate
+}
+
+onMounted(() => {
+    if (props.renewFromBooking) {
+        form.member_id = props.renewFromBooking.member.id
+        form.trainer_id = props.renewFromBooking.trainer.id
+        form.nb_sessions = props.renewFromBooking.nb_sessions
+        form.is_paid = props.renewFromBooking.is_paid
+
+        if (props.renewFromBooking.schedule_days && props.renewFromBooking.schedule_days.length > 0) {
+            form.days = [...props.renewFromBooking.schedule_days]
+            form.start_date = calculateNextStartDate(props.renewFromBooking.end_date, props.renewFromBooking.schedule_days)
+        }
+    }
+})
 
 const saveBooking = () => {
     form.post(route('admin.bookings.store'), {

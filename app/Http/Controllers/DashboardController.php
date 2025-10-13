@@ -28,6 +28,7 @@ class DashboardController extends Controller
             ->get();
 
         // Bookings about to expire (2 sessions remaining)
+        // Exclude members who already have a scheduled booking (likely renewed)
         $expiringBookings = Booking::query()
             ->active()
             ->with(['member', 'trainer', 'bookingSlots'])
@@ -36,7 +37,18 @@ class DashboardController extends Controller
                 $upcomingCount = $booking->bookingSlots
                     ->where('status', Status::Upcoming->value)
                     ->count();
-                return $upcomingCount === 2;
+
+                if ($upcomingCount !== 2) {
+                    return false;
+                }
+
+                // Check if member has a scheduled booking (starts in the future)
+                $hasScheduledBooking = Booking::query()
+                    ->where('member_id', $booking->member_id)
+                    ->where('start_date', '>', now())
+                    ->exists();
+
+                return !$hasScheduledBooking;
             })
             ->values();
 

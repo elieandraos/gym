@@ -33,7 +33,7 @@
                     <p class="text-xs text-zinc-500">{{ booking.nb_remaining_sessions }}</p>
                 </div>
                 <Link
-                    :href="route('admin.bookings.create', { member_id: booking.member.id, trainer_id: booking.trainer.id })"
+                    :href="route('admin.bookings.create', { renew_from: booking.id })"
                     class="px-3 py-1 bg-gray-800 :hover:bg-gray-700 text-white text-[12px] font-[500] rounded-md flex-shrink-0 inline-block"
                 >
                     Renew

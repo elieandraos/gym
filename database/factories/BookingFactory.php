@@ -13,11 +13,28 @@ class BookingFactory extends Factory
 
     public function definition(): array
     {
+        $scheduleDays = $this->faker->randomElement([
+            [
+                ['day' => 'Monday', 'time' => '07:00 am'],
+                ['day' => 'Wednesday', 'time' => '07:00 am'],
+                ['day' => 'Friday', 'time' => '07:00 am'],
+            ],
+            [
+                ['day' => 'Tuesday', 'time' => '06:00 pm'],
+                ['day' => 'Thursday', 'time' => '06:00 pm'],
+            ],
+            [
+                ['day' => 'Monday', 'time' => '08:00 am'],
+                ['day' => 'Thursday', 'time' => '08:00 am'],
+            ],
+        ]);
+
         return [
             'nb_sessions' => $this->faker->randomElement([8, 12]),
             'start_date' => Carbon::today(),
             'end_date' => Carbon::today()->addDays(30),
             'is_paid' => $this->faker->boolean(80),
+            'schedule_days' => $scheduleDays,
             'is_frozen' => false,
             'frozen_at' => null,
             'member_id' => User::factory(),

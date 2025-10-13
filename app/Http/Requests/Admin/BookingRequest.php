@@ -38,6 +38,7 @@ class BookingRequest extends FormRequest
         $this->merge([
             'booking_slots_dates' => $bookingSlotsDates,
             'end_date' => end($bookingSlotsDates),
+            'schedule_days' => $days,
         ]);
     }
 

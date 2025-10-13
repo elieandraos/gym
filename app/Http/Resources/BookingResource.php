@@ -35,6 +35,7 @@ class BookingResource extends JsonResource
             'start_date' => $this->start_date,
             'end_date' => $this->end_date,
             'is_paid' => $this->is_paid,
+            'schedule_days' => $this->schedule_days,
             'is_frozen' => $this->is_frozen,
             'frozen_at' => $this->frozen_at,
             'status' => $status,
