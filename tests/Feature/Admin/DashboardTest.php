@@ -17,9 +17,9 @@ test('it shows expiring bookings with 2 remaining sessions', function () {
 
     $expiringBookings = $response->viewData('page')['props']['bookings']['expiring'];
 
-    expect($expiringBookings)->toBeArray();
-    expect($expiringBookings)->toHaveCount(1);
-    expect($expiringBookings[0]['id'])->toBe($expiringBooking->id);
+    expect($expiringBookings)->toBeArray()
+        ->and($expiringBookings)->toHaveCount(1)
+        ->and($expiringBookings[0]['id'])->toBe($expiringBooking->id);
 });
 
 test('it excludes expiring bookings when member has a scheduled booking', function () {
@@ -43,8 +43,8 @@ test('it excludes expiring bookings when member has a scheduled booking', functi
     $expiringBookings = $response->viewData('page')['props']['bookings']['expiring'];
 
     // Expiring booking should NOT be in the list because member has scheduled booking
-    expect($expiringBookings)->toBeArray();
-    expect($expiringBookings)->toHaveCount(0);
+    expect($expiringBookings)->toBeArray()
+        ->and($expiringBookings)->toHaveCount(0);
 });
 
 test('it shows expiring bookings when member has no scheduled booking', function () {
@@ -63,7 +63,7 @@ test('it shows expiring bookings when member has no scheduled booking', function
     $expiringBookings = $response->viewData('page')['props']['bookings']['expiring'];
 
     // Expiring booking SHOULD be in the list
-    expect($expiringBookings)->toBeArray();
-    expect($expiringBookings)->toHaveCount(1);
-    expect($expiringBookings[0]['id'])->toBe($expiringBooking->id);
+    expect($expiringBookings)->toBeArray()
+        ->and($expiringBookings)->toHaveCount(1)
+        ->and($expiringBookings[0]['id'])->toBe($expiringBooking->id);
 });

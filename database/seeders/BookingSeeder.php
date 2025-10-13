@@ -2,9 +2,12 @@
 
 namespace Database\Seeders;
 
+use App\Enums\Status;
 use App\Models\Booking;
 use App\Models\BookingSlot;
 use App\Models\User;
+use App\Services\BookingManager;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Seeder;
 
@@ -83,27 +86,27 @@ class BookingSeeder extends Seeder
         ]);
 
         // Generate proper slot dates using BookingManager based on schedule_days
-        $slotDates = \App\Services\BookingManager::generateRepeatableDates(
-            \Carbon\Carbon::parse($booking->start_date),
+        $slotDates = BookingManager::generateRepeatableDates(
+            Carbon::parse($booking->start_date),
             $booking->nb_sessions,
             $booking->schedule_days
         );
 
         // Create 12 slots: first 10 completed, last 2 upcoming
         foreach ($slotDates as $index => $slotDate) {
-            $startTime = \Carbon\Carbon::parse($slotDate);
+            $startTime = Carbon::parse($slotDate);
             $endTime = $startTime->copy()->addHour();
 
-            BookingSlot::create([
+            BookingSlot::query()->create([
                 'booking_id' => $booking->id,
                 'start_time' => $startTime,
                 'end_time' => $endTime,
-                'status' => $index < 10 ? \App\Enums\Status::Complete : \App\Enums\Status::Upcoming,
+                'status' => $index < 10 ? Status::Complete : Status::Upcoming,
             ]);
         }
 
         // Update booking end_date to the last slot's date
-        $lastSlotDate = \Carbon\Carbon::parse(end($slotDates));
+        $lastSlotDate = Carbon::parse(end($slotDates));
         $booking->update([
             'end_date' => $lastSlotDate->toDateString(),
         ]);
@@ -112,29 +115,25 @@ class BookingSeeder extends Seeder
     protected function createBookingSlotsForBooking(Booking $booking): void
     {
         // Generate proper slot dates using BookingManager based on schedule_days
-        $slotDates = \App\Services\BookingManager::generateRepeatableDates(
-            \Carbon\Carbon::parse($booking->start_date),
+        $slotDates = BookingManager::generateRepeatableDates(
+            Carbon::parse($booking->start_date),
             $booking->nb_sessions,
             $booking->schedule_days
         );
 
         // Create slots with proper dates and times from schedule
         foreach ($slotDates as $slotDate) {
-            $startTime = \Carbon\Carbon::parse($slotDate);
+            $startTime = Carbon::parse($slotDate);
             $endTime = $startTime->copy()->addHour();
 
-            BookingSlot::create([
+            BookingSlot::query()->create([
                 'booking_id' => $booking->id,
                 'start_time' => $startTime,
                 'end_time' => $endTime,
-                'status' => $startTime->isPast() ? \App\Enums\Status::Complete : \App\Enums\Status::Upcoming,
+                'status' => $startTime->isPast() ? Status::Complete : Status::Upcoming,
             ]);
         }
 
-        // Update booking end_date to the last slot's date
-        $lastSlotDate = \Carbon\Carbon::parse(end($slotDates));
-        $booking->update([
-            'end_date' => $lastSlotDate->toDateString(),
-        ]);
+        $booking->updateEndDateToLastSlot();
     }
 }

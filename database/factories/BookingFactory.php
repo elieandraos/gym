@@ -27,18 +27,11 @@ class BookingFactory extends Factory
 
         // Define all possible day patterns
         $dayPatterns = [
-            // 3-day patterns
             ['Monday', 'Wednesday', 'Friday'],
-            // 2-day patterns
             ['Tuesday', 'Thursday'],
             ['Monday', 'Thursday'],
-            // 3-day with weekend
             ['Tuesday', 'Thursday', 'Friday'],
             ['Tuesday', 'Thursday', 'Saturday'],
-            // Single day patterns
-            ['Monday'],
-            ['Friday'],
-            ['Saturday'],
         ];
 
         $selectedDays = $this->faker->randomElement($dayPatterns);
