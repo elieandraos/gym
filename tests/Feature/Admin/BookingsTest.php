@@ -2,6 +2,7 @@
 
 use App\Http\Resources\BookingResource;
 use App\Models\Booking;
+use App\Models\BookingSlot;
 use App\Models\User;
 use App\Services\BookingManager;
 use Carbon\Carbon;
@@ -258,4 +259,97 @@ test('it creates a renewed booking with inherited schedule_days', function () {
     expect($renewedBooking->member_id)->toBe($expiringBooking->member_id);
     expect($renewedBooking->trainer_id)->toBe($expiringBooking->trainer_id);
     expect($renewedBooking->nb_sessions)->toBe(12);
+});
+
+test('it allows creating a new booking that starts after existing booking ends', function () {
+    // Create a fresh member without any bookings from beforeEach
+    $member = User::factory()->create(['role' => \App\Enums\Role::Member]);
+    $trainer = User::query()->trainers()->first();
+
+    // Create existing booking that ends on a specific date
+    $existingBooking = Booking::factory()->create([
+        'member_id' => $member->id,
+        'trainer_id' => $trainer->id,
+        'start_date' => Carbon::today()->subDays(30),
+        'end_date' => Carbon::today()->subDays(5), // Ends 5 days ago
+        'nb_sessions' => 12,
+        'schedule_days' => [
+            ['day' => 'Monday', 'time' => '10:00 am'],
+            ['day' => 'Wednesday', 'time' => '10:00 am'],
+        ],
+    ]);
+
+    // Create booking slots for the existing booking
+    BookingSlot::factory()->count(12)->create([
+        'booking_id' => $existingBooking->id,
+        'start_time' => Carbon::today()->subDays(10),
+        'end_time' => Carbon::today()->subDays(10)->addHour(),
+        'status' => \App\Enums\Status::Complete,
+    ]);
+
+    // New booking starts AFTER the existing booking ends (no overlap)
+    $newBookingData = [
+        'start_date' => Carbon::today()->addDay(), // Starts tomorrow (well after existing booking ended)
+        'member_id' => $member->id,
+        'trainer_id' => $trainer->id,
+        'nb_sessions' => 12,
+        'is_paid' => true,
+        'days' => [
+            ['day' => 'Monday', 'time' => '10:00 am'],
+            ['day' => 'Wednesday', 'time' => '10:00 am'],
+        ],
+    ];
+
+    actingAsAdmin()
+        ->post(route('admin.bookings.store'), $newBookingData)
+        ->assertSessionHasNoErrors()
+        ->assertRedirect(route('admin.members.show', ['user' => $member->id]));
+
+    // Verify the new booking was created
+    $newBooking = Booking::query()
+        ->where('member_id', $member->id)
+        ->where('trainer_id', $trainer->id)
+        ->whereDate('start_date', Carbon::today()->addDay())
+        ->latest('created_at')
+        ->first();
+
+    expect($newBooking)->not->toBeNull();
+    expect($newBooking->id)->not->toBe($existingBooking->id);
+});
+
+test('it prevents creating a booking that overlaps with existing booking', function () {
+    // Create a fresh member without any bookings from beforeEach
+    $member = User::factory()->create(['role' => \App\Enums\Role::Member]);
+    $trainer = User::query()->trainers()->first();
+
+    // Create existing booking that is currently active
+    $existingBooking = Booking::factory()->create([
+        'member_id' => $member->id,
+        'trainer_id' => $trainer->id,
+        'start_date' => Carbon::today()->subDays(10),
+        'end_date' => Carbon::today()->addDays(20), // Still active for 20 more days
+        'nb_sessions' => 12,
+        'schedule_days' => [
+            ['day' => 'Monday', 'time' => '10:00 am'],
+            ['day' => 'Wednesday', 'time' => '10:00 am'],
+        ],
+    ]);
+
+    // Try to create a new booking that overlaps with the existing one
+    $overlappingBookingData = [
+        'start_date' => Carbon::today()->addDays(5), // Starts during the existing booking
+        'member_id' => $member->id,
+        'trainer_id' => $trainer->id,
+        'nb_sessions' => 12,
+        'is_paid' => true,
+        'days' => [
+            ['day' => 'Monday', 'time' => '10:00 am'],
+            ['day' => 'Wednesday', 'time' => '10:00 am'],
+        ],
+    ];
+
+    actingAsAdmin()
+        ->post(route('admin.bookings.store'), $overlappingBookingData)
+        ->assertSessionHasErrors(['start_date'])
+        ->assertStatus(302);
 });

@@ -13,21 +13,36 @@ class BookingFactory extends Factory
 
     public function definition(): array
     {
-        $scheduleDays = $this->faker->randomElement([
-            [
-                ['day' => 'Monday', 'time' => '07:00 am'],
-                ['day' => 'Wednesday', 'time' => '07:00 am'],
-                ['day' => 'Friday', 'time' => '07:00 am'],
-            ],
-            [
-                ['day' => 'Tuesday', 'time' => '06:00 pm'],
-                ['day' => 'Thursday', 'time' => '06:00 pm'],
-            ],
-            [
-                ['day' => 'Monday', 'time' => '08:00 am'],
-                ['day' => 'Thursday', 'time' => '08:00 am'],
-            ],
-        ]);
+        // Generate random time between 6am and 9pm with 30min intervals
+        $possibleTimes = [];
+        for ($hour = 6; $hour <= 21; $hour++) {
+            $possibleTimes[] = sprintf('%02d:00', $hour);
+            if ($hour < 21) {
+                $possibleTimes[] = sprintf('%02d:30', $hour);
+            }
+        }
+
+        $randomTime = $this->faker->randomElement($possibleTimes);
+        $formattedTime = Carbon::createFromFormat('H:i', $randomTime)->format('h:i a');
+
+        // Define all possible day patterns
+        $dayPatterns = [
+            // 3-day patterns
+            ['Monday', 'Wednesday', 'Friday'],
+            // 2-day patterns
+            ['Tuesday', 'Thursday'],
+            ['Monday', 'Thursday'],
+            // 3-day with weekend
+            ['Tuesday', 'Thursday', 'Friday'],
+            ['Tuesday', 'Thursday', 'Saturday'],
+            // Single day patterns
+            ['Monday'],
+            ['Friday'],
+            ['Saturday'],
+        ];
+
+        $selectedDays = $this->faker->randomElement($dayPatterns);
+        $scheduleDays = array_map(fn ($day) => ['day' => $day, 'time' => $formattedTime], $selectedDays);
 
         return [
             'nb_sessions' => $this->faker->randomElement([8, 12]),

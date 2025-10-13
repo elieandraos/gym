@@ -5,7 +5,10 @@
         <div
             v-else
             class="flex items-center justify-between w-full min-w-36 lg:min-w-52 border border-zinc-200 bg-zinc-50 text-zinc-950 rounded-lg p-2">
-            <span>{{ selectedOption.label }}</span>
+            <div class="flex items-center gap-3">
+                <img v-if="selectedOption.profile_photo_url" :src="selectedOption.profile_photo_url" alt="" class="size-6 rounded-full"/>
+                <span>{{ selectedOption.label }}</span>
+            </div>
             <x-mark-icon class="w-4 h-4 text-zinc-[#71717b] cursor-pointer" @click="clearSelection">x</x-mark-icon>
         </div>
 
