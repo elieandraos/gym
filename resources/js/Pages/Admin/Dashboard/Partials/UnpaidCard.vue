@@ -11,8 +11,8 @@
                 <div class="h-12 bg-zinc-100 rounded"></div>
                 <div class="h-12 bg-zinc-100 rounded"></div>
             </div>
-            <div v-else-if="unpaidBookings.length === 0" class="text-center py-8 text-zinc-400">
-                No unpaid bookings
+            <div v-else-if="unpaidBookings.length === 0" class="text-center py-8 text-emerald-600">
+                All paid up! Your members are on top of it 🎉
             </div>
             <div v-else class="space-y-3 max-h-[240px] overflow-y-auto">
                 <div
@@ -56,8 +56,8 @@
                 <div class="h-12 bg-zinc-100 rounded"></div>
                 <div class="h-12 bg-zinc-100 rounded"></div>
             </div>
-            <div v-else-if="frozenBookings.length === 0" class="text-center py-8 text-zinc-400">
-                No frozen bookings
+            <div v-else-if="frozenBookings.length === 0" class="text-center py-8 text-emerald-600">
+                Everyone's active and committed! 💪
             </div>
             <div v-else class="space-y-3 max-h-[240px] overflow-y-auto">
                 <div
