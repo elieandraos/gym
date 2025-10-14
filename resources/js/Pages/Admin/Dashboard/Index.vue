@@ -10,7 +10,7 @@
                                 v-if="!showQuote"
                                 @click="showRandomQuote"
                                 class="text-xs text-sky-500 hover:text-sky-700 cursor-pointer">
-                                Motivate me 😬
+                                Nah, motivate me! 😬
                             </span>
                         </div>
                     </div>
