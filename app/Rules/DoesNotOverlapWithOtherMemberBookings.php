@@ -34,12 +34,8 @@ class DoesNotOverlapWithOtherMemberBookings implements DataAwareRule, Validation
 
         $overlappingBookings = Booking::query()->where('member_id', $this->data['member_id'])
             ->where(function ($query) use ($startDate, $endDate) {
-                $query->whereBetween('start_date', [$startDate, $endDate])
-                    ->orWhereBetween('end_date', [$startDate, $endDate])
-                    ->orWhere(function ($query) use ($startDate, $endDate) {
-                        $query->where('start_date', '<=', $startDate)
-                            ->where('end_date', '>=', $endDate);
-                    });
+                $query->where('start_date', '<', $endDate)
+                    ->where('end_date', '>', $startDate);
             })
             ->count();
 

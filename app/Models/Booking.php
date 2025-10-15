@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property-read bool $is_paid
+ * @property array     $schedule_days
  */
 class Booking extends Model
 {
@@ -27,6 +28,7 @@ class Booking extends Model
         'start_date',
         'end_date',
         'is_paid',
+        'schedule_days',
         'is_frozen',
         'frozen_at',
     ];
@@ -36,6 +38,7 @@ class Booking extends Model
         'end_date' => 'date',
         'nb_sessions' => 'integer',
         'is_paid' => 'boolean',
+        'schedule_days' => 'array',
         'is_frozen' => 'boolean',
         'frozen_at' => 'datetime',
     ];

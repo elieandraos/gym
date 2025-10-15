@@ -270,6 +270,38 @@ describe('members scope', function () {
 - When adding new test scenarios, consider updating seeders rather than using factories
 - Leverage existing relationships and data from seeders for more realistic testing
 
+**Test Setup Philosophy:**
+- Keep setup functions minimal - only create baseline data (users, basic bookings)
+- Create test-specific data directly in each test using helper functions
+- Avoid creating all possible data scenarios in setup - tests become slow and unclear
+- Extract common test data creation into helper functions in `tests/Pest.php`
+
+```php
+// ✅ Good - Minimal setup + test-specific helper
+function setupUsersAndBookings(): void
+{
+    // Only baseline: users, active bookings, completed bookings
+}
+
+function createExpiringBooking(User $member, User $trainer): Booking
+{
+    // Specific scenario: booking with 2 remaining sessions
+}
+
+test('it handles expiring bookings', function () {
+    setupUsersAndBookings(); // Baseline
+    $booking = createExpiringBooking($member, $trainer); // Test-specific
+    // assertions...
+});
+
+// ❌ Avoid - Setup creates everything
+function setupUsersAndBookings(): void
+{
+    // Creates: active, completed, expiring, frozen, unpaid bookings
+    // Now ALL tests have ALL this data even if they don't need it
+}
+```
+
 ### Database Patterns
 
 **Migrations:**
@@ -302,3 +334,4 @@ describe('members scope', function () {
 - Return appropriate HTTP status codes
 - Display user-friendly error messages
 - Handle edge cases gracefully
+- when adding new model field, update related seeder, factory, test setup db if applicable,

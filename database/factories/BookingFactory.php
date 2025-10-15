@@ -13,11 +13,36 @@ class BookingFactory extends Factory
 
     public function definition(): array
     {
+        // Generate random time between 6am and 9pm with 30min intervals
+        $possibleTimes = [];
+        for ($hour = 6; $hour <= 21; $hour++) {
+            $possibleTimes[] = sprintf('%02d:00', $hour);
+            if ($hour < 21) {
+                $possibleTimes[] = sprintf('%02d:30', $hour);
+            }
+        }
+
+        $randomTime = $this->faker->randomElement($possibleTimes);
+        $formattedTime = Carbon::createFromFormat('H:i', $randomTime)->format('h:i a');
+
+        // Define all possible day patterns
+        $dayPatterns = [
+            ['Monday', 'Wednesday', 'Friday'],
+            ['Tuesday', 'Thursday'],
+            ['Monday', 'Thursday'],
+            ['Tuesday', 'Thursday', 'Friday'],
+            ['Tuesday', 'Thursday', 'Saturday'],
+        ];
+
+        $selectedDays = $this->faker->randomElement($dayPatterns);
+        $scheduleDays = array_map(fn ($day) => ['day' => $day, 'time' => $formattedTime], $selectedDays);
+
         return [
             'nb_sessions' => $this->faker->randomElement([8, 12]),
             'start_date' => Carbon::today(),
             'end_date' => Carbon::today()->addDays(30),
             'is_paid' => $this->faker->boolean(80),
+            'schedule_days' => $scheduleDays,
             'is_frozen' => false,
             'frozen_at' => null,
             'member_id' => User::factory(),

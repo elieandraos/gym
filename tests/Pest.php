@@ -1,9 +1,11 @@
 <?php
 
 use App\Enums\Role;
+use App\Enums\Status;
 use App\Models\Booking;
 use App\Models\BookingSlot;
 use App\Models\User;
+use Carbon\Carbon;
 use Database\Seeders\WorkoutSeeder;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Tests\TestCase;
@@ -92,4 +94,40 @@ function setupUsersAndBookings(): void
             ->forBooking($completedBooking)
             ->create();
     }
+}
+
+function createExpiringBooking(User $member, User $trainer, int $upcomingSessions = 2): Booking
+{
+    /** @var Booking $booking */
+    $booking = Booking::factory()->create([
+        'member_id' => $member->id,
+        'trainer_id' => $trainer->id,
+        'nb_sessions' => 12,
+        'start_date' => Carbon::today()->subDays(20),
+        'end_date' => Carbon::today()->addDays(10),
+    ]);
+
+    $completedSessions = 12 - $upcomingSessions;
+
+    // Create completed slots (in the past)
+    for ($i = 0; $i < $completedSessions; $i++) {
+        BookingSlot::factory()->create([
+            'booking_id' => $booking->id,
+            'start_time' => Carbon::today()->subDays(20 - $i)->setTime(10, 0),
+            'end_time' => Carbon::today()->subDays(20 - $i)->setTime(11, 0),
+            'status' => Status::Complete,
+        ]);
+    }
+
+    // Create upcoming slots (in the future)
+    for ($i = 0; $i < $upcomingSessions; $i++) {
+        BookingSlot::factory()->create([
+            'booking_id' => $booking->id,
+            'start_time' => Carbon::today()->addDays(3 + ($i * 3))->setTime(10, 0),
+            'end_time' => Carbon::today()->addDays(3 + ($i * 3))->setTime(11, 0),
+            'status' => Status::Upcoming,
+        ]);
+    }
+
+    return $booking->fresh(['member', 'trainer', 'bookingSlots']);
 }

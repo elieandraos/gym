@@ -16,6 +16,7 @@ return new class extends Migration
             $table->date('start_date')->index();
             $table->date('end_date')->index();
             $table->boolean('is_paid')->default(true);
+            $table->json('schedule_days')->nullable();
             $table->boolean('is_frozen')->default(false);
             $table->datetime('frozen_at')->nullable();
             $table->timestamps();

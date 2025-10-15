@@ -20,9 +20,18 @@ class BookingsController extends Controller
 {
     public function create(): Response
     {
+        $renewFromBooking = null;
+
+        if (request()->has('renew_from')) {
+            $renewFromBooking = Booking::query()
+                ->with(['member', 'trainer', 'bookingSlots'])
+                ->findOrFail(request('renew_from'));
+        }
+
         return Inertia::render('Admin/Bookings/Create', [
             'trainers' => TrainerResource::collection(User::query()->trainers()->get()),
             'members' => MemberResource::collection(User::query()->members()->get()),
+            'renewFromBooking' => $renewFromBooking ? BookingResource::make($renewFromBooking) : null,
         ]);
     }
 
