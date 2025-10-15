@@ -96,7 +96,7 @@ function setupUsersAndBookings(): void
     }
 }
 
-function createExpiringBooking(User $member, User $trainer): Booking
+function createExpiringBooking(User $member, User $trainer, int $upcomingSessions = 2): Booking
 {
     /** @var Booking $booking */
     $booking = Booking::factory()->create([
@@ -107,8 +107,10 @@ function createExpiringBooking(User $member, User $trainer): Booking
         'end_date' => Carbon::today()->addDays(10),
     ]);
 
-    // Create 10 completed slots (in the past)
-    for ($i = 0; $i < 10; $i++) {
+    $completedSessions = 12 - $upcomingSessions;
+
+    // Create completed slots (in the past)
+    for ($i = 0; $i < $completedSessions; $i++) {
         BookingSlot::factory()->create([
             'booking_id' => $booking->id,
             'start_time' => Carbon::today()->subDays(20 - $i)->setTime(10, 0),
@@ -117,20 +119,15 @@ function createExpiringBooking(User $member, User $trainer): Booking
         ]);
     }
 
-    // Create 2 upcoming slots (in the future)
-    BookingSlot::factory()->create([
-        'booking_id' => $booking->id,
-        'start_time' => Carbon::today()->addDays(3)->setTime(10, 0),
-        'end_time' => Carbon::today()->addDays(3)->setTime(11, 0),
-        'status' => Status::Upcoming,
-    ]);
-
-    BookingSlot::factory()->create([
-        'booking_id' => $booking->id,
-        'start_time' => Carbon::today()->addDays(6)->setTime(10, 0),
-        'end_time' => Carbon::today()->addDays(6)->setTime(11, 0),
-        'status' => Status::Upcoming,
-    ]);
+    // Create upcoming slots (in the future)
+    for ($i = 0; $i < $upcomingSessions; $i++) {
+        BookingSlot::factory()->create([
+            'booking_id' => $booking->id,
+            'start_time' => Carbon::today()->addDays(3 + ($i * 3))->setTime(10, 0),
+            'end_time' => Carbon::today()->addDays(3 + ($i * 3))->setTime(11, 0),
+            'status' => Status::Upcoming,
+        ]);
+    }
 
     return $booking->fresh(['member', 'trainer', 'bookingSlots']);
 }

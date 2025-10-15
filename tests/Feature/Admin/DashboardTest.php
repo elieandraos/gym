@@ -22,6 +22,23 @@ test('it shows expiring bookings with 2 remaining sessions', function () {
         ->and($expiringBookings[0]['id'])->toBe($expiringBooking->id);
 });
 
+test('it shows expiring bookings with 1 remaining session', function () {
+    $member = User::factory()->create(['role' => Role::Member]);
+    $trainer = User::factory()->create(['role' => Role::Trainer]);
+
+    $expiringBooking = createExpiringBooking($member, $trainer, 1);
+
+    $response = actingAsAdmin()
+        ->get(route('dashboard'))
+        ->assertStatus(200);
+
+    $expiringBookings = $response->viewData('page')['props']['bookings']['expiring'];
+
+    expect($expiringBookings)->toBeArray()
+        ->and($expiringBookings)->toHaveCount(1)
+        ->and($expiringBookings[0]['id'])->toBe($expiringBooking->id);
+});
+
 test('it excludes expiring bookings when member has a scheduled booking', function () {
     $member = User::factory()->create(['role' => Role::Member]);
     $trainer = User::factory()->create(['role' => Role::Trainer]);
