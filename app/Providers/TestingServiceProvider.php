@@ -36,8 +36,8 @@ class TestingServiceProvider extends ServiceProvider
 
         AssertableInertia::macro('hasPaginatedResource', function (string $key, ResourceCollection $collection) {
             $expectedData = $collection->response()->getData(true);
-            expect($this->prop($key))->toHaveKeys(['data', 'links', 'meta']);
-            expect($this->prop($key)['data'])->toEqual($expectedData['data']);
+            expect($this->prop($key))->toHaveKeys(['data', 'links', 'meta'])
+                ->and($this->prop($key)['data'])->toEqual($expectedData['data']);
 
             return $this;
         });

@@ -96,7 +96,7 @@ function setupUsersAndBookings(): void
     }
 }
 
-function createExpiringBooking(User $member, User $trainer, int $upcomingSessions = 2): Booking
+function createSoonToExpireBooking(User $member, User $trainer, int $upcomingSessions = 2): Booking
 {
     /** @var Booking $booking */
     $booking = Booking::factory()->create([

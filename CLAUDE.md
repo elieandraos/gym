@@ -283,14 +283,14 @@ function setupUsersAndBookings(): void
     // Only baseline: users, active bookings, completed bookings
 }
 
-function createExpiringBooking(User $member, User $trainer): Booking
+function createSoonToExpireBooking(User $member, User $trainer): Booking
 {
     // Specific scenario: booking with 2 remaining sessions
 }
 
 test('it handles expiring bookings', function () {
     setupUsersAndBookings(); // Baseline
-    $booking = createExpiringBooking($member, $trainer); // Test-specific
+    $booking = createSoonToExpireBooking($member, $trainer); // Test-specific
     // assertions...
 });
 
@@ -335,3 +335,4 @@ function setupUsersAndBookings(): void
 - Display user-friendly error messages
 - Handle edge cases gracefully
 - when adding new model field, update related seeder, factory, test setup db if applicable,
+- always use interia assertions not response view data

@@ -29,7 +29,7 @@ class DoesNotOverlapWithOtherMemberBookings implements DataAwareRule, Validation
 
         $startDate = Carbon::parse($value);
 
-        $bookingSlotsDates = BookingManager::generateRepeatableDates($startDate, $this->data['nb_sessions'], $this->data['days']);
+        $bookingSlotsDates = BookingManager::generateDatesForward($startDate, $this->data['nb_sessions'], $this->data['days']);
         $endDate = Carbon::parse(end($bookingSlotsDates));
 
         $overlappingBookings = Booking::query()->where('member_id', $this->data['member_id'])

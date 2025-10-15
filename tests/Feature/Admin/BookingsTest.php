@@ -92,7 +92,7 @@ test('it creates a booking and its booking slots', function () {
     $this->assertNotNull($booking);
 
     // Generate expected session dates
-    $expectedSessionDates = BookingManager::generateRepeatableDates($data['start_date'], $data['nb_sessions'], $data['days']);
+    $expectedSessionDates = BookingManager::generateDatesForward($data['start_date'], $data['nb_sessions'], $data['days']);
 
     // Check that each expected session date is in the database
     foreach ($expectedSessionDates as $sessionDate) {
@@ -166,7 +166,7 @@ test('it loads create page with renew_from parameter and passes booking data', f
     $member = User::query()->members()->first();
     $trainer = User::query()->trainers()->first();
 
-    $expiringBooking = createExpiringBooking($member, $trainer);
+    $expiringBooking = createSoonToExpireBooking($member, $trainer);
 
     $response = actingAsAdmin()
         ->get(route('admin.bookings.create', ['renew_from' => $expiringBooking->id]))
@@ -226,7 +226,7 @@ test('it creates a renewed booking with inherited schedule_days', function () {
     $member = User::query()->members()->first();
     $trainer = User::query()->trainers()->first();
 
-    $expiringBooking = createExpiringBooking($member, $trainer);
+    $expiringBooking = createSoonToExpireBooking($member, $trainer);
 
     $originalScheduleDays = $expiringBooking->schedule_days;
 
