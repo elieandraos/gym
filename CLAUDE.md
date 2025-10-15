@@ -336,3 +336,4 @@ function setupUsersAndBookings(): void
 - Handle edge cases gracefully
 - when adding new model field, update related seeder, factory, test setup db if applicable,
 - always use interia assertions not response view data
+- give code example for dos and dont dos when asserting with inertia like we did in DashboardTest the refactor
