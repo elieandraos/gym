@@ -41,13 +41,13 @@ test('it excludes expiring bookings when member has a scheduled booking', functi
     $trainer = User::factory()->create(['role' => Role::Trainer]);
 
     // Create expiring booking (2 remaining sessions)
-    $expiringBooking = createSoonToExpireBooking($member, $trainer);
+    createSoonToExpireBooking($member, $trainer);
 
     // Create scheduled booking for same member (starts in future)
-    $scheduledBooking = Booking::factory()->scheduled()->create([
+    Booking::factory()->scheduled()->create([
         'member_id' => $member->id,
         'trainer_id' => $trainer->id,
-        'start_date' => Carbon::today()->addMonths(1),
+        'start_date' => Carbon::today()->addMonths(),
     ]);
 
     // Expiring booking should NOT be in the list because member has scheduled booking
