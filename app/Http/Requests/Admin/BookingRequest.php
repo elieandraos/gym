@@ -33,7 +33,7 @@ class BookingRequest extends FormRequest
         $nbSessions = $this->input('nb_sessions');
         $days = $this->input('days');
 
-        $bookingSlotsDates = BookingManager::generateRepeatableDates($startDate, $nbSessions, $days);
+        $bookingSlotsDates = BookingManager::generateDatesForward($startDate, $nbSessions, $days);
 
         $this->merge([
             'booking_slots_dates' => $bookingSlotsDates,

@@ -264,6 +264,84 @@ describe('members scope', function () {
 - Test exception cases with `->throws()` syntax
 - Focus on Feature tests over Unit tests for business logic
 
+**Inertia Testing Patterns:**
+- ALWAYS use Inertia's `assertInertia()` assertions for testing Inertia responses
+- NEVER manually access `viewData()` to extract props
+- Use custom test macros (`assertHasComponent`, `assertHasProp`, `assertHasResource`, `assertHasPaginatedResource`) for common assertions
+- Use `has()` to check existence and count of collections
+- Use `where()` to assert specific property values
+- Chain assertions for cleaner, more readable tests
+
+```php
+// ✅ Good - Use Inertia assertions
+use Inertia\Testing\AssertableInertia;
+
+test('it shows expiring bookings', function () {
+    $expiringBooking = createSoonToExpireBooking($member, $trainer);
+
+    actingAsAdmin()
+        ->get(route('dashboard'))
+        ->assertStatus(200)
+        ->assertInertia(fn (AssertableInertia $page) => $page
+            ->has('bookings.expiring', 1)
+            ->where('bookings.expiring.0.id', $expiringBooking->id)
+        );
+});
+
+// ✅ Good - Asserting empty collections
+actingAsAdmin()
+    ->get(route('dashboard'))
+    ->assertStatus(200)
+    ->assertInertia(fn (AssertableInertia $page) => $page
+        ->has('bookings.expiring', 0)
+    );
+
+// ❌ Avoid - Manual viewData access
+$response = actingAsAdmin()->get(route('dashboard'));
+$expiringBookings = $response->viewData('page')['props']['bookings']['expiring'];
+expect($expiringBookings)->toBeArray()
+    ->and($expiringBookings)->toHaveCount(1)
+    ->and($expiringBookings[0]['id'])->toBe($expiringBooking->id);
+
+// ✅ Good - Using custom test macros (defined in TestingServiceProvider)
+
+// assertHasComponent - Check the Inertia component being rendered
+actingAsAdmin()
+    ->get(route('admin.members.index'))
+    ->assertHasComponent('Admin/Members/Index')
+    ->assertStatus(200);
+
+// assertHasProp - Check a specific prop value
+actingAsAdmin()
+    ->get(route('admin.members.index', ['search' => 'John']))
+    ->assertHasComponent('Admin/Members/Index')
+    ->assertHasProp('search', 'John')
+    ->assertStatus(200);
+
+// assertHasResource - Check a JsonResource prop
+actingAsAdmin()
+    ->get(route('admin.members.show', $member))
+    ->assertHasComponent('Admin/Members/Show')
+    ->assertHasResource('member', MemberResource::make($member))
+    ->assertStatus(200);
+
+// assertHasPaginatedResource - Check a paginated ResourceCollection
+actingAsAdmin()
+    ->get(route('admin.members.index'))
+    ->assertHasComponent('Admin/Members/Index')
+    ->assertHasPaginatedResource('members', MemberResource::collection($members))
+    ->assertStatus(200);
+
+// ✅ Good - Combining macros with nested property assertions
+actingAsAdmin()
+    ->get(route('admin.bookings-slots.show', $bookingSlot))
+    ->assertHasComponent('Admin/BookingsSlots/Show')
+    ->assertHasResource('bookingSlot', BookingSlotResource::make($bookingSlot))
+    ->assertHasProp('bookingSlot.workouts.0.name', $workout->name)
+    ->assertHasProp('bookingSlot.workouts.0.category', $workout->category->value)
+    ->assertStatus(200);
+```
+
 **Data Management in Tests:**
 - Rely on seeded database state for consistent test data
 - Use factories sparingly - only when seeded data doesn't cover the test scenario
@@ -283,14 +361,14 @@ function setupUsersAndBookings(): void
     // Only baseline: users, active bookings, completed bookings
 }
 
-function createExpiringBooking(User $member, User $trainer): Booking
+function createSoonToExpireBooking(User $member, User $trainer): Booking
 {
     // Specific scenario: booking with 2 remaining sessions
 }
 
 test('it handles expiring bookings', function () {
     setupUsersAndBookings(); // Baseline
-    $booking = createExpiringBooking($member, $trainer); // Test-specific
+    $booking = createSoonToExpireBooking($member, $trainer); // Test-specific
     // assertions...
 });
 
@@ -334,4 +412,4 @@ function setupUsersAndBookings(): void
 - Return appropriate HTTP status codes
 - Display user-friendly error messages
 - Handle edge cases gracefully
-- when adding new model field, update related seeder, factory, test setup db if applicable,
+- When adding new model field, update related seeder, factory, test setup db if applicable
