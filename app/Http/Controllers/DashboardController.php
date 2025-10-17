@@ -38,7 +38,7 @@ class DashboardController extends Controller
                     ->where('status', Status::Upcoming->value)
                     ->count();
 
-                if (!in_array($upcomingCount, [1, 2])) {
+                if (! in_array($upcomingCount, [1, 2])) {
                     return false;
                 }
 
@@ -48,7 +48,7 @@ class DashboardController extends Controller
                     ->where('start_date', '>', now())
                     ->exists();
 
-                return !$hasScheduledBooking;
+                return ! $hasScheduledBooking;
             })
             ->values();
 

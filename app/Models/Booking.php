@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property-read bool $is_paid
- * @property array     $schedule_days
+ * @property array $schedule_days
  */
 class Booking extends Model
 {

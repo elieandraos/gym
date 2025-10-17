@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\BodyCompositionController;
 use App\Http\Controllers\Admin\BookingsController;
 use App\Http\Controllers\Admin\BookingSlotsController;
 use App\Http\Controllers\Admin\BookingSlotWorkoutController;
@@ -33,6 +34,8 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         Route::match(['put', 'post'], '/{user}', [MembersController::class, 'update'])->name('update');
         Route::get('/{user}/personal-info', [MemberPersonalInfoController::class, 'index'])->name('personal-info');
         Route::get('/{user}/bookings/history', [MemberBookingHistoryController::class, 'index'])->name('bookings.history');
+        Route::get('/{user}/body-composition/create', [BodyCompositionController::class, 'create'])->name('body-composition.create');
+        Route::post('/{user}/body-composition/store', [BodyCompositionController::class, 'store'])->name('body-composition.store');
     });
 
     // Trainers

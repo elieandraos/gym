@@ -29,7 +29,7 @@ test('it renders the freeze booking confirmation page', function () {
         'trainer_id' => $trainer->id,
     ]);
 
-    $booking->load(['member', 'trainer']);
+    $booking->load(['member.memberActiveBooking', 'trainer']);
 
     actingAsAdmin()
         ->get(route('admin.bookings.freeze.index', $booking))

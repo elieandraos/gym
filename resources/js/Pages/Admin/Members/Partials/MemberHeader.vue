@@ -15,11 +15,19 @@
 
         <Dropdown direction="right">
             <div class="space-y-2 font-normal">
-                <Link v-if="isTraining && !isBookingShowPage" :href="route('admin.bookings.show', active_booking.id)" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">Training schedule</Link>
-                <Link v-if="isTraining && !active_booking.is_frozen" :href="route('admin.bookings.freeze.index', active_booking.id)" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">Freeze training</Link>
+                <template v-if="isTraining && !isBookingShowPage">
+                    <Link :href="route('admin.bookings.show', active_booking.id)" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">Training schedule</Link>
+                </template>
+                <template v-if="isTraining && !active_booking.is_frozen && !isFreezeTrainingPage">
+                    <Link :href="route('admin.bookings.freeze.index', active_booking.id)" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">Freeze training</Link>
+                </template>
                 <template v-if="!isMemberPersonalInfoPage">
                     <hr class="border-gray-200">
                     <Link :href="route('admin.members.personal-info', id)" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">Personal info</Link>
+                </template>
+                <template v-if="!isBodyCompositionCreatePage">
+                    <hr v-if="isMemberPersonalInfoPage" class="border-gray-200">
+                    <Link :href="route('admin.members.body-composition.create', id)" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">Body composition</Link>
                 </template>
                 <template v-if="!isMemberHistoryPage">
                     <hr class="border-gray-200">
@@ -52,8 +60,10 @@ const props = defineProps({
 const { id, name, first_name, profile_photo_url, age, since, active_booking } = props.member
 
 const isTraining = computed(() => !!active_booking)
-const isMemberShowPage = computed(() => $page.url === '/members/' + id)
-const isBookingShowPage = computed(() => active_booking && $page.url.includes('/bookings/' + active_booking.id))
-const isMemberHistoryPage = computed(() => $page.url.includes('/members/' + id + '/bookings/history'))
-const isMemberPersonalInfoPage = computed(() => $page.url.includes('/members/' + id + '/personal-info'))
+const isMemberShowPage = computed(() => route().current('admin.members.show'))
+const isBookingShowPage = computed(() => route().current('admin.bookings.show'))
+const isMemberHistoryPage = computed(() => route().current('admin.members.bookings.history'))
+const isMemberPersonalInfoPage = computed(() => route().current('admin.members.personal-info'))
+const isBodyCompositionCreatePage = computed(() => route().current('admin.members.body-composition.create'))
+const isFreezeTrainingPage = computed(() => route().current('admin.bookings.freeze.index'))
 </script>
