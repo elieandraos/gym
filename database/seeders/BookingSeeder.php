@@ -15,11 +15,17 @@ class BookingSeeder extends Seeder
 {
     // Configuration constants
     private const EXPIRING_BOOKING_SESSIONS = 12;
+
     private const EXPIRING_BOOKING_COMPLETED_SESSIONS = 10;
+
     private const EXPIRING_BOOKING_UPCOMING_SESSIONS = 2;
+
     private const EXPIRING_BOOKING_COUNT = 3;
+
     private const UNPAID_PERCENTAGE = 20;
+
     private const MIN_COMPLETED_BOOKING_MONTHS = 2;
+
     private const MAX_COMPLETED_BOOKING_MONTHS = 6;
 
     public function run(): void

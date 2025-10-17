@@ -115,6 +115,16 @@ class User extends Authenticatable
             ->with('trainer');
     }
 
+    public function bodyCompositions(): HasMany
+    {
+        return $this->hasMany(BodyComposition::class);
+    }
+
+    public function lastBodyComposition(): HasOne
+    {
+        return $this->hasOne(BodyComposition::class)->latestOfMany('taken_at');
+    }
+
     #[AsScope]
     public function members(Builder $query): Builder
     {

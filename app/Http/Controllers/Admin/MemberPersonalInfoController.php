@@ -12,6 +12,8 @@ class MemberPersonalInfoController extends Controller
 {
     public function index(User $user): Response
     {
+        $user->load('memberActiveBooking');
+
         return Inertia::render('Admin/Members/PersonalInfo', [
             'member' => MemberResource::make($user),
         ]);

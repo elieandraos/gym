@@ -49,6 +49,7 @@ class MembersController extends Controller
                     ->with(['bookingSlotWorkouts.workout']);
             },
             'memberScheduledBookings',
+            'lastBodyComposition',
         ]);
 
         return Inertia::render('Admin/Members/Show', [

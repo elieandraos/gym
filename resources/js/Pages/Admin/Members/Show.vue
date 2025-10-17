@@ -27,10 +27,19 @@
                                 <LastSessionRecap :active-booking="activeBooking" />
                             </td>
                         </tr>
-                        <tr>
+                        <tr class="border-b border-zinc-100">
                             <td class="text-[#71717b] py-4">Scheduled Trainings</td>
                             <td class="py-4">
                                 <ScheduledBooking :scheduled-bookings="scheduledBookings" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-[#71717b] py-4">Last body composition</td>
+                            <td class="py-4">
+                                <a v-if="lastBodyComposition" :href="lastBodyComposition.photo_url" target="_blank" class="text-sky-500 hover:text-sky-700">
+                                    {{ lastBodyComposition.taken_at_formatted }}
+                                </a>
+                                <span v-else class="text-zinc-400">Track progress with body composition photos 📸</span>
                             </td>
                         </tr>
                     </tbody>
@@ -57,6 +66,6 @@ const props = defineProps({
     member: { type: Object, required: true },
 })
 
-const { active_booking: activeBooking, scheduled_bookings: scheduledBookings } = props.member || {}
+const { active_booking: activeBooking, scheduled_bookings: scheduledBookings, last_body_composition: lastBodyComposition } = props.member || {}
 const isTraining = computed(() => !!activeBooking)
 </script>

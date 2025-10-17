@@ -15,6 +15,7 @@ test('member personal info route requires authentication', function () {
 
 test('it shows member personal information', function () {
     $member = User::query()->members()->first();
+    $member->load('memberActiveBooking');
 
     actingAsAdmin()
         ->get(route('admin.members.personal-info', $member))

@@ -16,7 +16,7 @@ class FreezeBookingController extends Controller
     public function index(Booking $booking): Response
     {
         $booking->load([
-            'member',
+            'member.memberActiveBooking',
             'trainer',
         ]);
 
