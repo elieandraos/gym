@@ -32,6 +32,7 @@ class EventResource extends JsonResource
             'url' => route('admin.bookings-slots.show', $slot->id),
             'meta_data' => [
                 'member' => explode(' ', $slot->booking->member->name)[0],
+                'member_photo_url' => $slot->booking->member->profile_photo_url,
                 'trainer' => explode(' ', $slot->booking->trainer->name)[0],
                 'trainer_color' => $slot->booking->trainer->color,
                 'booking_id' => $slot->booking->id,

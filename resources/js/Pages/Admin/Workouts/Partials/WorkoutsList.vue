@@ -34,7 +34,7 @@
         </tbody>
     </table>
 
-    <ul class="lg:hidden flex flex-col gap-6">
+    <ul class="lg:hidden grid grid-cols-1 md:grid-cols-2 gap-6">
         <li
             v-for="{ id, name, category } in data"
             :key="id"

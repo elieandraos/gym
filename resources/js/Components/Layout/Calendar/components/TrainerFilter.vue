@@ -1,5 +1,5 @@
 <template>
-    <div class="flex items-center space-x-4">
+    <div class="flex items-center space-x-4 mr-8 lg:mr-0">
         <template v-for="{id, first_name, color} in availableTrainers" :key="id">
             <label class="inline-flex items-center text-sm cursor-pointer">
                 <input

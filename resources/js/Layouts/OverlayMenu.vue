@@ -20,14 +20,14 @@
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 text-center">
                         <div>
-                            <h3 class="text-sm font-semibold text-zinc-600 uppercase tracking-wider mb-4">Quick Links</h3>
+                            <h3 class="text-[12px] font-[500] text-[#71717b] capitalize mb-1">Quick Links</h3>
                             <nav class="space-y-3">
                                 <Link
                                     v-for="item in quickLinks"
                                     :key="item.name"
                                     :href="item.url"
                                     @click="$emit('close')"
-                                    class="block text-zinc-900 hover:text-zinc-600 transition-colors duration-200 py-2 px-3 rounded-md hover:bg-zinc-200"
+                                    class="block text-zinc-900 hover:text-zinc-600 transition-colors duration-200 p-3 rounded-md text-[16px] hover:bg-zinc-200"
                                 >
                                     <component :is="item.icon" class="w-5 h-5 mx-auto mb-1" />
                                     <span class="text-sm">{{ item.name }}</span>
@@ -36,14 +36,14 @@
                         </div>
 
                         <div>
-                            <h3 class="text-sm font-semibold text-zinc-600 uppercase tracking-wider mb-4">Administration</h3>
+                            <h3 class="text-[12px] font-[500] text-[#71717b] capitalize mb-1">Administration</h3>
                             <nav class="space-y-3">
                                 <Link
                                     v-for="item in administrationLinks"
                                     :key="item.name"
                                     :href="item.url"
                                     @click="$emit('close')"
-                                    class="block text-zinc-900 hover:text-zinc-600 transition-colors duration-200 py-2 px-3 rounded-md hover:bg-zinc-200"
+                                    class="block text-zinc-900 hover:text-zinc-600 transition-colors duration-200 p-3 text-[16px] rounded-md hover:bg-zinc-200"
                                 >
                                     <component :is="item.icon" class="w-5 h-5 mx-auto mb-1" />
                                     <span class="text-sm">{{ item.name }}</span>
@@ -92,7 +92,7 @@ const administrationLinks = computed(() => {
 })
 
 const quickLinks = computed(() => {
-    return props.menu.filter(item => ['Home', 'Training', 'Calendar'].includes(item.name))
+    return props.menu.filter(item => ['Home', 'Private Training', 'Calendar'].includes(item.name))
 })
 
 const logout = () => {

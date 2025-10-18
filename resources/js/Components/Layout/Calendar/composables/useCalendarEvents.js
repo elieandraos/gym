@@ -76,6 +76,7 @@ export function useCalendarEvents(events, filters, startHour = 6, endHour = 22) 
                 textClass:  pal.text,
                 hoverText:  pal.hover,
                 member:     event.meta_data.member,
+                member_photo_url: event.meta_data.member_photo_url,
                 topPercent,
                 heightPercent
             }
@@ -85,8 +86,12 @@ export function useCalendarEvents(events, filters, startHour = 6, endHour = 22) 
         const map = {}
         slots.forEach(e => {
             const key = `${e.trainer}::${e.col}-${e.rowStart}-${e.span}`
-            if (!map[key]) map[key] = { ...e, members: [e.member] }
-            else map[key].members.push(e.member)
+            if (!map[key]) {
+                map[key] = { ...e, members: [e.member], member_photos: [e.member_photo_url] }
+            } else {
+                map[key].members.push(e.member)
+                map[key].member_photos.push(e.member_photo_url)
+            }
         })
         return Object.values(map)
     })
