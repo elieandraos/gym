@@ -15,7 +15,7 @@ class BodyCompositionResource extends JsonResource
         return [
             'id' => $this->id,
             'taken_at' => $this->taken_at,
-            'taken_at_formatted' => $this->taken_at->format('M j, Y'),
+            'taken_at_formatted' => $this->taken_at->format('D M jS, Y'),
             'photo_url' => asset('storage/'.$this->photo_path),
             'photo_path' => $this->photo_path,
         ];

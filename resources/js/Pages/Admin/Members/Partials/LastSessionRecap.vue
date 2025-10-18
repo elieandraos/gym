@@ -3,7 +3,7 @@
         <div class="flex-grow">
             <div v-if="hasCompletedSessions" class="text-zinc-950">
                 <span v-for="(session, index) in sessionRecap" :key="session.id">
-                    <span class="font-[600]">{{ session.day }}: </span>
+                    <Link :href="route('admin.bookings-slots.show', session.id)" class="font-[600] text-sky-500 hover:text-sky-700">{{ session.day }}</Link><span class="font-[600]">: </span>
                     <span>{{ session.categories }}</span>
                     <span class="text-zinc-950" v-if="index < sessionRecap.length - 1">&nbsp;&nbsp;</span>
                 </span>
@@ -13,11 +13,14 @@
 </template>
 
 <script setup>
+import { Link } from '@inertiajs/vue3'
 import { computed } from 'vue'
 
 const props = defineProps({
     activeBooking: { type: Object, default: null },
 })
+
+const { route } = window
 
 const bookingSlots = props.activeBooking?.bookingSlots || []
 
