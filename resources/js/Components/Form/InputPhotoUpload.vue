@@ -11,7 +11,7 @@
         <div class="flex gap-2 items-center">
             <div>
                 <!-- Current Profile Photo -->
-                <div v-show="! photoPreview && ! photoRemoved">
+                <div v-show="photo_url && ! photoPreview && ! photoRemoved">
                     <img :src="photo_url" class="rounded-full size-14 object-cover" alt="">
                 </div>
                 <!-- New Profile Photo Preview -->

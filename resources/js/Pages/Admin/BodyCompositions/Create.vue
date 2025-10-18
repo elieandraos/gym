@@ -11,13 +11,12 @@
             </FormSection>
 
             <FormSection title="Photo" description="Upload a body composition photo.">
-                <input
-                    ref="photoInput"
-                    type="file"
-                    accept="image/jpeg,image/png,image/jpg"
-                    @change="handlePhotoChange"
-                    class="w-full p-2 border border-zinc-200 placeholder-zinc-400 hover:border-zinc-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-lg text-sm"
-                />
+                <InputPhotoUpload
+                    :photo_url="null"
+                    :photo_path="null"
+                    :name="member.name"
+                    @upload="(file) => { form.photo = file }"
+                    @remove="() => { form.photo = null }" />
                 <InputError :message="form.errors.photo" />
             </FormSection>
 
@@ -33,13 +32,13 @@
 
 <script setup>
 import { Link, useForm } from '@inertiajs/vue3'
-import { ref } from 'vue'
 
 import AppLayout from '@/Layouts/AppLayout.vue'
 import Container from '@/Components/Layout/Container.vue'
 import DateInput from '@/Components/Form/DateInput.vue'
 import FormSection from '@/Components/Form/FormSection.vue'
 import InputError from '@/Components/Form/InputError.vue'
+import InputPhotoUpload from '@/Components/Form/InputPhotoUpload.vue'
 import MemberHeader from '@/Pages/Admin/Members/Partials/MemberHeader.vue'
 import PageHeader from '@/Components/Layout/PageHeader.vue'
 import PrimaryButton from '@/Components/Layout/PrimaryButton.vue'
@@ -51,19 +50,11 @@ const props = defineProps({
 })
 
 const { route } = window
-const photoInput = ref(null)
 
 const form = useForm({
     taken_at: props.defaultDate,
     photo: null,
 })
-
-const handlePhotoChange = (event) => {
-    const file = event.target.files[0]
-    if (file) {
-        form.photo = file
-    }
-}
 
 const uploadBodyComposition = () => {
     form.post(route('admin.members.body-composition.store', props.member.id), {
