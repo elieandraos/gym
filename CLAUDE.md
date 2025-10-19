@@ -413,3 +413,4 @@ function setupUsersAndBookings(): void
 - Display user-friendly error messages
 - Handle edge cases gracefully
 - When adding new model field, update related seeder, factory, test setup db if applicable
+- when writing tests, convert multiple expectations into chain

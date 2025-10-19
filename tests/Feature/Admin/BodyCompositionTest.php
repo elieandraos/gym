@@ -129,7 +129,7 @@ test('it displays latest body composition on member show page', function () {
         ->get(route('admin.members.show', $member))
         ->assertHasComponent('Admin/Members/Show')
         ->assertHasResource('member', MemberResource::make($member))
-        ->assertHasProp('member.last_body_composition.taken_at_formatted', $takenAt->format('M j, Y'))
+        ->assertHasProp('member.last_body_composition.taken_at_formatted', $takenAt->format('D M jS, Y'))
         ->assertStatus(200);
 });
 

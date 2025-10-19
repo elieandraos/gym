@@ -71,6 +71,11 @@ class BookingFactory extends Factory
         $startDate = $this->faker->dateTimeBetween("-$nbStartDay days", "-$nbEndDay days");
         $endDate = Carbon::instance($startDate)->addDays(30);
 
+        // Ensure end_date is always in the past (< today) to satisfy history() scope
+        if ($endDate->isToday() || $endDate->isFuture()) {
+            $endDate = Carbon::yesterday();
+        }
+
         return $this->state(function () use ($startDate, $endDate) {
             return [
                 'start_date' => $startDate,

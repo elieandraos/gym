@@ -14,9 +14,9 @@ describe('active scope', function () {
 
         $results = Booking::query()->active()->get();
 
-        expect($results)->toHaveCount(1);
-        expect($results->first()->start_date->isPast())->toBeTrue();
-        expect($results->first()->end_date->isFuture())->toBeTrue();
+        expect($results)->toHaveCount(1)
+            ->and($results->first()->start_date->isPast())->toBeTrue()
+            ->and($results->first()->end_date->isFuture())->toBeTrue();
     });
 
     it('returns no active bookings when none exist', function () {
@@ -47,8 +47,8 @@ describe('scheduled scope', function () {
 
         $results = Booking::query()->scheduled()->get();
 
-        expect($results)->toHaveCount(1);
-        expect($results->first()->start_date->isFuture())->toBeTrue();
+        expect($results)->toHaveCount(1)
+            ->and($results->first()->start_date->isFuture())->toBeTrue();
     });
 
     it('returns no scheduled bookings when none exist', function () {
@@ -91,8 +91,8 @@ describe('history scope', function () {
 
         $results = Booking::query()->history()->get();
 
-        expect($results)->toHaveCount(1);
-        expect($results->first()->end_date->isPast())->toBeTrue();
+        expect($results)->toHaveCount(1)
+            ->and($results->first()->end_date->isPast())->toBeTrue();
     });
 
     it('returns no completed bookings when none exist', function () {
@@ -115,37 +115,37 @@ describe('forCalendar scope', function () {
             'trainer_id' => $trainer->id,
         ]);
 
-        // Create upcoming slot
-        BookingSlot::factory()->create([
-            'booking_id' => $booking->id,
-            'status' => Status::Upcoming,
-            'start_time' => Carbon::now()->addDays(1),
-            'end_time' => Carbon::now()->addDays(1)->addHour(),
-        ]);
-
-        // Create frozen slot
-        BookingSlot::factory()->create([
-            'booking_id' => $booking->id,
-            'status' => Status::Frozen,
-            'start_time' => Carbon::now()->addDays(2),
-            'end_time' => Carbon::now()->addDays(2)->addHour(),
-        ]);
-
-        // Create cancelled slot
-        BookingSlot::factory()->create([
-            'booking_id' => $booking->id,
-            'status' => Status::Cancelled,
-            'start_time' => Carbon::now()->addDays(3),
-            'end_time' => Carbon::now()->addDays(3)->addHour(),
-        ]);
-
         $start = Carbon::now()->startOfWeek();
         $end = Carbon::now()->endOfWeek();
 
+        // Create upcoming slot within the week range
+        BookingSlot::factory()->create([
+            'booking_id' => $booking->id,
+            'status' => Status::Upcoming,
+            'start_time' => $start->copy()->addDays(1)->setHour(10),
+            'end_time' => $start->copy()->addDays(1)->setHour(11),
+        ]);
+
+        // Create frozen slot within the week range
+        BookingSlot::factory()->create([
+            'booking_id' => $booking->id,
+            'status' => Status::Frozen,
+            'start_time' => $start->copy()->addDays(2)->setHour(10),
+            'end_time' => $start->copy()->addDays(2)->setHour(11),
+        ]);
+
+        // Create cancelled slot within the week range
+        BookingSlot::factory()->create([
+            'booking_id' => $booking->id,
+            'status' => Status::Cancelled,
+            'start_time' => $start->copy()->addDays(3)->setHour(10),
+            'end_time' => $start->copy()->addDays(3)->setHour(11),
+        ]);
+
         $results = Booking::query()->forCalendar($start, $end)->get();
 
-        expect($results)->toHaveCount(1);
-        expect($results->first()->bookingSlots)->toHaveCount(1);
-        expect($results->first()->bookingSlots->first()->status)->toBe(Status::Upcoming);
+        expect($results)->toHaveCount(1)
+            ->and($results->first()->bookingSlots)->toHaveCount(1)
+            ->and($results->first()->bookingSlots->first()->status)->toBe(Status::Upcoming);
     });
 });

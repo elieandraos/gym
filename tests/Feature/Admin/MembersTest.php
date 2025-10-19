@@ -109,6 +109,7 @@ test('it shows member information', function () {
                 ->with(['bookingSlotWorkouts.workout']);
         },
         'memberScheduledBookings',
+        'lastBodyComposition',
     ]);
 
     actingAsAdmin()
