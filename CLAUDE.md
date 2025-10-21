@@ -22,6 +22,11 @@ php artisan tinker      # Laravel REPL
 php artisan queue:work  # Process queued jobs
 php artisan queue:work --queue=emails  # Process specific queue
 php artisan queue:listen  # Process jobs and watch for new ones
+
+# Scheduler (for scheduled tasks)
+php artisan schedule:list  # List all scheduled tasks
+php artisan schedule:run   # Run scheduled tasks (use in testing)
+php artisan schedule:work  # Run scheduler in foreground (for local dev)
 ```
 
 ## Architecture Overview
@@ -457,3 +462,42 @@ php artisan test --filter="MemberWelcomeEmailTest|OwnerNewMemberEmailTest"  # Ru
 - Primary button: gray-800 background, white text
 - Layout: `resources/views/emails/layouts/branded.blade.php`
 - Theme: `resources/views/vendor/mail/html/themes/liftstation.css`
+
+## Scheduled Tasks
+
+**Timezone:** Asia/Beirut (UTC+2 in winter, UTC+3 in summer with DST)
+
+**Scheduled Commands:**
+1. **Mark Booking Slots Complete** (`lift-station:mark-booking-slots-complete`)
+   - Runs: Every hour (at :00 - e.g., 1:00, 2:00, 3:00 AM/PM Beirut time)
+   - Purpose: Updates past booking slots to "Complete" status
+   - Preserves: Cancelled and Frozen slots (not changed)
+   - Logic: Where `end_time < now()` and status is Upcoming
+
+**Local Development:**
+```bash
+# View all scheduled tasks
+php artisan schedule:list
+
+# Run scheduler manually (executes due tasks)
+php artisan schedule:run
+
+# Run scheduler in foreground (keeps running and executes at proper times)
+php artisan schedule:work
+
+# Test the specific command manually
+php artisan lift-station:mark-booking-slots-complete
+```
+
+**Production Setup:**
+Add this cron entry to run the Laravel scheduler every minute:
+```bash
+* * * * * cd /path-to-your-project && php artisan schedule:run >> /dev/null 2>&1
+```
+
+Laravel's scheduler will then determine which commands should run based on their schedule.
+
+**Testing:**
+```bash
+php artisan test --filter=CommandMarkBookingSlotsCompleteTest
+```

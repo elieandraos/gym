@@ -10,17 +10,15 @@ beforeEach(function () {
 
 it('marks past booking slots as complete', function () {
     $upcomingSlot = BookingSlot::factory()->create([
-        'end_time' => now()->addHour(),
+        'end_time' => now()->subHour(), // 1 hour ago
         'status' => Status::Upcoming,
     ]);
 
     $cancelledSlot = BookingSlot::factory()->create([
-        'end_time' => now()->addHour(),
+        'end_time' => now()->subHour(), // 1 hour ago
         'status' => Status::Cancelled,
     ]);
 
-    // Travel in time to tomorrow and run the command
-    $this->travelTo(now()->addDay());
     Artisan::call('lift-station:mark-booking-slots-complete');
 
     // Assert
@@ -40,6 +38,30 @@ it('does not mark future booking slots as complete', function () {
     Artisan::call('lift-station:mark-booking-slots-complete');
 
     expect($slot->fresh()->status)->toBe(Status::Upcoming);
+
+    $this->travelBack();
+});
+
+it('only processes booking slots from today', function () {
+    // Create a slot from yesterday that should NOT be processed
+    $yesterdaySlot = BookingSlot::factory()->create([
+        'end_time' => now()->subDay()->setTime(10, 0),
+        'status' => Status::Upcoming,
+    ]);
+
+    // Create a slot from today that SHOULD be processed
+    $todaySlot = BookingSlot::factory()->create([
+        'end_time' => now()->subHour(),
+        'status' => Status::Upcoming,
+    ]);
+
+    Artisan::call('lift-station:mark-booking-slots-complete');
+
+    // Today's past slot should be marked complete
+    expect($todaySlot->fresh()->status)->toBe(Status::Complete);
+
+    // Yesterday's slot should NOT be touched (optimization - only processes today)
+    expect($yesterdaySlot->fresh()->status)->toBe(Status::Upcoming);
 
     $this->travelBack();
 });
