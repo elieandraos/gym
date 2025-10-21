@@ -9,7 +9,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 npm run dev              # Start Vite dev server
 npm run build           # Build for production
 
-# Backend development  
+# Backend development
 php artisan test        # Run all tests (using Pest)
 ./vendor/bin/pint       # Run Laravel Pint code formatter
 
@@ -17,6 +17,11 @@ php artisan test        # Run all tests (using Pest)
 php artisan migrate     # Run migrations
 php artisan db:seed     # Run seeders
 php artisan tinker      # Laravel REPL
+
+# Queue worker (for processing emails and background jobs)
+php artisan queue:work  # Process queued jobs
+php artisan queue:work --queue=emails  # Process specific queue
+php artisan queue:listen  # Process jobs and watch for new ones
 ```
 
 ## Architecture Overview
@@ -414,3 +419,41 @@ function setupUsersAndBookings(): void
 - Handle edge cases gracefully
 - When adding new model field, update related seeder, factory, test setup db if applicable
 - when writing tests, convert multiple expectations into chain
+
+## Email System
+
+**Email Configuration:**
+- Mail driver: SMTP (Mailtrap for development/testing)
+- Queue connection: database
+- All emails are queued to avoid blocking HTTP requests
+- Owner notification emails sent to addresses in `OWNERS_EMAILS` env variable
+
+**Email Types:**
+1. **Member Welcome Email** (`App\Mail\Member\WelcomeEmail`)
+   - Sent to new members upon registration
+   - Contains personalized greeting and motivational message
+
+2. **Owner Notification Email** (`App\Mail\Owner\NewMemberEmail`)
+   - Sent to gym owner(s) when a new member registers
+   - Contains member details and link to profile
+
+**Testing Emails:**
+```bash
+# View queued jobs
+php artisan queue:work --once  # Process one job
+
+# Check Mailtrap inbox
+# Visit https://mailtrap.io to view sent test emails
+
+# Run email tests
+php artisan test --filter=MemberWelcomeEmailTest  # Test welcome emails
+php artisan test --filter=OwnerNewMemberEmailTest  # Test owner notification emails
+php artisan test --filter="MemberWelcomeEmailTest|OwnerNewMemberEmailTest"  # Run all email tests
+```
+
+**Email Branding:**
+- Font: Inter (via Google Fonts)
+- Logo: `public/logo.png`
+- Primary button: gray-800 background, white text
+- Layout: `resources/views/emails/layouts/branded.blade.php`
+- Theme: `resources/views/vendor/mail/html/themes/liftstation.css`

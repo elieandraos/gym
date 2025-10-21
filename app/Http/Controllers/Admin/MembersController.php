@@ -7,10 +7,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\UpdateUserRequest;
 use App\Http\Requests\Admin\UserRequest;
 use App\Http\Resources\MemberResource;
+use App\Mail\Member\WelcomeEmail;
+use App\Mail\Owner\NewMemberEmail;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -69,7 +72,19 @@ class MembersController extends Controller
             'role' => Role::Member->value,
         ]);
 
-        User::query()->create($request->all());
+        $member = User::query()->create($request->all());
+
+        // Send email to the new member
+        Mail::to($member->email)->queue(new WelcomeEmail($member));
+
+        // Send email to gym owner(s)
+        $ownersEmails = config('mail.owners_emails');
+        if ($ownersEmails) {
+            $emails = array_map('trim', explode(',', $ownersEmails));
+            foreach ($emails as $email) {
+                Mail::to($email)->queue(new NewMemberEmail($member));
+            }
+        }
 
         return redirect()->route('admin.members.index')
             ->with('flash.banner', 'Member created successfully')

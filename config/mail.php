@@ -108,4 +108,17 @@ return [
         'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Gym Owners Email Addresses
+    |--------------------------------------------------------------------------
+    |
+    | Comma-separated list of email addresses for gym owners who should
+    | receive notifications about new member registrations and other
+    | important system events.
+    |
+    */
+
+    'owners_emails' => env('OWNERS_EMAILS'),
+
 ];
