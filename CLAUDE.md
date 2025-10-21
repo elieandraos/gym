@@ -29,6 +29,73 @@ php artisan schedule:run   # Run scheduled tasks (use in testing)
 php artisan schedule:work  # Run scheduler in foreground (for local dev)
 ```
 
+## Running Queue and Scheduler Locally
+
+For local development, you need to run both the queue worker (for emails) and scheduler (for hourly tasks) in separate terminal windows.
+
+### Quick Start
+
+**Terminal 1 - Queue Worker:**
+```bash
+php artisan queue:work
+```
+Processes queued jobs like welcome emails and owner notifications.
+
+**Terminal 2 - Scheduler:**
+```bash
+php artisan schedule:work
+```
+Runs scheduled tasks like the hourly booking slots completion.
+
+**Terminal 3 - Dev Server (Optional):**
+```bash
+php artisan serve
+# or
+npm run dev
+```
+
+### Testing Without Waiting
+
+**Test Queue Immediately:**
+```bash
+# Process one job from the queue
+php artisan queue:work --once
+
+# View failed jobs
+php artisan queue:failed
+```
+
+**Test Scheduler Immediately:**
+```bash
+# Run all due scheduled tasks now
+php artisan schedule:run
+
+# Test specific command manually
+php artisan lift-station:mark-booking-slots-complete
+```
+
+**View What's Scheduled:**
+```bash
+php artisan schedule:list
+```
+
+### Troubleshooting
+
+**Queue not processing:**
+- Ensure `QUEUE_CONNECTION=database` in `.env`
+- Check jobs table: `SELECT * FROM jobs;`
+- Check failed_jobs table for errors
+
+**Scheduler not running:**
+- Ensure you're using `schedule:work` (not `schedule:run` which runs once)
+- Check timezone matches: `APP_TIMEZONE=Asia/Beirut`
+- View scheduled tasks: `php artisan schedule:list`
+
+**Both not working:**
+- Restart both terminal processes
+- Clear cache: `php artisan cache:clear`
+- Check Laravel log: `storage/logs/laravel.log`
+
 ## Architecture Overview
 
 ### Tech Stack
