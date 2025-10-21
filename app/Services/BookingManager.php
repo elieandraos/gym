@@ -48,19 +48,33 @@ class BookingManager
         self::validateScheduleDays($scheduleDays);
 
         $sessionDates = [];
-        $currentDate = $startDate->copy();
+        $weekStart = $startDate->copy()->startOfWeek();
+        $currentWeekOffset = 0;
+
+        // Extract day numbers and times (using ISO day numbering: Monday=1, Sunday=7)
+        $schedule = array_map(function ($dayTime) {
+            return [
+                'dayOfWeek' => Carbon::parse($dayTime['day'])->dayOfWeekIso,
+                'time' => Carbon::parse($dayTime['time'])->format('H:i'),
+            ];
+        }, $scheduleDays);
+
+        // Sort by day of week to maintain chronological order
+        usort($schedule, fn ($a, $b) => $a['dayOfWeek'] <=> $b['dayOfWeek']);
 
         while (count($sessionDates) < $count) {
-            foreach ($scheduleDays as $dayTime) {
-                $dayOfWeek = Carbon::parse($dayTime['day'])->dayOfWeek;
-                $time = Carbon::parse($dayTime['time'])->format('H:i');
-                $nextDate = $currentDate->copy()->next($dayOfWeek)->setTimeFromTimeString($time);
+            foreach ($schedule as $slot) {
+                $candidateDate = $weekStart->copy()
+                    ->addWeeks($currentWeekOffset)
+                    ->startOfWeek()
+                    ->addDays($slot['dayOfWeek'] - 1)
+                    ->setTimeFromTimeString($slot['time']);
 
-                if ($nextDate >= $startDate && count($sessionDates) < $count) {
-                    $sessionDates[] = $nextDate->format('Y-m-d h:i A');
-                    $currentDate = $nextDate;
+                if ($candidateDate >= $startDate && count($sessionDates) < $count) {
+                    $sessionDates[] = $candidateDate->format('Y-m-d h:i A');
                 }
             }
+            $currentWeekOffset++;
         }
 
         return $sessionDates;

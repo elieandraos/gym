@@ -21,6 +21,25 @@ it('generates dates forward correctly', function () {
     expect($result[4])->toBe('2023-06-19 10:00 AM');
 });
 
+it('generates dates starting on a scheduled day', function () {
+    $startDate = Carbon::parse('2023-06-05 10:00'); // Monday
+    $nb_dates = 5;
+    $scheduleDays = [
+        ['day' => 'Monday', 'time' => '10:00 AM'],
+        ['day' => 'Wednesday', 'time' => '02:00 PM'],
+        ['day' => 'Friday', 'time' => '03:00 PM'],
+    ];
+
+    $result = BookingManager::generateDatesForward($startDate, $nb_dates, $scheduleDays);
+
+    expect($result)->toHaveCount($nb_dates);
+    expect($result[0])->toBe('2023-06-05 10:00 AM'); // Should start on the same day (Monday)
+    expect($result[1])->toBe('2023-06-07 02:00 PM'); // Wednesday
+    expect($result[2])->toBe('2023-06-09 03:00 PM'); // Friday
+    expect($result[3])->toBe('2023-06-12 10:00 AM'); // Next Monday
+    expect($result[4])->toBe('2023-06-14 02:00 PM'); // Next Wednesday
+});
+
 it('generates dates backward correctly', function () {
     $endDate = Carbon::parse('2023-06-30 10:00');
     $count = 5;
