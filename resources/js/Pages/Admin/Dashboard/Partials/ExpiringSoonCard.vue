@@ -9,8 +9,8 @@
             <div class="h-12 bg-zinc-100 rounded"></div>
             <div class="h-12 bg-zinc-100 rounded"></div>
         </div>
-        <div v-else-if="bookings.length === 0" class="text-center py-8 text-zinc-400">
-            No bookings expiring soon
+        <div v-else-if="bookings.length === 0" class="text-center py-8 text-emerald-600">
+            All trainings are on track! 🚀
         </div>
         <div v-else class="space-y-3 max-h-[240px] overflow-y-auto">
             <div

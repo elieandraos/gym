@@ -1,3 +1,4 @@
+@php use Carbon\Carbon; @endphp
 @component('emails.layouts.branded')
     <p style="font-size: 18px; font-weight: 600; color: #111827; margin-bottom: 20px;">
         Great news!
@@ -8,7 +9,8 @@
     </p>
 
     <p style="margin-bottom: 24px; color: #6b7280;">
-        Registration Date: {{ $member->registration_date ? \Carbon\Carbon::parse($member->registration_date)->format('F j, Y') : 'N/A' }}
+        Registration
+        Date: {{ $member->registration_date ? Carbon::parse($member->registration_date)->format('F j, Y') : 'N/A' }}
     </p>
 
     <p style="margin-bottom: 24px;">

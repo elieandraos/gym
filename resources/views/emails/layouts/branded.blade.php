@@ -7,6 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <title></title>
 </head>
 <body>
     <table class="wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation">
@@ -24,7 +25,7 @@
 
                     {{-- Email Body --}}
                     <tr>
-                        <td class="body" width="100%" cellpadding="0" cellspacing="0">
+                        <td class="body" width="100%">
                             <table class="inner-body" align="center" width="570" cellpadding="0" cellspacing="0" role="presentation">
                                 {{-- Body content --}}
                                 <tr>
