@@ -2,7 +2,8 @@
     <AppLayout title="Profile">
         <Container>
             <PageHeader :sticky="true" :bordered="false" :bottom-gap="true">
-                <div class="w-full flex justify-between items-center font-normal">
+                <!-- Desktop layout -->
+                <div class="hidden xl:flex w-full justify-between items-center font-normal">
                     <div class="flex items-center gap-4">
                         <div class="w-64">
                             <text-input
@@ -26,6 +27,32 @@
                             <PlusIcon class="size-5" />
                         </primary-button>
                     </Link>
+                </div>
+
+                <!-- Mobile layout -->
+                <div class="xl:hidden w-full font-normal space-y-3">
+                    <div class="flex items-center gap-2">
+                        <div class="flex-1">
+                            <text-input
+                                v-model="searchQuery"
+                                @input="performSearch"
+                                placeholder="Search..."
+                            />
+                        </div>
+                        <Link :href="route('admin.workouts.create')">
+                            <primary-button type="button">
+                                <PlusIcon class="size-5" />
+                            </primary-button>
+                        </Link>
+                    </div>
+                    <div class="w-full">
+                        <select-input
+                            v-model="categoryFilter"
+                            :options="categoryOptions"
+                            placeholder="All categories"
+                            @change="performSearch"
+                        />
+                    </div>
                 </div>
             </PageHeader>
 
