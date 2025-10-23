@@ -2,8 +2,8 @@
     <AppLayout title="Profile">
         <Container>
             <PageHeader :sticky="true" :bordered="false" :bottom-gap="true">
-                <!-- Desktop layout -->
-                <div class="hidden xl:flex w-full justify-between items-center font-normal">
+                <!-- Tablet/Desktop layout (one line) -->
+                <div class="hidden md:flex w-full justify-between items-center font-normal">
                     <div class="flex items-center gap-4">
                         <div class="w-64">
                             <text-input
@@ -25,8 +25,8 @@
                     </Link>
                 </div>
 
-                <!-- Mobile layout -->
-                <div class="xl:hidden w-full font-normal space-y-3">
+                <!-- Mobile layout (two rows) -->
+                <div class="md:hidden w-full font-normal space-y-3">
                     <div class="flex items-center gap-2">
                         <div class="flex-1">
                             <text-input
