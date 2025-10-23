@@ -309,6 +309,64 @@ defineExpose({ focus: () => input.value.focus() })
 - Preserve query strings with `withQueryString()`
 - Handle filter state with reactive refs
 
+**Route Matching & Active States:**
+- ALWAYS use Ziggy's `route().current()` for checking active routes, NEVER compare URLs directly
+- Use wildcard patterns (`.*`) for matching route groups
+- Store both `href` (for navigation) and `routeName` (for active state checking) in nav items
+- This ensures consistent behavior regardless of URL structure changes
+
+```vue
+<!-- ✅ Good - Using Ziggy route matching -->
+<script setup>
+const navItems = [
+    {
+        name: 'Members',
+        href: route('admin.members.index'),        // For navigation
+        routeName: 'admin.members.*',              // For active state matching
+        icon: UsersIcon,
+    },
+]
+
+const isActive = (routeName) => {
+    return route().current(routeName)  // Uses Ziggy's route matching
+}
+</script>
+
+<template>
+    <Link
+        :href="item.href"
+        :class="isActive(item.routeName) ? 'active' : 'inactive'"
+    >
+        {{ item.name }}
+    </Link>
+</template>
+
+<!-- ❌ Avoid - URL string comparison -->
+<script setup>
+import { usePage } from '@inertiajs/vue3'
+
+const page = usePage()
+
+const isActive = (href) => {
+    // Fragile - breaks if URL structure changes
+    return page.url.startsWith(href)
+}
+</script>
+
+<!-- ❌ Avoid - Hardcoded URL paths -->
+<script setup>
+const isActive = () => {
+    return window.location.pathname.includes('/members')  // Very fragile
+}
+</script>
+```
+
+**Route Matching Best Practices:**
+- Use exact route names for single pages: `'dashboard'`
+- Use wildcards for route groups: `'admin.members.*'` matches all member-related routes
+- Combine with Inertia's Link component for proper SPA navigation
+- This approach is maintainable and survives route refactoring
+
 ### Testing Philosophy (Pest)
 
 **Test Organization:**
