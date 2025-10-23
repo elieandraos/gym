@@ -62,7 +62,7 @@ const navItems = [
     {
         name: 'Calendar',
         href: route('admin.weekly-calendar.index'),
-        routeName: 'admin.weekly-calendar.*',
+        routeName: ['admin.weekly-calendar.*', 'admin.daily-calendar.*'],
         icon: CalendarDaysIcon,
         iconSolid: CalendarDaysIconSolid,
     },
@@ -83,6 +83,11 @@ const navItems = [
 ]
 
 const isActive = (routeName) => {
+    // Handle array of route names
+    if (Array.isArray(routeName)) {
+        return routeName.some(name => route().current(name))
+    }
+    // Handle single route name
     return route().current(routeName)
 }
 </script>
