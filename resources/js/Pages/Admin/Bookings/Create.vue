@@ -156,8 +156,26 @@ onMounted(() => {
 const saveBooking = () => {
     form.post(route('admin.bookings.store'), {
         preserveScroll: true,
-        onError: (e) => {
-            console.log(e)
+        onError: (errors) => {
+            console.log(errors)
+            // Scroll to first error, accounting for sticky header
+            setTimeout(() => {
+                const firstError = document.querySelector('.bg-red-50')
+                if (firstError) {
+                    // Find the parent FormSection to scroll to the section title
+                    const formSection = firstError.closest('section')
+                    const scrollTarget = formSection || firstError
+
+                    const headerOffset = 120 // Height of sticky header + some padding
+                    const elementPosition = scrollTarget.getBoundingClientRect().top
+                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset
+
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    })
+                }
+            }, 100)
         },
     })
 }

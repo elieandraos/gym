@@ -11,7 +11,7 @@
                             <span>Training is</span>
                             <Badge type="info">frozen</Badge>
                         </div>
-                        <Link :href="route('admin.bookings.unfreeze.index', activeBooking.id)" class="text-sky-500 hover:text-sky-700 font-[500]">
+                        <Link :href="route('admin.bookings.unfreeze.index', activeBooking.id)" class="text-sky-500 hover:text-sky-700 font-[400]">
                             Unfreeze
                         </Link>
                     </div>
@@ -21,7 +21,7 @@
                         </p>
                         <p>
                             with
-                            <Link :href="route('admin.trainers.show', { user: trainer.id })" class="text-sky-500 hover:text-sky-700 font-[500]">
+                            <Link :href="route('admin.trainers.show', { user: trainer.id })" class="text-sky-500 hover:text-sky-700 font-[400]">
                                 {{ trainer.name }}
                             </Link>
                         </p>

@@ -1,40 +1,54 @@
 <template>
     <div class="flex h-[calc(100vh-4rem)] flex-col">
-        <!-- Calendar Header with navigation and filters -->
-        <WeeklyCalendarHeader
-            :label="monthLabel"
-            :header-days="headerDays"
-            @prev-click="prevWeek"
-            @next-click="nextWeek"
-        >
-            <template #filters>
-                <TrainerFilter
-                    v-model="selectedTrainers"
-                    :available-trainers="availableTrainers"
-                    @filter-change="handleFilterChange"
-                    @update:modelValue="updateTrainerSelection"
-                />
-            </template>
-        </WeeklyCalendarHeader>
+        <!-- Mobile Message -->
+        <div class="md:hidden flex items-center justify-center h-full p-8 text-center">
+            <div>
+                <p class="text-zinc-600 text-lg mb-2">Calendar view not supported on mobile</p>
+                <p class="text-zinc-400 mb-4">Please switch to day view</p>
+                <a :href="route('admin.daily-calendar.index')" class="inline-block px-4 py-2 bg-zinc-800 text-white rounded-lg hover:bg-zinc-700">
+                    Go to Day View
+                </a>
+            </div>
+        </div>
 
-        <!-- Weekly Grid -->
-        <WeeklyCalendarGrid
-            :header-days="headerDays"
-            :hours="hours"
-            :filtered-events="filteredEvents"
-            :start-hour="startHour"
-            :end-hour="endHour"
-            :auto-scroll-to-time="autoScrollToTime"
-            @open-modal="openMembersPopup"
-        />
+        <!-- Desktop/Tablet Calendar -->
+        <div class="hidden md:flex md:h-full md:flex-col">
+            <!-- Calendar Header with navigation and filters -->
+            <WeeklyCalendarHeader
+                :label="monthLabel"
+                :header-days="headerDays"
+                @prev-click="prevWeek"
+                @next-click="nextWeek"
+            >
+                <template #filters>
+                    <TrainerFilter
+                        v-model="selectedTrainers"
+                        :available-trainers="availableTrainers"
+                        @filter-change="handleFilterChange"
+                        @update:modelValue="updateTrainerSelection"
+                    />
+                </template>
+            </WeeklyCalendarHeader>
 
-        <!-- Members Modal -->
-        <EventModal
-            :is-open="showMembersPopup"
-            :selected-slot="selectedSlot"
-            @close="closeMembersPopup"
-            @go-to-member="goToBookingSlot"
-        />
+            <!-- Weekly Grid -->
+            <WeeklyCalendarGrid
+                :header-days="headerDays"
+                :hours="hours"
+                :filtered-events="filteredEvents"
+                :start-hour="startHour"
+                :end-hour="endHour"
+                :auto-scroll-to-time="autoScrollToTime"
+                @open-modal="openMembersPopup"
+            />
+
+            <!-- Members Modal -->
+            <EventModal
+                :is-open="showMembersPopup"
+                :selected-slot="selectedSlot"
+                @close="closeMembersPopup"
+                @go-to-member="goToBookingSlot"
+            />
+        </div>
     </div>
 </template>
 

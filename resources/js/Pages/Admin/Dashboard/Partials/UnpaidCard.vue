@@ -28,7 +28,7 @@
                     <div class="flex-1 min-w-0">
                         <Link
                             :href="route('admin.members.show', booking.member.id)"
-                            class="text-sm text-sky-500 hover:text-sky-700 font-[500]"
+                            class="text-sm text-sky-500 hover:text-sky-700 font-[400]"
                         >
                             {{ booking.member.name }}
                         </Link>
@@ -73,7 +73,7 @@
                     <div class="flex-1 min-w-0">
                         <Link
                             :href="route('admin.members.show', booking.member.id)"
-                            class="text-sm text-sky-500 hover:text-sky-700 font-[500]"
+                            class="text-sm text-sky-500 hover:text-sky-700 font-[400]"
                         >
                             {{ booking.member.name }}
                         </Link>

@@ -36,10 +36,15 @@
                         <tr>
                             <td class="text-[#71717b] py-4">Last body composition</td>
                             <td class="py-4">
-                                <a v-if="lastBodyComposition" :href="lastBodyComposition.photo_url" target="_blank" class="text-sky-500 hover:text-sky-700">
+                                <a v-if="lastBodyComposition" :href="lastBodyComposition.photo_url" target="_blank" class="text-sky-500 hover:text-sky-700 font-[400]">
                                     {{ lastBodyComposition.taken_at_formatted }}
                                 </a>
-                                <span v-else class="text-zinc-400">Track progress with body composition photos 📸</span>
+                                <span v-else class="text-zinc-400">
+                                    <Link :href="route('admin.members.body-composition.create', { user: member.id })" class="text-sky-500 hover:text-sky-700 font-[400]">
+                                        Start tracking
+                                    </Link>
+                                    {{ member.name.split(' ')[0] }}'s transformation journey!
+                                </span>
                             </td>
                         </tr>
                     </tbody>
@@ -50,7 +55,11 @@
 </template>
 
 <script setup>
+import { Link } from '@inertiajs/vue3'
+import { computed } from 'vue'
+
 import AppLayout from '@/Layouts/AppLayout.vue'
+import Container from '@/Components/Layout/Container.vue'
 import PageHeader from '@/Components/Layout/PageHeader.vue'
 import MemberHeader from '@/Pages/Admin/Members/Partials/MemberHeader.vue'
 import TrainingStatusWidget from '@/Pages/Admin/Members/Partials/TrainingStatusWidget.vue'
@@ -58,9 +67,9 @@ import ScheduledBooking from '@/Pages/Admin/Members/Partials/ScheduledBooking.vu
 import PaymentStatusWidget from '@/Pages/Admin/Members/Partials/PaymentStatusWidget.vue'
 import UpcomingSession from '@/Pages/Admin/Members/Partials/UpcomingSession.vue'
 import RemainingSessionsWidget from '@/Pages/Admin/Members/Partials/RemainingSessionsWidget.vue'
-import Container from '@/Components/Layout/Container.vue'
 import LastSessionRecap from '@/Pages/Admin/Members/Partials/LastSessionRecap.vue'
-import {computed} from 'vue'
+
+const { route } = window
 
 const props = defineProps({
     member: { type: Object, required: true },
