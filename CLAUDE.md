@@ -626,3 +626,4 @@ Laravel's scheduler will then determine which commands should run based on their
 ```bash
 php artisan test --filter=CommandMarkBookingSlotsCompleteTest
 ```
+- when feature/task is not working over 3 iterations, ask for debugging info (console log, dd(), etc...) so i can help you
