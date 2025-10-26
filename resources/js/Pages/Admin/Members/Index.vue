@@ -2,7 +2,8 @@
     <AppLayout title="Profile">
         <Container>
             <PageHeader :sticky="true" :bordered="false" :bottom-gap="true">
-                <div class="w-full flex justify-between items-center font-normal">
+                <!-- Tablet/Desktop layout (one line) -->
+                <div class="hidden md:flex w-full justify-between items-center font-normal">
                     <div class="flex items-center gap-4">
                         <div class="w-64">
                             <text-input
@@ -22,6 +23,28 @@
                             <PlusIcon class="size-5" />
                         </primary-button>
                     </Link>
+                </div>
+
+                <!-- Mobile layout (two rows) -->
+                <div class="md:hidden w-full font-normal space-y-3">
+                    <div class="flex items-center gap-2">
+                        <div class="flex-1">
+                            <text-input
+                                v-model="searchQuery"
+                                @input="performSearch"
+                                placeholder="Search members..."
+                            />
+                        </div>
+                        <Link :href="route('admin.members.create')">
+                            <primary-button type="button">
+                                <PlusIcon class="size-5" />
+                            </primary-button>
+                        </Link>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <switch-input v-model="activeTraining" @change="performSearch" />
+                        <label class="text-sm text-[#71717b]">Currently training</label>
+                    </div>
                 </div>
             </PageHeader>
 

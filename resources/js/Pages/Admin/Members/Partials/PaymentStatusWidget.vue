@@ -16,7 +16,7 @@
                         v-if="!activeBooking.is_paid"
                         @click="markAsPaid"
                         href="#"
-                        class="text-sky-500 hover:text-sky-700 font-[500]"
+                        class="text-sky-500 hover:text-sky-700 font-[400]"
                     >
                         Mark as paid
                     </a>

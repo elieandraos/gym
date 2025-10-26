@@ -2,7 +2,7 @@
     <div class="flex items-center gap-2">
         <div class="flex-grow">
             <span v-if="hasScheduledBooking">
-                <Link :href="route('admin.bookings.show', scheduledBooking.id)" class="text-sky-500 hover:text-sky-700 font-[500]">
+                <Link :href="route('admin.bookings.show', scheduledBooking.id)" class="text-sky-500 hover:text-sky-700 font-[400]">
                     Scheduled training
                 </Link>
                 from <span class="font-[600] text-indigo-950">{{ formatted_start_date }}</span>

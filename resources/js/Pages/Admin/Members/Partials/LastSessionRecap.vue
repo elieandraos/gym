@@ -3,7 +3,7 @@
         <div class="flex-grow">
             <div v-if="hasCompletedSessions" class="text-zinc-950">
                 <span v-for="(session, index) in sessionRecap" :key="session.id">
-                    <Link :href="route('admin.bookings-slots.show', session.id)" class="font-[600] text-sky-500 hover:text-sky-700">{{ session.day }}</Link><span class="font-[600]">: </span>
+                    <Link :href="route('admin.bookings-slots.show', session.id)" class="text-sky-500 hover:text-sky-700 font-[400]">{{ session.day }}</Link><span>: </span>
                     <span>{{ session.categories }}</span>
                     <span class="text-zinc-950" v-if="index < sessionRecap.length - 1">&nbsp;&nbsp;</span>
                 </span>

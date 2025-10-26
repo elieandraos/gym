@@ -34,7 +34,7 @@
                 </div>
                 <Link
                     :href="route('admin.bookings.unfreeze.index', booking.id)"
-                    class="text-sm text-sky-500 hover:text-sky-700 font-[500] flex-shrink-0"
+                    class="text-sm text-sky-500 hover:text-sky-700 font-[400] flex-shrink-0"
                 >
                     Unfreeze
                 </Link>

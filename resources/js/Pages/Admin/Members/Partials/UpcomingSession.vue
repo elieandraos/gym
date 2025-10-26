@@ -2,7 +2,7 @@
     <div v-if="props.isTraining && upcomingSessionDate" class="flex items-center  gap-2">
         <div class="flex-grow">
             <span>
-                <Link :href="upcomingSessionUrl" class="text-sky-500 hover:text-sky-700 font-[500]">
+                <Link :href="upcomingSessionUrl" class="text-sky-500 hover:text-sky-700 font-[400]">
                     {{ upcomingSessionDate }}, {{ upcomingSessionTime }}
                 </Link>
             </span>

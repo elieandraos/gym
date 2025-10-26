@@ -6,25 +6,23 @@
 
         <div class="bg-zinc-100 text-black relative">
             <div class="flex">
-                <div class="h-screen w-60 hidden lg:block">
+                <div class="h-screen w-60 hidden xl:block">
                     <sidebar :menu="menu"></sidebar>
                 </div>
 
-                <div class="h-screen lg:pt-2 grow">
-                    <main class="h-full overflow-y-scroll bg-white rounded-t-lg lg:ring-1 lg:ring-zinc-950/5 ">
-                        <!-- Mobile menu toggle -->
-                        <div class="lg:hidden">
-                            <div class="absolute top-1 right-1 z-[60]">
-                                <AnimatedMenuIcon :is-open="overlayOpen" @toggle="toggleOverlay" />
-                            </div>
-                        </div>
+                <div class="h-screen xl:pt-2 grow">
+                    <main class="h-full overflow-y-scroll bg-white rounded-t-lg xl:ring-1 xl:ring-zinc-950/5 pb-20 xl:pb-0">
                         <!-- main content -->
                         <slot />
                     </main>
                 </div>
             </div>
 
-            <OverlayMenu :menu="menu" :is-open="overlayOpen" @close="toggleOverlay" />
+            <!-- Bottom Toolbar (mobile/tablet only) -->
+            <BottomToolbar @toggle-menu="secondaryMenuOpen = !secondaryMenuOpen" />
+
+            <!-- Secondary Menu (mobile/tablet only) -->
+            <BottomSecondaryMenu v-model="secondaryMenuOpen" />
         </div>
     </div>
 </template>
@@ -35,29 +33,21 @@ import {
     HomeIcon, UserIcon, UsersIcon, Cog6ToothIcon, PlusCircleIcon, CalendarIcon, ClipboardDocumentListIcon
 } from '@heroicons/vue/24/solid'
 import { Head, usePage } from '@inertiajs/vue3'
-import { ref, provide } from 'vue'
+import { ref } from 'vue'
 
-import AnimatedMenuIcon from '@/Components/Layout/AnimatedMenuIcon.vue'
+import BottomSecondaryMenu from '@/Layouts/BottomSecondaryMenu.vue'
+import BottomToolbar from '@/Layouts/BottomToolbar.vue'
 import FlashBanner from '@/Components/Layout/FlashBanner.vue'
-import OverlayMenu from '@/Layouts/OverlayMenu.vue'
 import Sidebar from '@/Layouts/Sidebar.vue'
 
 defineProps({
     title: String,
 })
 
-// Overlay state
-const overlayOpen = ref(false)
-
-const toggleOverlay = () => {
-    overlayOpen.value = !overlayOpen.value
-}
-
-// Provide overlay functions to child components
-provide('toggleOverlay', toggleOverlay)
-provide('overlayOpen', overlayOpen)
-
 const { route } = window
+
+// Secondary menu state
+const secondaryMenuOpen = ref(false)
 
 const menu = [
     {

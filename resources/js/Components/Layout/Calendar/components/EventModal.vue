@@ -4,7 +4,7 @@
             v-if="isOpen"
             class="fixed inset-0 z-50"
         >
-            <div class="fixed inset-0 bg-black/50 transition-opacity" @click="$emit('close')"></div>
+            <div class="fixed inset-0 bg-zinc-900/20 transition-opacity" @click="$emit('close')"></div>
 
             <div class="fixed inset-0 overflow-y-auto">
                 <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
@@ -42,7 +42,7 @@
                         <button
                             type="button"
                             @click="$emit('close')"
-                            class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto cursor-pointer"
+                            class="mt-3 inline-flex w-full justify-center rounded-md bg-gray-800 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-700 active:bg-gray-900 sm:mt-0 sm:w-auto cursor-pointer transition ease-in-out duration-150"
                         >
                             Close
                         </button>

@@ -30,7 +30,7 @@
                         </td>
                         <td class="flex gap-2 items-center mt-2">
                             <img class="size-8 rounded-full" :src="trainer.profile_photo_url"  alt=""/>
-                            <Link :href="route('admin.trainers.show', { user: trainer.id })" class="text-sky-500 hover:text-sky-700 font-medium">{{ trainer.name }}</Link>
+                            <Link :href="route('admin.trainers.show', { user: trainer.id })" class="text-sky-500 hover:text-sky-700 font-[400]">{{ trainer.name }}</Link>
                         </td>
                         <td>{{ nb_sessions }}</td>
                     </tr>

@@ -82,6 +82,7 @@ import PageHeaderTitle from '@/Components/Layout/PageHeaderTitle.vue'
 import PrimaryButton from '@/Components/Layout/PrimaryButton.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import BookingSchedule from '@/Pages/Admin/Bookings/Partials/BookingSchedule.vue'
+import { scrollToFirstError } from '@/Components/Form/useScrollToError.js'
 
 const props = defineProps({
     members: { type: Array, required: true },
@@ -155,10 +156,7 @@ onMounted(() => {
 
 const saveBooking = () => {
     form.post(route('admin.bookings.store'), {
-        preserveScroll: true,
-        onError: (e) => {
-            console.log(e)
-        },
+        onError: () => scrollToFirstError(),
     })
 }
 </script>

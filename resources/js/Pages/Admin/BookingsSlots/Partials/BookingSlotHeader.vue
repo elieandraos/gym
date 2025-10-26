@@ -7,18 +7,18 @@
                 <h1 class="text-[20px] font-[600] leading-[32px]">Session Details</h1>
                 <Badge class="text-xs" :type="badge_type">{{ status }}</Badge>
             </div>
-            <div class="flex gap-x-12 mt-1 text-[#71717b]">
+            <div class="flex flex-col md:flex-row md:gap-x-12 gap-y-1 mt-1 text-[#71717b]">
                 <div class="flex gap-x-2">
-                    <UsersIcon class="w-4 text-zinc-500"></UsersIcon>
-                    <span>
-                        <Link class="text-sky-500 hover:text-sky-700 font-[500]" :href="route('admin.members.show', { user: booking.member.id })"> {{ booking.member.name}}</Link>
+                    <UsersIcon class="w-4 text-zinc-500 flex-shrink-0"></UsersIcon>
+                    <span class="text-[15px]">
+                        <Link class="text-sky-500 hover:text-sky-700 font-[400]" :href="route('admin.members.show', { user: booking.member.id })"> {{ booking.member.name}}</Link>
                         ·
-                        <Link class="text-sky-500 hover:text-sky-700 font-[500]" :href="route('admin.trainers.show', { user: booking.trainer.id })"> {{ booking.trainer.name}}</Link>
+                        <Link class="text-sky-500 hover:text-sky-700 font-[400]" :href="route('admin.trainers.show', { user: booking.trainer.id })"> {{ booking.trainer.name}}</Link>
                     </span>
                 </div>
                 <div class="flex gap-x-2">
-                    <ClockIcon class="w-4 text-[#71717b]"></ClockIcon>
-                    <span>{{ formatted_date }} · {{ start_time }}</span>
+                    <ClockIcon class="w-4 text-[#71717b] flex-shrink-0"></ClockIcon>
+                    <span class="text-[15px]">{{ formatted_date }} · {{ start_time }}</span>
                 </div>
             </div>
         </div>

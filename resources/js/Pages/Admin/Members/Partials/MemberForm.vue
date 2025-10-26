@@ -102,7 +102,7 @@
 <script setup>
 import TransparentButton from '@/Components/Layout/TransparentButton.vue'
 import {Link} from '@inertiajs/vue3'
-import { inject, nextTick, computed } from 'vue'
+import { inject, computed } from 'vue'
 
 import DateInput from '@/Components/Form/DateInput.vue'
 import FormSection from '@/Components/Form/FormSection.vue'
@@ -112,6 +112,7 @@ import SelectInput from '@/Components/Form/SelectInput.vue'
 import SwitchInput from '@/Components/Form/SwitchInput.vue'
 import TextInput from '@/Components/Form/TextInput.vue'
 import PrimaryButton from '@/Components/Layout/PrimaryButton.vue'
+import { scrollToFirstError } from '@/Components/Form/useScrollToError.js'
 
 const props = defineProps({
     isEdit: { type: Boolean, default: false },
@@ -124,15 +125,6 @@ const profilePhotoPath = inject('profilePhotoPath', '')
 
 const { route } = window
 
-const scrollToFirstError = () => {
-    nextTick(() => {
-        const field = Object.keys(form.errors)[0]
-        if (field) {
-            document.getElementById(field)?.scrollIntoView({ behavior: 'smooth' })
-        }
-    })
-}
-
 const saveMember = () => {
     const routeName = props.isEdit ? 'admin.members.update' : 'admin.members.store'
     const routeParams = props.isEdit ? [userId] : []
@@ -141,7 +133,6 @@ const saveMember = () => {
         // For updates, use POST with _method spoofing to support file uploads
         form.post(route(routeName, ...routeParams), {
             _method: 'put',
-            preserveScroll: true,
             onFinish: () => {
                 // form.reset()
             },
@@ -149,7 +140,6 @@ const saveMember = () => {
         })
     } else {
         form.post(route(routeName, ...routeParams), {
-            preserveScroll: true,
             onFinish: () => {
                 // form.reset()
             },
