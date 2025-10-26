@@ -31,13 +31,14 @@
 <script setup>
 import TransparentButton from '@/Components/Layout/TransparentButton.vue'
 import {Link} from '@inertiajs/vue3'
-import { inject, nextTick, computed } from 'vue'
+import { inject, computed } from 'vue'
 
 import FormSection from '@/Components/Form/FormSection.vue'
 import InputError from '@/Components/Form/InputError.vue'
 import SelectInput from '@/Components/Form/SelectInput.vue'
 import TextInput from '@/Components/Form/TextInput.vue'
 import PrimaryButton from '@/Components/Layout/PrimaryButton.vue'
+import { scrollToFirstError } from '@/Components/Form/useScrollToError.js'
 
 const form = inject('form')
 const categories = inject('categories')
@@ -47,28 +48,18 @@ const { route } = window
 
 const isEditing = computed(() => workout !== null)
 
-const categoryOptions = computed(() => 
+const categoryOptions = computed(() =>
     categories?.map(category => ({ value: category, name: category })) || []
 )
 
-const scrollToFirstError = () => {
-    nextTick(() => {
-        const field = Object.keys(form.errors)[0]
-        if (field) {
-            document.getElementById(field)?.scrollIntoView({ behavior: 'smooth' })
-        }
-    })
-}
-
 const saveWorkout = () => {
-    const url = isEditing.value 
+    const url = isEditing.value
         ? route('admin.workouts.update', { workout: workout.id })
         : route('admin.workouts.store')
-    
+
     const method = isEditing.value ? 'put' : 'post'
-    
+
     form[method](url, {
-        preserveScroll: true,
         onFinish: () => {
             // form.reset()
         },

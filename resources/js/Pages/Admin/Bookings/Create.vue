@@ -67,7 +67,7 @@
 
 <script setup>
 import { useForm } from '@inertiajs/vue3'
-import { computed, onMounted, provide, nextTick } from 'vue'
+import { computed, onMounted, provide } from 'vue'
 
 import DateInput from '@/Components/Form/DateInput.vue'
 import FormSection from '@/Components/Form/FormSection.vue'
@@ -82,6 +82,7 @@ import PageHeaderTitle from '@/Components/Layout/PageHeaderTitle.vue'
 import PrimaryButton from '@/Components/Layout/PrimaryButton.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import BookingSchedule from '@/Pages/Admin/Bookings/Partials/BookingSchedule.vue'
+import { scrollToFirstError } from '@/Components/Form/useScrollToError.js'
 
 const props = defineProps({
     members: { type: Array, required: true },
@@ -152,73 +153,6 @@ onMounted(() => {
         }
     }
 })
-
-const scrollToFirstError = () => {
-    console.log('scrollToFirstError called immediately')
-
-    setTimeout(() => {
-        console.log('setTimeout executed after 100ms')
-        console.log('Form errors:', form.errors)
-
-        // Define field order as they appear in the form
-        const fieldOrder = ['member_id', 'trainer_id', 'start_date', 'nb_sessions', 'is_paid', 'days']
-
-        // Find the first field in order that has an error
-        const firstErrorField = fieldOrder.find(field => form.errors[field])
-        console.log('First error field:', firstErrorField)
-
-        if (firstErrorField) {
-            // Find the error message element for this field
-            const allErrors = document.querySelectorAll('.bg-red-50')
-            console.log('All error elements found:', allErrors.length)
-
-            let targetError = null
-
-            // For 'days' field, we need to find it in the booking schedule section
-            if (firstErrorField === 'days') {
-                // Look for the error in the Schedule section
-                const scheduleSections = document.querySelectorAll('section')
-                for (const section of scheduleSections) {
-                    const title = section.querySelector('h2')
-                    if (title && title.textContent.includes('Schedule')) {
-                        targetError = section.querySelector('.bg-red-50')
-                        console.log('Found days error in Schedule section:', targetError)
-                        break
-                    }
-                }
-            } else {
-                // For other fields, find by matching error text
-                const errorMessage = form.errors[firstErrorField]
-                for (const errorEl of allErrors) {
-                    if (errorEl.textContent.includes(errorMessage)) {
-                        targetError = errorEl
-                        console.log('Found error element for field:', firstErrorField, errorEl)
-                        break
-                    }
-                }
-            }
-
-            console.log('Target error element:', targetError)
-
-            if (targetError) {
-                const formSection = targetError.closest('section')
-                console.log('FormSection:', formSection)
-
-                if (formSection) {
-                    const sectionTitle = formSection.querySelector('h2')
-                    console.log('Section title:', sectionTitle?.textContent)
-
-                    if (sectionTitle) {
-                        sectionTitle.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'center'
-                        })
-                    }
-                }
-            }
-        }
-    }, 100)
-}
 
 const saveBooking = () => {
     form.post(route('admin.bookings.store'), {
