@@ -13,7 +13,7 @@
             </div>
         </div>
 
-        <Dropdown direction="right">
+        <Dropdown direction="left">
             <div class="space-y-2 font-normal">
                 <template v-if="isTraining && !isBookingShowPage">
                     <Link :href="route('admin.bookings.show', active_booking.id)" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">Training schedule</Link>

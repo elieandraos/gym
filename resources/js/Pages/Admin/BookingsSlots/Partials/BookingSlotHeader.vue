@@ -24,7 +24,7 @@
         </div>
 
         <div v-if="withMenu" class="space-x-4">
-            <dropdown direction="right">
+            <dropdown direction="left">
                 <div class="space-y-2">
                     <a :href="route('admin.bookings-slots.workout.create', id)" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">Add workouts</a>
                     <Link :href="route('admin.change-booking-slot-date-time.edit', id)" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">Change date & time</Link>
