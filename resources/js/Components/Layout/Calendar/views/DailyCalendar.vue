@@ -3,8 +3,10 @@
         <!-- Daily Calendar Header with navigation and filters -->
         <DailyCalendarHeader
             :date-label="dateLabel"
+            :is-today="is_today"
             @prev-click="prevDay"
             @next-click="nextDay"
+            @today-click="goToToday"
         >
             <template #filters>
                 <TrainerFilter
@@ -21,7 +23,7 @@
             :filtered-events="filteredEvents"
             :start-hour="startHour"
             :end-hour="endHour"
-            :auto-scroll-to-time="autoScrollToTime"
+            :auto-scroll-to-time="is_today"
             @open-modal="openMembersPopup"
         />
 
@@ -73,7 +75,7 @@ const { selectedTrainers } = useTrainerFiltering(
 )
 
 // Set up navigation with trainer filtering
-const { prevDay, nextDay } = useDailyCalendarNavigation(
+const { prevDay, nextDay, goToToday } = useDailyCalendarNavigation(
     props.filters,
     selectedTrainers,
     'admin.daily-calendar.index'

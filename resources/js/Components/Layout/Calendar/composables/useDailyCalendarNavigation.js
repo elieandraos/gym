@@ -32,9 +32,15 @@ export function useDailyCalendarNavigation(filters, selectedTrainers, routeName)
         router.get(route(routeName), getNavParams(newDate))
     }
 
+    const goToToday = () => {
+        const today = new Date()
+        router.get(route(routeName), getNavParams(today))
+    }
+
     return {
         prevDay,
         nextDay,
+        goToToday,
         getNavParams
     }
 }

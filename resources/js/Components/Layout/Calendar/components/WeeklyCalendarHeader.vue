@@ -20,10 +20,28 @@
                 </span>
             </div>
 
-            <!-- View switcher -->
-            <a href="/daily-calendar" class="text-sm text-sky-500 hover:text-sky-700 font-[500]">switch to day view</a>
+            <PrimaryButton
+                v-if="!isCurrent"
+                type="button"
+                @click="$emit('currentWeekClick')"
+            >
+                Jump to Today
+            </PrimaryButton>
 
-            <slot name="filters"></slot>
+            <div class="flex items-center space-x-2">
+                <slot name="filters"></slot>
+
+                <!-- View switcher -->
+                <SelectInput
+                    :model-value="'weekly'"
+                    :options="[
+                        { value: 'daily', name: 'Daily' },
+                        { value: 'weekly', name: 'Weekly' }
+                    ]"
+                    size="auto"
+                    @update:model-value="handleViewChange"
+                />
+            </div>
         </div>
 
         <!-- Days header row -->
@@ -50,6 +68,9 @@
 
 <script setup>
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/20/solid'
+import { router } from '@inertiajs/vue3'
+import PrimaryButton from '@/Components/Layout/PrimaryButton.vue'
+import SelectInput from '@/Components/Form/SelectInput.vue'
 
 defineProps({
     label: {
@@ -59,8 +80,18 @@ defineProps({
     headerDays: {
         type: Array,
         default: () => []
+    },
+    isCurrent: {
+        type: Boolean,
+        default: false
     }
 })
 
-defineEmits(['prevClick', 'nextClick'])
+defineEmits(['prevClick', 'nextClick', 'currentWeekClick'])
+
+const handleViewChange = (view) => {
+    if (view === 'daily') {
+        router.visit('/daily-calendar')
+    }
+}
 </script>

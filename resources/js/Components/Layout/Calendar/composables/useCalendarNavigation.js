@@ -1,5 +1,5 @@
 import { router } from '@inertiajs/vue3'
-import { addDays, parseISO, format } from 'date-fns'
+import { addDays, parseISO, format, startOfWeek, endOfWeek } from 'date-fns'
 
 export function useCalendarNavigation(filters, selectedTrainers, routeName) {
     const getNavParams = (start, end) => {
@@ -33,6 +33,15 @@ export function useCalendarNavigation(filters, selectedTrainers, routeName) {
         router.get(route(routeName), getNavParams(newStart, newEnd))
     }
 
+    const goToCurrentWeek = () => {
+        const today = new Date()
+        const weekStart = startOfWeek(today, { weekStartsOn: 1 }) // Monday
+        const weekEnd = endOfWeek(today, { weekStartsOn: 1 }) // Sunday
+        const adjustedEnd = addDays(weekStart, 5) // Friday (6-day week)
+
+        router.get(route(routeName), getNavParams(weekStart, adjustedEnd))
+    }
+
     const prevDay = () => {
         if (!filters?.date) return
         const currentDate = parseISO(filters.date)
@@ -64,6 +73,7 @@ export function useCalendarNavigation(filters, selectedTrainers, routeName) {
         prevWeek,
         nextWeek,
         prevDay,
-        nextDay
+        nextDay,
+        goToCurrentWeek
     }
 }

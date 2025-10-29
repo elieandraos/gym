@@ -17,8 +17,10 @@
             <WeeklyCalendarHeader
                 :label="monthLabel"
                 :header-days="headerDays"
+                :is-current="is_current"
                 @prev-click="prevWeek"
                 @next-click="nextWeek"
+                @current-week-click="goToCurrentWeek"
             >
                 <template #filters>
                     <TrainerFilter
@@ -37,7 +39,7 @@
                 :filtered-events="filteredEvents"
                 :start-hour="startHour"
                 :end-hour="endHour"
-                :auto-scroll-to-time="autoScrollToTime"
+                :auto-scroll-to-time="is_current"
                 @open-modal="openMembersPopup"
             />
 
@@ -90,7 +92,7 @@ const { selectedTrainers } = useTrainerFiltering(
 )
 
 // Set up navigation with trainer filtering
-const { prevWeek, nextWeek } = useCalendarNavigation(
+const { prevWeek, nextWeek, goToCurrentWeek } = useCalendarNavigation(
     props.filters,
     selectedTrainers,
     'admin.weekly-calendar.index'

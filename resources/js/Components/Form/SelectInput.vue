@@ -4,7 +4,7 @@
             v-model="model"
             ref="selectInput"
             v-bind="$attrs"
-            class="p-2 text-sm border border-zinc-200 hover:border-zinc-300 rounded-lg focus:outline-none focus:ring-0 bg-none cursor-pointer appearance-none"
+            class="py-2 pl-2 pr-8 text-sm border border-zinc-200 hover:border-zinc-300 rounded-lg focus:outline-none focus:ring-0 bg-none cursor-pointer appearance-none"
             :class="[size !== 'auto' ? 'min-w-36 lg:min-w-52 w-full' : 'min-w-[70px]', model === '' || !model ? 'text-zinc-400' : '']">
             <option disabled value="" class="text-zinc-300" v-if="placeholder">{{ placeholder }}</option>
             <option v-for="option in options" :key="optionKey(option)" :value="optionValue(option)">
