@@ -1,14 +1,25 @@
 <template>
     <div class="relative inline-block" ref="root">
-        <EllipsisHorizontalIcon
-            class="w-6 h-6 cursor-pointer text-zinc-500 hover:bg-zinc-100 hover:rounded"
-            @click="toggle"
-        />
+        <div @click.stop="toggle">
+            <slot name="trigger">
+                <EllipsisHorizontalIcon
+                    class="w-6 h-6 cursor-pointer text-zinc-500 hover:bg-zinc-100 hover:rounded"
+                />
+            </slot>
+        </div>
+
+        <!-- Invisible bridge to prevent gap issues -->
+        <div
+            v-if="open"
+            class="absolute w-full h-2 top-full"
+            :class="alignmentClass"
+        ></div>
 
         <div
             v-if="open"
-            class="absolute z-50 rounded-md border border-gray-200 bg-white text-sm font-normal text-zinc-500 p-4 min-w-56 shadow-sm"
+            class="absolute z-50 rounded-md border border-gray-200 bg-white text-sm font-normal text-zinc-500 p-4 min-w-56 shadow-sm mt-2"
             :class="alignmentClass"
+            @click.stop
         >
             <slot></slot>
         </div>
@@ -23,7 +34,7 @@ import { onClickOutside } from '@vueuse/core'
 const props = defineProps({
     direction: {
         type: String,
-        default: 'right', // 'left', 'right', or 'center'
+        default: 'left', // 'left', 'right', or 'center'
     },
 })
 
@@ -37,12 +48,12 @@ const toggle = () => {
 const alignmentClass = computed(() => {
     switch (props.direction) {
         case 'left':
-            return 'left-0'
+            return 'right-0'
         case 'center':
             return 'left-1/2 -translate-x-1/2'
         case 'right':
         default:
-            return 'right-0'
+            return 'left-0'
     }
 })
 

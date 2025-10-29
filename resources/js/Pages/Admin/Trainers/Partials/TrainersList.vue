@@ -1,5 +1,6 @@
 <template>
-    <table class="min-w-full text-left hidden sm:table lg:table">
+    <!-- Table layout for large screens -->
+    <table class="min-w-full text-left bg-white hidden lg:table">
         <thead class="text-zinc-400">
             <tr>
                 <th class="border-b border-b-zinc-200 py-2 text-[#71717b] font-[500]" v-for="header in headers" :key="header">
@@ -10,7 +11,7 @@
         <tbody>
         <tr v-for="{ id, since, name, profile_photo_url, age, phone_number} in data"
             :key="id"
-            class="border-b border-zinc-100 hover:bg-zinc-100 hover:cursor-pointer"
+            class="border-t border-zinc-100 hover:bg-zinc-100 hover:cursor-pointer"
             @click="goToTrainer(id)">
             <td class="p-3 relative flex gap-2 items-center">
                 <img class="h-8 w-8 rounded-full object-cover" :src="profile_photo_url" :alt="name">
@@ -29,7 +30,8 @@
         </tbody>
     </table>
 
-    <ul class="lg:hidden sm:hidden flex flex-col gap-6">
+    <!-- Card layout for mobile and tablet: 1 column on mobile, 2 columns on iPad -->
+    <ul class="lg:hidden grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
         <li
             v-for="{ id, since, name, profile_photo_url, age } in data"
             :key="id"

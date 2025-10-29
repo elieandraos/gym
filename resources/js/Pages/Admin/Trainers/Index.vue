@@ -2,19 +2,14 @@
     <AppLayout title="Profile">
         <Container>
             <page-header :sticky="true" :bordered="false" :bottom-gap="true">
-                <div class="w-full flex justify-between items-center font-normal">
-                    <div class="flex items-center gap-4">
-                        <div class="w-64">
-                            <text-input
-                                v-model="searchQuery"
-                                @input="performSearch"
-                                placeholder="Search trainers by name..."
-                            />
-                        </div>
-                    </div>
+                <div class="flex w-full justify-between items-center gap-2 font-normal">
+                    <trainers-search
+                        :search="searchQuery"
+                        @update:search="handleSearchChange"
+                    />
 
                     <Link :href="route('admin.trainers.create')">
-                        <primary-button type="button" class="">
+                        <primary-button type="button">
                             <PlusIcon class="size-5" />
                         </primary-button>
                     </Link>
@@ -31,12 +26,12 @@ import { Link, router } from '@inertiajs/vue3'
 import { ref, watch } from 'vue'
 import { PlusIcon } from '@heroicons/vue/24/solid'
 
+import AppLayout from '@/Layouts/AppLayout.vue'
 import Container from '@/Components/Layout/Container.vue'
 import PageHeader from '@/Components/Layout/PageHeader.vue'
 import PrimaryButton from '@/Components/Layout/PrimaryButton.vue'
-import AppLayout from '@/Layouts/AppLayout.vue'
 import TrainersList from '@/Pages/Admin/Trainers/Partials/TrainersList.vue'
-import TextInput from '@/Components/Form/TextInput.vue'
+import TrainersSearch from '@/Pages/Admin/Trainers/Partials/TrainersSearch.vue'
 
 const props = defineProps({
     trainers: Object,
@@ -65,5 +60,10 @@ const performSearch = () => {
             replace: true,
         })
     }, 300)
+}
+
+const handleSearchChange = (value) => {
+    searchQuery.value = value
+    performSearch()
 }
 </script>

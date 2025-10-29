@@ -146,18 +146,36 @@ test('it filters workouts by search', function () {
         ->assertStatus(200);
 });
 
-test('it filters workouts by category', function () {
+test('it filters workouts by single category', function () {
     Workout::factory()->create(['category' => Category::Chest]);
     Workout::factory()->create(['category' => Category::Legs]);
     Workout::factory()->create(['category' => Category::Abs]);
 
     $workouts = Workout::query()
-        ->where('category', Category::Chest->value)
+        ->whereIn('category', [Category::Chest->value])
         ->orderBy('name')
         ->paginate(10);
 
     actingAsAdmin()
-        ->get(route('admin.workouts.index', ['category' => Category::Chest->value]))
+        ->get(route('admin.workouts.index', ['categories' => [Category::Chest->value]]))
+        ->assertHasComponent('Admin/Workouts/Index')
+        ->assertHasPaginatedResource('workouts', WorkoutResource::collection($workouts))
+        ->assertStatus(200);
+});
+
+test('it filters workouts by multiple categories', function () {
+    Workout::factory()->create(['category' => Category::Chest]);
+    Workout::factory()->create(['category' => Category::Legs]);
+    Workout::factory()->create(['category' => Category::Abs]);
+    Workout::factory()->create(['category' => Category::Back]);
+
+    $workouts = Workout::query()
+        ->whereIn('category', [Category::Chest->value, Category::Legs->value])
+        ->orderBy('name')
+        ->paginate(10);
+
+    actingAsAdmin()
+        ->get(route('admin.workouts.index', ['categories' => [Category::Chest->value, Category::Legs->value]]))
         ->assertHasComponent('Admin/Workouts/Index')
         ->assertHasPaginatedResource('workouts', WorkoutResource::collection($workouts))
         ->assertStatus(200);

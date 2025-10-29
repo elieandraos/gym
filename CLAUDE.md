@@ -303,6 +303,122 @@ defineExpose({ focus: () => input.value.focus() })
 - Page-specific partials in `/Pages/Admin/[Module]/Partials/`
 - Use descriptive component names that indicate their purpose
 
+**Template Structure & Component Encapsulation:**
+- Keep templates simple and flat - extract complex sections into dedicated components
+- Each component should own its presentation logic (UI, dropdowns, icons, etc.)
+- Parent components should only handle data flow and business logic
+- Avoid deeply nested markup - extract into Partials when sections become complex
+- Component composition > inline markup
+
+```vue
+<!-- ✅ Good - Clean, flat template with encapsulated components -->
+<template>
+    <PageHeader>
+        <div class="flex w-full justify-between items-center gap-2 font-normal">
+            <members-search
+                :search="searchQuery"
+                @update:search="handleSearchChange"
+            />
+            <members-filters
+                :active-training="activeTraining"
+                @update:active-training="handleFilterChange"
+            />
+            <Link :href="route('admin.members.create')">
+                <primary-button>
+                    <PlusIcon class="size-5" />
+                </primary-button>
+            </Link>
+        </div>
+    </PageHeader>
+</template>
+
+<!-- ❌ Avoid - Nested markup with mixed concerns -->
+<template>
+    <PageHeader>
+        <div class="flex w-full justify-between items-center gap-2 font-normal">
+            <div class="flex-1 max-w-xs">
+                <text-input
+                    v-model="searchQuery"
+                    @input="performSearch"
+                    placeholder="Search members..."
+                />
+            </div>
+            <dropdown direction="left">
+                <template #trigger>
+                    <button class="p-2 hover:bg-zinc-100 rounded-lg cursor-pointer">
+                        <FunnelIcon class="w-5 h-5 text-zinc-500" />
+                    </button>
+                </template>
+                <div class="space-y-3">
+                    <div class="text-xs font-semibold text-zinc-700 uppercase">Filters</div>
+                    <div class="flex items-center gap-2">
+                        <switch-input v-model="activeTraining" @change="performSearch" />
+                        <label class="text-sm text-[#71717b]">Currently training</label>
+                    </div>
+                </div>
+            </dropdown>
+            <Link :href="route('admin.members.create')">
+                <primary-button><PlusIcon /></primary-button>
+            </Link>
+        </div>
+    </PageHeader>
+</template>
+```
+
+**Component Extraction Guidelines:**
+
+✅ **DO:**
+- Extract logical sections into Partials (e.g., `MembersSearch`, `MembersFilters`)
+- Let components own their UI patterns (dropdowns, modals, icons inside the component)
+- Keep parent templates readable at a glance (3-5 direct child components max)
+- Use props for data down, events for actions up
+- Name components by their domain purpose, not their UI element (`MembersFilters` not `FilterDropdown`)
+
+❌ **DON'T:**
+- Leave complex markup inline when it can be extracted
+- Split dropdown trigger and content between parent and child
+- Create separate mobile/desktop templates when filters can be hidden in dropdowns
+- Expose internal UI implementation details (icons, buttons) to parent components
+- Create generic "wrapper" components - make them domain-specific
+
+**Example Component Extraction:**
+
+```vue
+<!-- MembersFilters.vue - Owns all filter UI -->
+<template>
+    <dropdown direction="left">
+        <template #trigger>
+            <button class="p-2 hover:bg-zinc-100 rounded-lg cursor-pointer">
+                <FunnelIcon class="w-5 h-5 text-zinc-500" />
+            </button>
+        </template>
+        <div class="space-y-3">
+            <div class="text-xs font-semibold text-zinc-700 uppercase">Filters</div>
+            <div class="flex items-center gap-2">
+                <switch-input :model-value="activeTraining" @update:model-value="handleChange" />
+                <label class="text-sm text-[#71717b]">Currently training</label>
+            </div>
+        </div>
+    </dropdown>
+</template>
+
+<script setup>
+import { FunnelIcon } from '@heroicons/vue/24/outline'
+import Dropdown from '@/Components/Layout/Dropdown.vue'
+import SwitchInput from '@/Components/Form/SwitchInput.vue'
+
+defineProps({
+    activeTraining: { type: Boolean, required: true },
+})
+
+const emit = defineEmits(['update:activeTraining'])
+
+const handleChange = (value) => {
+    emit('update:activeTraining', value)
+}
+</script>
+```
+
 **Search & Filtering:**
 - Implement debounced search with `setTimeout`
 - Use Inertia router for URL state management

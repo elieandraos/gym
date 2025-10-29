@@ -18,7 +18,7 @@
                 {{ category }}
             </td>
             <td>
-                <dropdown direction="right">
+                <dropdown direction="left">
                     <div class="space-y-2 cursor-pointer">
                         <Link :href="route('admin.workouts.edit', { workout: id })" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">
                             Edit
@@ -44,7 +44,7 @@
                     <div class="font-medium">{{ name }}</div>
                     <div class="text-zinc-500 text-xs">{{ category }}</div>
                 </div>
-                <dropdown direction="right">
+                <dropdown direction="left">
                     <div class="space-y-2">
                         <Link :href="route('admin.workouts.edit', { workout: id })" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">
                             Edit

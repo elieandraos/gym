@@ -20,8 +20,8 @@ class WorkoutController extends Controller
             ->when(request('search'), function (Builder $query, string $search) {
                 $query->where('name', 'like', "%$search%");
             })
-            ->when(request('category'), function (Builder $query, string $category) {
-                $query->where('category', $category);
+            ->when(request('categories'), function (Builder $query, array $categories) {
+                $query->whereIn('category', $categories);
             })
             ->orderBy('name')
             ->paginate(10)
@@ -30,7 +30,7 @@ class WorkoutController extends Controller
         return Inertia::render('Admin/Workouts/Index', [
             'workouts' => WorkoutResource::collection($workouts),
             'search' => request('search'),
-            'category' => request('category'),
+            'selectedCategories' => request('categories', []),
             'categories' => Category::values(),
         ]);
     }
