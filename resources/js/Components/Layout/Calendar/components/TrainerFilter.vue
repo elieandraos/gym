@@ -1,21 +1,36 @@
 <template>
-    <div class="flex items-center space-x-4 mr-8 lg:mr-0">
-        <template v-for="{id, first_name, color} in availableTrainers" :key="id">
-            <label class="inline-flex items-center text-sm cursor-pointer">
-                <input
-                    type="checkbox"
-                    :value="id"
-                    :checked="modelValue.includes(Number(id))"
-                    @change="updateSelection(id, $event)"
-                    class="h-4 w-4 rounded border-zinc-200 accent-black focus:ring-black cursor-pointer"
-                />
-                <span class="ml-1 font-[500] cursor-pointer" :class="getTextColor(color)">{{ first_name }}</span>
-            </label>
+    <dropdown direction="left">
+        <template #trigger>
+            <button class="p-2 hover:bg-zinc-100 rounded-lg cursor-pointer" type="button">
+                <FunnelIcon class="w-5 h-5 text-zinc-500 pointer-events-none" />
+            </button>
         </template>
-    </div>
+        <div class="space-y-3">
+            <div class="text-xs font-semibold text-zinc-700 uppercase">Trainers</div>
+            <div class="space-y-2 max-h-64 overflow-y-auto">
+                <label
+                    v-for="{id, first_name, color} in availableTrainers"
+                    :key="id"
+                    class="flex items-center gap-2 cursor-pointer hover:bg-zinc-50 p-1 rounded"
+                >
+                    <input
+                        type="checkbox"
+                        :value="id"
+                        :checked="modelValue.includes(Number(id))"
+                        @change="updateSelection(id, $event)"
+                        class="h-4 w-4 rounded border-zinc-200 accent-black focus:ring-black cursor-pointer"
+                    />
+                    <span class="text-sm font-[500] cursor-pointer" :class="getTextColor(color)">{{ first_name }}</span>
+                </label>
+            </div>
+        </div>
+    </dropdown>
 </template>
 
 <script setup>
+import { FunnelIcon } from '@heroicons/vue/24/outline'
+import Dropdown from '@/Components/Layout/Dropdown.vue'
+
 const props = defineProps({
     availableTrainers: {
         type: Array,
