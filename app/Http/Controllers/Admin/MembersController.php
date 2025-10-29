@@ -86,9 +86,7 @@ class MembersController extends Controller
             }
         }
 
-        return redirect()->route('admin.members.index')
-            ->with('flash.banner', 'Member created successfully')
-            ->with('flash.bannerStyle', 'success');
+        return redirect()->route('admin.member-created', $member);
     }
 
     public function edit(User $user): Response

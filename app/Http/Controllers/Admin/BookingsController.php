@@ -21,6 +21,7 @@ class BookingsController extends Controller
     public function create(): Response
     {
         $renewFromBooking = null;
+        $preSelectedMember = null;
 
         if (request()->has('renew_from')) {
             $renewFromBooking = Booking::query()
@@ -28,10 +29,17 @@ class BookingsController extends Controller
                 ->findOrFail(request('renew_from'));
         }
 
+        if (request()->has('member_id')) {
+            $preSelectedMember = User::query()
+                ->members()
+                ->findOrFail(request('member_id'));
+        }
+
         return Inertia::render('Admin/Bookings/Create', [
             'trainers' => TrainerResource::collection(User::query()->trainers()->get()),
             'members' => MemberResource::collection(User::query()->members()->get()),
             'renewFromBooking' => $renewFromBooking ? BookingResource::make($renewFromBooking) : null,
+            'preSelectedMember' => $preSelectedMember ? MemberResource::make($preSelectedMember) : null,
         ]);
     }
 

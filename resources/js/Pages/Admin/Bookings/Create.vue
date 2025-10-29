@@ -88,6 +88,7 @@ const props = defineProps({
     members: { type: Array, required: true },
     trainers: { type: Array, required: true },
     renewFromBooking: { type: Object, default: null },
+    preSelectedMember: { type: Object, default: null },
 })
 
 const form = useForm({
@@ -151,6 +152,10 @@ onMounted(() => {
             form.days = [...props.renewFromBooking.schedule_days]
             form.start_date = calculateNextStartDate(props.renewFromBooking.end_date, props.renewFromBooking.schedule_days)
         }
+    }
+
+    if (props.preSelectedMember) {
+        form.member_id = props.preSelectedMember.id
     }
 })
 

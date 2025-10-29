@@ -183,6 +183,21 @@ test('it loads create page with renew_from parameter and passes booking data', f
     expect($renewFromBooking['nb_sessions'])->toBe(12);
 });
 
+test('it loads create page with member_id parameter and passes pre-selected member', function () {
+    $member = User::query()->members()->first();
+
+    $response = actingAsAdmin()
+        ->get(route('admin.bookings.create', ['member_id' => $member->id]))
+        ->assertStatus(200)
+        ->assertHasComponent('Admin/Bookings/Create');
+
+    $preSelectedMember = $response->viewData('page')['props']['preSelectedMember'];
+
+    expect($preSelectedMember)->not->toBeNull()
+        ->and($preSelectedMember['id'])->toBe($member->id)
+        ->and($preSelectedMember['name'])->toBe($member->name);
+});
+
 test('it saves schedule_days when creating a booking', function () {
     $member = User::query()->members()->inRandomOrder()->first();
     $trainer = User::query()->trainers()->inRandomOrder()->first();

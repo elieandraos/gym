@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\DailyCalendarController;
 use App\Http\Controllers\Admin\FreezeBookingController;
 use App\Http\Controllers\Admin\MarkBookingAsPaidController;
 use App\Http\Controllers\Admin\MemberBookingHistoryController;
+use App\Http\Controllers\Admin\MemberCreatedController;
 use App\Http\Controllers\Admin\MemberPersonalInfoController;
 use App\Http\Controllers\Admin\MembersController;
 use App\Http\Controllers\Admin\TrainersController;
@@ -37,6 +38,9 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         Route::get('/{user}/body-composition/create', [BodyCompositionController::class, 'create'])->name('body-composition.create');
         Route::post('/{user}/body-composition/store', [BodyCompositionController::class, 'store'])->name('body-composition.store');
     });
+
+    // Member Created Success
+    Route::get('/members/{user}/created', MemberCreatedController::class)->name('admin.member-created');
 
     // Trainers
     Route::prefix('trainers')->name('admin.trainers.')->group(function () {

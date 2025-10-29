@@ -20,6 +20,7 @@ test('members routes require authentication', function () {
     $this->get(route('admin.members.show', $member))->assertRedirect(route('login'));
     $this->get(route('admin.members.edit', $member))->assertRedirect(route('login'));
     $this->put(route('admin.members.update', $member))->assertRedirect(route('login'));
+    $this->get(route('admin.member-created', $member))->assertRedirect(route('login'));
 });
 
 test('it lists all the members', function () {
@@ -42,7 +43,7 @@ test('it renders the member create page', function () {
         ->assertStatus(200);
 });
 
-test('it creates a member', function () {
+test('it creates a member and redirects to celebration page', function () {
     $data = [
         'name' => 'Elie A',
         'email' => 'elie@liftstation.fitness',
@@ -60,12 +61,24 @@ test('it creates a member', function () {
         'color' => 'bg-green-50',
     ];
 
-    actingAsAdmin()
+    $response = actingAsAdmin()
         ->post(route('admin.members.store'), $data)
-        ->assertSessionHasNoErrors()
-        ->assertRedirect(route('admin.members.index'));
+        ->assertSessionHasNoErrors();
 
     $this->assertDatabaseHas(User::class, $data);
+
+    $member = User::query()->where('email', 'elie@liftstation.fitness')->first();
+    $response->assertRedirect(route('admin.member-created', $member));
+});
+
+test('it shows member creation celebration page', function () {
+    $member = User::query()->members()->first();
+
+    actingAsAdmin()
+        ->get(route('admin.member-created', $member))
+        ->assertHasComponent('Admin/MemberCreated/Index')
+        ->assertHasResource('member', MemberResource::make($member))
+        ->assertStatus(200);
 });
 
 test('it validates member creation', function () {
