@@ -36,7 +36,7 @@ class UserSettingsRequest extends FormRequest
 
                 foreach ($emails as $email) {
                     if (! filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                        $fail("The email '{$email}' is not a valid email address.");
+                        $fail("The email '$email' is not a valid email address.");
 
                         return;
                     }
@@ -56,35 +56,5 @@ class UserSettingsRequest extends FormRequest
             'calendar.start_period.in' => 'The start period must be AM or PM.',
             'calendar.end_period.in' => 'The end period must be AM or PM.',
         ];
-    }
-
-    protected function withValidator($validator)
-    {
-        $validator->after(function ($validator) {
-            $startHour = $this->input('calendar.start_hour');
-            $startPeriod = $this->input('calendar.start_period');
-            $endHour = $this->input('calendar.end_hour');
-            $endPeriod = $this->input('calendar.end_period');
-
-            // Only validate time comparison if all time fields are present
-            if ($startHour && $startPeriod && $endHour && $endPeriod) {
-                // Convert to 24-hour format for comparison
-                $startTime = $this->convertTo24Hour($startHour, $startPeriod);
-                $endTime = $this->convertTo24Hour($endHour, $endPeriod);
-
-                if ($startTime >= $endTime) {
-                    $validator->errors()->add('calendar.end_hour', 'The end time must be after the start time.');
-                }
-            }
-        });
-    }
-
-    private function convertTo24Hour(int $hour, string $period): int
-    {
-        if ($period === 'AM') {
-            return $hour === 12 ? 0 : $hour;
-        } else {
-            return $hour === 12 ? 12 : $hour + 12;
-        }
     }
 }

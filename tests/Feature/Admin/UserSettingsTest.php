@@ -170,22 +170,6 @@ test('validation fails for invalid period', function () {
         ->assertSessionHasErrors('calendar.start_period');
 });
 
-test('validation fails when start time is after end time', function () {
-    actingAsAdmin()
-        ->patch(route('admin.settings.update'), [
-            'calendar' => [
-                'default_trainer_id' => null,
-                'start_day' => 'monday',
-                'end_day' => 'saturday',
-                'start_hour' => 10,
-                'start_period' => 'PM',
-                'end_hour' => 6,
-                'end_period' => 'AM',
-            ],
-        ])
-        ->assertSessionHasErrors('calendar.end_hour');
-});
-
 test('validation fails for invalid email format in owner emails', function () {
     actingAsAdmin()
         ->patch(route('admin.settings.update'), [
