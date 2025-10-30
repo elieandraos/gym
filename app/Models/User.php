@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\Role;
+use App\Traits\HasSettings;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Attributes\Scope as AsScope;
 use Illuminate\Database\Eloquent\Builder;
@@ -24,6 +25,7 @@ class User extends Authenticatable
 {
     use HasFactory;
     use HasProfilePhoto;
+    use HasSettings;
     use Notifiable;
 
     protected $fillable = [
@@ -43,6 +45,7 @@ class User extends Authenticatable
         'emergency_contact',
         'role',
         'color',
+        'settings',
     ];
 
     protected $hidden = [
@@ -62,6 +65,7 @@ class User extends Authenticatable
         'registration_date' => 'date',
         'password' => 'hashed',
         'email_verified_at' => 'datetime',
+        'settings' => 'array',
     ];
 
     public function trainerBookings(): HasMany

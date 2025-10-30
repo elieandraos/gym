@@ -1,9 +1,9 @@
 <template>
-    <div class="fixed bottom-4 right-4 w-96 z-50">
+    <div class="fixed bottom-4 right-4 xl:bottom-4 xl:right-4 max-w-[calc(100vw-2rem)] w-96 z-50" :class="mobileBottomClass">
         <transition name="fade">
-            <Banner 
-                v-if="show && message" 
-                :type="type" 
+            <Banner
+                v-if="show && message"
+                :type="type"
                 :show-close="true"
                 @close="closeBanner">
                 {{ message }}
@@ -21,6 +21,11 @@ const page = usePage()
 const show = ref(true)
 const style = ref('success')
 const message = ref('')
+
+// Position banner above bottom toolbar on mobile/tablet (64px toolbar + 16px padding + safe area)
+const mobileBottomClass = computed(() => {
+    return 'bottom-20 xl:bottom-4'
+})
 
 const type = computed(() => {
     const styleMap = {

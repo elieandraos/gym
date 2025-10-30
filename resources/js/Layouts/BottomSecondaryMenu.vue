@@ -75,6 +75,7 @@ import {
     UserGroupIcon,
     FireIcon,
     UserCircleIcon,
+    Cog8ToothIcon,
     ArrowLeftStartOnRectangleIcon,
 } from '@heroicons/vue/24/outline'
 
@@ -93,14 +94,19 @@ const menuItems = [
         icon: UserGroupIcon,
     },
     {
-        name: 'Workouts',
-        href: route('admin.workouts.index'),
-        icon: FireIcon,
-    },
-    {
         name: 'Account',
         href: route('profile.show'),
         icon: UserCircleIcon,
+    },
+    {
+        name: 'Settings',
+        href: route('admin.settings.edit'),
+        icon: Cog8ToothIcon,
+    },
+    {
+        name: 'Workouts',
+        href: route('admin.workouts.index'),
+        icon: FireIcon,
     },
 ]
 

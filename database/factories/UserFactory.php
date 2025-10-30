@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Enums\BloodType;
 use App\Enums\Gender;
 use App\Enums\Role;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -44,6 +45,38 @@ class UserFactory extends Factory
             'address' => fake()->address(),
             'emergency_contact' => fake()->name(),
             'role' => fake()->randomElement(Role::cases()),
+            'settings' => [],
         ];
+    }
+
+    /**
+     * Indicate that the user is an admin with default settings.
+     */
+    public function admin(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => Role::Admin->value,
+            'settings' => User::getDefaultSettings(Role::Admin->value),
+        ]);
+    }
+
+    /**
+     * Indicate that the user is a trainer.
+     */
+    public function trainer(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => Role::Trainer->value,
+        ]);
+    }
+
+    /**
+     * Indicate that the user is a member.
+     */
+    public function member(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => Role::Member->value,
+        ]);
     }
 }

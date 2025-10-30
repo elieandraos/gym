@@ -75,7 +75,7 @@ const quickLinks = computed(() => {
 })
 
 const administrationLinks = computed(() => {
-    return props.menu.filter(item => ['Members', 'Trainers', 'Workouts', 'Account'].includes(item.name))
+    return props.menu.filter(item => ['Members', 'Trainers', 'Account', 'Settings', 'Workouts'].includes(item.name))
 })
 
 const logout = () => {

@@ -14,6 +14,7 @@ class AdminSeeder extends Seeder
             'name' => 'Owner',
             'email' => 'owner@liftstation.fitness',
             'role' => Role::Admin,
+            'settings' => User::getDefaultSettings(Role::Admin->value),
         ]);
     }
 }

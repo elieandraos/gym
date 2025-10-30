@@ -38,6 +38,7 @@ return new class extends Migration
             $table->text('emergency_contact')->nullable();
             $table->enum('role', $roles)->default(Role::Member);
             $table->string('color')->default('bg-blue-50');
+            $table->json('settings')->nullable();
             $table->timestamps();
         });
 

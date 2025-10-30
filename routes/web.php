@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\MemberPersonalInfoController;
 use App\Http\Controllers\Admin\MembersController;
 use App\Http\Controllers\Admin\TrainersController;
 use App\Http\Controllers\Admin\UnfreezeBookingController;
+use App\Http\Controllers\Admin\UserSettingsController;
 use App\Http\Controllers\Admin\WeeklyCalendarController;
 use App\Http\Controllers\Admin\WorkoutController;
 use App\Http\Controllers\DashboardController;
@@ -51,6 +52,10 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         Route::get('/{user}/edit', [TrainersController::class, 'edit'])->name('edit');
         Route::match(['put', 'post'], '/{user}', [TrainersController::class, 'update'])->name('update');
     });
+
+    // Settings
+    Route::get('/settings', [UserSettingsController::class, 'edit'])->name('admin.settings.edit');
+    Route::patch('/settings', [UserSettingsController::class, 'update'])->name('admin.settings.update');
 
     // Workouts
     Route::prefix('workouts')->name('admin.workouts.')->group(function () {
