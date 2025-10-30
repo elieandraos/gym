@@ -42,7 +42,7 @@
 
                     <!-- Quick Link Back -->
                     <div class="pt-4">
-                        <PrimaryButton type="button" @click="celebrate">
+                        <PrimaryButton type="button" @click="celebrate" class="text-[12px]">
                             Oh wait! Let's celebrate
                         </PrimaryButton>
                     </div>
