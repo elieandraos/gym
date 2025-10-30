@@ -1,6 +1,12 @@
 <template>
     <AppLayout title="Profile">
         <Container>
+            <PageHeader :sticky="true">
+                <div class="flex items-center gap-4">
+                    <PageBackButton />
+                    <PageHeaderTitle>Account</PageHeaderTitle>
+                </div>
+            </PageHeader>
             <Tabs>
                 <Tab title="Profile">
                     <UpdateProfileInformationForm @save-user-info="saveUser" />
@@ -24,6 +30,9 @@ import { usePage, useForm, router } from '@inertiajs/vue3'
 import { provide } from 'vue'
 
 import Container from '@/Components/Layout/Container.vue'
+import PageBackButton from '@/Components/Layout/PageBackButton.vue'
+import PageHeader from '@/Components/Layout/PageHeader.vue'
+import PageHeaderTitle from '@/Components/Layout/PageHeaderTitle.vue'
 import Tab from '@/Components/Layout/Tab.vue'
 import Tabs from '@/Components/Layout/Tabs.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'

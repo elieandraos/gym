@@ -1,39 +1,32 @@
 <template>
-    <div class="text-sm font-medium text-zinc-500">
-        Your contact details help us reach you promptly for any necessary communications.
-    </div>
-
-    <div class="my-8">
-        <div class="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-8 my-4">
+    <FormSection title="Contact Information" description="Enter your email, phone and other contact information.">
+        <div class="space-y-2">
             <div>
-                <InputLabel for="email" value="Email" />
-                <TextInput id="email" v-model="form.email" type="text"/>
+                <TextInput id="email" v-model="form.email" type="text" placeholder="Email"/>
                 <InputError :message="form.errors.email" />
             </div>
             <div>
-                <InputLabel for="phone_number" value="Phone number" />
-                <TextInput id="phone_number" v-model="form.phone_number" type="text"/>
+                <TextInput id="phone_number" v-model="form.phone_number" type="text" placeholder="Phone number"/>
                 <InputError :message="form.errors.phone_number" />
             </div>
             <div>
-                <InputLabel for="instagram_handle" value="Instagram handle" />
-                <TextInput id="instagram_handle" v-model="form.instagram_handle" type="text"/>
-                <InputError :message="form.errors.instagram_handle" />
-            </div>
-            <div>
-                <InputLabel for="address" value="Address" />
-                <TextInput id="address" v-model="form.address" type="text"/>
+                <TextInput id="address" v-model="form.address" type="text" placeholder="Location"/>
                 <InputError :message="form.errors.address" />
             </div>
-            <div>
-                <InputLabel for="emergency_contact" value="Emergency Contact" />
-                <TextInput id="emergency_contact" v-model="form.emergency_contact" type="text"/>
-                <InputError :message="form.errors.emergency_contact" />
-            </div>
         </div>
-    </div>
+    </FormSection>
 
-    <div class="flex items-center my-8">
+    <FormSection title="Emergency Contact" description="Enter your emergency contact information.">
+        <TextInput id="emergency_contact" v-model="form.emergency_contact" type="text" placeholder="Emergency Contact"/>
+        <InputError :message="form.errors.emergency_contact" />
+    </FormSection>
+
+    <FormSection title="Social" description="Enter your instagram handle.">
+        <TextInput id="instagram_handle" v-model="form.instagram_handle" type="text" placeholder="Instagram handle"/>
+        <InputError :message="form.errors.instagram_handle" />
+    </FormSection>
+
+    <div class="flex items-center">
         <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing" @click="saveUserInfo">
             Update
         </PrimaryButton>
@@ -48,8 +41,8 @@
 import { inject, defineEmits } from 'vue'
 
 import ActionMessage from '@/Components/ActionMessage.vue'
+import FormSection from '@/Components/Form/FormSection.vue'
 import InputError from '@/Components/Form/InputError.vue'
-import InputLabel from '@/Components/Form/InputLabel.vue'
 import TextInput from '@/Components/Form/TextInput.vue'
 import PrimaryButton from '@/Components/Layout/PrimaryButton.vue'
 
