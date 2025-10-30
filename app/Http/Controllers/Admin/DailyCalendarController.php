@@ -15,15 +15,18 @@ class DailyCalendarController extends Controller
 {
     public function index(Request $request): Response
     {
+        $user = auth()->user();
         $today = Carbon::today();
 
         $date = $request->has('date')
             ? Carbon::parse($request->get('date'))
             : $today;
 
+        // Use default trainer from settings if no trainers specified in URL
+        $defaultTrainerId = $user->getSetting('calendar.default_trainer_id');
         $selectedTrainerIds = $request->has('trainers')
             ? array_map('intval', array_filter(explode(',', $request->get('trainers'))))
-            : [];
+            : ($defaultTrainerId ? [$defaultTrainerId] : []);
 
         $startOfDay = $date->copy()->startOfDay();
         $endOfDay = $date->copy()->endOfDay();
@@ -51,6 +54,16 @@ class DailyCalendarController extends Controller
             ->sortBy('first_name')
             ->values();
 
+        // Convert 12-hour format with AM/PM to 24-hour format
+        $startHour24 = $this->convertTo24Hour(
+            $user->getSetting('calendar.start_hour', 6),
+            $user->getSetting('calendar.start_period', 'AM')
+        );
+        $endHour24 = $this->convertTo24Hour(
+            $user->getSetting('calendar.end_hour', 10),
+            $user->getSetting('calendar.end_period', 'PM')
+        );
+
         return Inertia::render('Admin/DailyCalendar/Index', [
             'events' => new DayEventsCollection($events),
             'is_today' => $date->isSameDay(Carbon::today()),
@@ -59,6 +72,22 @@ class DailyCalendarController extends Controller
                 'date' => $date->toDateString(),
                 'trainers' => $selectedTrainerIds,
             ],
+            'calendar_settings' => [
+                'start_hour' => $startHour24,
+                'end_hour' => $endHour24,
+            ],
         ]);
+    }
+
+    /**
+     * Convert 12-hour format with AM/PM to 24-hour format
+     */
+    private function convertTo24Hour(int $hour, string $period): int
+    {
+        if ($period === 'AM') {
+            return $hour === 12 ? 0 : $hour;
+        } else {
+            return $hour === 12 ? 12 : $hour + 12;
+        }
     }
 }

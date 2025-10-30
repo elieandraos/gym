@@ -77,12 +77,21 @@ class MembersController extends Controller
         // Send email to the new member
         Mail::to($member->email)->queue(new WelcomeEmail($member));
 
-        // Send email to gym owner(s)
-        $ownersEmails = config('mail.owners_emails');
-        if ($ownersEmails) {
-            $emails = array_map('trim', explode(',', $ownersEmails));
-            foreach ($emails as $email) {
-                Mail::to($email)->queue(new NewMemberEmail($member));
+        // Send email to gym owner(s) based on admin settings
+        $admin = auth()->user();
+        $sendEmailToOwners = $admin->getSetting('notifications.new_member_email_to_owners', true);
+
+        if ($sendEmailToOwners) {
+            // Get owner emails from admin settings, fallback to config
+            $ownersEmails = $admin->getSetting('notifications.owner_emails', config('mail.owners_emails'));
+
+            if ($ownersEmails) {
+                $emails = array_map('trim', explode(',', $ownersEmails));
+                foreach ($emails as $email) {
+                    if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                        Mail::to($email)->queue(new NewMemberEmail($member));
+                    }
+                }
             }
         }
 

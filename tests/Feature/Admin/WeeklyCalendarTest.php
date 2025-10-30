@@ -167,3 +167,175 @@ test('calendar filters events by trainer ids', function () {
                 });
         });
 });
+
+test('calendar uses default trainer from admin settings', function () {
+    $trainer = \App\Models\User::query()->trainers()->first();
+
+    // Create admin with default trainer setting
+    $admin = \App\Models\User::factory()->create([
+        'role' => \App\Enums\Role::Admin,
+        'settings' => [
+            'calendar' => [
+                'default_trainer_id' => $trainer->id,
+                'start_day' => 'monday',
+                'end_day' => 'saturday',
+                'start_hour' => 6,
+                'start_period' => 'AM',
+                'end_hour' => 10,
+                'end_period' => 'PM',
+            ],
+        ],
+    ]);
+
+    $response = test()->actingAs($admin)->get(route('admin.weekly-calendar.index'));
+
+    $response->assertOk()
+        ->assertInertia(function ($inertia) use ($trainer) {
+            $inertia->has('events')
+                ->has('filters')
+                ->where('filters.trainers', [$trainer->id])
+                ->has('available_trainers');
+        });
+});
+
+test('calendar URL parameter overrides default trainer setting', function () {
+    $trainer1 = \App\Models\User::query()->trainers()->first();
+    $trainer2 = \App\Models\User::query()->trainers()->skip(1)->first();
+
+    // Create admin with default trainer setting
+    $admin = \App\Models\User::factory()->create([
+        'role' => \App\Enums\Role::Admin,
+        'settings' => [
+            'calendar' => [
+                'default_trainer_id' => $trainer1->id,
+                'start_day' => 'monday',
+                'end_day' => 'saturday',
+                'start_hour' => 6,
+                'start_period' => 'AM',
+                'end_hour' => 10,
+                'end_period' => 'PM',
+            ],
+        ],
+    ]);
+
+    // URL parameter should override the setting
+    $response = test()->actingAs($admin)->get(route('admin.weekly-calendar.index', [
+        'trainers' => (string) $trainer2->id,
+    ]));
+
+    $response->assertOk()
+        ->assertInertia(function ($inertia) use ($trainer2) {
+            $inertia->has('events')
+                ->has('filters')
+                ->where('filters.trainers', [$trainer2->id])
+                ->has('available_trainers');
+        });
+});
+
+test('calendar uses custom week start day from settings', function () {
+    // Create admin with custom start day (Wednesday)
+    $admin = \App\Models\User::factory()->create([
+        'role' => \App\Enums\Role::Admin,
+        'settings' => [
+            'calendar' => [
+                'default_trainer_id' => null,
+                'start_day' => 'wednesday',
+                'end_day' => 'saturday',
+                'start_hour' => 6,
+                'start_period' => 'AM',
+                'end_hour' => 10,
+                'end_period' => 'PM',
+            ],
+        ],
+    ]);
+
+    $response = test()->actingAs($admin)->get(route('admin.weekly-calendar.index'));
+
+    // The start date should be a Wednesday (when no URL parameter provided)
+    $response->assertOk()
+        ->assertInertia(function ($inertia) {
+            $inertia->has('filters')
+                ->where('filters', function ($filters) {
+                    $startDate = Carbon::parse($filters['start']);
+                    expect($startDate->dayOfWeek)->toBe(Carbon::WEDNESDAY);
+
+                    return true;
+                })
+                ->has('available_trainers');
+        });
+});
+
+test('calendar uses custom week end day from settings', function () {
+    // Create admin with custom end day (Sunday)
+    $admin = \App\Models\User::factory()->create([
+        'role' => \App\Enums\Role::Admin,
+        'settings' => [
+            'calendar' => [
+                'default_trainer_id' => null,
+                'start_day' => 'monday',
+                'end_day' => 'sunday',
+                'start_hour' => 6,
+                'start_period' => 'AM',
+                'end_hour' => 10,
+                'end_period' => 'PM',
+            ],
+        ],
+    ]);
+
+    $response = test()->actingAs($admin)->get(route('admin.weekly-calendar.index'));
+
+    // The end date should be 6 days after start (Monday to Sunday = 6 days)
+    $response->assertOk()
+        ->assertInertia(function ($inertia) {
+            $inertia->has('filters')
+                ->where('filters', function ($filters) {
+                    $startDate = Carbon::parse($filters['start']);
+                    $endDate = Carbon::parse($filters['end']);
+                    $daysDiff = $startDate->diffInDays($endDate);
+
+                    expect((int) $daysDiff)->toBe(6);
+                    expect($endDate->dayOfWeek)->toBe(Carbon::SUNDAY);
+
+                    return true;
+                })
+                ->has('available_trainers');
+        });
+});
+
+test('calendar handles wrap-around week configuration', function () {
+    // Create admin with wrap-around week (Friday to Tuesday)
+    $admin = \App\Models\User::factory()->create([
+        'role' => \App\Enums\Role::Admin,
+        'settings' => [
+            'calendar' => [
+                'default_trainer_id' => null,
+                'start_day' => 'friday',
+                'end_day' => 'tuesday',
+                'start_hour' => 6,
+                'start_period' => 'AM',
+                'end_hour' => 10,
+                'end_period' => 'PM',
+            ],
+        ],
+    ]);
+
+    $response = test()->actingAs($admin)->get(route('admin.weekly-calendar.index'));
+
+    // The end date should be 4 days after start (Fri->Sat->Sun->Mon->Tue = 4 days)
+    $response->assertOk()
+        ->assertInertia(function ($inertia) {
+            $inertia->has('filters')
+                ->where('filters', function ($filters) {
+                    $startDate = Carbon::parse($filters['start']);
+                    $endDate = Carbon::parse($filters['end']);
+                    $daysDiff = $startDate->diffInDays($endDate);
+
+                    expect($startDate->dayOfWeek)->toBe(Carbon::FRIDAY);
+                    expect($endDate->dayOfWeek)->toBe(Carbon::TUESDAY);
+                    expect((int) $daysDiff)->toBe(4);
+
+                    return true;
+                })
+                ->has('available_trainers');
+        });
+});

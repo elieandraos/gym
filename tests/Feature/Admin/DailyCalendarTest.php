@@ -201,3 +201,67 @@ test('daily calendar filters events by trainer ids', function () {
                 });
         });
 });
+
+test('daily calendar uses default trainer from admin settings', function () {
+    $trainer = \App\Models\User::query()->trainers()->first();
+
+    // Create admin with default trainer setting
+    $admin = \App\Models\User::factory()->create([
+        'role' => \App\Enums\Role::Admin,
+        'settings' => [
+            'calendar' => [
+                'default_trainer_id' => $trainer->id,
+                'start_day' => 'monday',
+                'end_day' => 'saturday',
+                'start_hour' => 6,
+                'start_period' => 'AM',
+                'end_hour' => 10,
+                'end_period' => 'PM',
+            ],
+        ],
+    ]);
+
+    $response = test()->actingAs($admin)->get(route('admin.daily-calendar.index'));
+
+    $response->assertOk()
+        ->assertInertia(function ($inertia) use ($trainer) {
+            $inertia->has('events')
+                ->has('filters')
+                ->where('filters.trainers', [$trainer->id])
+                ->has('available_trainers');
+        });
+});
+
+test('daily calendar URL parameter overrides default trainer setting', function () {
+    $trainer1 = \App\Models\User::query()->trainers()->first();
+    $trainer2 = \App\Models\User::query()->trainers()->skip(1)->first();
+
+    // Create admin with default trainer setting
+    $admin = \App\Models\User::factory()->create([
+        'role' => \App\Enums\Role::Admin,
+        'settings' => [
+            'calendar' => [
+                'default_trainer_id' => $trainer1->id,
+                'start_day' => 'monday',
+                'end_day' => 'saturday',
+                'start_hour' => 6,
+                'start_period' => 'AM',
+                'end_hour' => 10,
+                'end_period' => 'PM',
+            ],
+        ],
+    ]);
+
+    // URL parameter should override the setting
+    $response = test()->actingAs($admin)->get(route('admin.daily-calendar.index', [
+        'trainers' => (string) $trainer2->id,
+    ]));
+
+    $response->assertOk()
+        ->assertInertia(function ($inertia) use ($trainer2) {
+            $inertia->has('events')
+                ->has('filters')
+                ->where('filters.trainers', [$trainer2->id])
+                ->has('available_trainers');
+        });
+});

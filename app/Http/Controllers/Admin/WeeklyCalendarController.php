@@ -15,19 +15,31 @@ class WeeklyCalendarController extends Controller
 {
     public function index(Request $request): Response
     {
+        $user = auth()->user();
         $today = Carbon::today();
+
+        // Get calendar settings from user
+        $startDayOfWeek = $this->getDayOfWeekNumber($user->getSetting('calendar.start_day', 'monday'));
+        $endDayOfWeek = $this->getDayOfWeekNumber($user->getSetting('calendar.end_day', 'saturday'));
+
+        // Calculate the number of days to show (inclusive)
+        $daysToShow = $endDayOfWeek >= $startDayOfWeek
+            ? ($endDayOfWeek - $startDayOfWeek)
+            : (7 - $startDayOfWeek + $endDayOfWeek);
 
         $start = $request->has('start')
             ? Carbon::parse($request->get('start'))
-            : $today->copy()->startOfWeek();
+            : $today->copy()->startOfWeek($startDayOfWeek);
 
         $end = $request->has('end')
             ? Carbon::parse($request->get('end'))
-            : $start->copy()->addDays(5);
+            : $start->copy()->addDays($daysToShow);
 
+        // Use default trainer from settings if no trainers specified in URL
+        $defaultTrainerId = $user->getSetting('calendar.default_trainer_id');
         $selectedTrainerIds = $request->has('trainers')
             ? array_map('intval', array_filter(explode(',', $request->get('trainers'))))
-            : [];
+            : ($defaultTrainerId ? [$defaultTrainerId] : []);
 
         $bookings = Booking::query()
             ->forCalendar($start, $end)
@@ -49,6 +61,16 @@ class WeeklyCalendarController extends Controller
             ->sortBy('first_name')
             ->values();
 
+        // Convert 12-hour format with AM/PM to 24-hour format
+        $startHour24 = $this->convertTo24Hour(
+            $user->getSetting('calendar.start_hour', 6),
+            $user->getSetting('calendar.start_period', 'AM')
+        );
+        $endHour24 = $this->convertTo24Hour(
+            $user->getSetting('calendar.end_hour', 10),
+            $user->getSetting('calendar.end_period', 'PM')
+        );
+
         return Inertia::render('Admin/Calendar/Index', [
             'events' => new WeekEventsCollection($events),
             'is_current' => $start->isSameWeek(Carbon::today()),
@@ -58,6 +80,39 @@ class WeeklyCalendarController extends Controller
                 'end' => $end->toDateString(),
                 'trainers' => $selectedTrainerIds,
             ],
+            'calendar_settings' => [
+                'start_hour' => $startHour24,
+                'end_hour' => $endHour24,
+            ],
         ]);
+    }
+
+    /**
+     * Convert day name to Carbon day of week constant
+     */
+    private function getDayOfWeekNumber(string $day): int
+    {
+        return match (strtolower($day)) {
+            'sunday' => Carbon::SUNDAY,
+            'monday' => Carbon::MONDAY,
+            'tuesday' => Carbon::TUESDAY,
+            'wednesday' => Carbon::WEDNESDAY,
+            'thursday' => Carbon::THURSDAY,
+            'friday' => Carbon::FRIDAY,
+            'saturday' => Carbon::SATURDAY,
+            default => Carbon::MONDAY,
+        };
+    }
+
+    /**
+     * Convert 12-hour format with AM/PM to 24-hour format
+     */
+    private function convertTo24Hour(int $hour, string $period): int
+    {
+        if ($period === 'AM') {
+            return $hour === 12 ? 0 : $hour;
+        } else {
+            return $hour === 12 ? 12 : $hour + 12;
+        }
     }
 }
