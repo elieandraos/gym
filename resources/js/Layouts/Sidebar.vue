@@ -35,6 +35,19 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Setup -->
+                <div>
+                    <h3 class="text-[12px] font-[500] text-[#71717b] capitalize mb-1">Setup</h3>
+                    <div class="space-y-1 capitalize leading-[20px] font-[500]">
+                        <div v-for="item in setupLinks" :key="item.name">
+                            <NavLink :href="item.url" :active="isActive(item)">
+                                <component :is="item.icon" :class="[isActive(item) ? 'text-zinc-950' : 'text-zinc-500', 'w-5 h-5 group-hover:text-zinc-950']"></component>
+                                {{  item.name }}
+                            </NavLink>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -75,7 +88,11 @@ const quickLinks = computed(() => {
 })
 
 const administrationLinks = computed(() => {
-    return props.menu.filter(item => ['Members', 'Trainers', 'Account', 'Settings', 'Workouts'].includes(item.name))
+    return props.menu.filter(item => ['Members', 'Trainers', 'Workouts'].includes(item.name))
+})
+
+const setupLinks = computed(() => {
+    return props.menu.filter(item => ['Account', 'Settings'].includes(item.name))
 })
 
 const logout = () => {

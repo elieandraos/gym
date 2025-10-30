@@ -36,14 +36,35 @@
             <!-- Menu Items -->
             <div class="px-4 pb-6 pt-2">
                 <div class="space-y-1">
+                    <!-- Administration Group -->
                     <Link
-                        v-for="item in menuItems"
+                        v-for="item in administrationItems"
                         :key="item.name"
                         :href="item.href"
                         @click="$emit('update:modelValue', false)"
                         :class="[
                             'flex items-center gap-4 px-4 py-3 rounded-lg transition-colors',
-                            isActive(item.href)
+                            isActive(item.routeName)
+                                ? 'bg-gray-100 text-gray-800 font-semibold'
+                                : 'text-gray-600 hover:bg-gray-50'
+                        ]"
+                    >
+                        <component :is="item.icon" class="w-6 h-6" />
+                        <span class="text-base">{{ item.name }}</span>
+                    </Link>
+
+                    <!-- Divider -->
+                    <div class="border-t border-zinc-200 my-3"></div>
+
+                    <!-- Setup Group -->
+                    <Link
+                        v-for="item in setupItems"
+                        :key="item.name"
+                        :href="item.href"
+                        @click="$emit('update:modelValue', false)"
+                        :class="[
+                            'flex items-center gap-4 px-4 py-3 rounded-lg transition-colors',
+                            isActive(item.routeName)
                                 ? 'bg-gray-100 text-gray-800 font-semibold'
                                 : 'text-gray-600 hover:bg-gray-50'
                         ]"
@@ -70,12 +91,12 @@
 </template>
 
 <script setup>
-import { Link, router, usePage } from '@inertiajs/vue3'
+import { Link, router } from '@inertiajs/vue3'
 import {
     UserGroupIcon,
     FireIcon,
     UserCircleIcon,
-    Cog8ToothIcon,
+    WrenchIcon,
     ArrowLeftStartOnRectangleIcon,
 } from '@heroicons/vue/24/outline'
 
@@ -85,34 +106,38 @@ defineProps({
 
 defineEmits(['update:modelValue'])
 
-const page = usePage()
-
-const menuItems = [
+const administrationItems = [
     {
         name: 'Trainers',
         href: route('admin.trainers.index'),
+        routeName: 'admin.trainers.*',
         icon: UserGroupIcon,
     },
     {
+        name: 'Workouts',
+        href: route('admin.workouts.index'),
+        routeName: 'admin.workouts.*',
+        icon: FireIcon,
+    },
+]
+
+const setupItems = [
+    {
         name: 'Account',
         href: route('profile.show'),
+        routeName: 'profile.show',
         icon: UserCircleIcon,
     },
     {
         name: 'Settings',
         href: route('admin.settings.edit'),
-        icon: Cog8ToothIcon,
-    },
-    {
-        name: 'Workouts',
-        href: route('admin.workouts.index'),
-        icon: FireIcon,
+        routeName: 'admin.settings.*',
+        icon: WrenchIcon,
     },
 ]
 
-const isActive = (href) => {
-    const currentUrl = page.url
-    return currentUrl.startsWith(href)
+const isActive = (routeName) => {
+    return route().current(routeName)
 }
 
 const logout = () => {

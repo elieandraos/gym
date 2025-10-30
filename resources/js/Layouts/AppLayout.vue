@@ -30,7 +30,7 @@
 <script setup>
 
 import {
-    HomeIcon, UserIcon, UsersIcon, Cog6ToothIcon, Cog8ToothIcon, PlusCircleIcon, CalendarIcon, ClipboardDocumentListIcon
+    HomeIcon, UserIcon, UsersIcon, UserCircleIcon, WrenchIcon, PlusCircleIcon, CalendarIcon, FireIcon
 } from '@heroicons/vue/24/solid'
 import { Head, usePage } from '@inertiajs/vue3'
 import { ref } from 'vue'
@@ -88,21 +88,21 @@ const menu = [
     {
         name: 'Account',
         url: route('profile.show'),
-        icon: Cog6ToothIcon,
+        icon: UserCircleIcon,
         activeRoute: 'profile.show',
         when: () => usePage().props.auth.user,
     },
     {
         name: 'Settings',
         url: route('admin.settings.edit'),
-        icon: Cog8ToothIcon,
+        icon: WrenchIcon,
         activeRoute: 'admin.settings.*',
         when: () => usePage().props.auth.user,
     },
     {
         name: 'Workouts',
         url: route('admin.workouts.index'),
-        icon: ClipboardDocumentListIcon,
+        icon: FireIcon,
         activeRoute: 'admin.workouts.*',
         when: () => usePage().props.auth.user,
     },
