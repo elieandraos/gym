@@ -20,6 +20,7 @@ use Laravel\Jetstream\HasProfilePhoto;
  * @property \Illuminate\Support\Carbon|mixed|null $birthdate
  * @property \Illuminate\Support\Carbon|mixed|null $registration_date
  * @property-read mixed                            $memberCompletedBookings
+ * @mixin HasSettings
  */
 class User extends Authenticatable
 {

@@ -1,9 +1,12 @@
 <?php
 
+use App\Enums\Role;
 use App\Http\Resources\Calendar\EventResource;
 use App\Http\Resources\Calendar\WeekEventsCollection;
 use App\Models\Booking;
+use App\Models\User;
 use Carbon\Carbon;
+use Carbon\CarbonInterface;
 
 beforeEach(function () {
     setupUsersAndBookings();
@@ -169,11 +172,11 @@ test('calendar filters events by trainer ids', function () {
 });
 
 test('calendar uses default trainer from admin settings', function () {
-    $trainer = \App\Models\User::query()->trainers()->first();
+    $trainer = User::query()->trainers()->first();
 
     // Create admin with default trainer setting
-    $admin = \App\Models\User::factory()->create([
-        'role' => \App\Enums\Role::Admin,
+    $admin = User::factory()->create([
+        'role' => Role::Admin,
         'settings' => [
             'calendar' => [
                 'default_trainer_id' => $trainer->id,
@@ -199,12 +202,12 @@ test('calendar uses default trainer from admin settings', function () {
 });
 
 test('calendar URL parameter overrides default trainer setting', function () {
-    $trainer1 = \App\Models\User::query()->trainers()->first();
-    $trainer2 = \App\Models\User::query()->trainers()->skip(1)->first();
+    $trainer1 = User::query()->trainers()->first();
+    $trainer2 = User::query()->trainers()->skip(1)->first();
 
     // Create admin with default trainer setting
-    $admin = \App\Models\User::factory()->create([
-        'role' => \App\Enums\Role::Admin,
+    $admin = User::factory()->create([
+        'role' => Role::Admin,
         'settings' => [
             'calendar' => [
                 'default_trainer_id' => $trainer1->id,
@@ -234,8 +237,8 @@ test('calendar URL parameter overrides default trainer setting', function () {
 
 test('calendar uses custom week start day from settings', function () {
     // Create admin with custom start day (Wednesday)
-    $admin = \App\Models\User::factory()->create([
-        'role' => \App\Enums\Role::Admin,
+    $admin = User::factory()->create([
+        'role' => Role::Admin,
         'settings' => [
             'calendar' => [
                 'default_trainer_id' => null,
@@ -257,7 +260,7 @@ test('calendar uses custom week start day from settings', function () {
             $inertia->has('filters')
                 ->where('filters', function ($filters) {
                     $startDate = Carbon::parse($filters['start']);
-                    expect($startDate->dayOfWeek)->toBe(Carbon::WEDNESDAY);
+                    expect($startDate->dayOfWeek)->toBe(CarbonInterface::WEDNESDAY);
 
                     return true;
                 })
@@ -267,8 +270,8 @@ test('calendar uses custom week start day from settings', function () {
 
 test('calendar uses custom week end day from settings', function () {
     // Create admin with custom end day (Sunday)
-    $admin = \App\Models\User::factory()->create([
-        'role' => \App\Enums\Role::Admin,
+    $admin = User::factory()->create([
+        'role' => Role::Admin,
         'settings' => [
             'calendar' => [
                 'default_trainer_id' => null,
@@ -293,8 +296,8 @@ test('calendar uses custom week end day from settings', function () {
                     $endDate = Carbon::parse($filters['end']);
                     $daysDiff = $startDate->diffInDays($endDate);
 
-                    expect((int) $daysDiff)->toBe(6);
-                    expect($endDate->dayOfWeek)->toBe(Carbon::SUNDAY);
+                    expect((int)$daysDiff)->toBe(6)
+                        ->and($endDate->dayOfWeek)->toBe(CarbonInterface::SUNDAY);
 
                     return true;
                 })
@@ -304,8 +307,8 @@ test('calendar uses custom week end day from settings', function () {
 
 test('calendar handles wrap-around week configuration', function () {
     // Create admin with wrap-around week (Friday to Tuesday)
-    $admin = \App\Models\User::factory()->create([
-        'role' => \App\Enums\Role::Admin,
+    $admin = User::factory()->create([
+        'role' => Role::Admin,
         'settings' => [
             'calendar' => [
                 'default_trainer_id' => null,
@@ -330,9 +333,9 @@ test('calendar handles wrap-around week configuration', function () {
                     $endDate = Carbon::parse($filters['end']);
                     $daysDiff = $startDate->diffInDays($endDate);
 
-                    expect($startDate->dayOfWeek)->toBe(Carbon::FRIDAY);
-                    expect($endDate->dayOfWeek)->toBe(Carbon::TUESDAY);
-                    expect((int) $daysDiff)->toBe(4);
+                    expect($startDate->dayOfWeek)->toBe(CarbonInterface::FRIDAY)
+                        ->and($endDate->dayOfWeek)->toBe(CarbonInterface::TUESDAY)
+                        ->and((int)$daysDiff)->toBe(4);
 
                     return true;
                 })

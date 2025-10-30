@@ -1,8 +1,10 @@
 <?php
 
+use App\Enums\Role;
 use App\Http\Resources\Calendar\DayEventsCollection;
 use App\Http\Resources\Calendar\EventResource;
 use App\Models\Booking;
+use App\Models\User;
 use Carbon\Carbon;
 
 beforeEach(function () {
@@ -203,11 +205,11 @@ test('daily calendar filters events by trainer ids', function () {
 });
 
 test('daily calendar uses default trainer from admin settings', function () {
-    $trainer = \App\Models\User::query()->trainers()->first();
+    $trainer = User::query()->trainers()->first();
 
     // Create admin with default trainer setting
-    $admin = \App\Models\User::factory()->create([
-        'role' => \App\Enums\Role::Admin,
+    $admin = User::factory()->create([
+        'role' => Role::Admin,
         'settings' => [
             'calendar' => [
                 'default_trainer_id' => $trainer->id,
@@ -233,12 +235,12 @@ test('daily calendar uses default trainer from admin settings', function () {
 });
 
 test('daily calendar URL parameter overrides default trainer setting', function () {
-    $trainer1 = \App\Models\User::query()->trainers()->first();
-    $trainer2 = \App\Models\User::query()->trainers()->skip(1)->first();
+    $trainer1 = User::query()->trainers()->first();
+    $trainer2 = User::query()->trainers()->skip(1)->first();
 
     // Create admin with default trainer setting
-    $admin = \App\Models\User::factory()->create([
-        'role' => \App\Enums\Role::Admin,
+    $admin = User::factory()->create([
+        'role' => Role::Admin,
         'settings' => [
             'calendar' => [
                 'default_trainer_id' => $trainer1->id,

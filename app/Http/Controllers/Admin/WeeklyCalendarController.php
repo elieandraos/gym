@@ -7,6 +7,7 @@ use App\Http\Resources\Calendar\WeekEventsCollection;
 use App\Models\Booking;
 use App\Models\User;
 use Carbon\Carbon;
+use Carbon\CarbonInterface;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -19,8 +20,8 @@ class WeeklyCalendarController extends Controller
         $today = Carbon::today();
 
         // Get calendar settings from user
-        $startDayOfWeek = $this->getDayOfWeekNumber($user->getSetting('calendar.start_day', 'monday'));
-        $endDayOfWeek = $this->getDayOfWeekNumber($user->getSetting('calendar.end_day', 'saturday'));
+        $startDayOfWeek = $this->getDayOfWeekNumber(day: $user->getSetting('calendar.start_day', 'monday'));
+        $endDayOfWeek = $this->getDayOfWeekNumber(day: $user->getSetting('calendar.end_day', 'saturday'));
 
         // Calculate the number of days to show (inclusive)
         $daysToShow = $endDayOfWeek >= $startDayOfWeek
@@ -61,7 +62,6 @@ class WeeklyCalendarController extends Controller
             ->sortBy('first_name')
             ->values();
 
-        // Convert 12-hour format with AM/PM to 24-hour format
         $startHour24 = $this->convertTo24Hour(
             $user->getSetting('calendar.start_hour', 6),
             $user->getSetting('calendar.start_period', 'AM')
@@ -87,26 +87,20 @@ class WeeklyCalendarController extends Controller
         ]);
     }
 
-    /**
-     * Convert day name to Carbon day of week constant
-     */
+
     private function getDayOfWeekNumber(string $day): int
     {
         return match (strtolower($day)) {
-            'sunday' => Carbon::SUNDAY,
-            'monday' => Carbon::MONDAY,
-            'tuesday' => Carbon::TUESDAY,
-            'wednesday' => Carbon::WEDNESDAY,
-            'thursday' => Carbon::THURSDAY,
-            'friday' => Carbon::FRIDAY,
-            'saturday' => Carbon::SATURDAY,
-            default => Carbon::MONDAY,
+            'sunday' => CarbonInterface::SUNDAY,
+            'tuesday' => CarbonInterface::TUESDAY,
+            'wednesday' => CarbonInterface::WEDNESDAY,
+            'thursday' => CarbonInterface::THURSDAY,
+            'friday' => CarbonInterface::FRIDAY,
+            'saturday' => CarbonInterface::SATURDAY,
+            default => CarbonInterface::MONDAY,
         };
     }
 
-    /**
-     * Convert 12-hour format with AM/PM to 24-hour format
-     */
     private function convertTo24Hour(int $hour, string $period): int
     {
         if ($period === 'AM') {

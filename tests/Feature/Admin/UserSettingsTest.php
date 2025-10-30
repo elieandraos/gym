@@ -74,7 +74,7 @@ test('admin can update notification settings', function () {
 
     $admin = User::query()->where('role', Role::Admin)->latest()->first();
 
-    expect($admin->getSetting('notifications.new_member_email_to_owners'))->toBe(false)
+    expect($admin->getSetting('notifications.new_member_email_to_owners'))->toBeFalse()
         ->and($admin->getSetting('notifications.owner_emails'))->toBe('owner1@gym.com,owner2@gym.com');
 });
 
@@ -221,14 +221,10 @@ test('settings are merged correctly with existing settings', function () {
 
     // Updated calendar settings should change
     expect($admin->getSetting('calendar.start_day'))->toBe('wednesday')
-        ->and($admin->getSetting('calendar.end_day'))->toBe('sunday');
-
-    // Other calendar settings should still exist (not overwritten)
-    expect($admin->getSetting('calendar.start_hour'))->toBe(6)
-        ->and($admin->getSetting('calendar.start_period'))->toBe('AM');
-
-    // Notification settings should still exist (not overwritten)
-    expect($admin->getSetting('notifications.new_member_email_to_owners'))->toBe(true);
+        ->and($admin->getSetting('calendar.end_day'))->toBe('sunday')
+        ->and($admin->getSetting('calendar.start_hour'))->toBe(6)
+        ->and($admin->getSetting('calendar.start_period'))->toBe('AM')
+        ->and($admin->getSetting('notifications.new_member_email_to_owners'))->toBeTrue();
 });
 
 test('getSetting returns default value when not set', function () {
@@ -236,7 +232,7 @@ test('getSetting returns default value when not set', function () {
 
     expect($user->getSetting('calendar.start_day'))->toBe('monday')
         ->and($user->getSetting('calendar.end_day'))->toBe('saturday')
-        ->and($user->getSetting('notifications.new_member_email_to_owners'))->toBe(true);
+        ->and($user->getSetting('notifications.new_member_email_to_owners'))->toBeTrue();
 });
 
 test('setSetting updates specific setting with dot notation', function () {
