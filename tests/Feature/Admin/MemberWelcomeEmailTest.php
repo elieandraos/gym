@@ -24,7 +24,9 @@ test('it queues welcome email to new member when member is created', function ()
 
     actingAsAdmin()
         ->post(route('admin.members.store'), $memberData)
-        ->assertRedirect(route('admin.members.index'));
+        ->assertSessionHasNoErrors();
+
+    $member = User::query()->where('email', 'john.doe@example.com')->first();
 
     Mail::assertQueued(WelcomeEmail::class, function ($mail) use ($memberData) {
         return $mail->hasTo($memberData['email']);

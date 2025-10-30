@@ -5,6 +5,7 @@ use App\Enums\Gender;
 use App\Http\Resources\MemberResource;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 beforeEach(function () {
@@ -407,4 +408,198 @@ test('it removes member profile photo', function () {
 
     expect($member->profile_photo_path)->toBeNull();
     Storage::disk('public')->assertMissing($photoPath);
+});
+
+test('owner notification email is sent when setting is enabled', function () {
+    Mail::fake();
+
+    // Create admin with email notification enabled and custom email
+    $admin = \App\Models\User::factory()->create([
+        'role' => \App\Enums\Role::Admin,
+        'settings' => [
+            'calendar' => [
+                'default_trainer_id' => null,
+                'start_day' => 'monday',
+                'end_day' => 'saturday',
+                'start_hour' => 6,
+                'start_period' => 'AM',
+                'end_hour' => 10,
+                'end_period' => 'PM',
+            ],
+            'notifications' => [
+                'new_member_email_to_owners' => true,
+                'owner_emails' => 'custom@example.com',
+            ],
+        ],
+    ]);
+
+    $memberData = [
+        'name' => 'Test Member',
+        'email' => 'test@example.com',
+        'registration_date' => '2025-10-21',
+        'in_house' => true,
+        'gender' => \App\Enums\Gender::Male->value,
+        'weight' => 75,
+        'height' => 180,
+        'birthdate' => '1990-01-01',
+        'blood_type' => \App\Enums\BloodType::OPlus->value,
+        'phone_number' => '+1234567890',
+        'instagram_handle' => 'test',
+        'address' => 'test address',
+        'emergency_contact' => 'test contact',
+        'color' => 'bg-blue-50',
+    ];
+
+    test()->actingAs($admin)
+        ->post(route('admin.members.store'), $memberData);
+
+    Mail::assertQueued(\App\Mail\Owner\NewMemberEmail::class, function ($mail) {
+        return $mail->hasTo('custom@example.com');
+    });
+});
+
+test('owner notification email is NOT sent when setting is disabled', function () {
+    Mail::fake();
+
+    // Create admin with email notification disabled
+    $admin = \App\Models\User::factory()->create([
+        'role' => \App\Enums\Role::Admin,
+        'settings' => [
+            'calendar' => [
+                'default_trainer_id' => null,
+                'start_day' => 'monday',
+                'end_day' => 'saturday',
+                'start_hour' => 6,
+                'start_period' => 'AM',
+                'end_hour' => 10,
+                'end_period' => 'PM',
+            ],
+            'notifications' => [
+                'new_member_email_to_owners' => false,
+                'owner_emails' => 'owner@example.com',
+            ],
+        ],
+    ]);
+
+    $memberData = [
+        'name' => 'Test Member',
+        'email' => 'test2@example.com',
+        'registration_date' => '2025-10-21',
+        'in_house' => true,
+        'gender' => \App\Enums\Gender::Male->value,
+        'weight' => 75,
+        'height' => 180,
+        'birthdate' => '1990-01-01',
+        'blood_type' => \App\Enums\BloodType::OPlus->value,
+        'phone_number' => '+1234567890',
+        'instagram_handle' => 'test',
+        'address' => 'test address',
+        'emergency_contact' => 'test contact',
+        'color' => 'bg-blue-50',
+    ];
+
+    test()->actingAs($admin)
+        ->post(route('admin.members.store'), $memberData);
+
+    // No owner notification emails should be sent
+    Mail::assertNotQueued(\App\Mail\Owner\NewMemberEmail::class);
+});
+
+test('owner notification emails sent to multiple addresses from settings', function () {
+    Mail::fake();
+
+    // Create admin with multiple custom emails
+    $admin = \App\Models\User::factory()->create([
+        'role' => \App\Enums\Role::Admin,
+        'settings' => [
+            'calendar' => [
+                'default_trainer_id' => null,
+                'start_day' => 'monday',
+                'end_day' => 'saturday',
+                'start_hour' => 6,
+                'start_period' => 'AM',
+                'end_hour' => 10,
+                'end_period' => 'PM',
+            ],
+            'notifications' => [
+                'new_member_email_to_owners' => true,
+                'owner_emails' => 'owner1@example.com, owner2@example.com, owner3@example.com',
+            ],
+        ],
+    ]);
+
+    $memberData = [
+        'name' => 'Test Member',
+        'email' => 'test3@example.com',
+        'registration_date' => '2025-10-21',
+        'in_house' => true,
+        'gender' => \App\Enums\Gender::Male->value,
+        'weight' => 75,
+        'height' => 180,
+        'birthdate' => '1990-01-01',
+        'blood_type' => \App\Enums\BloodType::OPlus->value,
+        'phone_number' => '+1234567890',
+        'instagram_handle' => 'test',
+        'address' => 'test address',
+        'emergency_contact' => 'test contact',
+        'color' => 'bg-blue-50',
+    ];
+
+    test()->actingAs($admin)
+        ->post(route('admin.members.store'), $memberData);
+
+    // Should send to all 3 email addresses
+    Mail::assertQueued(\App\Mail\Owner\NewMemberEmail::class, 3);
+    Mail::assertQueued(\App\Mail\Owner\NewMemberEmail::class, fn ($mail) => $mail->hasTo('owner1@example.com'));
+    Mail::assertQueued(\App\Mail\Owner\NewMemberEmail::class, fn ($mail) => $mail->hasTo('owner2@example.com'));
+    Mail::assertQueued(\App\Mail\Owner\NewMemberEmail::class, fn ($mail) => $mail->hasTo('owner3@example.com'));
+});
+
+test('settings emails override config emails', function () {
+    Mail::fake();
+    config(['mail.owners_emails' => 'config@example.com']);
+
+    // Create admin with custom email in settings (should override config)
+    $admin = \App\Models\User::factory()->create([
+        'role' => \App\Enums\Role::Admin,
+        'settings' => [
+            'calendar' => [
+                'default_trainer_id' => null,
+                'start_day' => 'monday',
+                'end_day' => 'saturday',
+                'start_hour' => 6,
+                'start_period' => 'AM',
+                'end_hour' => 10,
+                'end_period' => 'PM',
+            ],
+            'notifications' => [
+                'new_member_email_to_owners' => true,
+                'owner_emails' => 'settings@example.com',
+            ],
+        ],
+    ]);
+
+    $memberData = [
+        'name' => 'Test Member',
+        'email' => 'test4@example.com',
+        'registration_date' => '2025-10-21',
+        'in_house' => true,
+        'gender' => \App\Enums\Gender::Male->value,
+        'weight' => 75,
+        'height' => 180,
+        'birthdate' => '1990-01-01',
+        'blood_type' => \App\Enums\BloodType::OPlus->value,
+        'phone_number' => '+1234567890',
+        'instagram_handle' => 'test',
+        'address' => 'test address',
+        'emergency_contact' => 'test contact',
+        'color' => 'bg-blue-50',
+    ];
+
+    test()->actingAs($admin)
+        ->post(route('admin.members.store'), $memberData);
+
+    // Should send to settings email, not config email
+    Mail::assertQueued(\App\Mail\Owner\NewMemberEmail::class, fn ($mail) => $mail->hasTo('settings@example.com'));
+    Mail::assertNotQueued(\App\Mail\Owner\NewMemberEmail::class, fn ($mail) => $mail->hasTo('config@example.com'));
 });

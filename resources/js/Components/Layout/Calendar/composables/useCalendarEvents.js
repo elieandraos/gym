@@ -18,9 +18,11 @@ export function useCalendarEvents(events, filters, startHour = 6, endHour = 22) 
 
     // Header days for weekly view
     const headerDays = computed(() => {
-        if (!filters?.start) return []
+        if (!filters?.start || !filters?.end) return []
         const start = parseISO(filters.start)
-        return Array.from({ length: 6 }).map((_, i) => {
+        const end = parseISO(filters.end)
+        const dayCount = differenceInCalendarDays(end, start) + 1
+        return Array.from({ length: dayCount }).map((_, i) => {
             const d = addDays(start, i)
             return { short: format(d,'EEE'), day: format(d,'d'), isToday: isSameDay(d, today) }
         })
@@ -36,8 +38,10 @@ export function useCalendarEvents(events, filters, startHour = 6, endHour = 22) 
 
     // Raw event processing and merging for weekly view
     const rawMerged = computed(() => {
-        if (!filters?.start || !events) return []
+        if (!filters?.start || !filters?.end || !events) return []
         const weekStart = parseISO(filters.start)
+        const weekEnd = parseISO(filters.end)
+        const maxDays = differenceInCalendarDays(weekEnd, weekStart)
         const slots = events.map(event => {
             const start  = parseISO(event.start_time)
             const end    = parseISO(event.end_time)
@@ -46,7 +50,7 @@ export function useCalendarEvents(events, filters, startHour = 6, endHour = 22) 
             const startMinutes = startHour * 60
             const endMinutes = endHour * 60
 
-            if (mins < startMinutes || mins >= endMinutes || dayIx < 0 || dayIx > 5) return null
+            if (mins < startMinutes || mins >= endMinutes || dayIx < 0 || dayIx > maxDays) return null
 
             const col       = dayIx + 1
             const halfHourFromStart = Math.floor((mins - startMinutes) / 30)

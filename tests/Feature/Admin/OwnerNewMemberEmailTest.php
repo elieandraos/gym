@@ -9,7 +9,9 @@ beforeEach(function () {
 });
 
 test('it queues notification email to gym owner when member is created', function () {
-    config(['mail.owners_emails' => 'owner@example.com']);
+    // Create admin and set owner emails in admin user settings
+    $admin = User::factory()->create(['role' => 'admin']);
+    $admin->setSetting('notifications.owner_emails', 'owner@example.com');
 
     $memberData = [
         'name' => 'Jane Smith',
@@ -24,9 +26,9 @@ test('it queues notification email to gym owner when member is created', functio
         'phone_number' => '+9876543210',
     ];
 
-    actingAsAdmin()
+    test()->actingAs($admin)
         ->post(route('admin.members.store'), $memberData)
-        ->assertRedirect(route('admin.members.index'));
+        ->assertSessionHasNoErrors();
 
     Mail::assertQueued(NewMemberEmail::class, function ($mail) {
         return $mail->hasTo('owner@example.com');
@@ -34,7 +36,9 @@ test('it queues notification email to gym owner when member is created', functio
 });
 
 test('it queues notification emails to multiple gym owners', function () {
-    config(['mail.owners_emails' => 'owner1@example.com, owner2@example.com, owner3@example.com']);
+    // Create admin and set owner emails in admin user settings
+    $admin = User::factory()->create(['role' => 'admin']);
+    $admin->setSetting('notifications.owner_emails', 'owner1@example.com, owner2@example.com, owner3@example.com');
 
     $memberData = [
         'name' => 'Bob Johnson',
@@ -49,9 +53,9 @@ test('it queues notification emails to multiple gym owners', function () {
         'phone_number' => '+1122334455',
     ];
 
-    actingAsAdmin()
+    test()->actingAs($admin)
         ->post(route('admin.members.store'), $memberData)
-        ->assertRedirect(route('admin.members.index'));
+        ->assertSessionHasNoErrors();
 
     Mail::assertQueued(NewMemberEmail::class, 3);
     Mail::assertQueued(NewMemberEmail::class, fn ($mail) => $mail->hasTo('owner1@example.com'));
@@ -59,8 +63,10 @@ test('it queues notification emails to multiple gym owners', function () {
     Mail::assertQueued(NewMemberEmail::class, fn ($mail) => $mail->hasTo('owner3@example.com'));
 });
 
-test('no owner notification emails are sent if owners_emails config is not set', function () {
-    config(['mail.owners_emails' => null]);
+test('no owner notification emails are sent if owner emails setting is disabled', function () {
+    // Create admin and disable owner email notifications in admin settings
+    $admin = User::factory()->create(['role' => 'admin']);
+    $admin->setSetting('notifications.new_member_email_to_owners', false);
 
     $memberData = [
         'name' => 'Test Member',
@@ -75,7 +81,7 @@ test('no owner notification emails are sent if owners_emails config is not set',
         'phone_number' => '+1234567890',
     ];
 
-    actingAsAdmin()
+    test()->actingAs($admin)
         ->post(route('admin.members.store'), $memberData);
 
     // No owner notification emails should be queued

@@ -22,8 +22,8 @@ it('marks past booking slots as complete', function () {
     Artisan::call('lift-station:mark-booking-slots-complete');
 
     // Assert
-    expect($upcomingSlot->fresh()->status)->toBe(Status::Complete);
-    expect($cancelledSlot->fresh()->status)->toBe(Status::Cancelled);
+    expect($upcomingSlot->fresh()->status)->toBe(Status::Complete)
+        ->and($cancelledSlot->fresh()->status)->toBe(Status::Cancelled);
 
     // Reset time
     $this->travelBack();
@@ -58,10 +58,10 @@ it('only processes booking slots from today', function () {
     Artisan::call('lift-station:mark-booking-slots-complete');
 
     // Today's past slot should be marked complete
-    expect($todaySlot->fresh()->status)->toBe(Status::Complete);
+    expect($todaySlot->fresh()->status)->toBe(Status::Complete)
+        ->and($yesterdaySlot->fresh()->status)->toBe(Status::Upcoming);
 
     // Yesterday's slot should NOT be touched (optimization - only processes today)
-    expect($yesterdaySlot->fresh()->status)->toBe(Status::Upcoming);
 
     $this->travelBack();
 });

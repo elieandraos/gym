@@ -11,7 +11,7 @@
                     <!-- horizontal lines -->
                     <div
                         class="col-start-1 col-end-2 row-start-1 grid divide-y divide-gray-100"
-                        style="grid-template-rows: repeat(34, minmax(3.5rem,1fr))"
+                        :style="{ gridTemplateRows: `repeat(${gridRowCount}, minmax(3.5rem,1fr))` }"
                     >
                         <div ref="containerOffset" class="row-end-1 h-4"></div>
                         <template v-for="(hour, idx) in hours" :key="idx">
@@ -33,19 +33,23 @@
 
                     <!-- vertical columns -->
                     <div
-                        class="col-start-1 col-end-2 row-start-1 hidden grid-cols-6 divide-x divide-gray-100 sm:grid sm:grid-cols-6"
+                        class="col-start-1 col-end-2 row-start-1 hidden divide-x divide-gray-100 sm:grid"
+                        :style="{ gridTemplateColumns: `repeat(${headerDays.length}, minmax(0, 1fr))` }"
                     >
                         <div
-                            v-for="n in 7"
+                            v-for="n in headerDays.length + 1"
                             :key="n"
-                            :class="n < 7 ? 'row-span-full' : 'row-span-full w-8'"
+                            :class="n < headerDays.length + 1 ? 'row-span-full' : 'row-span-full w-8'"
                         />
                     </div>
 
                     <!-- events -->
                     <ol
-                        class="col-start-1 col-end-2 row-start-1 grid sm:grid-cols-6 sm:pr-8"
-                        style="grid-template-rows: 1rem repeat(34, minmax(3.5rem,1fr)) auto"
+                        class="col-start-1 col-end-2 row-start-1 grid sm:pr-8"
+                        :style="{
+                            gridTemplateColumns: `repeat(${headerDays.length}, minmax(0, 1fr))`,
+                            gridTemplateRows: `1rem repeat(${gridRowCount}, minmax(3.5rem,1fr)) auto`
+                        }"
                     >
                         <li
                             v-for="slot in filteredEvents"
@@ -69,7 +73,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { format } from 'date-fns'
 
 import TimeGutter from '../components/TimeGutter.vue'
@@ -108,6 +112,13 @@ defineEmits(['openModal'])
 // Template refs
 const container = ref(null)
 const containerOffset = ref(null)
+
+// Calculate grid row count: (hours × 2 for half-hour slots) - 1
+// We subtract 1 because the last hour doesn't need a half-hour slot
+const gridRowCount = computed(() => {
+    const hourCount = props.endHour - props.startHour + 1
+    return (hourCount * 2) - 1
+})
 
 // Auto-scroll to current time
 useCalendarAutoScroll(container, props.startHour, props.endHour, props.autoScrollToTime)

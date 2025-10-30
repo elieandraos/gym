@@ -6,7 +6,9 @@
                     :events="events"
                     :is_today="is_today"
                     :available_trainers="available_trainers"
-                    :filters="filters">
+                    :filters="filters"
+                    :start-hour="calendar_settings.start_hour"
+                    :end-hour="calendar_settings.end_hour">
                 </daily-calendar>
             </Container>
         </div>
@@ -22,6 +24,7 @@ const props = defineProps({
     events: { type: Array, required: true },
     is_today: { type: Boolean, required: true },
     available_trainers: { type: Array, required: true },
-    filters: { type: Object, required: true }
+    filters: { type: Object, required: true },
+    calendar_settings: { type: Object, required: true }
 })
 </script>

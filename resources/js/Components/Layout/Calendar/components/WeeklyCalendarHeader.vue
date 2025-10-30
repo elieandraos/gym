@@ -46,8 +46,11 @@
 
         <!-- Days header row -->
         <div class="flex-none mt-1 bg-white border-y border-gray-100 sm:pr-8">
-            <div class="-mr-px hidden grid-cols-6 divide-x divide-gray-100 text-sm text-gray-500 sm:grid">
-                <div class="col-end-1 w-14"></div>
+            <div
+                class="-mr-px hidden divide-x divide-gray-100 text-sm text-gray-500 sm:grid"
+                :style="{ gridTemplateColumns: `56px repeat(${headerDays.length}, minmax(0, 1fr))` }"
+            >
+                <div class="w-14"></div>
                 <template v-for="day in headerDays" :key="day.day">
                     <div class="flex items-center justify-center py-3">
                         <span class="text-gray-900">
