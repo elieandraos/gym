@@ -52,7 +52,11 @@ class TrainersController extends Controller
             'role' => Role::Trainer->value,
         ]);
 
-        User::query()->create($request->all());
+        $trainer = User::query()->create($request->except(['photo', 'remove_photo']));
+
+        if ($request->hasFile('photo')) {
+            $trainer->updateProfilePhoto($request->file('photo'));
+        }
 
         return redirect()->route('admin.trainers.index')
             ->with('flash.banner', 'Trainer created successfully')

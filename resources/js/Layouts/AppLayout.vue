@@ -11,7 +11,7 @@
                 </div>
 
                 <div class="h-screen xl:pt-2 grow">
-                    <main class="h-full overflow-y-scroll bg-white rounded-t-lg xl:ring-1 xl:ring-zinc-950/5 pb-20 xl:pb-0">
+                    <main class="h-full overflow-y-scroll bg-white rounded-t-lg xl:ring-1 xl:ring-zinc-950/5 pb-16 xl:pb-0">
                         <!-- main content -->
                         <slot />
                     </main>

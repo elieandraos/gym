@@ -1,15 +1,5 @@
 <template>
     <div class="">
-        <FormSection v-if="isEdit" title="Profile Photo" description="Upload a profile photo for the trainer.">
-            <InputPhotoUpload
-                :photo_url="profilePhotoUrl"
-                :photo_path="profilePhotoPath"
-                :name="form.name"
-                @upload="(file) => { form.photo = file; form.remove_photo = false; }"
-                @remove="() => { form.photo = null; form.remove_photo = true; }" />
-            <InputError :message="form.errors.photo" />
-        </FormSection>
-
         <FormSection title="Registration" description="Enter the starting date of the trainer." >
             <DateInput v-model="form.registration_date"></DateInput>
             <InputError :message="form.errors.registration_date" />
@@ -83,6 +73,16 @@
         <FormSection title="Calendar Color" description="Choose the color that will appear on the calendar for this trainer." >
             <InlineColorPicker v-model="form.color" />
             <InputError :message="form.errors.color" />
+        </FormSection>
+
+        <FormSection title="Profile Photo" description="Upload a profile photo for the trainer.">
+            <InputPhotoUpload
+                :photo_url="profilePhotoUrl"
+                :photo_path="profilePhotoPath"
+                :name="form.name"
+                @upload="(file) => { form.photo = file; form.remove_photo = false; }"
+                @remove="() => { form.photo = null; form.remove_photo = true; }" />
+            <InputError :message="form.errors.photo" />
         </FormSection>
 
         <div class="text-right">

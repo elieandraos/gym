@@ -37,6 +37,8 @@ const form = useForm({
     emergency_contact: null,
     in_house: true,
     registration_date: new Date(),
+    photo: null,
+    remove_photo: false,
 })
 
 provide('form', form)
