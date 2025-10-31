@@ -14,11 +14,15 @@ class DashboardController extends Controller
 {
     public function __invoke(): Response
     {
-        // Unpaid bookings with member and trainer info
+        // Unpaid bookings with member and trainer info (active and scheduled)
         $unpaidBookings = Booking::query()
             ->where('is_paid', false)
-            ->active()
+            ->where(function ($query) {
+                $query->active()
+                    ->orWhere('start_date', '>', now());
+            })
             ->with(['member', 'trainer'])
+            ->orderBy('start_date', 'asc')
             ->get();
 
         // Frozen bookings with member and trainer info

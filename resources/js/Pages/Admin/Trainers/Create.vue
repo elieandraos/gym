@@ -38,6 +38,8 @@ const form = useForm({
     in_house: true,
     registration_date: new Date(),
     color: 'bg-blue-50',
+    photo: null,
+    remove_photo: false,
 })
 
 provide('form', form)

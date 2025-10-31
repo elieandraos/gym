@@ -1,15 +1,5 @@
 <template>
     <div class="">
-        <FormSection v-if="isEdit" title="Profile Photo" description="Upload a profile photo for the member.">
-            <InputPhotoUpload
-                :photo_url="profilePhotoUrl"
-                :photo_path="profilePhotoPath"
-                :name="form.name"
-                @upload="(file) => { form.photo = file; form.remove_photo = false; }"
-                @remove="() => { form.photo = null; form.remove_photo = true; }" />
-            <InputError :message="form.errors.photo" />
-        </FormSection>
-
         <FormSection title="In-house" description="Is the member a direct lift station customer?">
             <SwitchInput v-model="form.in_house" class="mt-4"/>
         </FormSection>
@@ -82,6 +72,16 @@
         <FormSection title="Social" description="Enter the member's instagram handle." >
             <TextInput id="instagram_handle" v-model="form.instagram_handle" type="text" placeholder="Instagram handle"/>
             <InputError :message="form.errors.instagram_handle" />
+        </FormSection>
+
+        <FormSection title="Profile Photo" description="Upload a profile photo for the member.">
+            <InputPhotoUpload
+                :photo_url="profilePhotoUrl"
+                :photo_path="profilePhotoPath"
+                :name="form.name"
+                @upload="(file) => { form.photo = file; form.remove_photo = false; }"
+                @remove="() => { form.photo = null; form.remove_photo = true; }" />
+            <InputError :message="form.errors.photo" />
         </FormSection>
 
         <div class="text-right">

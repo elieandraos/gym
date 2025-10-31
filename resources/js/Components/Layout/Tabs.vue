@@ -1,5 +1,5 @@
 <template>
-    <ul class="flex justify-between items-center mb-4 border-b border-gray-200 lg:justify-start lg:gap-8 bg-white capitalize cursor-pointer">
+    <ul v-if="!hideHeaders" class="flex justify-between items-center mb-4 border-b border-gray-200 lg:justify-start lg:gap-8 bg-white capitalize cursor-pointer">
         <li
             class="uppercase text-sm rounded-lg px-3 py-1.5 font-medium leading-relaxed tracking-widest"
             :class="title === selectedTitle ? 'text-zinc-900' : 'text-zinc-400 hover:text-zinc-900'"
@@ -16,29 +16,40 @@
 
 <script setup>
 import {
-    onMounted, ref, useSlots, provide,
+    onMounted, ref, useSlots, provide, watch,
 } from 'vue'
 
 const props = defineProps({
     selected: { type: String, require: false, default: '' },
+    hideHeaders: { type: Boolean, default: false },
+    modelValue: { type: String, default: '' },
 })
 
 const emit = defineEmits([
     'onTabSelected',
+    'update:modelValue',
 ])
 
 const slots = useSlots()
-const selectedTitle = ref(props.selected)
+const selectedTitle = ref(props.modelValue || props.selected)
 const tabTitles = ref(slots.default().map((tab) => tab.props?.title))
 
 provide('selectedTitle', selectedTitle)
 
 const selectTab = (title) => {
     emit('onTabSelected', title)
+    emit('update:modelValue', title)
     selectedTitle.value = title
 }
 
 onMounted(() => {
     if (!selectedTitle.value) selectedTitle.value = tabTitles.value[0]
+})
+
+// Watch for external changes to modelValue
+watch(() => props.modelValue, (newValue) => {
+    if (newValue) {
+        selectedTitle.value = newValue
+    }
 })
 </script>

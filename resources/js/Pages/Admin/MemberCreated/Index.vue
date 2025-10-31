@@ -1,12 +1,13 @@
 <template>
     <AppLayout title="Member Created">
-        <Container>
-            <div class="flex flex-col items-center justify-center min-h-[60vh] py-12">
+        <div class="bg-zinc-50 min-h-full">
+            <Container>
+                <div class="flex flex-col items-center justify-center py-12">
                 <div class="text-center space-y-6 max-w-2xl">
                     <!-- Celebration Message -->
                     <div class="space-y-2">
                         <h1 class="text-3xl font-[600] text-green-600">
-                            The squad just got bigger 🎉
+                            Wohoo 🎉  The squad just got bigger!
                         </h1>
                         <p class="text-lg text-zinc-600">
                             {{ name }} is now part of the lift station family
@@ -14,8 +15,8 @@
                     </div>
 
                     <!-- Member Info Card -->
-                    <div class="bg-zinc-50 rounded-lg p-6 mx-auto max-w-md">
-                        <div class="flex items-center gap-4">
+                    <div class="bg-white rounded-lg p-6 mx-auto max-w-md shadow-sm">
+                        <div class="flex flex-col items-center gap-4 text-center">
                             <img
                                 v-if="profile_photo_url"
                                 :src="profile_photo_url"
@@ -25,10 +26,10 @@
                             <div v-else class="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center">
                                 <UserIcon class="w-8 h-8 text-gray-400" />
                             </div>
-                            <div class="text-left flex-1">
+                            <div>
                                 <p class="font-[600] text-gray-900">{{ name }}</p>
                                 <p class="text-sm text-zinc-600">{{ email }}</p>
-                                <div class="flex items-center gap-3">
+                                <div class="flex items-center justify-center gap-3 mt-2">
                                     <Link :href="route('admin.members.show', id)" class="underline  font-[400]">
                                         view profile
                                     </Link>
@@ -43,12 +44,13 @@
                     <!-- Quick Link Back -->
                     <div class="pt-4">
                         <PrimaryButton type="button" @click="celebrate" class="text-[12px]">
-                            Oh wait! Let's celebrate
+                            Oh wait! Show me the confetti
                         </PrimaryButton>
                     </div>
                 </div>
             </div>
-        </Container>
+            </Container>
+        </div>
     </AppLayout>
 </template>
 

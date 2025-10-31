@@ -20,7 +20,7 @@ class UpdateUserRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($this->user)],
-            'photo' => ['nullable', 'mimes:jpg,jpeg,png', 'max:1024'],
+            'photo' => ['nullable', 'mimes:jpg,jpeg,png', 'max:6144'],
             'remove_photo' => ['nullable', 'boolean'],
             'registration_date' => ['required', 'date'],
             'in_house' => ['required', 'boolean'],

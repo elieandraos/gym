@@ -72,7 +72,11 @@ class MembersController extends Controller
             'role' => Role::Member->value,
         ]);
 
-        $member = User::query()->create($request->all());
+        $member = User::query()->create($request->except(['photo', 'remove_photo']));
+
+        if ($request->hasFile('photo')) {
+            $member->updateProfilePhoto($request->file('photo'));
+        }
 
         // Send email to the new member
         Mail::to($member->email)->queue(new WelcomeEmail($member));

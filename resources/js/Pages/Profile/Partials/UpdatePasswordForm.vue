@@ -1,36 +1,34 @@
 <template>
-    <div class="text-sm font-medium text-zinc-500">
-        Ensure your account is using a strong password to stay secure.
-    </div>
+    <FormSection title="Update Password" description="Ensure your account is using a strong password to stay secure.">
+        <div class="space-y-2">
+            <div>
+                <TextInput
+                    id="current_password"
+                    v-model="form.current_password"
+                    type="password"
+                    placeholder="Current Password"/>
+                <InputError :message="form.errors.current_password" />
+            </div>
 
-    <div class="space-y-4 my-8 lg:w-1/2">
-        <div class="col-span-6 sm:col-span-4">
-            <InputLabel for="current_password" value="Current Password" />
-            <TextInput
-                id="current_password"
-                v-model="form.current_password"
-                type="password"/>
-            <InputError :message="form.errors.current_password" class="mt-2" />
-        </div>
+            <div>
+                <TextInput
+                    id="password"
+                    v-model="form.password"
+                    type="password"
+                    placeholder="New Password"/>
+                <InputError :message="form.errors.password" />
+            </div>
 
-        <div class="col-span-6 sm:col-span-4">
-            <InputLabel for="password" value="New Password" />
-            <TextInput
-                id="password"
-                v-model="form.password"
-                type="password"/>
-            <InputError :message="form.errors.password" class="mt-2" />
+            <div>
+                <TextInput
+                    id="password_confirmation"
+                    v-model="form.password_confirmation"
+                    type="password"
+                    placeholder="Confirm Password"/>
+                <InputError :message="form.errors.password_confirmation" />
+            </div>
         </div>
-
-        <div class="col-span-6 sm:col-span-4">
-            <InputLabel for="password_confirmation" value="Confirm Password" />
-            <TextInput
-                id="password_confirmation"
-                v-model="form.password_confirmation"
-                type="password"/>
-            <InputError :message="form.errors.password_confirmation" class="mt-2" />
-        </div>
-    </div>
+    </FormSection>
 
     <div class="flex gap-4 items-center">
         <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing" @click="updatePassword">
@@ -45,8 +43,8 @@
 import { useForm } from '@inertiajs/vue3'
 
 import ActionMessage from '@/Components/ActionMessage.vue'
+import FormSection from '@/Components/Form/FormSection.vue'
 import InputError from '@/Components/Form/InputError.vue'
-import InputLabel from '@/Components/Form/InputLabel.vue'
 import TextInput from '@/Components/Form/TextInput.vue'
 import PrimaryButton from '@/Components/Layout/PrimaryButton.vue'
 

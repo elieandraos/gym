@@ -14,9 +14,11 @@
                             </span>
                         </div>
                     </div>
-                    <div v-if="showQuote" class="w-full flex items-center gap-2 text-sm italic text-zinc-600">
-                        <span>"{{ currentQuote }}"</span>
+                    <div v-if="showQuote" class="w-full flex items-center gap-2 text-sm italic" :class="quoteCount >= quoteBreakRefreshCount ? 'text-red-600 font-semibold' : 'text-zinc-600'">
+                        <span v-if="quoteCount < quoteBreakRefreshCount">"{{ currentQuote }}"</span>
+                        <span v-else>{{ currentQuote }}</span>
                         <ArrowPathIcon
+                            v-if="quoteCount < quoteBreakRefreshCount"
                             @click="showRandomQuote"
                             class="w-4 h-4 text-sky-500 hover:text-sky-700 cursor-pointer flex-shrink-0" />
                     </div>
@@ -119,10 +121,19 @@ const motivationalQuotes = [
 
 const showQuote = ref(false)
 const currentQuote = ref('')
+const quoteCount = ref(0)
+const quoteBreakRefreshCount = 6
 
 const showRandomQuote = () => {
-    const randomIndex = Math.floor(Math.random() * motivationalQuotes.length)
-    currentQuote.value = motivationalQuotes[randomIndex]
+    quoteCount.value++
+
+    if (quoteCount.value >= quoteBreakRefreshCount) {
+        currentQuote.value = "Okay I give up... seek a damn therapist!"
+    } else {
+        const randomIndex = Math.floor(Math.random() * motivationalQuotes.length)
+        currentQuote.value = motivationalQuotes[randomIndex]
+    }
+
     showQuote.value = true
 }
 

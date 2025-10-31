@@ -32,7 +32,7 @@
                         >
                             {{ booking.member.name }}
                         </Link>
-                        <p class="text-xs text-zinc-500">{{ booking.trainer.name }}</p>
+                        <p class="text-xs text-zinc-500">{{ booking.formatted_start_date }} - {{ booking.formatted_end_date }}</p>
                     </div>
                     <a
                         @click.prevent="$emit('mark-as-paid', booking.id)"
@@ -57,7 +57,7 @@
                 <div class="h-12 bg-zinc-100 rounded"></div>
             </div>
             <div v-else-if="frozenBookings.length === 0" class="text-center py-8 text-emerald-600">
-                Everyone's active and committed! 💪
+                Everyone's healthy and committed! 💪
             </div>
             <div v-else class="space-y-3 max-h-[240px] overflow-y-auto">
                 <div
@@ -77,7 +77,7 @@
                         >
                             {{ booking.member.name }}
                         </Link>
-                        <p class="text-xs text-zinc-500">{{ booking.trainer.name }}</p>
+                        <p class="text-xs text-zinc-500">{{ booking.formatted_start_date }} - {{ booking.formatted_end_date }}</p>
                     </div>
                     <Link
                         :href="route('admin.bookings.unfreeze.index', booking.id)"

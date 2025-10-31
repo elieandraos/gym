@@ -11,7 +11,7 @@
                 </div>
 
                 <div class="h-screen xl:pt-2 grow">
-                    <main class="h-full overflow-y-scroll bg-white rounded-t-lg xl:ring-1 xl:ring-zinc-950/5 pb-20 xl:pb-0">
+                    <main class="h-full overflow-y-scroll bg-white rounded-t-lg xl:ring-1 xl:ring-zinc-950/5 pb-16 xl:pb-0">
                         <!-- main content -->
                         <slot />
                     </main>
@@ -30,7 +30,7 @@
 <script setup>
 
 import {
-    HomeIcon, UserIcon, UsersIcon, Cog6ToothIcon, Cog8ToothIcon, PlusCircleIcon, CalendarIcon, ClipboardDocumentListIcon
+    HomeIcon, UserIcon, UsersIcon, UserCircleIcon, WrenchIcon, PlusCircleIcon, CalendarIcon, FireIcon
 } from '@heroicons/vue/24/solid'
 import { Head, usePage } from '@inertiajs/vue3'
 import { ref } from 'vue'
@@ -73,7 +73,7 @@ const menu = [
     },
     {
         name: 'Members',
-        url: route('admin.members.index'),
+        url: route('admin.members.index', { activeTraining: 1 }),
         icon: UserIcon,
         activeRoute: 'admin.members.*',
         when: () => usePage().props.auth.user,
@@ -88,21 +88,21 @@ const menu = [
     {
         name: 'Account',
         url: route('profile.show'),
-        icon: Cog6ToothIcon,
+        icon: UserCircleIcon,
         activeRoute: 'profile.show',
         when: () => usePage().props.auth.user,
     },
     {
         name: 'Settings',
         url: route('admin.settings.edit'),
-        icon: Cog8ToothIcon,
+        icon: WrenchIcon,
         activeRoute: 'admin.settings.*',
         when: () => usePage().props.auth.user,
     },
     {
         name: 'Workouts',
         url: route('admin.workouts.index'),
-        icon: ClipboardDocumentListIcon,
+        icon: FireIcon,
         activeRoute: 'admin.workouts.*',
         when: () => usePage().props.auth.user,
     },
