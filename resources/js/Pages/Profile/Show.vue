@@ -1,13 +1,16 @@
 <template>
     <AppLayout title="Profile">
         <Container>
-            <PageHeader :sticky="true">
+            <PageHeader :sticky="true" :bordered="false">
                 <div class="flex items-center gap-4">
-                    <PageBackButton />
-                    <PageHeaderTitle>Account</PageHeaderTitle>
+                    <div class="flex items-center gap-4">
+                        <PageBackButton />
+                    </div>
+                    <TabHeaders :tabs="tabTitles" v-model="selectedTab" />
                 </div>
             </PageHeader>
-            <Tabs>
+            
+            <Tabs v-model="selectedTab" :hide-headers="true">
                 <Tab title="Profile">
                     <UpdateProfileInformationForm @save-user-info="saveUser" />
                 </Tab>
@@ -27,13 +30,14 @@
 
 <script setup>
 import { usePage, useForm, router } from '@inertiajs/vue3'
-import { provide } from 'vue'
+import { provide, ref } from 'vue'
 
 import Container from '@/Components/Layout/Container.vue'
 import PageBackButton from '@/Components/Layout/PageBackButton.vue'
 import PageHeader from '@/Components/Layout/PageHeader.vue'
 import PageHeaderTitle from '@/Components/Layout/PageHeaderTitle.vue'
 import Tab from '@/Components/Layout/Tab.vue'
+import TabHeaders from '@/Components/Layout/TabHeaders.vue'
 import Tabs from '@/Components/Layout/Tabs.vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import LogoutOtherBrowserSessionsForm from '@/Pages/Profile/Partials/LogoutOtherBrowserSessionsForm.vue'
@@ -47,6 +51,10 @@ defineProps({
 
 const { route } = window
 const page = usePage()
+
+// Tab management
+const tabTitles = ['Profile', 'Contact', 'Password', 'Security']
+const selectedTab = ref('Profile')
 
 const form = useForm({
     _method: 'PUT',

@@ -2,7 +2,7 @@
     <form @submit.prevent="submit">
         <!-- Default Trainer -->
         <FormSection
-            title="Calendar Default Trainer"
+            title="Calendar selected trainer"
             description="Select a default trainer to pre-filter the calendar view."
         >
             <div>
@@ -17,8 +17,8 @@
 
         <!-- Calendar Week -->
         <FormSection
-            title="Calendar Week"
-            description="Configure which days of the week to display in the calendar."
+            title="Calendar week"
+            description="Configure the start and end day of your week."
         >
             <div class="space-y-4">
                 <div>
@@ -42,52 +42,43 @@
 
         <!-- Day Hours -->
         <FormSection
-            title="Day Hours"
-            description="Set the start and end times for calendar display."
+            title="Day hHours"
+            description="Set the start and end times for your calendar day."
         >
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-sm text-zinc-700 mb-2">Start Time</label>
-                    <div class="flex space-x-2">
-                        <SelectInput
-                            v-model.number="form.calendar.start_hour"
-                            :options="hourOptions"
-                            size="auto"
-                            placeholder="Hour"
-                        />
-                        <SelectInput
-                            v-model="form.calendar.start_period"
-                            :options="periodOptions"
-                            size="auto"
-                        />
-                    </div>
-                    <InputError :message="form.errors['calendar.start_hour'] || form.errors['calendar.start_period']" />
-                </div>
+            <div class="flex items-center gap-4">
+                <label class="text-sm text-zinc-700">From</label>
+                <SelectInput
+                    v-model.number="form.calendar.start_hour"
+                    :options="hourOptions"
+                    size="auto"
+                    placeholder="Hour"
+                />
+                <SelectInput
+                    v-model="form.calendar.start_period"
+                    :options="periodOptions"
+                    size="auto"
+                />
 
-                <div>
-                    <label class="block text-sm text-zinc-700 mb-2">End Time</label>
-                    <div class="flex space-x-2">
-                        <SelectInput
-                            v-model.number="form.calendar.end_hour"
-                            :options="hourOptions"
-                            size="auto"
-                            placeholder="Hour"
-                        />
-                        <SelectInput
-                            v-model="form.calendar.end_period"
-                            :options="periodOptions"
-                            size="auto"
-                        />
-                    </div>
-                    <InputError :message="form.errors['calendar.end_hour'] || form.errors['calendar.end_period']" />
-                </div>
+                <label class="text-sm text-zinc-700">Until</label>
+                <SelectInput
+                    v-model.number="form.calendar.end_hour"
+                    :options="hourOptions"
+                    size="auto"
+                    placeholder="Hour"
+                />
+                <SelectInput
+                    v-model="form.calendar.end_period"
+                    :options="periodOptions"
+                    size="auto"
+                />
             </div>
+            <InputError :message="form.errors['calendar.start_hour'] || form.errors['calendar.start_period'] || form.errors['calendar.end_hour'] || form.errors['calendar.end_period']" />
         </FormSection>
 
         <!-- New Member Added Notification -->
         <FormSection
-            title="New Member Added"
-            description="Configure email notifications when a new member joins."
+            title="Owners email notification"
+            description="Send an email to owners when a new member is added."
         >
             <div class="space-y-4">
                 <div class="flex items-center gap-3">

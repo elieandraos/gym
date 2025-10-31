@@ -1,5 +1,5 @@
 <template>
-    <FormSection title="Contact Information" description="Enter your email, phone and other contact information.">
+    <FormSection title="Contact Information" description="Enter your email, phone and address information.">
         <div class="space-y-2">
             <div>
                 <TextInput id="email" v-model="form.email" type="text" placeholder="Email"/>
