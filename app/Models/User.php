@@ -12,7 +12,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Jetstream\HasProfilePhoto;
 
 /**
@@ -20,6 +22,7 @@ use Laravel\Jetstream\HasProfilePhoto;
  * @property \Illuminate\Support\Carbon|mixed|null $birthdate
  * @property \Illuminate\Support\Carbon|mixed|null $registration_date
  * @property-read mixed                            $memberCompletedBookings
+ *
  * @mixin HasSettings
  */
 class User extends Authenticatable
@@ -166,5 +169,48 @@ class User extends Authenticatable
         return Attribute::make(
             get: fn () => Carbon::parse($this->registration_date)->format('M j, Y'),
         );
+    }
+
+    /**
+     * Update the user's profile photo with user-specific subfolder and unique filename.
+     */
+    public function updateProfilePhoto(UploadedFile $photo, $storagePath = 'profile-photos'): void
+    {
+        tap($this->profile_photo_path, function ($previous) use ($photo, $storagePath) {
+            // Generate unique filename: timestamp_hash.extension
+            $filename = time().'_'.substr(md5(uniqid()), 0, 8).'.'.$photo->getClientOriginalExtension();
+
+            // Store in user-specific subfolder: profile-photos/{user_id}/filename
+            $path = $photo->storeAs(
+                "{$storagePath}/{$this->id}",
+                $filename,
+                ['disk' => $this->profilePhotoDisk()]
+            );
+
+            $this->forceFill([
+                'profile_photo_path' => $path,
+            ])->save();
+
+            // Delete previous photo if exists
+            if ($previous) {
+                Storage::disk($this->profilePhotoDisk())->delete($previous);
+            }
+        });
+    }
+
+    /**
+     * Delete the user's profile photo.
+     */
+    public function deleteProfilePhoto(): void
+    {
+        if (is_null($this->profile_photo_path)) {
+            return;
+        }
+
+        Storage::disk($this->profilePhotoDisk())->delete($this->profile_photo_path);
+
+        $this->forceFill([
+            'profile_photo_path' => null,
+        ])->save();
     }
 }

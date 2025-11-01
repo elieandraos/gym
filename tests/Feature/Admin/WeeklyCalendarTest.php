@@ -296,7 +296,7 @@ test('calendar uses custom week end day from settings', function () {
                     $endDate = Carbon::parse($filters['end']);
                     $daysDiff = $startDate->diffInDays($endDate);
 
-                    expect((int)$daysDiff)->toBe(6)
+                    expect((int) $daysDiff)->toBe(6)
                         ->and($endDate->dayOfWeek)->toBe(CarbonInterface::SUNDAY);
 
                     return true;
@@ -335,7 +335,7 @@ test('calendar handles wrap-around week configuration', function () {
 
                     expect($startDate->dayOfWeek)->toBe(CarbonInterface::FRIDAY)
                         ->and($endDate->dayOfWeek)->toBe(CarbonInterface::TUESDAY)
-                        ->and((int)$daysDiff)->toBe(4);
+                        ->and((int) $daysDiff)->toBe(4);
 
                     return true;
                 })

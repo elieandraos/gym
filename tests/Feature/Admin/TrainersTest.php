@@ -280,7 +280,8 @@ test('it uploads trainer profile photo', function () {
 
     $trainer->refresh();
 
-    expect($trainer->profile_photo_path)->not->toBeNull();
+    expect($trainer->profile_photo_path)->not->toBeNull()
+        ->and($trainer->profile_photo_path)->toContain("profile-photos/{$trainer->id}/");
     Storage::disk('public')->assertExists($trainer->profile_photo_path);
 });
 
