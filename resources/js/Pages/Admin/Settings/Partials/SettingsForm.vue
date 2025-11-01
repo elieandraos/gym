@@ -42,7 +42,7 @@
 
         <!-- Day Hours -->
         <FormSection
-            title="Day hHours"
+            title="Training hours"
             description="Set the start and end times for your calendar day."
         >
             <div class="flex items-center gap-4">
@@ -77,7 +77,7 @@
 
         <!-- New Member Added Notification -->
         <FormSection
-            title="Owners email notification"
+            title="Owners notification"
             description="Send an email to owners when a new member is added."
         >
             <div class="space-y-4">
