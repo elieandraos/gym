@@ -26,7 +26,16 @@ class BodyCompositionController extends Controller
 
     public function store(BodyCompositionRequest $request, User $user): RedirectResponse
     {
-        $photoPath = $request->file('photo')->store('body-compositions', 'public');
+        // Generate unique filename: timestamp_hash.extension
+        $photo = $request->file('photo');
+        $filename = time().'_'.substr(md5(uniqid()), 0, 8).'.'.$photo->getClientOriginalExtension();
+
+        // Store in user-specific subfolder: body-compositions/{user_id}/filename
+        $photoPath = $photo->storeAs(
+            "body-compositions/{$user->id}",
+            $filename,
+            'public'
+        );
 
         BodyComposition::query()->create([
             'user_id' => $user->id,

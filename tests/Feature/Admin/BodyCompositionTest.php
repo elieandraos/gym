@@ -53,6 +53,7 @@ test('it uploads body composition photo successfully', function () {
     ]);
 
     $bodyComposition = BodyComposition::query()->where('user_id', $member->id)->first();
+    expect($bodyComposition->photo_path)->toContain("body-compositions/{$member->id}/");
     Storage::disk('public')->assertExists($bodyComposition->photo_path);
 });
 

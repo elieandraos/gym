@@ -361,7 +361,8 @@ test('it uploads member profile photo', function () {
 
     $member->refresh();
 
-    expect($member->profile_photo_path)->not->toBeNull();
+    expect($member->profile_photo_path)->not->toBeNull()
+        ->and($member->profile_photo_path)->toContain("profile-photos/{$member->id}/");
     Storage::disk('public')->assertExists($member->profile_photo_path);
 });
 

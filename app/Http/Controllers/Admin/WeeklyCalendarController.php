@@ -87,7 +87,6 @@ class WeeklyCalendarController extends Controller
         ]);
     }
 
-
     private function getDayOfWeekNumber(string $day): int
     {
         return match (strtolower($day)) {
