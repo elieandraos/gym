@@ -3,6 +3,12 @@
         <h3 class="font-[600]">Summary</h3>
         <table class="text-left text-sm w-full">
             <tbody>
+                <tr class="border-b border-zinc-100" v-if="lead_source">
+                    <td class="text-zinc-400 w-32 lg:w-48 py-4">Lead source</td>
+                    <td class="py-4">
+                        {{ lead_source }}
+                    </td>
+                </tr>
                 <tr class="border-b border-zinc-100">
                     <td class="text-zinc-400 w-32 lg:w-48 py-4">Gender</td>
                     <td class="py-4">
@@ -36,6 +42,6 @@ const props = defineProps({
 })
 
 const {
-    gender, birthdate_formatted, weight, height, blood_type,
+    lead_source, gender, birthdate_formatted, weight, height, blood_type,
 } = props.user
 </script>

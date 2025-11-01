@@ -1,5 +1,5 @@
 <template>
-    <div class="flex justify-between items-center">
+    <div class="flex justify-between items-end">
         <div class="flex flex-wrap grow items-center gap-4">
             <PageBackButton />
             <div class="flex gap-2 items-center">
@@ -12,16 +12,27 @@
                 </div>
             </div>
         </div>
+
+        <div class="flex items-center gap-4">
+            <Link :href="route('admin.trainers.edit', id)">
+                <SecondaryButton>Edit Information</SecondaryButton>
+            </Link>
+        </div>
     </div>
 </template>
 
 <script setup>
+import { Link } from '@inertiajs/vue3'
+
 import PageBackButton from '@/Components/Layout/PageBackButton.vue'
+import SecondaryButton from '@/Components/Layout/SecondaryButton.vue'
+
+const { route } = window
 
 const props = defineProps({
     trainer: { type: Object, required: true },
     bordered: { type: Boolean, default: false },
 })
 
-const { name, profile_photo_url, age, since } = props.trainer
+const { id, name, profile_photo_url, age, since } = props.trainer
 </script>

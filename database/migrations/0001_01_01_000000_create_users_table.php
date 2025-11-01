@@ -2,6 +2,7 @@
 
 use App\Enums\BloodType;
 use App\Enums\Gender;
+use App\Enums\LeadSource;
 use App\Enums\Role;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -13,9 +14,10 @@ return new class extends Migration
     {
         $bloodTypes = collect(BloodType::cases())->map(fn ($case) => $case->value)->toArray();
         $genders = collect(Gender::cases())->map(fn ($case) => $case->value)->toArray();
+        $leadSources = collect(LeadSource::cases())->map(fn ($case) => $case->value)->toArray();
         $roles = collect(Role::cases())->map(fn ($case) => $case->value)->toArray();
 
-        Schema::create('users', function (Blueprint $table) use ($bloodTypes, $genders, $roles) {
+        Schema::create('users', function (Blueprint $table) use ($bloodTypes, $genders, $leadSources, $roles) {
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
@@ -26,7 +28,7 @@ return new class extends Migration
             $table->rememberToken();
 
             $table->date('registration_date')->nullable();
-            $table->boolean('in_house')->default(true);
+            $table->enum('lead_source', $leadSources)->nullable();
             $table->enum('gender', $genders)->nullable();
             $table->integer('weight')->nullable();
             $table->integer('height')->nullable();

@@ -13,38 +13,45 @@
             </div>
         </div>
 
-        <Dropdown direction="left">
-            <div class="space-y-2 font-normal">
-                <template v-if="isTraining && !isBookingShowPage">
-                    <Link :href="route('admin.bookings.show', active_booking.id)" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">Training schedule</Link>
-                </template>
-                <template v-if="isTraining && !active_booking.is_frozen && !isFreezeTrainingPage">
-                    <Link :href="route('admin.bookings.freeze.index', active_booking.id)" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">Freeze training</Link>
-                </template>
-                <template v-if="!isMemberPersonalInfoPage">
-                    <hr class="border-gray-200">
-                    <Link :href="route('admin.members.personal-info', id)" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">Personal info</Link>
-                </template>
-                <template v-if="!isBodyCompositionCreatePage">
-                    <hr v-if="isMemberPersonalInfoPage" class="border-gray-200">
-                    <Link :href="route('admin.members.body-composition.create', id)" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">Body composition</Link>
-                </template>
-                <template v-if="!isMemberHistoryPage">
-                    <hr class="border-gray-200">
-                    <Link :href="route('admin.members.bookings.history', { user: id })" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">Trainings history</Link>
-                </template>
-                <template v-if="!isMemberShowPage">
-                    <hr class="border-gray-200">
-                    <Link :href="route('admin.members.show', id)" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">{{ first_name }}'s profile</Link>
-                </template>
-            </div>
-        </Dropdown>
+        <div class="flex items-center gap-4">
+            <Link v-if="isMemberPersonalInfoPage" :href="route('admin.members.edit', id)">
+                <SecondaryButton>Edit Information</SecondaryButton>
+            </Link>
+
+            <Dropdown direction="left">
+                <div class="space-y-2 font-normal">
+                    <template v-if="isTraining && !isBookingShowPage">
+                        <Link :href="route('admin.bookings.show', active_booking.id)" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">Training schedule</Link>
+                    </template>
+                    <template v-if="isTraining && !active_booking.is_frozen && !isFreezeTrainingPage">
+                        <Link :href="route('admin.bookings.freeze.index', active_booking.id)" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">Freeze training</Link>
+                    </template>
+                    <template v-if="!isMemberPersonalInfoPage">
+                        <hr class="border-gray-200">
+                        <Link :href="route('admin.members.personal-info', id)" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">Personal info</Link>
+                    </template>
+                    <template v-if="!isBodyCompositionCreatePage">
+                        <hr v-if="isMemberPersonalInfoPage" class="border-gray-200">
+                        <Link :href="route('admin.members.body-composition.create', id)" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">Body composition</Link>
+                    </template>
+                    <template v-if="!isMemberHistoryPage">
+                        <hr class="border-gray-200">
+                        <Link :href="route('admin.members.bookings.history', { user: id })" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">Trainings history</Link>
+                    </template>
+                    <template v-if="!isMemberShowPage">
+                        <hr class="border-gray-200">
+                        <Link :href="route('admin.members.show', id)" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">{{ first_name }}'s profile</Link>
+                    </template>
+                </div>
+            </Dropdown>
+        </div>
     </div>
 </template>
 
 <script setup>
 import Dropdown from '@/Components/Layout/Dropdown.vue'
 import PageBackButton from '@/Components/Layout/PageBackButton.vue'
+import SecondaryButton from '@/Components/Layout/SecondaryButton.vue'
 
 import { Link, usePage } from '@inertiajs/vue3'
 import { computed } from 'vue'

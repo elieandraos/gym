@@ -21,12 +21,12 @@
         <InputError :message="form.errors.emergency_contact" />
     </FormSection>
 
-    <FormSection title="Social" description="Enter your instagram handle.">
+    <FormSection title="Social" description="Enter your instagram handle." :separator="false">
         <TextInput id="instagram_handle" v-model="form.instagram_handle" type="text" placeholder="Instagram handle"/>
         <InputError :message="form.errors.instagram_handle" />
     </FormSection>
 
-    <div class="flex items-center">
+    <div class="flex items-center justify-end">
         <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing" @click="saveUserInfo">
             Update
         </PrimaryButton>

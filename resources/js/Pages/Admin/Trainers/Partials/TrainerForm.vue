@@ -75,7 +75,7 @@
             <InputError :message="form.errors.color" />
         </FormSection>
 
-        <FormSection title="Profile Photo" description="Upload a profile photo for the trainer.">
+        <FormSection title="Profile Photo" description="Upload a profile photo for the trainer." :separator="false">
             <InputPhotoUpload
                 :photo_url="profilePhotoUrl"
                 :photo_path="profilePhotoPath"
@@ -86,7 +86,7 @@
         </FormSection>
 
         <div class="text-right">
-            <Link :href="route('admin.trainers.index')" class="mr-4">
+            <Link :href="cancelRoute" class="mr-4">
                 <TransparentButton>Cancel</TransparentButton>
             </Link>
 
@@ -150,4 +150,5 @@ const saveUser = () => {
 }
 
 const buttonText = computed(() => props.isEdit ? 'Update Trainer' : 'Save Trainer')
+const cancelRoute = computed(() => props.isEdit ? route('admin.trainers.show', userId) : route('admin.trainers.index'))
 </script>

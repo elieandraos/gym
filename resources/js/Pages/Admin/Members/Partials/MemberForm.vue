@@ -1,7 +1,8 @@
 <template>
     <div class="">
-        <FormSection title="In-house" description="Is the member a direct lift station customer?">
-            <SwitchInput v-model="form.in_house" class="mt-4"/>
+        <FormSection title="Lead Source" description="How did the member find out about Lift Station?">
+            <SelectInput v-model="form.lead_source" id="lead_source" :options="$page.props.leadSources" placeholder="Select lead source"/>
+            <InputError :message="form.errors.lead_source" />
         </FormSection>
 
         <FormSection title="Registration" description="Enter the starting date of the member." >
@@ -74,7 +75,7 @@
             <InputError :message="form.errors.instagram_handle" />
         </FormSection>
 
-        <FormSection title="Profile Photo" description="Upload a profile photo for the member.">
+        <FormSection title="Profile Photo" description="Upload a profile photo for the member." :separator="false">
             <InputPhotoUpload
                 :photo_url="profilePhotoUrl"
                 :photo_path="profilePhotoPath"
@@ -85,7 +86,7 @@
         </FormSection>
 
         <div class="text-right">
-            <Link :href="route('admin.members.index')" class="mr-4">
+            <Link :href="cancelRoute" class="mr-4">
                 <TransparentButton>Cancel</TransparentButton>
             </Link>
 
@@ -149,4 +150,5 @@ const saveMember = () => {
 }
 
 const buttonText = computed(() => props.isEdit ? 'Update Member' : 'Save Member')
+const cancelRoute = computed(() => props.isEdit ? route('admin.members.personal-info', userId) : route('admin.members.index'))
 </script>

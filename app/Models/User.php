@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\LeadSource;
 use App\Enums\Role;
 use App\Traits\HasSettings;
 use Carbon\Carbon;
@@ -37,7 +38,7 @@ class User extends Authenticatable
         'email',
         'password',
         'registration_date',
-        'in_house',
+        'lead_source',
         'gender',
         'weight',
         'height',
@@ -67,6 +68,7 @@ class User extends Authenticatable
     protected $casts = [
         'birthdate' => 'date',
         'registration_date' => 'date',
+        'lead_source' => LeadSource::class,
         'password' => 'hashed',
         'email_verified_at' => 'datetime',
         'settings' => 'array',

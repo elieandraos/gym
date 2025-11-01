@@ -39,7 +39,7 @@ const form = useForm({
     instagram_handle: props.member.instagram_handle,
     address: props.member.address,
     emergency_contact: props.member.emergency_contact,
-    in_house: props.member.in_house,
+    lead_source: props.member.lead_source,
     registration_date: props.member.registration_date,
     color: props.member.color || 'bg-blue-50',
     photo: null,

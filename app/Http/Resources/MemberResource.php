@@ -22,7 +22,7 @@ class MemberResource extends JsonResource
             'since' => $this->since,
             'profile_photo_url' => $this->profile_photo_url,
             'profile_photo_path' => $this->profile_photo_path,
-            'in_house' => $this->in_house,
+            'lead_source' => $this->lead_source?->value,
             'gender' => $this->gender,
             'weight' => $this->weight,
             'height' => $this->height,

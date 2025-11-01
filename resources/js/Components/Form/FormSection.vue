@@ -12,7 +12,7 @@
             <slot></slot>
         </div>
     </section>
-    <hr class="my-10 w-full border-t border-zinc-100" />
+    <hr v-if="separator" class="my-10 w-full border-t border-zinc-100" />
 </template>
 
 <script setup>

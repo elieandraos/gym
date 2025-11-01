@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Enums\BloodType;
 use App\Enums\Gender;
+use App\Enums\LeadSource;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -41,6 +42,7 @@ class HandleInertiaRequests extends Middleware
             'url' => $request->fullUrl(),
             'bloodTypes' => BloodType::values(),
             'genders' => Gender::values(),
+            'leadSources' => LeadSource::values(),
         ]);
     }
 }

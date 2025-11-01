@@ -28,7 +28,7 @@
             </div>
         </FormSection>
 
-        <FormSection title="Body Information" description="Enter your weight, height and blood type.">
+        <FormSection title="Body Information" description="Enter your weight, height and blood type." :separator="false">
             <div class="space-y-2">
                 <div>
                     <TextInput id="height" v-model="form.height" type="text" placeholder="Height in cm" />
@@ -45,7 +45,7 @@
             </div>
         </FormSection>
 
-        <div class="flex items-center">
+        <div class="flex items-center justify-end">
             <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing" @click="emits('save-user-info')">
                 Update
             </PrimaryButton>

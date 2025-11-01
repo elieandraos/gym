@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Enums\BloodType;
 use App\Enums\Gender;
+use App\Enums\LeadSource;
 use App\Enums\Role;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -34,7 +35,7 @@ class UserFactory extends Factory
             'current_team_id' => null,
             // custom fields
             'registration_date' => fake()->dateTimeBetween('-2 years', '-3 months'),
-            'in_house' => fake()->randomElement([0, 1]),
+            'lead_source' => fake()->randomElement(LeadSource::cases()),
             'gender' => $gender,
             'weight' => fake()->numberBetween(50, 120),
             'height' => fake()->numberBetween(150, 210),

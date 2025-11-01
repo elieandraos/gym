@@ -4,6 +4,7 @@ namespace App\Http\Requests\Admin;
 
 use App\Enums\BloodType;
 use App\Enums\Gender;
+use App\Enums\LeadSource;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
@@ -23,7 +24,7 @@ class UpdateUserRequest extends FormRequest
             'photo' => ['nullable', 'mimes:jpg,jpeg,png', 'max:6144'],
             'remove_photo' => ['nullable', 'boolean'],
             'registration_date' => ['required', 'date'],
-            'in_house' => ['required', 'boolean'],
+            'lead_source' => ['nullable', new Enum(LeadSource::class)],
             'gender' => ['required', new Enum(Gender::class)],
             'weight' => ['required', 'integer', 'min:50', 'max:150'],
             'height' => ['required', 'integer', 'min:150', 'max:210'],

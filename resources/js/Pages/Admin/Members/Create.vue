@@ -35,7 +35,7 @@ const form = useForm({
     instagram_handle: null,
     address: null,
     emergency_contact: null,
-    in_house: true,
+    lead_source: null,
     registration_date: new Date(),
     photo: null,
     remove_photo: false,

@@ -1,5 +1,5 @@
 <template>
-    <FormSection title="Browser Sessions" description="Manage and log out your active sessions on other browsers and devices.">
+    <FormSection title="Browser Sessions" description="Manage and log out your active sessions on other browsers and devices." :separator="false">
         <!-- Other Browser Sessions -->
         <div v-if="sessions.length > 0" class="space-y-6">
             <div v-for="({ agent, ip_address, is_current_device, last_active }, i) in sessions" :key="i" class="flex items-center">
@@ -31,7 +31,7 @@
         </div>
     </FormSection>
 
-    <div class="flex items-center">
+    <div class="flex items-center justify-end">
         <PrimaryButton @click="confirmLogout">
             Log Out Other Browser Sessions
         </PrimaryButton>

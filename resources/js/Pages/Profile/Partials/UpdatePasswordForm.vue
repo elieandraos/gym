@@ -1,5 +1,5 @@
 <template>
-    <FormSection title="Update Password" description="Ensure your account is using a strong password to stay secure.">
+    <FormSection title="Update Password" description="Ensure your account is using a strong password to stay secure." :separator="false">
         <div class="space-y-2">
             <div>
                 <TextInput
@@ -30,7 +30,7 @@
         </div>
     </FormSection>
 
-    <div class="flex gap-4 items-center">
+    <div class="flex gap-4 items-center justify-end">
         <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing" @click="updatePassword">
             Update password
         </PrimaryButton>
