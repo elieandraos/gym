@@ -87,7 +87,7 @@ test('it updates a workout', function () {
 
     $data = [
         'name' => 'Updated Exercise Name',
-        'category' => Category::Abs->value,
+        'category' => Category::Core->value,
     ];
 
     try {
@@ -149,7 +149,7 @@ test('it filters workouts by search', function () {
 test('it filters workouts by single category', function () {
     Workout::factory()->create(['category' => Category::Chest]);
     Workout::factory()->create(['category' => Category::Legs]);
-    Workout::factory()->create(['category' => Category::Abs]);
+    Workout::factory()->create(['category' => Category::Core]);
 
     $workouts = Workout::query()
         ->whereIn('category', [Category::Chest->value])
@@ -166,7 +166,7 @@ test('it filters workouts by single category', function () {
 test('it filters workouts by multiple categories', function () {
     Workout::factory()->create(['category' => Category::Chest]);
     Workout::factory()->create(['category' => Category::Legs]);
-    Workout::factory()->create(['category' => Category::Abs]);
+    Workout::factory()->create(['category' => Category::Core]);
     Workout::factory()->create(['category' => Category::Back]);
 
     $workouts = Workout::query()
