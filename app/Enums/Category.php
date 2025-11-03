@@ -9,7 +9,6 @@ enum Category: string
     case Triceps = 'Triceps';
     case Shoulders = 'Shoulders';
     case Back = 'Back';
-    case Abs = 'Abs';
     case Legs = 'Legs';
     case Core = 'Core';
 
