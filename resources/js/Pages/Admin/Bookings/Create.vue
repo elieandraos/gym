@@ -54,7 +54,7 @@
                 <InputError :message="form.errors.is_paid" />
             </FormSection>
 
-            <FormSection title="Schedule" description="Plan the training days for the upcoming weeks.">
+            <FormSection title="Schedule" description="Plan the training days for the upcoming weeks." :separator="false">
                 <booking-schedule></booking-schedule>
             </FormSection>
 

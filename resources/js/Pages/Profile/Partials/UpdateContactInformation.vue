@@ -26,7 +26,7 @@
         <InputError :message="form.errors.instagram_handle" />
     </FormSection>
 
-    <div class="flex items-center justify-end">
+    <FormButtons>
         <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing" @click="saveUserInfo">
             Update
         </PrimaryButton>
@@ -34,13 +34,14 @@
         <ActionMessage :on="form.recentlySuccessful">
             Updated.
         </ActionMessage>
-    </div>
+    </FormButtons>
 </template>
 
 <script setup>
 import { inject, defineEmits } from 'vue'
 
 import ActionMessage from '@/Components/ActionMessage.vue'
+import FormButtons from '@/Components/Form/FormButtons.vue'
 import FormSection from '@/Components/Form/FormSection.vue'
 import InputError from '@/Components/Form/InputError.vue'
 import TextInput from '@/Components/Form/TextInput.vue'

@@ -31,23 +31,23 @@
         </div>
     </FormSection>
 
-    <div class="flex items-center justify-end">
+    <FormButtons>
         <PrimaryButton @click="confirmLogout">
             Log Out Other Browser Sessions
         </PrimaryButton>
 
-        <ActionMessage :on="form.recentlySuccessful" class="ms-3">
+        <ActionMessage :on="form.recentlySuccessful">
             Done.
         </ActionMessage>
-    </div>
+    </FormButtons>
 
 <!--     Log Out Other Devices Confirmation Modal-->
-    <DialogModal :show="confirmingLogout" @close="closeModal">
-        <template #title>
+    <Modal :show="confirmingLogout" @close="closeModal">
+        <h3 class="text-lg font-medium text-gray-900">
             Log Out Other Browser Sessions
-        </template>
+        </h3>
 
-        <template #content>
+        <div class="mt-4 text-sm text-gray-600">
             Please enter your password to confirm you would like to log out of your other browser sessions across all of your devices.
 
             <div class="mt-4">
@@ -62,7 +62,7 @@
 
                 <InputError :message="form.errors.password" class="mt-2" />
             </div>
-        </template>
+        </div>
 
         <template #footer>
             <SecondaryButton @click="closeModal">
@@ -77,7 +77,7 @@
                 Log Out Other Browser Sessions
             </PrimaryButton>
         </template>
-    </DialogModal>
+    </Modal>
 </template>
 
 <script setup>
@@ -85,10 +85,11 @@ import { useForm } from '@inertiajs/vue3'
 import { ref } from 'vue'
 
 import ActionMessage from '@/Components/ActionMessage.vue'
-import DialogModal from '@/Components/DialogModal.vue'
+import FormButtons from '@/Components/Form/FormButtons.vue'
 import FormSection from '@/Components/Form/FormSection.vue'
 import InputError from '@/Components/Form/InputError.vue'
 import TextInput from '@/Components/Form/TextInput.vue'
+import Modal from '@/Components/Layout/Modal.vue'
 import PrimaryButton from '@/Components/Layout/PrimaryButton.vue'
 import SecondaryButton from '@/Components/Layout/SecondaryButton.vue'
 

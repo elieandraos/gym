@@ -85,8 +85,8 @@
             <InputError :message="form.errors.photo" />
         </FormSection>
 
-        <div class="text-right">
-            <Link :href="cancelRoute" class="mr-4">
+        <FormButtons>
+            <Link :href="cancelRoute">
                 <TransparentButton>Cancel</TransparentButton>
             </Link>
 
@@ -96,7 +96,7 @@
                 :disabled="form.processing">
                     {{ buttonText }}
             </primary-button>
-        </div>
+        </FormButtons>
     </div>
 </template>
 
@@ -106,6 +106,7 @@ import {Link} from '@inertiajs/vue3'
 import { inject, computed } from 'vue'
 
 import DateInput from '@/Components/Form/DateInput.vue'
+import FormButtons from '@/Components/Form/FormButtons.vue'
 import FormSection from '@/Components/Form/FormSection.vue'
 import InlineColorPicker from '@/Components/Form/InlineColorPicker.vue'
 import InputError from '@/Components/Form/InputError.vue'

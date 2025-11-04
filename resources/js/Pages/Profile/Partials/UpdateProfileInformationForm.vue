@@ -45,7 +45,7 @@
             </div>
         </FormSection>
 
-        <div class="flex items-center justify-end">
+        <FormButtons>
             <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing" @click="emits('save-user-info')">
                 Update
             </PrimaryButton>
@@ -53,7 +53,7 @@
             <ActionMessage :on="form.recentlySuccessful">
                 Updated.
             </ActionMessage>
-        </div>
+        </FormButtons>
     </form>
 </template>
 
@@ -63,6 +63,7 @@ import { defineEmits, inject } from 'vue'
 
 import ActionMessage from '@/Components/ActionMessage.vue'
 import DateInput from '@/Components/Form/DateInput.vue'
+import FormButtons from '@/Components/Form/FormButtons.vue'
 import FormSection from '@/Components/Form/FormSection.vue'
 import InputError from '@/Components/Form/InputError.vue'
 import InputPhotoUpload from '@/Components/Form/InputPhotoUpload.vue'

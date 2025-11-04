@@ -1,6 +1,6 @@
 <template>
     <div class="">
-        <FormSection title="Workout Details" description="Enter the workout name and category." >
+        <FormSection title="Workout Details" description="Enter the workout name and category." :separator="false">
             <div class="space-y-2">
                 <div>
                     <TextInput id="name" v-model="form.name" type="text" placeholder="Workout name"/>
@@ -13,8 +13,8 @@
             </div>
         </FormSection>
 
-        <div class="text-right">
-            <Link :href="route('admin.workouts.index')" class="mr-4">
+        <FormButtons>
+            <Link :href="route('admin.workouts.index')">
                 <TransparentButton>Cancel</TransparentButton>
             </Link>
 
@@ -24,7 +24,7 @@
                 :disabled="form.processing">
                     {{ isEditing ? 'Update Workout' : 'Save Workout' }}
             </primary-button>
-        </div>
+        </FormButtons>
     </div>
 </template>
 
@@ -33,6 +33,7 @@ import TransparentButton from '@/Components/Layout/TransparentButton.vue'
 import {Link} from '@inertiajs/vue3'
 import { inject, computed } from 'vue'
 
+import FormButtons from '@/Components/Form/FormButtons.vue'
 import FormSection from '@/Components/Form/FormSection.vue'
 import InputError from '@/Components/Form/InputError.vue'
 import SelectInput from '@/Components/Form/SelectInput.vue'

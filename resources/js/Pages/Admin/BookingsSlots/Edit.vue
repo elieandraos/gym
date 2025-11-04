@@ -10,17 +10,17 @@
                 <InputError :message="form.errors.date" />
             </FormSection>
 
-            <FormSection title="Time" description="Update the session time.">
+            <FormSection title="Time" description="Update the session time." :separator="false">
                 <TimeInput v-model="form.time"></TimeInput>
                 <InputError :message="form.errors.time" />
             </FormSection>
 
-            <div class="text-right space-x-4">
+            <FormButtons>
                 <Link :href="route('admin.bookings-slots.show', id)">
                     <TransparentButton>Cancel</TransparentButton>
                 </Link>
                 <primary-button @click="updateBookingSlot" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">Update</primary-button>
-            </div>
+            </FormButtons>
         </Container>
     </AppLayout>
 </template>
@@ -29,6 +29,7 @@
 import { Link, useForm } from '@inertiajs/vue3'
 import { format, addHours, parse } from 'date-fns'
 import DateInput from '@/Components/Form/DateInput.vue'
+import FormButtons from '@/Components/Form/FormButtons.vue'
 import FormSection from '@/Components/Form/FormSection.vue'
 import InputError from '@/Components/Form/InputError.vue'
 import TimeInput from '@/Components/Form/TimeInput.vue'
