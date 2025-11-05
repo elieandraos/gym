@@ -92,7 +92,7 @@ class WorkoutSeeder extends Seeder
 
         foreach ($workouts as $category => $names) {
             foreach ($names as $name) {
-                Workout::factory()->create([
+                Workout::query()->create([
                     'name' => $name,
                     'category' => $category,
                 ]);

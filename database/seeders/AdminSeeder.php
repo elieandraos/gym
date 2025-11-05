@@ -10,7 +10,7 @@ class AdminSeeder extends Seeder
 {
     public function run(): void
     {
-        User::factory()->create([
+        User::query()->create([
             'name' => 'Owner',
             'email' => 'owner@lift-station.fitness',
             'role' => Role::Admin,
