@@ -12,7 +12,7 @@ class AdminSeeder extends Seeder
     {
         User::factory()->create([
             'name' => 'Owner',
-            'email' => 'owner@liftstation.fitness',
+            'email' => 'owner@lift-station.fitness',
             'role' => Role::Admin,
             'settings' => User::getDefaultSettings(Role::Admin->value),
         ]);
