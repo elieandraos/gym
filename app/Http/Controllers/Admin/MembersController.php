@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -123,6 +124,27 @@ class MembersController extends Controller
 
         return redirect()->route('admin.members.show', $user)
             ->with('flash.banner', 'Member updated successfully')
+            ->with('flash.bannerStyle', 'success');
+    }
+
+    public function delete(User $user): Response
+    {
+        return Inertia::render('Admin/DeleteMember/Index', [
+            'member' => MemberResource::make($user),
+        ]);
+    }
+
+    public function destroy(User $user): RedirectResponse
+    {
+        // Delete storage files for body compositions and profile photos
+        Storage::disk('public')->deleteDirectory("body-compositions/{$user->id}");
+        Storage::disk('public')->deleteDirectory("profile-photos/{$user->id}");
+
+        // Delete the user (CASCADE will handle bookings, booking_slots, booking_slot_workouts, and body_compositions)
+        $user->delete();
+
+        return redirect()->route('admin.members.index')
+            ->with('flash.banner', 'Member and all associated data deleted successfully')
             ->with('flash.bannerStyle', 'success');
     }
 }
