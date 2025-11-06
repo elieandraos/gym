@@ -34,6 +34,8 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         Route::get('/{user}', [MembersController::class, 'show'])->name('show');
         Route::get('/{user}/edit', [MembersController::class, 'edit'])->name('edit');
         Route::match(['put', 'post'], '/{user}', [MembersController::class, 'update'])->name('update');
+        Route::get('/{user}/delete', [MembersController::class, 'delete'])->name('delete');
+        Route::delete('/{user}', [MembersController::class, 'destroy'])->name('destroy');
         Route::get('/{user}/personal-info', [MemberPersonalInfoController::class, 'index'])->name('personal-info');
         Route::get('/{user}/bookings/history', [MemberBookingHistoryController::class, 'index'])->name('bookings.history');
         Route::get('/{user}/body-composition/create', [BodyCompositionController::class, 'create'])->name('body-composition.create');

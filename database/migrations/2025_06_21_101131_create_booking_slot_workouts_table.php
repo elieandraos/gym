@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('booking_slot_workouts', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(BookingSlot::class);
-            $table->foreignIdFor(Workout::class);
+            $table->foreignIdFor(BookingSlot::class)->constrained()->onDelete('cascade');
+            $table->foreignIdFor(Workout::class)->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

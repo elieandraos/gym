@@ -42,6 +42,8 @@
                         <hr class="border-gray-200">
                         <Link :href="route('admin.members.show', id)" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">{{ first_name }}'s profile</Link>
                     </template>
+                    <hr class="border-gray-200">
+                    <Link :href="route('admin.members.delete', id)" class="block p-2 text-red-500 hover:bg-red-50 hover:rounded-lg">Delete member</Link>
                 </div>
             </Dropdown>
         </div>
