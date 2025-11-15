@@ -1,6 +1,6 @@
 @component('emails.layouts.branded')
     <p style="font-size: 18px; font-weight: 600; color: #111827; margin-bottom: 20px;">
-        Hi {{ $member->name ? explode(' ', $member->name)[0] : 'there' }},
+        Hey {{ $member->name ? explode(' ', $member->name)[0] : 'there' }},
     </p>
 
     <p style="margin-bottom: 16px;">
