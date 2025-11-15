@@ -19,9 +19,25 @@ use App\Http\Controllers\Admin\UserSettingsController;
 use App\Http\Controllers\Admin\WeeklyCalendarController;
 use App\Http\Controllers\Admin\WorkoutController;
 use App\Http\Controllers\DashboardController;
+use App\Mail\Member\WelcomeEmail;
+use App\Mail\Owner\NewMemberEmail;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn () => redirect(route('dashboard')));
+
+// Email Previews (for development only)
+Route::prefix('preview-emails')->group(function () {
+    Route::get('/member', function () {
+        $member = User::query()->members()->inRandomOrder()->first();
+        return (new WelcomeEmail($member))->render();
+    });
+
+    Route::get('/owner', function () {
+        $member = User::query()->members()->inRandomOrder()->first();
+        return (new NewMemberEmail($member))->render();
+    });
+});
 
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function () {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
