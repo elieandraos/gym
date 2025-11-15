@@ -29,27 +29,13 @@ Route::get('/', fn () => redirect(route('dashboard')));
 // Email Previews (for development only)
 Route::prefix('preview-emails')->group(function () {
     Route::get('/member', function () {
-        $member = User::factory()->make([
-            'name' => 'John Doe',
-            'email' => 'john@example.com',
-        ]);
-
+        $member = User::query()->members()->inRandomOrder()->first();
         return (new WelcomeEmail($member))->render();
     });
 
     Route::get('/owner', function () {
-        $member = User::factory()->create([
-            'name' => 'Jane Smith',
-            'email' => 'jane@example.com',
-            'registration_date' => now(),
-        ]);
-
-        $rendered = (new NewMemberEmail($member))->render();
-
-        // Clean up the test member
-        $member->delete();
-
-        return $rendered;
+        $member = User::query()->members()->inRandomOrder()->first();
+        return (new NewMemberEmail($member))->render();
     });
 });
 
