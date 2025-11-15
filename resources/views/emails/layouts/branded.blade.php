@@ -12,13 +12,13 @@
             <td align="center">
                 <table class="content" width="100%" cellpadding="0" cellspacing="0" role="presentation">
                     {{-- Header --}}
-                    <tr>
+                    {{-- <tr>
                         <td class="header">
                             <a href="{{ config('app.url') }}" style="display: inline-block;">
                                 <img src="{{ asset('logo.png') }}" class="logo" alt="{{ config('app.name') }}" height="50" style="height: 50px; width: auto; max-width: 100%; display: block;">
                             </a>
                         </td>
-                    </tr>
+                    </tr> --}}
 
                     {{-- Email Body --}}
                     <tr>
