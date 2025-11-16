@@ -60,7 +60,7 @@ test('welcome email contains member first name', function () {
 
     $mailable = new WelcomeEmail($member);
 
-    $mailable->assertSeeInHtml('Hi Alice');
+    $mailable->assertSeeInHtml('Hey Alice');
 });
 
 test('welcome email has correct subject', function () {
