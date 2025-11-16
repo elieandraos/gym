@@ -10,8 +10,8 @@
 
                     <div class="flex items-center gap-2">
                         <members-filters
-                            :active-training="activeTraining"
-                            @update:active-training="handleFilterChange"
+                            :training-status="trainingStatus"
+                            @update:training-status="handleFilterChange"
                         />
 
                         <Link :href="route('admin.members.create')">
@@ -44,7 +44,7 @@ import MembersSearch from '@/Pages/Admin/Members/Partials/MembersSearch.vue'
 const props = defineProps({
     members: Object,
     search: { type: String, default: '' },
-    activeTraining: { type: Boolean, default: true },
+    trainingStatus: { type: String, default: 'all' },
 })
 
 const { route } = window
@@ -52,14 +52,14 @@ const { data, meta } = props.members || {}
 const headers = ['Name', 'Start date', 'Phone number', 'Age']
 
 const searchQuery = ref(props.search)
-const activeTraining = ref(props.activeTraining)
+const trainingStatus = ref(props.trainingStatus)
 
 watch(() => props.search, (newSearch) => {
     searchQuery.value = newSearch
 })
 
-watch(() => props.activeTraining, (newActiveTraining) => {
-    activeTraining.value = newActiveTraining
+watch(() => props.trainingStatus, (newTrainingStatus) => {
+    trainingStatus.value = newTrainingStatus
 })
 
 let searchTimeout = null
@@ -70,7 +70,7 @@ const performSearch = () => {
     searchTimeout = setTimeout(() => {
         router.get(route('admin.members.index'), {
             search: searchQuery.value,
-            activeTraining: activeTraining.value ? 1 : 0
+            trainingStatus: trainingStatus.value
         }, {
             replace: true,
         })
@@ -83,7 +83,7 @@ const handleSearchChange = (value) => {
 }
 
 const handleFilterChange = (value) => {
-    activeTraining.value = value
+    trainingStatus.value = value
     performSearch()
 }
 </script>

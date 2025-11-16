@@ -160,33 +160,47 @@ test('it returns empty results when no members match search', function () {
         ->assertStatus(200);
 });
 
+test('it shows all members when training status is "all"', function () {
+    $allMembers = User::query()
+        ->members()
+        ->orderBy('registration_date', 'DESC')
+        ->paginate(10);
+
+    actingAsAdmin()
+        ->get(route('admin.members.index', ['trainingStatus' => 'all']))
+        ->assertHasComponent('Admin/Members/Index')
+        ->assertHasPaginatedResource('members', MemberResource::collection($allMembers))
+        ->assertHasProp('trainingStatus', 'all')
+        ->assertStatus(200);
+});
+
 test('it filters members by active training status', function () {
-    $activeTrainingMembers = User::query()
+    $activeMembers = User::query()
         ->members()
         ->whereHas('memberActiveBooking')
         ->orderBy('registration_date', 'DESC')
         ->paginate(10);
 
     actingAsAdmin()
-        ->get(route('admin.members.index', ['activeTraining' => 1]))
+        ->get(route('admin.members.index', ['trainingStatus' => 'active']))
         ->assertHasComponent('Admin/Members/Index')
-        ->assertHasPaginatedResource('members', MemberResource::collection($activeTrainingMembers))
-        ->assertHasProp('activeTraining', true)
+        ->assertHasPaginatedResource('members', MemberResource::collection($activeMembers))
+        ->assertHasProp('trainingStatus', 'active')
         ->assertStatus(200);
 });
 
-test('it shows members without active training when filter is off', function () {
-    $membersWithoutActiveTraining = User::query()
+test('it filters members by dormant status', function () {
+    $dormantMembers = User::query()
         ->members()
         ->whereDoesntHave('memberActiveBooking')
         ->orderBy('registration_date', 'DESC')
         ->paginate(10);
 
     actingAsAdmin()
-        ->get(route('admin.members.index', ['activeTraining' => 0]))
+        ->get(route('admin.members.index', ['trainingStatus' => 'dormant']))
         ->assertHasComponent('Admin/Members/Index')
-        ->assertHasPaginatedResource('members', MemberResource::collection($membersWithoutActiveTraining))
-        ->assertHasProp('activeTraining', false)
+        ->assertHasPaginatedResource('members', MemberResource::collection($dormantMembers))
+        ->assertHasProp('trainingStatus', 'dormant')
         ->assertStatus(200);
 });
 

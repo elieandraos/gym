@@ -22,17 +22,18 @@ class MembersController extends Controller
 {
     public function index(): Response
     {
+        $trainingStatus = request('trainingStatus', 'all');
+
         $members = User::query()
             ->members()
             ->when(request('search'), function (Builder $query, string $search) {
                 $query->where('name', 'like', "%$search%");
             })
-            ->when(request()->has('activeTraining'), function (Builder $query) {
-                if (request('activeTraining')) {
-                    $query->whereHas('memberActiveBooking');
-                } else {
-                    $query->whereDoesntHave('memberActiveBooking');
-                }
+            ->when($trainingStatus === 'active', function (Builder $query) {
+                $query->whereHas('memberActiveBooking');
+            })
+            ->when($trainingStatus === 'dormant', function (Builder $query) {
+                $query->whereDoesntHave('memberActiveBooking');
             })
             ->orderBy('registration_date', 'DESC')
             ->paginate(10)
@@ -41,7 +42,7 @@ class MembersController extends Controller
         return Inertia::render('Admin/Members/Index', [
             'members' => MemberResource::collection($members),
             'search' => request('search'),
-            'activeTraining' => (bool) request('activeTraining', true),
+            'trainingStatus' => $trainingStatus,
         ]);
     }
 
