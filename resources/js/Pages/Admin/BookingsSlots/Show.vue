@@ -2,7 +2,7 @@
     <AppLayout title="Booking">
         <Container>
             <PageHeader :sticky="true">
-                <BookingSlotHeader :booking-slot="bookingSlot" :with-menu="true"></BookingSlotHeader>
+                <BookingSlotHeader :booking-slot="bookingSlot" :booking-id="bookingId" :with-menu="true"></BookingSlotHeader>
             </PageHeader>
 
             <div v-if="Object.keys(groupedWorkouts).length" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-6">
@@ -50,6 +50,7 @@ import AppLayout from '@/Layouts/AppLayout.vue'
 
 const props = defineProps({
     bookingSlot: { type: Object, required: true },
+    bookingId: { type: [Number, String], default: null },
 })
 
 const { workouts } = toRefs(props.bookingSlot)

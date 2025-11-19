@@ -23,7 +23,10 @@
             </div>
         </div>
 
-        <div v-if="withMenu" class="space-x-4">
+        <div v-if="withMenu" class="flex items-center gap-2">
+            <Link v-if="bookingId" :href="route('admin.bookings.show', bookingId)" class="p-2 hover:bg-zinc-100 rounded-lg cursor-pointer" title="View booking schedule">
+                <CalendarDaysIcon class="w-5 h-5 text-zinc-600" />
+            </Link>
             <dropdown direction="left">
                 <div class="space-y-2">
                     <a :href="route('admin.bookings-slots.workout.create', id)" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">Add workouts</a>
@@ -42,7 +45,7 @@
 import Badge from '@/Components/Layout/Badge.vue'
 import Dropdown from '@/Components/Layout/Dropdown.vue'
 import PageBackButton from '@/Components/Layout/PageBackButton.vue'
-import { ClockIcon, UsersIcon } from '@heroicons/vue/24/solid'
+import { CalendarDaysIcon, ClockIcon, UsersIcon } from '@heroicons/vue/24/solid'
 
 import { Link } from '@inertiajs/vue3'
 import { toRefs } from 'vue'
@@ -51,6 +54,7 @@ const { route } = window
 
 const props = defineProps({
     bookingSlot: { type: Object, required: true },
+    bookingId: { type: [Number, String], default: null },
     withMenu: { type: Boolean, default: false },
 })
 

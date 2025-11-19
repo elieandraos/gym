@@ -22,6 +22,7 @@ class BookingSlotsController extends Controller
 
         return Inertia::render('Admin/BookingsSlots/Show', [
             'bookingSlot' => BookingSlotResource::make($bookingSlot),
+            'bookingId' => request('booking_id'),
         ]);
     }
 }

@@ -41,6 +41,9 @@ class ChangeBookingSlotDateTimeController extends Controller
         // Update booking end_date if this is the last slot
         $bookingSlot->booking->updateEndDateToLastSlot();
 
-        return redirect()->route('admin.bookings-slots.show', $bookingSlot->id);
+        return redirect()->route('admin.bookings-slots.show', [
+            'bookingSlot' => $bookingSlot->id,
+            'booking_id' => $bookingSlot->booking_id,
+        ]);
     }
 }

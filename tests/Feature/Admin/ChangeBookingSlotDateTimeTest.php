@@ -29,7 +29,10 @@ test('it updates booking slot date time and status', function () {
 
     actingAsAdmin()
         ->put(route('admin.change-booking-slot-date-time.update', $bookingSlot), $data)
-        ->assertRedirect(route('admin.bookings-slots.show', $bookingSlot->id));
+        ->assertRedirect(route('admin.bookings-slots.show', [
+            'bookingSlot' => $bookingSlot->id,
+            'booking_id' => $bookingSlot->booking_id,
+        ]));
 
     $bookingSlot->refresh();
 
@@ -54,7 +57,10 @@ test('it sets status to complete when new start time is in the past', function (
 
     actingAsAdmin()
         ->put(route('admin.change-booking-slot-date-time.update', $bookingSlot), $data)
-        ->assertRedirect(route('admin.bookings-slots.show', $bookingSlot->id));
+        ->assertRedirect(route('admin.bookings-slots.show', [
+            'bookingSlot' => $bookingSlot->id,
+            'booking_id' => $bookingSlot->booking_id,
+        ]));
 
     $bookingSlot->refresh();
 
