@@ -21,7 +21,10 @@ test('it cancels a booking slot', function () {
 
     actingAsAdmin()
         ->delete(route('admin.bookings-slots.cancel.destroy', $bookingSlot))
-        ->assertRedirect(route('admin.bookings-slots.show', $bookingSlot->id));
+        ->assertRedirect(route('admin.bookings-slots.show', [
+            'bookingSlot' => $bookingSlot->id,
+            'booking_id' => $bookingSlot->booking_id,
+        ]));
 
     $bookingSlot->refresh();
 

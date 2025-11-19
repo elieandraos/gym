@@ -31,6 +31,9 @@ class CancelBookingSlotController extends Controller
             'status' => Status::Cancelled,
         ]);
 
-        return redirect()->route('admin.bookings-slots.show', $bookingSlot->id);
+        return redirect()->route('admin.bookings-slots.show', [
+            'bookingSlot' => $bookingSlot->id,
+            'booking_id' => $bookingSlot->booking_id,
+        ]);
     }
 }
