@@ -15,12 +15,26 @@ class MarkBookingSlotsComplete extends Command
 
     public function handle(): void
     {
-        BookingSlot::query()
+        $bookingSlots = BookingSlot::query()
+            ->with(['booking.member'])
             ->whereDate('end_time', '=', Date::today())
             ->whereTime('end_time', '<', Date::now()->format('H:i:s'))
             ->whereNotIn('status', [Status::Complete, Status::Cancelled, Status::Frozen])
-            ->update([
-                'status' => Status::Complete,
-            ]);
+            ->get();
+
+        if ($bookingSlots->isEmpty()) {
+            $this->info('No booking slots were updated');
+
+            return;
+        }
+
+        foreach ($bookingSlots as $bookingSlot) {
+            $bookingSlot->update(['status' => Status::Complete]);
+
+            $memberName = $bookingSlot->booking->member->name;
+            $dateTime = $bookingSlot->start_time->format('Y-m-d H:i');
+
+            $this->info("{$memberName} booking slot ({$dateTime}) set to complete");
+        }
     }
 }
