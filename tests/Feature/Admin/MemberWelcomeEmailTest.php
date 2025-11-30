@@ -68,7 +68,7 @@ test('welcome email has correct subject', function () {
 
     $mailable = new WelcomeEmail($member);
 
-    expect($mailable->envelope()->subject)->toBe('Welcome to LiftStation! 🎉');
+    expect($mailable->envelope()->subject)->toBe('Welcome to Lift Station! 🎉');
 });
 
 test('welcome email contains signature tagline', function () {
@@ -86,5 +86,5 @@ test('welcome email contains the signature sign-off', function () {
     $mailable = new WelcomeEmail($member);
 
     $mailable->assertSeeInHtml('See you on the floor');
-    $mailable->assertSeeInHtml('The LiftStation Team');
+    $mailable->assertSeeInHtml('The Lift Station Team');
 });

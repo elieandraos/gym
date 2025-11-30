@@ -129,5 +129,5 @@ test('owner notification email contains the signature sign-off', function () {
     $mailable = new NewMemberEmail($member);
 
     $mailable->assertSeeInHtml('See you on the floor');
-    $mailable->assertSeeInHtml('The LiftStation Team');
+    $mailable->assertSeeInHtml('The Lift Station Team');
 });

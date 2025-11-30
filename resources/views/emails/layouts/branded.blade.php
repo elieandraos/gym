@@ -11,14 +11,14 @@
         <tr>
             <td align="center">
                 <table class="content" width="100%" cellpadding="0" cellspacing="0" role="presentation">
-                    {{-- Header --}}
-                    {{-- <tr>
+                    {{-- Logo --}}
+                    <tr>
                         <td class="header">
                             <a href="{{ config('app.url') }}" style="display: inline-block;">
                                 <img src="{{ asset('logo.png') }}" class="logo" alt="{{ config('app.name') }}" height="50" style="height: 50px; width: auto; max-width: 100%; display: block;">
                             </a>
                         </td>
-                    </tr> --}}
+                    </tr>
 
                     {{-- Email Body --}}
                     <tr>
@@ -39,8 +39,8 @@
                         <td>
                             <table class="footer" align="center" width="570" cellpadding="0" cellspacing="0" role="presentation">
                                 <tr>
-                                    <td class="content-cell" align="center">
-                                        <p>&copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved.</p>
+                                    <td align="center">
+                                        <p>&copy; {{ date('Y') }} Lift Station. All rights reserved.</p>
                                     </td>
                                 </tr>
                             </table>

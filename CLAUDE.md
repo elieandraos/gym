@@ -679,7 +679,12 @@ function setupUsersAndBookings(): void
    - Sent to new members upon registration
    - Contains personalized greeting and motivational message
 
-2. **Owner Notification Email** (`App\Mail\Owner\NewMemberEmail`)
+2. **Booking Slot Reminder Email** (`App\Mail\Member\BookingSlotReminderEmail`)
+   - Sent to members the night before their training session (9pm daily)
+   - Contains session date, time, trainer name, and a random motivational message
+   - 15 different motivational messages to keep emails fresh and engaging
+
+3. **Owner Notification Email** (`App\Mail\Owner\NewMemberEmail`)
    - Sent to gym owner(s) when a new member registers
    - Contains member details and link to profile
 
@@ -693,9 +698,17 @@ php artisan queue:work --once  # Process one job
 
 # Run email tests
 php artisan test --filter=MemberWelcomeEmailTest  # Test welcome emails
+php artisan test --filter=BookingSlotReminderTest  # Test reminder emails
 php artisan test --filter=OwnerNewMemberEmailTest  # Test owner notification emails
-php artisan test --filter="MemberWelcomeEmailTest|OwnerNewMemberEmailTest"  # Run all email tests
+php artisan test --filter="MemberWelcomeEmailTest|BookingSlotReminderTest|OwnerNewMemberEmailTest"  # Run all email tests
 ```
+
+**Email Previews:**
+Visit these URLs in development to preview emails:
+- All member emails: `/preview-emails/member`
+- Welcome email: `/preview-emails/member/welcome`
+- Session reminder: `/preview-emails/member/booking-slot-reminder`
+- Owner notification: `/preview-emails/owner`
 
 **Email Branding:**
 - Font: Inter (via Google Fonts)
@@ -714,6 +727,13 @@ php artisan test --filter="MemberWelcomeEmailTest|OwnerNewMemberEmailTest"  # Ru
    - Purpose: Updates past booking slots to "Complete" status
    - Preserves: Cancelled and Frozen slots (not changed)
    - Logic: Where `end_time < now()` and status is Upcoming
+   - Logs: Each booking slot marked complete with member name and date/time
+
+2. **Send Booking Slot Reminders** (`lift-station:send-booking-slot-reminders`)
+   - Runs: Daily at 9:00 PM Beirut time
+   - Purpose: Sends reminder emails to members for their training sessions tomorrow
+   - Only sends for: Upcoming booking slots (not cancelled/frozen/complete)
+   - Logs: Each reminder sent with member name and session date/time
 
 **Local Development:**
 ```bash
@@ -726,8 +746,9 @@ php artisan schedule:run
 # Run scheduler in foreground (keeps running and executes at proper times)
 php artisan schedule:work
 
-# Test the specific command manually
+# Test specific commands manually
 php artisan lift-station:mark-booking-slots-complete
+php artisan lift-station:send-booking-slot-reminders
 ```
 
 **Production Setup:**

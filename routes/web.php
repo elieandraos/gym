@@ -19,8 +19,10 @@ use App\Http\Controllers\Admin\UserSettingsController;
 use App\Http\Controllers\Admin\WeeklyCalendarController;
 use App\Http\Controllers\Admin\WorkoutController;
 use App\Http\Controllers\DashboardController;
+use App\Mail\Member\BookingSlotReminderEmail;
 use App\Mail\Member\WelcomeEmail;
 use App\Mail\Owner\NewMemberEmail;
+use App\Models\BookingSlot;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
@@ -28,13 +30,32 @@ Route::get('/', fn () => redirect(route('dashboard')));
 
 // Email Previews (for development only)
 Route::prefix('preview-emails')->group(function () {
-    Route::get('/member', function () {
+    Route::get('/', function () {
+        $type = request('type', 'member');
+
+        return view('preview-emails.index', [
+            'type' => $type,
+        ]);
+    });
+
+    Route::get('/member/welcome', function () {
         $member = User::query()->members()->inRandomOrder()->first();
+
         return (new WelcomeEmail($member))->render();
     });
 
-    Route::get('/owner', function () {
+    Route::get('/member/booking-slot-reminder', function () {
+        $bookingSlot = BookingSlot::query()
+            ->with(['booking.member', 'booking.trainer'])
+            ->inRandomOrder()
+            ->first();
+
+        return (new BookingSlotReminderEmail($bookingSlot))->render();
+    });
+
+    Route::get('/owner/new-member', function () {
         $member = User::query()->members()->inRandomOrder()->first();
+
         return (new NewMemberEmail($member))->render();
     });
 });

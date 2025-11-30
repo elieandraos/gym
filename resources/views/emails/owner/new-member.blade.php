@@ -5,7 +5,7 @@
     </p>
 
     <p style="margin-bottom: 16px;">
-        <strong>{{ $member->name }}</strong> just joined LiftStation!
+        <strong>{{ $member->name }}</strong> just joined Lift Station!
     </p>
 
     <p style="margin-bottom: 24px; color: #6b7280;">
@@ -40,6 +40,6 @@
         See you on the floor,
     </p>
     <p style="font-weight: 600; color: #111827;">
-        The LiftStation Team
+        The Lift Station Team
     </p>
 @endcomponent

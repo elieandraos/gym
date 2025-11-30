@@ -4,7 +4,7 @@
     </p>
 
     <p style="margin-bottom: 16px;">
-        Welcome to LiftStation! We're thrilled to have you join our fitness family.
+        Welcome to Lift Station! We're thrilled to have you join our fitness family.
     </p>
 
     <p style="margin-bottom: 16px;">
@@ -13,9 +13,9 @@
 
     <table width="100%" cellpadding="0" cellspacing="0" style="margin: 24px 0;">
         <tr>
-            <td style="border-left: 4px solid #1f2937; background-color: #f3f4f6; padding: 20px; border-radius: 4px;">
+            <td style="border-left: 4px solid #1f2937; background-color: #f3f4f6; padding: 12px; border-radius: 4px;">
                 <p style="margin: 0; font-size: 16px; font-style: italic; color: #374151;">
-                    ❝Over here we don't just count reps, we <strong style="color: #111827;">make every rep count</strong>❞
+                    Over here we don't just count reps, we <strong style="color: #111827;">make every rep count</strong>
                 </p>
             </td>
         </tr>
@@ -29,6 +29,6 @@
         See you on the floor,
     </p>
     <p style="font-weight: 600; color: #111827;">
-        The LiftStation Team
+        The Lift Station Team
     </p>
 @endcomponent
