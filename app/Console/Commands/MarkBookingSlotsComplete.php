@@ -17,7 +17,7 @@ class MarkBookingSlotsComplete extends Command
     {
         $bookingSlots = BookingSlot::query()
             ->with(['booking.member'])
-            ->whereDate('end_time', '=', Date::today())
+            ->whereDate('end_time', '<=', Date::today())
             ->whereTime('end_time', '<', Date::now()->format('H:i:s'))
             ->whereNotIn('status', [Status::Complete, Status::Cancelled, Status::Frozen])
             ->get();
