@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Admin;
 
 use App\Rules\DoesNotOverlapWithOtherMemberBookings;
+use App\Rules\UniqueDaysInSchedule;
 use App\Services\BookingManager;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
@@ -16,7 +17,7 @@ class BookingRequest extends FormRequest
             'member_id' => ['required', 'exists:users,id'],
             'trainer_id' => ['required', 'exists:users,id'],
             'start_date' => ['required', 'date', new DoesNotOverlapWithOtherMemberBookings],
-            'days' => ['required'],
+            'days' => ['required', 'array', new UniqueDaysInSchedule],
             'days.*.day' => ['required', 'string'],
             'days.*.time' => ['required', 'string'],
         ];

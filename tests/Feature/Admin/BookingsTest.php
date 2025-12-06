@@ -368,3 +368,74 @@ test('it prevents creating a booking that overlaps with existing booking', funct
         ->assertSessionHasErrors(['start_date'])
         ->assertStatus(302);
 });
+
+test('it prevents creating a booking with duplicate days in schedule', function () {
+    $member = User::query()->members()->inRandomOrder()->first();
+    $trainer = User::query()->trainers()->inRandomOrder()->first();
+
+    $data = [
+        'start_date' => Carbon::today()->addMonths(2),
+        'member_id' => $member->id,
+        'trainer_id' => $trainer->id,
+        'nb_sessions' => 12,
+        'is_paid' => true,
+        'days' => [
+            ['day' => 'Monday', 'time' => '07:00 am'],
+            ['day' => 'Monday', 'time' => '05:00 pm'],  // Duplicate Monday
+            ['day' => 'Wednesday', 'time' => '07:00 am'],
+        ],
+    ];
+
+    actingAsAdmin()
+        ->post(route('admin.bookings.store'), $data)
+        ->assertSessionHasErrors(['days'])
+        ->assertStatus(302);
+});
+
+test('it allows creating a booking with unique days in schedule', function () {
+    $member = User::query()->members()->inRandomOrder()->first();
+    $trainer = User::query()->trainers()->inRandomOrder()->first();
+
+    $data = [
+        'start_date' => Carbon::today()->addMonths(2),
+        'member_id' => $member->id,
+        'trainer_id' => $trainer->id,
+        'nb_sessions' => 12,
+        'is_paid' => true,
+        'days' => [
+            ['day' => 'Monday', 'time' => '07:00 am'],
+            ['day' => 'Tuesday', 'time' => '05:00 pm'],
+            ['day' => 'Wednesday', 'time' => '07:00 am'],
+        ],
+    ];
+
+    actingAsAdmin()
+        ->post(route('admin.bookings.store'), $data)
+        ->assertSessionHasNoErrors()
+        ->assertRedirect(route('admin.members.show', ['user' => $member->id]));
+});
+
+test('it shows correct error message for duplicate day', function () {
+    $member = User::query()->members()->inRandomOrder()->first();
+    $trainer = User::query()->trainers()->inRandomOrder()->first();
+
+    $data = [
+        'start_date' => Carbon::today()->addMonths(2),
+        'member_id' => $member->id,
+        'trainer_id' => $trainer->id,
+        'nb_sessions' => 12,
+        'is_paid' => true,
+        'days' => [
+            ['day' => 'Friday', 'time' => '08:00 am'],
+            ['day' => 'Friday', 'time' => '06:00 pm'],  // Duplicate Friday
+        ],
+    ];
+
+    actingAsAdmin()
+        ->post(route('admin.bookings.store'), $data)
+        ->assertSessionHasErrors(['days'])
+        ->assertStatus(302);
+
+    $errors = session('errors')->get('days');
+    expect($errors[0])->toContain('Friday');
+});
