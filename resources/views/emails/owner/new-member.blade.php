@@ -26,7 +26,7 @@
                             <a href="{{ route('admin.members.show', $member) }}"
                                target="_blank"
                                rel="noopener"
-                               style="display: inline-block; background-color: #1f2937; color: #ffffff; padding: 12px 28px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 16px;">
+                               style="display: inline-block; background-color: #1f2937; color: #ffffff; padding: 8px 20px; border-radius: 6px; text-decoration: none; font-weight: 500; font-size: 14px;">
                                 View Member Profile
                             </a>
                         </td>

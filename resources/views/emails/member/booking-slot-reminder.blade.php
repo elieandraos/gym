@@ -8,50 +8,31 @@
     </p>
 
     <table width="100%" cellpadding="0" cellspacing="0" style="margin: 24px 0;">
-        {{-- Date --}}
         <tr>
-            <td style="padding: 0 0 8px 0;">
-                <table cellpadding="0" cellspacing="0">
+            {{-- Left: Calendar icon with date/time stacked --}}
+            <td style="width: 50%; vertical-align: middle; padding: 0; text-align: center;">
+                <table cellpadding="0" cellspacing="0" style="display: inline-block;">
                     <tr>
-                        <td style="padding-right: 8px; vertical-align: middle;">
+                        <td style="padding-right: 12px; vertical-align: middle;">
                             <img src="{{ asset('images/email-icons/calendar-outline-24.svg') }}"
                                  width="28" height="28"
                                  alt="Calendar"
                                  style="display: block; width: 28px; height: 28px;">
                         </td>
                         <td style="vertical-align: middle;">
-                            <p style="margin: 0; font-size: 16px; font-weight: 500; color: #10b981;">
+                            <p style="margin: 0; font-size: 16px; font-weight: 500; color: #374151;">
                                 {{ $bookingSlot->start_time->format('l, F j') }}
                             </p>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-        {{-- Time --}}
-        <tr>
-            <td style="padding: 0 0 8px 0;">
-                <table cellpadding="0" cellspacing="0">
-                    <tr>
-                        <td style="padding-right: 8px; vertical-align: middle;">
-                            <img src="{{ asset('images/email-icons/clock-outline-24.svg') }}"
-                                 width="28" height="28"
-                                 alt="Clock"
-                                 style="display: block; width: 28px; height: 28px;">
-                        </td>
-                        <td style="vertical-align: middle;">
-                            <p style="margin: 0; font-size: 16px; font-weight: 500; color: #10b981;">
+                            <p style="margin: 0; font-size: 14px; color: #6b7280;">
                                 {{ $bookingSlot->start_time->format('g:i A') }}
                             </p>
                         </td>
                     </tr>
                 </table>
             </td>
-        </tr>
-        {{-- Trainer --}}
-        <tr>
-            <td style="padding: 0;">
-                <table cellpadding="0" cellspacing="0">
+            {{-- Right: Trainer avatar and name --}}
+            <td style="width: 60%; vertical-align: middle; padding: 0; text-align: center;">
+                <table cellpadding="0" cellspacing="0" style="display: inline-block;">
                     <tr>
                         <td style="padding-right: 8px; vertical-align: middle;">
                             @if($bookingSlot->booking->trainer->profile_photo_url)
@@ -66,7 +47,7 @@
                             @endif
                         </td>
                         <td style="vertical-align: middle;">
-                            <p style="margin: 0; font-size: 16px; font-weight: 500; color: #10b981;">
+                            <p style="margin: 0; font-size: 16px; font-weight: 500; color: #374151;">
                                 {{ $bookingSlot->booking->trainer->name }}
                             </p>
                         </td>
