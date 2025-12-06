@@ -6,9 +6,8 @@
                 <li
                     v-for="item in items"
                     :key="item.id"
-                    class="p-2 text-zinc-600 bg-stone-50 rounded-lg border border-stone-100 hover:bg-stone-100 cursor-move"
-                    draggable="true"
-                    @dragstart="dragStart($event, item)"
+                    class="p-2 text-zinc-600 bg-stone-50 rounded-lg border border-stone-100 hover:bg-stone-100 cursor-pointer transition-colors"
+                    @click="addWorkout(item)"
                 >
                     {{ item.name }}
                 </li>
@@ -20,7 +19,7 @@
 <script setup>
 import { inject, computed } from 'vue'
 
-const { search, workouts, dragStart } = inject('workoutState')
+const { search, workouts, addWorkout } = inject('workoutState')
 
 const groupedWorkouts = computed(() => {
     if (search.value.length < 3) {

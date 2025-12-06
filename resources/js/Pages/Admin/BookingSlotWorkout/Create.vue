@@ -47,14 +47,7 @@ const createWorkoutSets = (workout) => ({
     duration_in_seconds: ['', '', ''],
 })
 
-const dragStart = (event, workout) => {
-    event.dataTransfer.setData('workout', JSON.stringify(workout))
-}
-
-const drop = (event) => {
-    const data = event.dataTransfer.getData('workout')
-    if (!data) return
-    const workout = JSON.parse(data)
+const addWorkout = (workout) => {
     if (!selectedWorkouts.value.some((existingWorkout) => existingWorkout.id === workout.id)) {
         selectedWorkouts.value.unshift(createWorkoutSets(workout))
         search.value = ''
@@ -94,8 +87,7 @@ provide('workoutState', {
     search,
     workouts: props.workouts,
     selectedWorkouts,
-    dragStart,
-    drop,
+    addWorkout,
     remove,
     saveWorkouts,
     form,

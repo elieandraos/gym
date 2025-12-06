@@ -1,10 +1,6 @@
 <template>
     <div class="space-y-4">
-        <div
-            class="min-h-40 p-4 bg-stone-50 border border-stone-100 rounded-lg"
-            @dragover.prevent
-            @drop="drop"
-        >
+        <div class="min-h-40 p-4 bg-stone-50 border border-stone-100 rounded-lg">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <div
                     v-for="(selectedWorkout, workoutIndex) in selectedWorkouts"
@@ -115,7 +111,7 @@ import { TrashIcon, PlusIcon, MinusIcon } from '@heroicons/vue/24/solid'
 import { Link } from '@inertiajs/vue3'
 import { inject } from 'vue'
 
-const { selectedWorkouts, drop, remove, saveWorkouts, form, bookingSlotId } = inject('workoutState')
+const { selectedWorkouts, remove, saveWorkouts, form, bookingSlotId } = inject('workoutState')
 const { route } = window
 
 const addSet = (workoutIndex) => {
