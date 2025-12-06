@@ -133,3 +133,65 @@ test('it updates booking end_date when changing the last slot', function () {
     // Booking end_date should now be updated to the new last slot date
     expect($booking->fresh()->end_date->toDateString())->toBe(now()->addDays(20)->toDateString());
 });
+
+test('it provides suggested date and time based on booking schedule', function () {
+    $booking = \App\Models\Booking::factory()->create([
+        'end_date' => \Carbon\Carbon::parse('2025-07-11'), // Friday
+        'schedule_days' => [
+            ['day' => 'Monday', 'time' => '10:00 AM'],
+            ['day' => 'Wednesday', 'time' => '02:00 PM'],
+            ['day' => 'Friday', 'time' => '03:00 PM'],
+        ],
+    ]);
+
+    $bookingSlot = BookingSlot::factory()->create([
+        'booking_id' => $booking->id,
+    ]);
+
+    actingAsAdmin()
+        ->get(route('admin.change-booking-slot-date-time.edit', $bookingSlot))
+        ->assertHasComponent('Admin/ChangeBookingSlotDateTime/Edit')
+        ->assertHasProp('suggestedDate', '2025-07-14') // Next Monday
+        ->assertHasProp('suggestedTime', '10:00 AM') // Monday's time
+        ->assertStatus(200);
+});
+
+test('it provides correct time for different days in schedule', function () {
+    $booking = \App\Models\Booking::factory()->create([
+        'end_date' => \Carbon\Carbon::parse('2025-07-14'), // Monday
+        'schedule_days' => [
+            ['day' => 'Monday', 'time' => '09:00 AM'],
+            ['day' => 'Wednesday', 'time' => '02:30 PM'],
+            ['day' => 'Friday', 'time' => '04:00 PM'],
+        ],
+    ]);
+
+    $bookingSlot = BookingSlot::factory()->create([
+        'booking_id' => $booking->id,
+    ]);
+
+    actingAsAdmin()
+        ->get(route('admin.change-booking-slot-date-time.edit', $bookingSlot))
+        ->assertHasComponent('Admin/ChangeBookingSlotDateTime/Edit')
+        ->assertHasProp('suggestedDate', '2025-07-16') // Next Wednesday
+        ->assertHasProp('suggestedTime', '02:30 PM') // Wednesday's time
+        ->assertStatus(200);
+});
+
+test('it handles booking with no schedule days gracefully', function () {
+    $booking = \App\Models\Booking::factory()->create([
+        'end_date' => \Carbon\Carbon::parse('2025-07-11'),
+        'schedule_days' => null,
+    ]);
+
+    $bookingSlot = BookingSlot::factory()->create([
+        'booking_id' => $booking->id,
+    ]);
+
+    actingAsAdmin()
+        ->get(route('admin.change-booking-slot-date-time.edit', $bookingSlot))
+        ->assertHasComponent('Admin/ChangeBookingSlotDateTime/Edit')
+        ->assertHasProp('suggestedDate', null)
+        ->assertHasProp('suggestedTime', null)
+        ->assertStatus(200);
+});

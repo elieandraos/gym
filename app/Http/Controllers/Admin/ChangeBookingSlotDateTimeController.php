@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ChangeBookingSlotDateTimeRequest;
 use App\Http\Resources\BookingSlotResource;
 use App\Models\BookingSlot;
+use App\Services\BookingManager;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
@@ -22,8 +23,25 @@ class ChangeBookingSlotDateTimeController extends Controller
             'booking.trainer',
         ]);
 
+        // Calculate next available date and time based on booking schedule
+        $suggestedDate = null;
+        $suggestedTime = null;
+        if ($bookingSlot->booking->schedule_days && $bookingSlot->booking->end_date) {
+            $suggestion = BookingManager::getNextAvailableDateTime(
+                Carbon::parse($bookingSlot->booking->end_date),
+                $bookingSlot->booking->schedule_days
+            );
+
+            if ($suggestion) {
+                $suggestedDate = $suggestion['date'];
+                $suggestedTime = $suggestion['time'];
+            }
+        }
+
         return Inertia::render('Admin/ChangeBookingSlotDateTime/Edit', [
             'bookingSlot' => BookingSlotResource::make($bookingSlot),
+            'suggestedDate' => $suggestedDate,
+            'suggestedTime' => $suggestedTime,
         ]);
     }
 

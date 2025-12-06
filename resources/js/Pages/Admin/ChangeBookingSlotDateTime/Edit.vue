@@ -41,14 +41,16 @@ import AppLayout from '@/Layouts/AppLayout.vue'
 
 const props = defineProps({
     bookingSlot: { type: Object, required: true },
+    suggestedDate: { type: String, default: null },
+    suggestedTime: { type: String, default: null },
 })
 
 const { route } = window
 const { id, date, start_time } = props.bookingSlot
 
 const form = useForm({
-    date,
-    time: start_time,
+    date: props.suggestedDate || date,
+    time: props.suggestedTime || start_time,
     start_time: null,
     end_time: null,
 })

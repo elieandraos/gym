@@ -106,4 +106,54 @@ class BookingManager
 
         return array_reverse($sessionDates); // Return chronological order
     }
+
+    /**
+     * Get the next available date after a given date following the schedule pattern
+     * Returns only the date (not time) of the earliest next occurrence
+     */
+    public static function getNextAvailableDate(Carbon $afterDate, array $scheduleDays): ?string
+    {
+        $result = self::getNextAvailableDateTime($afterDate, $scheduleDays);
+
+        return $result ? $result['date'] : null;
+    }
+
+    /**
+     * Get the next available date and time after a given date following the schedule pattern
+     * Returns array with 'date' and 'time' of the earliest next occurrence
+     */
+    public static function getNextAvailableDateTime(Carbon $afterDate, array $scheduleDays): ?array
+    {
+        if (empty($scheduleDays)) {
+            return null;
+        }
+
+        // Create a map of day number to time
+        $scheduleDayMap = [];
+        foreach ($scheduleDays as $dayTime) {
+            $dayNumber = Carbon::parse($dayTime['day'])->dayOfWeekIso;
+            // Convert time to uppercase AM/PM format for consistency
+            $time = str_replace(['am', 'pm'], ['AM', 'PM'], $dayTime['time']);
+            $scheduleDayMap[$dayNumber] = $time;
+        }
+
+        // Start searching from the day after the given date
+        $searchDate = $afterDate->copy()->addDay();
+
+        // Search through the next 7 days for the first match
+        for ($i = 0; $i < 7; $i++) {
+            $currentDayOfWeek = $searchDate->dayOfWeekIso;
+
+            if (isset($scheduleDayMap[$currentDayOfWeek])) {
+                return [
+                    'date' => $searchDate->format('Y-m-d'),
+                    'time' => $scheduleDayMap[$currentDayOfWeek],
+                ];
+            }
+
+            $searchDate->addDay();
+        }
+
+        return null;
+    }
 }

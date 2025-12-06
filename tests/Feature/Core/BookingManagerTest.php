@@ -101,3 +101,129 @@ it('throws an exception for invalid schedule structure', function () {
 
     BookingManager::generateDatesForward($startDate, $nb_dates, $scheduleDays);
 })->throws(InvalidArgumentException::class);
+
+describe('getNextAvailableDate', function () {
+    it('returns next Monday for MWF pattern when after date is Friday', function () {
+        $scheduleDays = [
+            ['day' => 'Monday', 'time' => '10:00 AM'],
+            ['day' => 'Wednesday', 'time' => '02:00 PM'],
+            ['day' => 'Friday', 'time' => '10:00 AM'],
+        ];
+
+        $afterDate = Carbon::parse('2025-07-11'); // Friday
+        $nextDate = BookingManager::getNextAvailableDate($afterDate, $scheduleDays);
+
+        expect($nextDate)->toBe('2025-07-14'); // Next Monday
+    });
+
+    it('returns next Friday for MWF pattern when after date is Thursday', function () {
+        $scheduleDays = [
+            ['day' => 'Monday', 'time' => '10:00 AM'],
+            ['day' => 'Wednesday', 'time' => '02:00 PM'],
+            ['day' => 'Friday', 'time' => '10:00 AM'],
+        ];
+
+        $afterDate = Carbon::parse('2025-07-10'); // Thursday
+        $nextDate = BookingManager::getNextAvailableDate($afterDate, $scheduleDays);
+
+        expect($nextDate)->toBe('2025-07-11'); // Next Friday (earliest)
+    });
+
+    it('returns next occurrence for single day pattern', function () {
+        $scheduleDays = [
+            ['day' => 'Monday', 'time' => '10:00 AM'],
+        ];
+
+        $afterDate = Carbon::parse('2025-07-10'); // Thursday
+        $nextDate = BookingManager::getNextAvailableDate($afterDate, $scheduleDays);
+
+        expect($nextDate)->toBe('2025-07-14'); // Next Monday
+    });
+
+    it('returns null when schedule days is empty', function () {
+        $nextDate = BookingManager::getNextAvailableDate(Carbon::now(), []);
+
+        expect($nextDate)->toBeNull();
+    });
+
+    it('works with distant past dates', function () {
+        $scheduleDays = [
+            ['day' => 'Tuesday', 'time' => '10:00 AM'],
+            ['day' => 'Thursday', 'time' => '02:00 PM'],
+        ];
+
+        $afterDate = Carbon::parse('2020-01-06'); // Monday
+        $nextDate = BookingManager::getNextAvailableDate($afterDate, $scheduleDays);
+
+        expect($nextDate)->toBe('2020-01-07'); // Tuesday
+    });
+
+    it('returns next Monday when after date is Monday with MWF pattern', function () {
+        $scheduleDays = [
+            ['day' => 'Monday', 'time' => '10:00 AM'],
+            ['day' => 'Wednesday', 'time' => '02:00 PM'],
+            ['day' => 'Friday', 'time' => '10:00 AM'],
+        ];
+
+        $afterDate = Carbon::parse('2025-07-14'); // Monday
+        $nextDate = BookingManager::getNextAvailableDate($afterDate, $scheduleDays);
+
+        expect($nextDate)->toBe('2025-07-16'); // Next Wednesday (earliest after Monday)
+    });
+});
+
+describe('getNextAvailableDateTime', function () {
+    it('returns next date and time for MWF pattern when after date is Friday', function () {
+        $scheduleDays = [
+            ['day' => 'Monday', 'time' => '10:00 AM'],
+            ['day' => 'Wednesday', 'time' => '02:00 PM'],
+            ['day' => 'Friday', 'time' => '03:00 PM'],
+        ];
+
+        $afterDate = Carbon::parse('2025-07-11'); // Friday
+        $result = BookingManager::getNextAvailableDateTime($afterDate, $scheduleDays);
+
+        expect($result)->toBe([
+            'date' => '2025-07-14',
+            'time' => '10:00 AM',
+        ]);
+    });
+
+    it('returns next date and time for MWF pattern when after date is Thursday', function () {
+        $scheduleDays = [
+            ['day' => 'Monday', 'time' => '10:00 AM'],
+            ['day' => 'Wednesday', 'time' => '02:00 PM'],
+            ['day' => 'Friday', 'time' => '03:00 PM'],
+        ];
+
+        $afterDate = Carbon::parse('2025-07-10'); // Thursday
+        $result = BookingManager::getNextAvailableDateTime($afterDate, $scheduleDays);
+
+        expect($result)->toBe([
+            'date' => '2025-07-11',
+            'time' => '03:00 PM',
+        ]);
+    });
+
+    it('returns correct time for each day in pattern', function () {
+        $scheduleDays = [
+            ['day' => 'Monday', 'time' => '09:00 AM'],
+            ['day' => 'Wednesday', 'time' => '02:30 PM'],
+            ['day' => 'Friday', 'time' => '04:00 PM'],
+        ];
+
+        $afterDate = Carbon::parse('2025-07-14'); // Monday
+        $result = BookingManager::getNextAvailableDateTime($afterDate, $scheduleDays);
+
+        expect($result)->toBe([
+            'date' => '2025-07-16',
+            'time' => '02:30 PM',
+        ]);
+    });
+
+    it('returns null when schedule days is empty', function () {
+        $result = BookingManager::getNextAvailableDateTime(Carbon::now(), []);
+
+        expect($result)->toBeNull();
+    });
+});
