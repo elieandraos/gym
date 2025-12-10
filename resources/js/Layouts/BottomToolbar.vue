@@ -75,7 +75,7 @@ const navItems = [
     },
     {
         name: 'Members',
-        href: route('admin.members.index', { trainingStatus: 'active' }),
+        href: route('admin.members.index', { trainingStatus: 'all' }),
         routeName: 'admin.members.*',
         icon: UsersIcon,
         iconSolid: UsersIconSolid,

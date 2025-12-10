@@ -73,7 +73,7 @@ const menu = [
     },
     {
         name: 'Members',
-        url: route('admin.members.index', { trainingStatus: 'active' }),
+        url: route('admin.members.index', { trainingStatus: 'all' }),
         icon: UserIcon,
         activeRoute: 'admin.members.*',
         when: () => usePage().props.auth.user,
