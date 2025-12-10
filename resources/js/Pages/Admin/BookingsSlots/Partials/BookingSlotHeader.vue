@@ -2,23 +2,23 @@
     <div class="flex justify-between items-center font-normal gap-4">
         <PageBackButton />
 
-        <div class="grow">
-            <div class="flex gap-x-4 items-center">
-                <h1 class="text-[20px] font-[600] leading-[32px]">Session Details</h1>
-                <Badge class="text-xs" :type="badge_type">{{ status }}</Badge>
+        <div class="grow flex items-center gap-x-3">
+            <div class="flex -space-x-3 flex-shrink-0">
+                <img :src="booking.member.profile_photo_url" :alt="booking.member.name" class="size-10 rounded-full border-2 border-white relative z-10" />
+                <img :src="booking.trainer.profile_photo_url" :alt="booking.trainer.name" class="size-10 rounded-full border-2 border-white" />
             </div>
-            <div class="flex flex-col md:flex-row md:gap-x-12 gap-y-1 mt-1 text-[#71717b]">
-                <div class="flex gap-x-2">
-                    <UsersIcon class="w-4 text-zinc-500 flex-shrink-0"></UsersIcon>
-                    <span class="text-[15px]">
-                        <Link class="text-sky-500 hover:text-sky-700 font-[400]" :href="route('admin.members.show', { user: booking.member.id })"> {{ booking.member.name}}</Link>
-                        ·
-                        <Link class="text-sky-500 hover:text-sky-700 font-[400]" :href="route('admin.trainers.show', { user: booking.trainer.id })"> {{ booking.trainer.name}}</Link>
-                    </span>
+            <div>
+                <div class="text-[15px]">
+                    <Link class="text-sky-500 hover:text-sky-700 font-[400]" :href="route('admin.members.show', { user: booking.member.id })">{{ booking.member.name}}</Link>
+                    ·
+                    <Link class="text-sky-500 hover:text-sky-700 font-[400]" :href="route('admin.trainers.show', { user: booking.trainer.id })">{{ booking.trainer.name}}</Link>
                 </div>
-                <div class="flex gap-x-2">
-                    <ClockIcon class="w-4 text-[#71717b] flex-shrink-0"></ClockIcon>
-                    <span class="text-[15px]">{{ formatted_date }} · {{ start_time }}</span>
+                <div class="flex gap-x-4 items-center mt-0.5 text-[#71717b]">
+                    <div class="flex gap-x-2 items-center">
+                        <ClockIcon class="w-4 text-[#71717b] flex-shrink-0"></ClockIcon>
+                        <span class="text-[15px]">{{ formatted_date }} · {{ start_time }}</span>
+                    </div>
+                    <Badge class="text-xs" :type="badge_type">{{ status }}</Badge>
                 </div>
             </div>
         </div>
@@ -45,7 +45,7 @@
 import Badge from '@/Components/Layout/Badge.vue'
 import Dropdown from '@/Components/Layout/Dropdown.vue'
 import PageBackButton from '@/Components/Layout/PageBackButton.vue'
-import { CalendarDaysIcon, ClockIcon, UsersIcon } from '@heroicons/vue/24/solid'
+import { CalendarDaysIcon, ClockIcon } from '@heroicons/vue/24/solid'
 
 import { Link } from '@inertiajs/vue3'
 import { toRefs } from 'vue'
