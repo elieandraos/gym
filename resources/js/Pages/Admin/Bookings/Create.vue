@@ -37,7 +37,7 @@
             </FormSection>
 
             <FormSection title="Start date" description="Enter the training starting date.">
-                <DateInput v-model="form.start_date"></DateInput>
+                <DateInput v-model="form.start_date" :year-range="[new Date().getFullYear() - 2, new Date().getFullYear() + 1]"></DateInput>
                 <InputError :message="form.errors.start_date" />
             </FormSection>
 
