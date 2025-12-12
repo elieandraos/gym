@@ -6,7 +6,7 @@
             </PageHeader>
 
             <FormSection title="Date" description="Update the session date.">
-                <DateInput v-model="form.date"></DateInput>
+                <DateInput v-model="form.date" :year-range="[2020, new Date().getFullYear() + 1]"></DateInput>
                 <InputError :message="form.errors.date" />
             </FormSection>
 
