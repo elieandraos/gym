@@ -10,24 +10,39 @@
                 <div class="grid flex-auto grid-cols-1 grid-rows-1">
                     <!-- horizontal lines -->
                     <div
-                        class="col-start-1 col-end-2 row-start-1 grid divide-y divide-gray-100"
-                        :style="{ gridTemplateRows: `repeat(${gridRowCount}, minmax(3.5rem,1fr))` }"
+                        class="col-start-1 col-end-2 row-start-1 grid"
+                        :style="{ gridTemplateRows: `repeat(${gridRowCount}, minmax(1.75rem,1fr))` }"
                     >
                         <div ref="containerOffset" class="row-end-1 h-4"></div>
                         <template v-for="(hour, idx) in hours" :key="idx">
-                            <div class="relative">
+                            <!-- Hour marker with top border -->
+                            <div class="relative border-t border-gray-100">
                                 <div
                                     class="sticky left-0 z-20 -ml-14 -mt-2.5 w-14 pr-2 text-right text-xs text-gray-400"
                                 >
                                     {{ format(hour,'ha') }}
                                 </div>
                             </div>
-                            <div v-if="idx < hours.length - 1" class="relative">
-                                <!-- 30-minute marker -->
-                                <div class="sticky left-0 z-10 -ml-14 -mt-2.5 w-14 pr-2 text-right text-xs text-gray-300">
-                                    {{ format(hour,'h') }}:30
+                            <template v-if="idx < hours.length - 1">
+                                <!-- 15-minute marker (no border) -->
+                                <div class="relative">
+                                    <div class="sticky left-0 z-10 -ml-14 -mt-2.5 w-14 pr-2 text-right text-xs text-gray-300">
+                                        {{ format(hour,'h') }}:15
+                                    </div>
                                 </div>
-                            </div>
+                                <!-- 30-minute marker with top border -->
+                                <div class="relative border-t border-gray-100">
+                                    <div class="sticky left-0 z-10 -ml-14 -mt-2.5 w-14 pr-2 text-right text-xs text-gray-300">
+                                        {{ format(hour,'h') }}:30
+                                    </div>
+                                </div>
+                                <!-- 45-minute marker (no border) -->
+                                <div class="relative">
+                                    <div class="sticky left-0 z-10 -ml-14 -mt-2.5 w-14 pr-2 text-right text-xs text-gray-300">
+                                        {{ format(hour,'h') }}:45
+                                    </div>
+                                </div>
+                            </template>
                         </template>
                     </div>
 
@@ -48,7 +63,7 @@
                         class="col-start-1 col-end-2 row-start-1 grid sm:pr-8"
                         :style="{
                             gridTemplateColumns: `repeat(${headerDays.length}, minmax(0, 1fr))`,
-                            gridTemplateRows: `1rem repeat(${gridRowCount}, minmax(3.5rem,1fr)) auto`
+                            gridTemplateRows: `1rem repeat(${gridRowCount}, minmax(1.75rem,1fr)) auto`
                         }"
                     >
                         <li
@@ -113,11 +128,11 @@ defineEmits(['openModal'])
 const container = ref(null)
 const containerOffset = ref(null)
 
-// Calculate grid row count: (hours × 2 for half-hour slots) - 1
-// We subtract 1 because the last hour doesn't need a half-hour slot
+// Calculate grid row count: (hours × 4 for 15-minute slots) - 1
+// We subtract 1 because the last hour doesn't need the final slot
 const gridRowCount = computed(() => {
     const hourCount = props.endHour - props.startHour + 1
-    return (hourCount * 2) - 1
+    return (hourCount * 4) - 1
 })
 
 // Auto-scroll to current time

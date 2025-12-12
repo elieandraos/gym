@@ -10,20 +10,21 @@
                 <div class="grid flex-auto grid-cols-1 grid-rows-1">
                     <!-- horizontal lines -->
                     <div
-                        class="col-start-1 col-end-2 row-start-1 grid divide-y divide-gray-100"
-                        :style="{ gridTemplateRows: `repeat(${gridRowCount}, minmax(3.5rem,1fr))` }"
+                        class="col-start-1 col-end-2 row-start-1 grid"
+                        :style="{ gridTemplateRows: `repeat(${gridRowCount}, minmax(1.75rem,1fr))` }"
                     >
                         <div ref="containerOffset" class="row-end-1 h-7"></div>
                         <template v-for="(hour, idx) in hours" :key="idx">
-                            <div class="relative">
+                            <!-- Hour marker with top border -->
+                            <div class="relative border-t border-gray-100">
                                 <div
                                     class="sticky left-0 z-20 -ml-14 -mt-2.5 w-14 pr-2 text-right text-xs text-gray-400"
                                 >
                                     {{ format(hour,'ha') }}
                                 </div>
                             </div>
-                            <div v-if="idx < hours.length - 1" class="relative">
-                                <!-- 30-minute marker -->
+                            <div v-if="idx < hours.length - 1" class="relative border-t border-gray-100">
+                                <!-- 30-minute marker with top border -->
                                 <div class="sticky left-0 z-10 -ml-14 -mt-2.5 w-14 pr-2 text-right text-xs text-gray-300">
                                     {{ format(hour,'h') }}:30
                                 </div>
@@ -39,7 +40,7 @@
                     <!-- events -->
                     <ol
                         class="col-start-1 col-end-2 row-start-1 grid grid-cols-1"
-                        :style="{ gridTemplateRows: `1.75rem repeat(${gridRowCount}, minmax(3.5rem,1fr)) auto` }"
+                        :style="{ gridTemplateRows: `1.75rem repeat(${gridRowCount}, minmax(1.75rem,1fr)) auto` }"
                     >
                         <li
                             v-for="slot in filteredEvents"

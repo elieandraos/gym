@@ -53,15 +53,15 @@ export function useCalendarEvents(events, filters, startHour = 6, endHour = 22) 
             if (mins < startMinutes || mins >= endMinutes || dayIx < 0 || dayIx > maxDays) return null
 
             const col       = dayIx + 1
-            const halfHourFromStart = Math.floor((mins - startMinutes) / 30)
-            const minuteInHalfHour = (mins - startMinutes) % 30
-            const rowStart  = halfHourFromStart + 2  // +2 for header offset
+            const quarterHourFromStart = Math.floor((mins - startMinutes) / 15)
+            const minuteInQuarterHour = (mins - startMinutes) % 15
+            const rowStart  = quarterHourFromStart + 2  // +2 for header offset
             const durationInMinutes = differenceInMinutes(end, start)
-            const span      = Math.max(1, Math.ceil(durationInMinutes / 30))
+            const span      = Math.max(1, Math.ceil(durationInMinutes / 15))
 
-            // Calculate precise positioning within the 30-minute block (0-100%)
-            const topPercent = (minuteInHalfHour / 30) * 100
-            const heightPercent = Math.min((durationInMinutes / 30) * 100, 100)
+            // Calculate precise positioning within the 15-minute block (0-100%)
+            const topPercent = (minuteInQuarterHour / 15) * 100
+            const heightPercent = Math.min((durationInMinutes / 15) * 100, 100)
             const colorScheme = getColorScheme(event.meta_data.trainer_color)
             const pal = {
                 bg: `${event.meta_data.trainer_color} ${colorScheme.hoverBg}`,
