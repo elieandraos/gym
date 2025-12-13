@@ -34,15 +34,15 @@ export function useDailyCalendarEvents(events, filters, startHour = 6, endHour =
 
             if (mins < startMinutes || mins >= endMinutes) return null
 
-            const halfHourFromStart = Math.floor((mins - startMinutes) / 30)
-            const minuteInHalfHour = (mins - startMinutes) % 30
-            const rowStart = halfHourFromStart + 2  // +2 for header offset (matching weekly calendar)
+            const quarterHourFromStart = Math.floor((mins - startMinutes) / 15)
+            const minuteInQuarterHour = (mins - startMinutes) % 15
+            const rowStart = quarterHourFromStart + 2  // +2 for header offset (matching weekly calendar)
             const durationInMinutes = differenceInMinutes(end, start)
-            const span = Math.max(1, Math.ceil(durationInMinutes / 30))
+            const span = Math.max(1, Math.ceil(durationInMinutes / 15))
 
             // Calculate positioning percentages for EventCard (matching weekly calendar)
-            const topPercent = (minuteInHalfHour / 30) * 100
-            const heightPercent = Math.min((durationInMinutes / 30) * 100, 100)
+            const topPercent = (minuteInQuarterHour / 15) * 100
+            const heightPercent = Math.min((durationInMinutes / 15) * 100, 100)
 
             const colorScheme = getColorScheme(event.meta_data?.trainer_color)
 
