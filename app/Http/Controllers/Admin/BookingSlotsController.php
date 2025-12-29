@@ -16,8 +16,6 @@ class BookingSlotsController extends Controller
             'booking',
             'booking.member',
             'booking.trainer',
-            'bookingSlotWorkouts.workout',
-            'bookingSlotWorkouts.sets',
         ]);
 
         return Inertia::render('Admin/BookingsSlots/Show', [

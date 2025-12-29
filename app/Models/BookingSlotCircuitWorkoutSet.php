@@ -6,12 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class BookingSlotWorkoutSet extends Model
+class BookingSlotCircuitWorkoutSet extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'booking_slot_workout_id',
+        'booking_slot_circuit_workout_id',
         'reps',
         'weight_in_kg',
         'duration_in_seconds',
@@ -23,8 +23,8 @@ class BookingSlotWorkoutSet extends Model
         'duration_in_seconds' => 'integer',
     ];
 
-    public function bookingSlotWorkout(): BelongsTo
+    public function circuitWorkout(): BelongsTo
     {
-        return $this->belongsTo(BookingSlotWorkout::class);
+        return $this->belongsTo(BookingSlotCircuitWorkout::class, 'booking_slot_circuit_workout_id');
     }
 }

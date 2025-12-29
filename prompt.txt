@@ -1,0 +1,5 @@
+Nah, I have a major change request in my app related to the booking slots workout. Right now, the session (booking slots) workouts are groupped by category. I want to
+  ditch that, as i will have also another change coming (workout can have multiple categories) and I would like workouts to be groupped by circuit. So a circuit can have 2
+  workouts, for ex: bench dips, push-ups and abs, 3 times each for 12 reps. i want that change reflected on the session show page and when adding session workouts. Let's
+  start first by the database changes required. Those will affect the migrations, models, seeders and factories. Keep in mind also, my app is in production, i would not
+  like to loose any data with the previous structure.

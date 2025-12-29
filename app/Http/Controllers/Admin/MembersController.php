@@ -50,8 +50,7 @@ class MembersController extends Controller
     {
         $user->load([
             'memberActiveBooking.bookingSlots' => function ($query) {
-                $query->orderBy('start_time')
-                    ->with(['bookingSlotWorkouts.workout']);
+                $query->orderBy('start_time');
             },
             'memberScheduledBookings',
             'lastBodyComposition',

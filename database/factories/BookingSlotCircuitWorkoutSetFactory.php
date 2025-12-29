@@ -2,25 +2,25 @@
 
 namespace Database\Factories;
 
-use App\Models\BookingSlotWorkout;
+use App\Models\BookingSlotCircuitWorkout;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\BookingSlotWorkoutSet>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\BookingSlotCircuitWorkoutSet>
  */
-class BookingSlotWorkoutSetFactory extends Factory
+class BookingSlotCircuitWorkoutSetFactory extends Factory
 {
     public function definition(): array
     {
         return [
-            'booking_slot_workout_id' => BookingSlotWorkout::factory(),
+            'booking_slot_circuit_workout_id' => BookingSlotCircuitWorkout::factory(),
             'reps' => 12,
             'weight_in_kg' => null,
             'duration_in_seconds' => null,
         ];
     }
 
-    public function weighted(): BookingSlotWorkoutSetFactory
+    public function weighted(): BookingSlotCircuitWorkoutSetFactory
     {
         return $this->state(function () {
             return [
@@ -31,7 +31,7 @@ class BookingSlotWorkoutSetFactory extends Factory
         });
     }
 
-    public function timed(): BookingSlotWorkoutSetFactory
+    public function timed(): BookingSlotCircuitWorkoutSetFactory
     {
         return $this->state(function () {
             return [
