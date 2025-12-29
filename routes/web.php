@@ -3,7 +3,6 @@
 use App\Http\Controllers\Admin\BodyCompositionController;
 use App\Http\Controllers\Admin\BookingsController;
 use App\Http\Controllers\Admin\BookingSlotsController;
-use App\Http\Controllers\Admin\BookingSlotWorkoutController;
 use App\Http\Controllers\Admin\CancelBookingSlotController;
 use App\Http\Controllers\Admin\ChangeBookingSlotDateTimeController;
 use App\Http\Controllers\Admin\DailyCalendarController;
@@ -126,10 +125,6 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     // Bookings slot cancel
     Route::get('/bookings-slots/{bookingSlot}/cancel', [CancelBookingSlotController::class, 'index'])->name('admin.bookings-slots.cancel.index');
     Route::delete('/bookings-slots/{bookingSlot}/cancel', [CancelBookingSlotController::class, 'destroy'])->name('admin.bookings-slots.cancel.destroy');
-    // Bookings slot workouts
-    Route::get('/bookings-slots/{bookingSlot}/workout/create', [BookingSlotWorkoutController::class, 'create'])->name('admin.bookings-slots.workout.create');
-    Route::post('/bookings-slots/{bookingSlot}/workout/store', [BookingSlotWorkoutController::class, 'store'])->name('admin.bookings-slots.workout.store');
-    Route::delete('/bookings-slots/{bookingSlot}/workout/{bookingSlotWorkout}', [BookingSlotWorkoutController::class, 'destroy'])->name('admin.bookings-slots.workout.destroy');
 
     // Weekly Calendar
     Route::get('/weekly-calendar', [WeeklyCalendarController::class, 'index'])->name('admin.weekly-calendar.index');
