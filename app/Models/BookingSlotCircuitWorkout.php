@@ -10,18 +10,18 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * @property-read int $id
  */
-class BookingSlotWorkout extends Model
+class BookingSlotCircuitWorkout extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'booking_slot_id',
+        'booking_slot_circuit_id',
         'workout_id',
     ];
 
-    public function bookingSlot(): BelongsTo
+    public function circuit(): BelongsTo
     {
-        return $this->belongsTo(BookingSlot::class);
+        return $this->belongsTo(BookingSlotCircuit::class, 'booking_slot_circuit_id');
     }
 
     public function workout(): BelongsTo
@@ -31,6 +31,6 @@ class BookingSlotWorkout extends Model
 
     public function sets(): HasMany
     {
-        return $this->hasMany(BookingSlotWorkoutSet::class);
+        return $this->hasMany(BookingSlotCircuitWorkoutSet::class);
     }
 }

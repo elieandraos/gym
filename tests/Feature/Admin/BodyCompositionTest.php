@@ -119,8 +119,7 @@ test('it displays latest body composition on member show page', function () {
 
     $member->load([
         'memberActiveBooking.bookingSlots' => function ($query) {
-            $query->orderBy('start_time')
-                ->with(['bookingSlotWorkouts.workout']);
+            $query->orderBy('start_time');
         },
         'memberScheduledBookings',
         'lastBodyComposition',
@@ -138,8 +137,7 @@ test('it displays empty state message when no body composition exists', function
     $member = User::query()->members()->first();
     $member->load([
         'memberActiveBooking.bookingSlots' => function ($query) {
-            $query->orderBy('start_time')
-                ->with(['bookingSlotWorkouts.workout']);
+            $query->orderBy('start_time');
         },
         'memberScheduledBookings',
         'lastBodyComposition',

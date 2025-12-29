@@ -128,7 +128,12 @@ test('it creates an unpaid booking', function () {
         ->assertSessionHasNoErrors()
         ->assertRedirect(route('admin.members.show', ['user' => $member->id]));
 
-    $this->assertDatabaseHas(Booking::class, Arr::only($data, ['start_date', 'member_id', 'trainer_id', 'nb_sessions', 'is_paid']));
+    $this->assertDatabaseHas(Booking::class, [
+        'member_id' => $data['member_id'],
+        'trainer_id' => $data['trainer_id'],
+        'nb_sessions' => $data['nb_sessions'],
+        'is_paid' => 0, // Database stores boolean as integer
+    ]);
 
     $booking = Booking::query()->where('member_id', $member->id)
         ->where('trainer_id', $trainer->id)

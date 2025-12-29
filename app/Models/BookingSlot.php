@@ -34,9 +34,9 @@ class BookingSlot extends Model
         return $this->belongsTo(Booking::class);
     }
 
-    public function bookingSlotWorkouts(): HasMany
+    public function circuits(): HasMany
     {
-        return $this->hasMany(BookingSlotWorkout::class);
+        return $this->hasMany(BookingSlotCircuit::class);
     }
 
     #[AsScope]

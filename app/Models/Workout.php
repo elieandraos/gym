@@ -26,8 +26,8 @@ class Workout extends Model
         'category' => Category::class,
     ];
 
-    public function bookingSlotWorkouts(): HasMany
+    public function bookingSlotCircuitWorkouts(): HasMany
     {
-        return $this->hasMany(BookingSlotWorkout::class);
+        return $this->hasMany(BookingSlotCircuitWorkout::class);
     }
 }
