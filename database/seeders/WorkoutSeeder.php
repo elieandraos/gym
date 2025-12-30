@@ -8,6 +8,11 @@ use Illuminate\Database\Seeder;
 
 class WorkoutSeeder extends Seeder
 {
+    /**
+     * Seeds the database with a predefined list of workout records and their category associations.
+     *
+     * Inserts each workout from an internal array into the workouts table using the Workout model.
+     */
     public function run(): void
     {
         $workouts = [

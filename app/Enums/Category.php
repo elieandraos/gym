@@ -14,6 +14,11 @@ enum Category: string
     case Glutes = 'Glutes';
     case Abs = 'Abs';
 
+    /**
+     * Get all enum case values as an array of strings.
+     *
+     * @return string[] Array of enum case values.
+     */
     public static function values(): array
     {
         return collect(self::cases())->map(fn ($case) => $case->value)->toArray();
