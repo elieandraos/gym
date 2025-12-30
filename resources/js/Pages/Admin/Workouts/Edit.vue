@@ -26,7 +26,7 @@ const props = defineProps({
 
 const form = useForm({
     name: props.workout.name,
-    category: props.workout.category,
+    categories: props.workout.categories,
 })
 
 provide('form', form)

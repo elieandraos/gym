@@ -40,8 +40,8 @@ test('it renders the workout create page', function () {
 
 test('it creates a workout', function () {
     $data = [
-        'name' => 'Push-ups',
-        'category' => Category::Core->value,
+        'name' => 'Test New Exercise',
+        'categories' => [Category::Core->value, Category::Abs->value],
     ];
 
     try {
@@ -53,13 +53,15 @@ test('it creates a workout', function () {
         echo $e;
     }
 
-    $this->assertDatabaseHas(Workout::class, $data);
+    $workout = Workout::query()->where('name', 'Test New Exercise')->first();
+    expect($workout)->not->toBeNull()
+        ->and($workout->categories)->toBe([Category::Core->value, Category::Abs->value]);
 });
 
 test('it validates workout creation', function () {
     $data = [
         'name' => null,
-        'category' => 'invalid_category',
+        'categories' => 'invalid_not_array',
         'image' => 'not_an_image',
     ];
 
@@ -67,7 +69,7 @@ test('it validates workout creation', function () {
         ->post(route('admin.workouts.store'), $data)
         ->assertSessionHasErrors([
             'name',
-            'category',
+            'categories',
         ])
         ->assertStatus(302);
 });
@@ -87,7 +89,7 @@ test('it updates a workout', function () {
 
     $data = [
         'name' => 'Updated Exercise Name',
-        'category' => Category::Core->value,
+        'categories' => [Category::Core->value],
     ];
 
     try {
@@ -99,7 +101,9 @@ test('it updates a workout', function () {
         echo $e;
     }
 
-    $this->assertDatabaseHas(Workout::class, array_merge(['id' => $workout->id], $data));
+    $workout->refresh();
+    expect($workout->name)->toBe('Updated Exercise Name')
+        ->and($workout->categories)->toBe([Category::Core->value]);
 });
 
 test('it validates workout update', function () {
@@ -107,14 +111,14 @@ test('it validates workout update', function () {
 
     $data = [
         'name' => null,
-        'category' => 'invalid_category',
+        'categories' => 'invalid_not_array',
     ];
 
     actingAsAdmin()
         ->put(route('admin.workouts.update', $workout), $data)
         ->assertSessionHasErrors([
             'name',
-            'category',
+            'categories',
         ])
         ->assertStatus(302);
 });
@@ -147,12 +151,14 @@ test('it filters workouts by search', function () {
 });
 
 test('it filters workouts by single category', function () {
-    Workout::factory()->create(['category' => Category::Chest]);
-    Workout::factory()->create(['category' => Category::Legs]);
-    Workout::factory()->create(['category' => Category::Core]);
+    Workout::factory()->create(['name' => 'Chest Exercise', 'categories' => [Category::Chest->value]]);
+    Workout::factory()->create(['name' => 'Legs Exercise', 'categories' => [Category::Legs->value]]);
+    Workout::factory()->create(['name' => 'Core Exercise', 'categories' => [Category::Core->value]]);
 
     $workouts = Workout::query()
-        ->whereIn('category', [Category::Chest->value])
+        ->where(function ($q) {
+            $q->whereJsonContains('categories', Category::Chest->value);
+        })
         ->orderBy('name')
         ->paginate(10);
 
@@ -164,13 +170,16 @@ test('it filters workouts by single category', function () {
 });
 
 test('it filters workouts by multiple categories', function () {
-    Workout::factory()->create(['category' => Category::Chest]);
-    Workout::factory()->create(['category' => Category::Legs]);
-    Workout::factory()->create(['category' => Category::Core]);
-    Workout::factory()->create(['category' => Category::Back]);
+    Workout::factory()->create(['name' => 'Chest Exercise', 'categories' => [Category::Chest->value]]);
+    Workout::factory()->create(['name' => 'Legs Exercise', 'categories' => [Category::Legs->value]]);
+    Workout::factory()->create(['name' => 'Core Exercise', 'categories' => [Category::Core->value]]);
+    Workout::factory()->create(['name' => 'Back Exercise', 'categories' => [Category::Back->value]]);
 
     $workouts = Workout::query()
-        ->whereIn('category', [Category::Chest->value, Category::Legs->value])
+        ->where(function ($q) {
+            $q->whereJsonContains('categories', Category::Chest->value)
+                ->orWhereJsonContains('categories', Category::Legs->value);
+        })
         ->orderBy('name')
         ->paginate(10);
 

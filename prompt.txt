@@ -1,5 +1,7 @@
-Nah, I have a major change request in my app related to the booking slots workout. Right now, the session (booking slots) workouts are groupped by category. I want to
-  ditch that, as i will have also another change coming (workout can have multiple categories) and I would like workouts to be groupped by circuit. So a circuit can have 2
-  workouts, for ex: bench dips, push-ups and abs, 3 times each for 12 reps. i want that change reflected on the session show page and when adding session workouts. Let's
-  start first by the database changes required. Those will affect the migrations, models, seeders and factories. Keep in mind also, my app is in production, i would not
-  like to loose any data with the previous structure.
+Currently my workout table has on category (enum in migration)
+I would like it to have multiple categories, we can still use the enum as source of truth.
+I do not wish to have an extra table with many to many relations (keep the table field as string if possible) as those categories are only informative, and just used in filters in the workout index page.
+For ex: 'plank' can have 'core,abs' , 'Incline smith' can have 'Chest, Shoulders, Lats' etc...
+
+Do not create a new migration if you want to change fields in workouts table, just update the existing one. i can truncate and do the work manually in production.
+Update the current workout seeder to match the new implementation but the workouts/category should still exists.
