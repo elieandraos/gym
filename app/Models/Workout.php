@@ -25,6 +25,11 @@ class Workout extends Model
         'categories' => 'array',
     ];
 
+    /**
+     * Get the one-to-many relationship to booking slot circuit workouts for this workout.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany The relation linking this workout to its BookingSlotCircuitWorkout models.
+     */
     public function bookingSlotCircuitWorkouts(): HasMany
     {
         return $this->hasMany(BookingSlotCircuitWorkout::class);
