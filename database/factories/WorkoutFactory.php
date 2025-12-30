@@ -14,7 +14,10 @@ class WorkoutFactory extends Factory
     {
         return [
             'name' => $this->faker->word,
-            'category' => $this->faker->randomElement(array: Category::cases()),
+            'categories' => array_map(
+                fn ($cat) => $cat->value,
+                $this->faker->randomElements(array: Category::cases(), count: $this->faker->numberBetween(1, 3))
+            ),
             'image' => $this->faker->imageUrl(width: 60, height: 60),
         ];
     }

@@ -11,6 +11,8 @@ enum Category: string
     case Back = 'Back';
     case Legs = 'Legs';
     case Core = 'Core';
+    case Glutes = 'Glutes';
+    case Abs = 'Abs';
 
     public static function values(): array
     {

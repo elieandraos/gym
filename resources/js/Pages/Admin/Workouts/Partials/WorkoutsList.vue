@@ -8,14 +8,14 @@
             </tr>
         </thead>
         <tbody>
-        <tr v-for="{ id, name, category } in data"
+        <tr v-for="{ id, name, categories } in data"
             :key="id"
             class="border-b border-zinc-100 hover:bg-zinc-100">
             <td class="p-3 relative flex gap-2 items-center">
                 {{ name }}
             </td>
             <td class="text-[#71717b]">
-                {{ category }}
+                {{ categories?.join(', ') }}
             </td>
             <td>
                 <dropdown direction="left">
@@ -36,13 +36,13 @@
 
     <ul class="lg:hidden grid grid-cols-1 md:grid-cols-2 gap-6">
         <li
-            v-for="{ id, name, category } in data"
+            v-for="{ id, name, categories } in data"
             :key="id"
             class="block p-4 rounded-lg border bg-stone-50 border-stone-100 hover:border-stone-200">
             <div class="flex items-center justify-between">
                 <div class="text-sm space-y-1">
                     <div class="font-medium">{{ name }}</div>
-                    <div class="text-zinc-500 text-xs">{{ category }}</div>
+                    <div class="text-zinc-500 text-xs">{{ categories?.join(', ') }}</div>
                 </div>
                 <dropdown direction="left">
                     <div class="space-y-2">

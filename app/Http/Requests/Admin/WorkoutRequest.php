@@ -17,7 +17,8 @@ class WorkoutRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'category' => ['required', new Enum(Category::class)],
+            'categories' => ['required', 'array', 'min:1'],
+            'categories.*' => [new Enum(Category::class)],
         ];
     }
 }

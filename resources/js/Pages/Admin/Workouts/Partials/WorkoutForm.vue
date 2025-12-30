@@ -1,14 +1,28 @@
 <template>
     <div class="">
-        <FormSection title="Workout Details" description="Enter the workout name and category." :separator="false">
-            <div class="space-y-2">
+        <FormSection title="Workout Details" description="Enter the workout name and categories." :separator="false">
+            <div class="space-y-4">
                 <div>
                     <TextInput id="name" v-model="form.name" type="text" placeholder="Workout name"/>
                     <InputError :message="form.errors.name" />
                 </div>
                 <div>
-                    <SelectInput v-model="form.category" id="category" :options="categoryOptions" placeholder="Select category"/>
-                    <InputError :message="form.errors.category" />
+                    <InputLabel value="Categories *" />
+                    <div class="grid grid-cols-2 gap-2 mt-2">
+                        <label
+                            v-for="cat in categories"
+                            :key="cat"
+                            class="flex items-center gap-2 cursor-pointer hover:bg-zinc-50 p-2 rounded"
+                        >
+                            <Checkbox
+                                :value="cat"
+                                :checked="form.categories"
+                                @update:checked="form.categories = $event"
+                            />
+                            <span class="text-sm">{{ cat }}</span>
+                        </label>
+                    </div>
+                    <InputError :message="form.errors.categories" />
                 </div>
             </div>
         </FormSection>
@@ -33,10 +47,11 @@ import TransparentButton from '@/Components/Layout/TransparentButton.vue'
 import {Link} from '@inertiajs/vue3'
 import { inject, computed } from 'vue'
 
+import Checkbox from '@/Components/Checkbox.vue'
 import FormButtons from '@/Components/Form/FormButtons.vue'
 import FormSection from '@/Components/Form/FormSection.vue'
 import InputError from '@/Components/Form/InputError.vue'
-import SelectInput from '@/Components/Form/SelectInput.vue'
+import InputLabel from '@/Components/Form/InputLabel.vue'
 import TextInput from '@/Components/Form/TextInput.vue'
 import PrimaryButton from '@/Components/Layout/PrimaryButton.vue'
 import { scrollToFirstError } from '@/Components/Form/useScrollToError.js'
@@ -48,10 +63,6 @@ const workout = inject('workout', null)
 const { route } = window
 
 const isEditing = computed(() => workout !== null)
-
-const categoryOptions = computed(() =>
-    categories?.map(category => ({ value: category, name: category })) || []
-)
 
 const saveWorkout = () => {
     const url = isEditing.value

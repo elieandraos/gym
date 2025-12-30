@@ -21,7 +21,11 @@ class WorkoutController extends Controller
                 $query->where('name', 'like', "%$search%");
             })
             ->when(request('categories'), function (Builder $query, array $categories) {
-                $query->whereIn('category', $categories);
+                $query->where(function (Builder $q) use ($categories) {
+                    foreach ($categories as $category) {
+                        $q->orWhereJsonContains('categories', $category);
+                    }
+                });
             })
             ->orderBy('name')
             ->paginate(10)
