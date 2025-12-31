@@ -1,7 +1,254 @@
-Currently my workout table has on category (enum in migration)
-I would like it to have multiple categories, we can still use the enum as source of truth.
-I do not wish to have an extra table with many to many relations (keep the table field as string if possible) as those categories are only informative, and just used in filters in the workout index page.
-For ex: 'plank' can have 'core,abs' , 'Incline smith' can have 'Chest, Shoulders, Lats' etc...
+# Release Notes
 
-Do not create a new migration if you want to change fields in workouts table, just update the existing one. i can truncate and do the work manually in production.
-Update the current workout seeder to match the new implementation but the workouts/category should still exists.
+This release introduces a major architectural improvement to the workout tracking system, transforming it from a flat workout structure to a circuit-based training methodology that better reflects real-world training practices.
+
+## 🔄 Circuit-Based Workout Tracking System
+
+### Complete Architecture Rework
+
+The workout tracking system has been fundamentally redesigned to support circuit training methodology, replacing the previous flat structure with a hierarchical circuit-based organization.
+
+**Previous Structure (Removed):**
+```
+Booking Slot (Session)
+└─ Workouts (exercises)
+   └─ Sets (reps, weight, duration)
+```
+
+**New Structure (Current):**
+```
+Booking Slot (Session)
+└─ Circuits (named workout groups)
+   └─ Circuit Workouts (exercises)
+      └─ Sets (reps, weight, duration)
+```
+
+### Circuit Features
+
+**Named Circuit Organization:**
+- Create multiple circuits within a single training session
+- Descriptive circuit names for clear workout organization:
+  - "Full Body"
+  - "Upper Body Circuit"
+  - "Lower Body Circuit"
+  - "Core Circuit"
+  - "Cardio Circuit"
+  - "Strength Circuit"
+- Typical sessions contain 1-2 circuits
+- Each circuit maintains its own collection of exercises and sets
+
+**Benefits:**
+- Better reflects real-world circuit training methodology
+- Logical grouping of related exercises
+- Improved session organization and readability
+- Clearer workout structure for members and trainers
+- Supports progressive circuit-based training programs
+
+### Data Model Changes
+
+**New Models:**
+- `BookingSlotCircuit` - Represents a circuit within a training session
+  - `id` - Primary key
+  - `booking_slot_id` - Foreign key to training session
+  - `name` - Circuit name (e.g., "Full Body", "Upper Body Circuit")
+  - Relationships: `belongsTo` BookingSlot, `hasMany` CircuitWorkouts
+
+**Renamed Models:**
+- `BookingSlotWorkout` → `BookingSlotCircuitWorkout`
+  - Now belongs to a circuit rather than directly to a booking slot
+  - Maintains workout assignment and performance tracking
+
+- `BookingSlotWorkoutSet` → `BookingSlotCircuitWorkoutSet`
+  - Renamed for consistency with new architecture
+  - Still tracks reps, weight (kg), and duration (seconds)
+
+**Relationship Chain:**
+```php
+BookingSlot
+└─ hasMany BookingSlotCircuits
+   └─ hasMany BookingSlotCircuitWorkouts
+      └─ belongsTo Workout (exercise definition)
+      └─ hasMany BookingSlotCircuitWorkoutSets
+```
+
+### Database Schema Updates
+
+**New Tables:**
+- `booking_slot_circuits` - Circuit management table
+  ```sql
+  id (primary key)
+  booking_slot_id (foreign key, cascades on delete)
+  name (nullable string)
+  timestamps
+  ```
+
+**Renamed Tables:**
+- `booking_slot_workouts` → `booking_slot_circuit_workouts`
+  - Updated foreign key: `booking_slot_id` → `booking_slot_circuit_id`
+  - Maintains `workout_id` reference
+  - Cascading deletes preserved
+
+- `workout_sets` → `booking_slot_circuit_workout_sets`
+  - Updated foreign key relationships
+  - Consistent naming with new architecture
+
+**Migrations:**
+- `2025_06_21_095411_create_booking_slot_circuits_table.php`
+- `2025_06_21_095412_create_booking_slot_circuit_workouts_table.php`
+- `2025_06_21_095413_create_booking_slot_circuit_workout_sets_table.php`
+
+### API Resources
+
+**New Resources:**
+- `BookingSlotCircuitResource` - Formats circuit data for API responses
+  - Includes circuit name
+  - Eager loads circuit workouts
+  - Maintains performance data structure
+
+- `BookingSlotCircuitWorkoutResource` - Formats circuit workout data
+  - Includes workout details (name, category)
+  - Includes all sets with reps/weight/duration
+  - Properly nested within circuit structure
+
+**Updated Resources:**
+- `BookingSlotResource` - Now returns circuits instead of flat workouts
+  - Changed from `workouts` to `circuits` collection
+  - Maintains backward compatibility for other booking slot data
+
+### Testing & Data Seeding
+
+**New Seeder:**
+- `BookingSlotCircuitWorkoutSeeder` - Generates realistic circuit-based workout data
+  - Creates 1-2 circuits per completed booking slot
+  - Assigns random circuit names from predefined list
+  - Populates each circuit with 3-4 workouts from varied categories
+  - Generates 3-5 sets per workout with realistic performance data
+  - Ensures diverse workout coverage (chest, back, legs, etc.)
+
+**Updated Factories:**
+- `BookingSlotCircuitFactory` - Creates circuit test data
+- `BookingSlotCircuitWorkoutFactory` - Creates circuit workout test data
+- `BookingSlotCircuitWorkoutSetFactory` - Creates set test data
+
+**Test Updates:**
+- Updated `MembersTest.php` - Member profile now shows circuit-based workout history
+- Updated `BookingsTest.php` - Booking creation and management with circuits
+- Updated `BodyCompositionTest.php` - Compatible with new workout structure
+- Removed `BookingSlotWorkoutTest.php` - Replaced by circuit-based testing
+- Removed standalone workout assignment tests from `BookingSlotsShowTest.php`
+
+### Frontend Changes
+
+**Removed Components:**
+- `/Pages/Admin/BookingSlotWorkout/Create.vue` - Standalone workout assignment page
+- `/Pages/Admin/BookingSlotWorkout/Partials/SearchWorkouts.vue` - Workout search component
+- `/Pages/Admin/BookingSlotWorkout/Partials/WorkoutForm.vue` - Workout form component
+- `/Pages/Admin/BookingSlotWorkout/Partials/WorkoutSearchResults.vue` - Search results component
+
+**Updated Components:**
+- `BookingsSlots/Show.vue` - Simplified to display circuit-based workout data
+  - Removed inline workout assignment interface
+  - Now displays circuits with nested workouts
+  - Circuit-based workout history view
+
+- `BookingsSlots/Partials/BookingSlotHeader.vue` - Removed workout assignment link
+
+### Backend Changes
+
+**Removed Controllers:**
+- `BookingSlotWorkoutController.php` - Standalone workout assignment controller
+  - Previously handled workout creation/deletion
+  - Functionality will be replaced by circuit-based management in future release
+
+**Updated Controllers:**
+- `BookingSlotsController.php` - Removed workout assignment route references
+- `MembersController.php` - Updated to load circuit-based workout data
+
+**Removed Routes:**
+- `POST /bookings-slots/{bookingSlot}/workouts` - Create workout
+- `DELETE /bookings-slots/workouts/{bookingSlotWorkout}` - Delete workout
+
+**Removed Form Requests:**
+- `BookingSlotWorkoutRequest.php` - Workout validation request
+
+### Migration Path
+
+**Breaking Changes:**
+- Old `BookingSlotWorkout` model completely removed
+- Direct workout assignment to booking slots no longer supported
+- All workout data must be organized within circuits
+- API responses now return `circuits` collection instead of `workouts`
+
+**Data Migration:**
+Existing workout data should be migrated to circuit structure:
+1. Create a default circuit for each booking slot with existing workouts
+2. Move all `booking_slot_workouts` records to new circuit
+3. Update foreign keys to reference circuit instead of booking slot
+4. Update any custom queries to traverse circuit relationship
+
+**Recommended Approach:**
+Run fresh migrations on development/staging environments to adopt new schema. For production with existing data, a custom migration script would be needed to preserve workout history.
+
+## 🏗️ Technical Improvements
+
+**Code Organization:**
+- Consistent model naming: `BookingSlotCircuit*` prefix for all circuit-related models
+- Proper relationship chaining with type hints
+- Factory states for realistic test data generation
+- Comprehensive seeding for circuit-based workouts
+
+**Database Optimization:**
+- Foreign key constraints with cascading deletes maintained
+- Proper indexing on `booking_slot_id` in circuits table
+- Migration timestamps ensure proper execution order
+
+**Resource Consistency:**
+- Hierarchical resource structure matches data model
+- Eager loading prevents N+1 queries
+- Clean separation between circuit and workout resources
+
+## 📝 Developer Notes
+
+**Future Circuit Management UI:**
+The current release focuses on backend architecture and data model transformation. A comprehensive circuit management UI for trainers to create, edit, and organize circuits within training sessions will be added in a future release.
+
+**Testing Circuit Functionality:**
+```bash
+# Run circuit-related tests
+php artisan test --filter=MembersTest
+php artisan test --filter=BookingsTest
+
+# Seed circuit workout data
+php artisan db:seed --class=BookingSlotCircuitWorkoutSeeder
+
+# View circuit data structure
+php artisan tinker
+> BookingSlot::with('circuits.circuitWorkouts.sets')->first()
+```
+
+**API Response Format:**
+```json
+{
+  "booking_slot": {
+    "id": 1,
+    "circuits": [
+      {
+        "id": 1,
+        "name": "Upper Body Circuit",
+        "circuit_workouts": [
+          {
+            "workout": { "name": "Bench Press", "category": "Chest" },
+            "sets": [
+              { "reps": 10, "weight": 80, "duration": null }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+## Summary
+
+This release represents a fundamental transformation of the workout tracking system from a flat structure to a hierarchical circuit-based organization. While removing the standalone workout assignment interface temporarily, it establishes a robust foundation for circuit training methodology that better serves the needs of trainers and members. The new architecture supports structured, progressive training programs with clear circuit organization and comprehensive performance tracking.
