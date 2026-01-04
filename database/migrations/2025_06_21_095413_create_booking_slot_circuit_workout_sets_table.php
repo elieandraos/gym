@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('booking_slot_circuit_workout_sets', function (Blueprint $table) {
             $table->id();
             $table->foreignId('booking_slot_circuit_workout_id');
-            $table->unsignedInteger('reps')->default(12);
+            $table->unsignedInteger('reps')->nullable()->default(null);
             $table->decimal('weight_in_kg', 5)->nullable();
             $table->unsignedInteger('duration_in_seconds')->nullable();
             $table->timestamps();

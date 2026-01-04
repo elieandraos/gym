@@ -32,14 +32,13 @@
 
 <script setup>
 import { ref, nextTick } from 'vue'
+import { router } from '@inertiajs/vue3'
 import { TrashIcon } from '@heroicons/vue/24/outline'
 
 const props = defineProps({
     circuit: { type: Object, required: true },
     bookingSlotId: { type: Number, required: true },
 })
-
-const emit = defineEmits(['updated', 'deleted'])
 
 const isEditing = ref(false)
 const editedName = ref(props.circuit.name)
@@ -62,11 +61,14 @@ const saveName = () => {
     }
 
     if (editedName.value !== props.circuit.name) {
-        // Emit updated circuit with new name
-        emit('updated', {
-            ...props.circuit,
-            name: editedName.value
-        })
+        router.patch(
+            route('admin.bookings-slots.circuits.update', {
+                bookingSlot: props.bookingSlotId,
+                circuit: props.circuit.id,
+            }),
+            { name: editedName.value },
+            { preserveScroll: true }
+        )
     }
 
     isEditing.value = false
@@ -79,7 +81,13 @@ const cancelEdit = () => {
 
 const deleteCircuit = () => {
     if (confirm(`Delete "${props.circuit.name}"? All workouts will be removed.`)) {
-        emit('deleted')
+        router.delete(
+            route('admin.bookings-slots.circuits.destroy', {
+                bookingSlot: props.bookingSlotId,
+                circuit: props.circuit.id,
+            }),
+            { preserveScroll: true }
+        )
     }
 }
 </script>

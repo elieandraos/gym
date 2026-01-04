@@ -19,18 +19,18 @@
                             type="radio"
                             v-model="type"
                             value="weight"
-                            class="w-4 h-4 text-indigo-600 border-zinc-300 focus:ring-indigo-500 cursor-pointer"
+                            class="h-4 w-4 border-zinc-200 accent-black focus:ring-black cursor-pointer"
                         />
-                        <span class="text-sm text-zinc-700">Weight</span>
+                        <span class="text-sm text-zinc-700 cursor-pointer">Weight</span>
                     </label>
                     <label class="flex items-center gap-2 cursor-pointer">
                         <input
                             type="radio"
                             v-model="type"
                             value="duration"
-                            class="w-4 h-4 text-indigo-600 border-zinc-300 focus:ring-indigo-500 cursor-pointer"
+                            class="h-4 w-4 border-zinc-200 accent-black focus:ring-black cursor-pointer"
                         />
-                        <span class="text-sm text-zinc-700">Duration</span>
+                        <span class="text-sm text-zinc-700 cursor-pointer">Duration</span>
                     </label>
                 </div>
             </div>
@@ -54,8 +54,6 @@
                         :key="index"
                         class="flex gap-3 items-center"
                     >
-                        <span class="text-sm text-zinc-500 w-16">Set {{ index + 1 }}</span>
-
                         <!-- Weight Type Fields -->
                         <template v-if="type === 'weight'">
                             <div class="flex-1 flex items-center gap-2">
@@ -110,7 +108,9 @@
         <template #footer>
             <div class="flex gap-2 justify-end">
                 <SecondaryButton @click="close">Cancel</SecondaryButton>
-                <PrimaryButton @click="submit">Add Workout</PrimaryButton>
+                <PrimaryButton @click="submit">
+                    {{ editingWorkout ? 'Update Workout' : 'Add Workout' }}
+                </PrimaryButton>
             </div>
         </template>
     </Modal>
@@ -118,6 +118,7 @@
 
 <script setup>
 import { ref, computed, watch } from 'vue'
+import { router } from '@inertiajs/vue3'
 import { PlusIcon, MinusCircleIcon } from '@heroicons/vue/24/outline'
 import Modal from '@/Components/Layout/Modal.vue'
 import TextInput from '@/Components/Form/TextInput.vue'
@@ -135,7 +136,7 @@ const props = defineProps({
     editingWorkout: { type: Object, default: null },
 })
 
-const emit = defineEmits(['close', 'workout-added'])
+const emit = defineEmits(['close'])
 
 // Form state
 const selectedWorkoutId = ref(null)
@@ -163,7 +164,10 @@ const selectedWorkout = computed(() => {
 // Watch for editing workout changes
 watch(() => props.editingWorkout, (workout) => {
     if (workout) {
-        selectedWorkoutId.value = workout.id
+        // Find the workout ID from available workouts by matching the name
+        const matchingWorkout = props.availableWorkouts.find(w => w.name === workout.name)
+        selectedWorkoutId.value = matchingWorkout?.id || null
+
         // Determine type from first set
         if (workout.sets && workout.sets.length > 0) {
             type.value = workout.sets[0].weight_in_kg !== null ? 'weight' : 'duration'
@@ -235,9 +239,8 @@ const submit = () => {
     }
 
     const workoutData = {
-        id: props.editingWorkout ? props.editingWorkout.id : Date.now(), // Keep existing ID if editing
-        name: selectedWorkout.value.name,
-        categories: selectedWorkout.value.categories,
+        workout_id: selectedWorkoutId.value,
+        type: type.value,
         sets: sets.value.map(set => ({
             reps: type.value === 'weight' ? parseInt(set.reps) : null,
             weight_in_kg: type.value === 'weight' ? parseFloat(set.weight_in_kg) : null,
@@ -245,8 +248,49 @@ const submit = () => {
         }))
     }
 
-    emit('workout-added', workoutData)
-    resetForm()
+    // Check if we're editing or creating
+    const isEditing = props.editingWorkout !== null
+
+    if (isEditing) {
+        // Update existing workout
+        router.put(
+            route('admin.bookings-slots.circuits.workouts.update', {
+                bookingSlot: props.bookingSlotId,
+                circuit: props.circuitId,
+                circuitWorkout: props.editingWorkout.id,
+            }),
+            workoutData,
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    resetForm()
+                    emit('close')
+                },
+                onError: (serverErrors) => {
+                    errors.value = serverErrors
+                },
+            }
+        )
+    } else {
+        // Create new workout
+        router.post(
+            route('admin.bookings-slots.circuits.workouts.store', {
+                bookingSlot: props.bookingSlotId,
+                circuit: props.circuitId,
+            }),
+            workoutData,
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    resetForm()
+                    emit('close')
+                },
+                onError: (serverErrors) => {
+                    errors.value = serverErrors
+                },
+            }
+        )
+    }
 }
 
 const resetForm = () => {

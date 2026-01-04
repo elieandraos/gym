@@ -3,22 +3,12 @@
         <div class="flex justify-between items-start">
             <div class="flex-1">
                 <div class="font-medium text-sm text-zinc-900">{{ workout.name }}</div>
-                <div class="flex flex-wrap gap-1 mt-1">
+                <div v-if="workout.categories && workout.categories.length" class="flex flex-wrap gap-1 mt-1">
                     <span
                         v-for="category in workout.categories"
                         :key="category"
                         class="text-xs px-2 py-0.5 rounded font-medium"
-                        :class="{
-                            'bg-blue-50 text-blue-700': category === 'Strength' || category === 'Arms',
-                            'bg-amber-100 text-amber-700': category === 'Chest',
-                            'bg-pink-50 text-pink-700': category === 'Shoulders',
-                            'bg-green-50 text-green-700': category === 'Back',
-                            'bg-purple-100 text-purple-700': category === 'Core',
-                            'bg-yellow-100 text-yellow-700': category === 'Bodyweight',
-                            'bg-lime-100 text-lime-700': category === 'Abs',
-                            'bg-red-100 text-red-700': category === 'Legs',
-                            'bg-zinc-100 text-zinc-600': !['Strength', 'Chest', 'Shoulders', 'Back', 'Core', 'Bodyweight', 'Abs', 'Legs', 'Arms'].includes(category)
-                        }"
+                        :class="getCategoryClass(category)"
                     >
                         {{ category }}
                     </span>
@@ -40,7 +30,6 @@
                 :key="index"
                 class="text-xs text-zinc-600 flex items-center gap-2"
             >
-                <span class="font-medium text-zinc-500">Set {{ index + 1 }}:</span>
                 <span v-if="set.weight_in_kg">
                     {{ set.reps }} reps @ {{ set.weight_in_kg }}kg
                 </span>
@@ -53,6 +42,7 @@
 </template>
 
 <script setup>
+import { router } from '@inertiajs/vue3'
 import { TrashIcon } from '@heroicons/vue/24/outline'
 
 const props = defineProps({
@@ -61,12 +51,34 @@ const props = defineProps({
     bookingSlotId: { type: Number, required: true },
 })
 
-const emit = defineEmits(['deleted', 'edit'])
+const emit = defineEmits(['edit'])
+
+const getCategoryClass = (category) => {
+    const classes = {
+        'Strength': 'bg-blue-50 text-blue-700',
+        'Arms': 'bg-blue-50 text-blue-700',
+        'Chest': 'bg-amber-100 text-amber-700',
+        'Shoulders': 'bg-pink-50 text-pink-700',
+        'Back': 'bg-green-50 text-green-700',
+        'Core': 'bg-purple-100 text-purple-700',
+        'Bodyweight': 'bg-yellow-100 text-yellow-700',
+        'Abs': 'bg-lime-100 text-lime-700',
+        'Legs': 'bg-red-100 text-red-700',
+    }
+    return classes[category] || 'bg-blue-50 text-blue-700'
+}
 
 const handleDelete = (event) => {
     event.stopPropagation() // Prevent triggering edit when deleting
     if (confirm(`Delete "${props.workout.name}" from this circuit?`)) {
-        emit('deleted', props.workout.id)
+        router.delete(
+            route('admin.bookings-slots.circuits.workouts.destroy', {
+                bookingSlot: props.bookingSlotId,
+                circuit: props.circuitId,
+                circuitWorkout: props.workout.id,
+            }),
+            { preserveScroll: true }
+        )
     }
 }
 

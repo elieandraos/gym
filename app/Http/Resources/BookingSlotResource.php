@@ -30,6 +30,9 @@ class BookingSlotResource extends JsonResource
             'status' => $this->status,
             'formatted_date' => $this->formatDateWithSuffix($startTime),
             'booking' => new BookingResource($this->whenLoaded('booking')),
+            'circuits' => $this->whenLoaded('circuits',
+                fn () => BookingSlotCircuitResource::collection($this->circuits)
+            ),
             'badge_type' => match ($this->status) {
                 Status::Upcoming => 'warning',
                 Status::Cancelled => 'error',

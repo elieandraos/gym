@@ -77,7 +77,7 @@ class BookingSlotCircuitWorkoutSeeder extends Seeder
 
         foreach ($categories as $category) {
             $workouts = Workout::query()
-                ->where('category', $category)
+                ->whereJsonContains('categories', $category->value)
                 ->inRandomOrder()
                 ->limit(3)
                 ->get();

@@ -101,10 +101,10 @@ describe('age accessor', function () {
     });
 
     it('calculates correct age for a known birthdate', function () {
-        // Person born on Jan 1, 1990 - should be 35 years old in 2025
+        // Person born on Jan 1, 1990 - should be 36 years old in 2026
         $user = User::factory()->create(['birthdate' => '1990-01-01']);
 
-        expect($user->age)->toBe('35');
+        expect($user->age)->toBe('36');
     });
 
     it('returns age 0 for users born this year', function () {

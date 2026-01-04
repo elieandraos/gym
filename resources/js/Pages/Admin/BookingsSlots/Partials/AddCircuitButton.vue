@@ -9,25 +9,16 @@
 </template>
 
 <script setup>
+import { router } from '@inertiajs/vue3'
 import { PlusIcon } from '@heroicons/vue/24/outline'
 
-defineProps({
+const props = defineProps({
     bookingSlotId: { type: Number, required: true },
 })
 
-const emit = defineEmits(['circuit-added'])
-
-// Generate unique ID for dummy circuits
-let circuitCounter = 1
-
 const addCircuit = () => {
-    const newCircuit = {
-        id: Date.now(), // Use timestamp as unique ID
-        name: `Circuit ${circuitCounter}`,
-        workouts: []
-    }
-
-    circuitCounter++
-    emit('circuit-added', newCircuit)
+    router.post(route('admin.bookings-slots.circuits.store', props.bookingSlotId), {}, {
+        preserveScroll: true,
+    })
 }
 </script>

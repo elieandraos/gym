@@ -15,7 +15,6 @@
             :booking-slot-id="bookingSlotId"
             :available-workouts="availableWorkouts"
             @close="showModal = false"
-            @workout-added="handleWorkoutAdded"
         />
     </div>
 </template>
@@ -31,12 +30,5 @@ defineProps({
     availableWorkouts: { type: Array, required: true },
 })
 
-const emit = defineEmits(['workout-added'])
-
 const showModal = ref(false)
-
-const handleWorkoutAdded = (workout) => {
-    emit('workout-added', workout)
-    showModal.value = false
-}
 </script>

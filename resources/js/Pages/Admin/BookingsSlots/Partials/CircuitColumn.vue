@@ -4,8 +4,6 @@
         <CircuitHeader
             :circuit="circuit"
             :booking-slot-id="bookingSlotId"
-            @updated="$emit('circuit-updated', $event)"
-            @deleted="$emit('circuit-deleted', circuit.id)"
         />
 
         <!-- Body with Workouts -->
@@ -17,7 +15,6 @@
                 :workout="workout"
                 :circuit-id="circuit.id"
                 :booking-slot-id="bookingSlotId"
-                @deleted="handleWorkoutDeleted"
                 @edit="handleWorkoutEdit(workout)"
             />
 
@@ -27,7 +24,6 @@
                     :circuit-id="circuit.id"
                     :booking-slot-id="bookingSlotId"
                     :available-workouts="availableWorkouts"
-                    @workout-added="handleWorkoutAdded"
                 />
             </div>
         </div>
@@ -40,7 +36,6 @@
             :available-workouts="availableWorkouts"
             :editing-workout="editingWorkout"
             @close="showEditModal = false; editingWorkout = null"
-            @workout-added="handleWorkoutUpdated"
         />
     </div>
 </template>
@@ -58,27 +53,11 @@ const props = defineProps({
     availableWorkouts: { type: Array, required: true },
 })
 
-const emit = defineEmits(['circuit-updated', 'circuit-deleted', 'workout-added', 'workout-deleted', 'workout-updated'])
-
 const showEditModal = ref(false)
 const editingWorkout = ref(null)
-
-const handleWorkoutAdded = (workout) => {
-    emit('workout-added', { circuitId: props.circuit.id, workout })
-}
-
-const handleWorkoutDeleted = (workoutId) => {
-    emit('workout-deleted', { circuitId: props.circuit.id, workoutId })
-}
 
 const handleWorkoutEdit = (workout) => {
     editingWorkout.value = workout
     showEditModal.value = true
-}
-
-const handleWorkoutUpdated = (updatedWorkout) => {
-    emit('workout-updated', { circuitId: props.circuit.id, workout: updatedWorkout })
-    showEditModal.value = false
-    editingWorkout.value = null
 }
 </script>
