@@ -27,6 +27,9 @@
             <Link v-if="bookingId" :href="route('admin.bookings.show', bookingId)" class="p-2 hover:bg-zinc-100 rounded-lg cursor-pointer" title="View booking schedule">
                 <CalendarDaysIcon class="w-5 h-5 text-zinc-600" />
             </Link>
+            <button @click="showPreviousSessionsModal = true" class="p-2 hover:bg-zinc-100 rounded-lg cursor-pointer" title="View previous sessions">
+                <ClockIcon class="w-5 h-5 text-zinc-600" />
+            </button>
             <dropdown direction="left">
                 <div class="space-y-2">
                     <Link :href="route('admin.change-booking-slot-date-time.edit', id)" class="block p-2 hover:bg-zinc-100 hover:rounded-lg">Change date & time</Link>
@@ -37,17 +40,25 @@
                 </div>
             </dropdown>
         </div>
+
+        <!-- Previous Sessions Modal -->
+        <PreviousSessionsModal
+            :show="showPreviousSessionsModal"
+            :booking-slot-id="id"
+            @close="showPreviousSessionsModal = false"
+        />
     </div>
 </template>
 
 <script setup>
+import { ref, toRefs } from 'vue'
+import { Link } from '@inertiajs/vue3'
 import Badge from '@/Components/Layout/Badge.vue'
 import Dropdown from '@/Components/Layout/Dropdown.vue'
 import PageBackButton from '@/Components/Layout/PageBackButton.vue'
-import { CalendarDaysIcon, ClockIcon } from '@heroicons/vue/24/solid'
-
-import { Link } from '@inertiajs/vue3'
-import { toRefs } from 'vue'
+import PreviousSessionsModal from './PreviousSessionsModal.vue'
+import { CalendarDaysIcon } from '@heroicons/vue/24/solid'
+import { ClockIcon } from '@heroicons/vue/24/outline'
 
 const { route } = window
 
@@ -65,4 +76,6 @@ const {
     status,
     badge_type,
 } = toRefs(props.bookingSlot)
+
+const showPreviousSessionsModal = ref(false)
 </script>
