@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\BodyCompositionController;
 use App\Http\Controllers\Admin\BookingsController;
 use App\Http\Controllers\Admin\BookingSlotCircuitsController;
+use App\Http\Controllers\Admin\BookingSlotCircuitWorkoutHistoryController;
 use App\Http\Controllers\Admin\BookingSlotCircuitWorkoutsController;
 use App\Http\Controllers\Admin\BookingSlotsController;
 use App\Http\Controllers\Admin\CancelBookingSlotController;
@@ -121,6 +122,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
 
     // Bookings slot
     Route::get('/bookings-slots/{bookingSlot}/show', [BookingSlotsController::class, 'show'])->name('admin.bookings-slots.show');
+    Route::get('/bookings-slots/{bookingSlot}/circuit-workout-history', BookingSlotCircuitWorkoutHistoryController::class)->name('admin.bookings-slots.circuit-workout-history');
     //  Bookings slot change date time
     Route::get('/bookings-slots/{bookingSlot}/change-date-time/edit', [ChangeBookingSlotDateTimeController::class, 'edit'])->name('admin.change-booking-slot-date-time.edit');
     Route::put('/bookings-slots/{bookingSlot}/change-date-time/update', [ChangeBookingSlotDateTimeController::class, 'update'])->name('admin.change-booking-slot-date-time.update');
