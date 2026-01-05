@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Admin\BodyCompositionController;
 use App\Http\Controllers\Admin\BookingsController;
+use App\Http\Controllers\Admin\BookingSlotCircuitsController;
+use App\Http\Controllers\Admin\BookingSlotCircuitWorkoutsController;
 use App\Http\Controllers\Admin\BookingSlotsController;
 use App\Http\Controllers\Admin\CancelBookingSlotController;
 use App\Http\Controllers\Admin\ChangeBookingSlotDateTimeController;
@@ -125,6 +127,14 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     // Bookings slot cancel
     Route::get('/bookings-slots/{bookingSlot}/cancel', [CancelBookingSlotController::class, 'index'])->name('admin.bookings-slots.cancel.index');
     Route::delete('/bookings-slots/{bookingSlot}/cancel', [CancelBookingSlotController::class, 'destroy'])->name('admin.bookings-slots.cancel.destroy');
+    // Bookings slot circuits
+    Route::post('/bookings-slots/{bookingSlot}/circuits', [BookingSlotCircuitsController::class, 'store'])->name('admin.bookings-slots.circuits.store');
+    Route::patch('/bookings-slots/{bookingSlot}/circuits/{circuit}', [BookingSlotCircuitsController::class, 'update'])->name('admin.bookings-slots.circuits.update');
+    Route::delete('/bookings-slots/{bookingSlot}/circuits/{circuit}', [BookingSlotCircuitsController::class, 'destroy'])->name('admin.bookings-slots.circuits.destroy');
+    // Bookings slot circuit workouts
+    Route::post('/bookings-slots/{bookingSlot}/circuits/{circuit}/workouts', [BookingSlotCircuitWorkoutsController::class, 'store'])->name('admin.bookings-slots.circuits.workouts.store');
+    Route::put('/bookings-slots/{bookingSlot}/circuits/{circuit}/workouts/{circuitWorkout}', [BookingSlotCircuitWorkoutsController::class, 'update'])->name('admin.bookings-slots.circuits.workouts.update');
+    Route::delete('/bookings-slots/{bookingSlot}/circuits/{circuit}/workouts/{circuitWorkout}', [BookingSlotCircuitWorkoutsController::class, 'destroy'])->name('admin.bookings-slots.circuits.workouts.destroy');
 
     // Weekly Calendar
     Route::get('/weekly-calendar', [WeeklyCalendarController::class, 'index'])->name('admin.weekly-calendar.index');

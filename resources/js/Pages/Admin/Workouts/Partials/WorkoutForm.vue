@@ -14,12 +14,14 @@
                             :key="cat"
                             class="flex items-center gap-2 cursor-pointer hover:bg-zinc-50 p-2 rounded"
                         >
-                            <Checkbox
+                            <input
+                                type="checkbox"
                                 :value="cat"
-                                :checked="form.categories"
-                                @update:checked="form.categories = $event"
+                                :checked="form.categories.includes(cat)"
+                                @change="updateCategorySelection(cat, $event)"
+                                class="h-4 w-4 rounded border-zinc-200 accent-black focus:ring-black cursor-pointer"
                             />
-                            <span class="text-sm">{{ cat }}</span>
+                            <span class="text-sm cursor-pointer">{{ cat }}</span>
                         </label>
                     </div>
                     <InputError :message="form.errors.categories" />
@@ -47,7 +49,6 @@ import TransparentButton from '@/Components/Layout/TransparentButton.vue'
 import {Link} from '@inertiajs/vue3'
 import { inject, computed } from 'vue'
 
-import Checkbox from '@/Components/Checkbox.vue'
 import FormButtons from '@/Components/Form/FormButtons.vue'
 import FormSection from '@/Components/Form/FormSection.vue'
 import InputError from '@/Components/Form/InputError.vue'
@@ -63,6 +64,23 @@ const workout = inject('workout', null)
 const { route } = window
 
 const isEditing = computed(() => workout !== null)
+
+const updateCategorySelection = (category, event) => {
+    const newSelection = [...form.categories]
+
+    if (event.target.checked) {
+        if (!newSelection.includes(category)) {
+            newSelection.push(category)
+        }
+    } else {
+        const index = newSelection.indexOf(category)
+        if (index > -1) {
+            newSelection.splice(index, 1)
+        }
+    }
+
+    form.categories = newSelection
+}
 
 const saveWorkout = () => {
     const url = isEditing.value

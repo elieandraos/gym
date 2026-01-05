@@ -1,467 +1,195 @@
 # Release Notes
 
-This release introduces a significant enhancement to the workout categorization system, transforming exercises from single-category assignments to multi-category support. This change better reflects the reality of compound exercises that engage multiple muscle groups simultaneously.
+This release introduces a circuit-based workout management system with a Trello-style interface, replacing the previous flat workout list. Trainers can now organize exercises into logical circuits within each training session, providing better structure and reflecting real-world training methodologies.
 
-## 🏋️ Multi-Category Workout System
+## 🏋️ Circuit-Based Workout System
 
-### Enhanced Exercise Categorization
+### Overview
 
-The workout categorization system has been redesigned to support multiple categories per exercise, replacing the restrictive single-category approach with a flexible multi-category JSON-based system.
+The workout management system has been redesigned around training circuits—groups of exercises performed together during a session. This replaces the flat workout list with a hierarchical structure.
 
-**Previous Structure (Removed):**
+**Previous Structure:**
 ```
-Workout
-├─ name: "Barbell Bench Press"
-└─ category: "Chest" (single ENUM value)
+BookingSlot → Workouts[] (flat list)
 ```
 
-**New Structure (Current):**
+**New Structure:**
 ```
-Workout
-├─ name: "Barbell Bench Press"
-└─ categories: ["Chest", "Triceps"] (JSON array)
+BookingSlot → Circuits[] → Workouts[] → Sets[]
 ```
 
-### Multi-Category Features
+### Key Features
 
-**Realistic Exercise Classification:**
-- Compound exercises now properly categorized with all engaged muscle groups:
-  - "Barbell Bench Press" → `["Chest", "Triceps"]`
-  - "Pull-Ups" → `["Back", "Biceps"]`
-  - "Romanian Deadlifts" → `["Legs", "Glutes", "Back"]`
-  - "Dumbbell Press" → `["Chest", "Shoulders"]`
-- Isolation exercises maintain single-category assignment:
-  - "Bicep Curls" → `["Biceps"]`
-  - "Leg Extensions" → `["Legs"]`
-  - "Lateral Raises" → `["Shoulders"]`
+**Trello-Style Interface:**
+- Visual column-based layout with horizontal scrolling
+- Each circuit displayed as a vertical column
+- Workout cards within each circuit
+- Responsive design (vertical on mobile, horizontal on desktop)
+- "Add Circuit" button for creating new workout groups
 
-**Improved Filtering:**
-- Filter workouts by multiple categories simultaneously
-- Workouts appear when ANY selected category matches
-- More accurate workout discovery for training programs
-- Better organization of compound vs isolation exercises
+**Circuit Management:**
+- Create unlimited circuits per session
+- Auto-generated names: "Circuit 1", "Circuit 2", etc.
+- Rename circuits: "Upper Body Circuit", "Core Circuit", "Cardio Circuit"
+- Delete entire circuits (removes all workouts/sets)
+- Inline click-to-edit functionality
 
-**Enhanced User Experience:**
-- Checkbox-based category selection (multi-select)
-- Visual display of all categories per workout
-- Comma-separated category display in workout lists
-- Intuitive category management in admin interface
+**Workout Organization:**
+- Add workouts to specific circuits via modal
+- Workout cards display:
+  - Exercise name with color-coded category badges
+  - All sets (reps/weight or duration)
+  - Edit and delete actions
+- Search workouts with autocomplete
+- Click any card to edit
 
-### Data Model Changes
+**Flexible Set Configuration:**
+- **Weight-based workouts**: Reps + Weight (e.g., "12 reps @ 25kg")
+- **Duration-based workouts**: Time only (e.g., "30s plank")
+- Radio button type selection
+- Add/remove sets dynamically (1-10 sets)
+- Clean display without "Set 1:", "Set 2:" labels
 
-**Updated Model:**
-- `Workout` model now uses Laravel's array cast for JSON handling
-  ```php
-  protected $casts = [
-      'categories' => 'array',  // Auto JSON ↔ array conversion
-  ];
-  ```
+### Database Changes
 
-**Database Column:**
-- Changed from MySQL ENUM to JSON column type
-- Column renamed: `category` → `categories`
-- Supports 1-3 categories per workout
-- Efficient querying with MySQL's JSON functions
+**New Tables:**
+- `booking_slot_circuits` - Circuit groups
+- `booking_slot_circuit_workouts` - Workouts within circuits
+- `booking_slot_circuit_workout_sets` - Individual sets (reps/weight/duration)
 
-**Storage Format:**
-```json
-{
-  "id": 1,
-  "name": "Barbell Bench Press",
-  "categories": ["Chest", "Triceps"]
-}
-```
+**Removed Tables:**
+- `booking_slot_workouts` (replaced by circuit workouts)
+- `workout_sets` (replaced by circuit workout sets)
 
-### Database Schema Updates
+### Backend Implementation
 
-**Migration Changes:**
-```php
-// Before (ENUM - single category)
-$table->enum('category', $categories)->index();
+**New Controllers:**
+- `BookingSlotCircuitsController` - CRUD operations for circuits
+- `BookingSlotCircuitWorkoutsController` - Manage workouts within circuits
 
-// After (JSON - multiple categories)
-$table->json('categories');
-```
+**New Models:**
+- `BookingSlotCircuit` - Circuit model with relationships
+- `BookingSlotCircuitWorkout` - Circuit workout model
+- `BookingSlotCircuitWorkoutSet` - Set model with nullable reps
 
-**Migration File:**
-- `database/migrations/2025_06_21_095410_create_workouts_table.php`
-  - Removed ENUM column type
-  - Added JSON column for categories array
-  - Column name changed for semantic clarity
+**Validation:**
+- Circuit name validation
+- Workout type validation (weight/duration)
+- Sets array validation with reps/weight/duration checks
 
-**Data Migration for Production:**
-```sql
--- Step 1: Add new categories column
-ALTER TABLE `workouts` ADD COLUMN `categories` JSON NULL AFTER `name`;
+### Frontend Components
 
--- Step 2: Migrate existing data (ENUM → JSON array)
-UPDATE `workouts` SET `categories` = JSON_ARRAY(`category`);
-
--- Step 3: Verify migration
-SELECT id, name, category, categories FROM workouts LIMIT 10;
-
--- Step 4: Drop old column (after verification)
-ALTER TABLE `workouts` DROP COLUMN `category`;
-
--- Step 5: Make categories NOT NULL
-ALTER TABLE `workouts` MODIFY `categories` JSON NOT NULL;
-```
-
-### Seeder Updates
-
-**Complete Workout Library (100 Exercises):**
-All production workouts have been categorized with appropriate multiple categories:
-
-**Compound Exercise Examples:**
-- **42 compound exercises** with 2-3 categories:
-  - Legs + Glutes (17 exercises): Squats, Lunges, Hip Thrusts, RDLs
-  - Back + Biceps (11 exercises): Pull-Ups, Rows, Lat Pulldowns
-  - Chest + Triceps (8 exercises): Bench Press variations, Dips, Push-Ups
-  - Shoulders + Chest (3 exercises): Dumbbell Press, Arnold Press
-  - Core + Abs (9 exercises): Crunches, Leg Raises, Planks
-
-**Isolation Exercise Examples:**
-- **58 isolation exercises** with single category:
-  - Biceps only (9 exercises): Various curl variations
-  - Triceps only (4 exercises): Cable pushdowns, extensions
-  - Shoulders only (6 exercises): Lateral raises, front raises
-  - Legs only (5 exercises): Leg extensions, leg curls, calf raises
-  - Chest only (4 exercises): Cable flies variations
-
-**Seeder Structure:**
-```php
-$workouts = [
-    // Legs + Glutes compound
-    ['name' => 'Barbell Squats', 'categories' => ['Legs', 'Glutes']],
-    ['name' => 'Romanian Deadlifts', 'categories' => ['Legs', 'Glutes', 'Back']],
-
-    // Back + Biceps compound
-    ['name' => 'Pull-Ups', 'categories' => ['Back', 'Biceps']],
-
-    // Isolation exercises
-    ['name' => 'Bicep Curls', 'categories' => ['Biceps']],
-    ['name' => 'Leg Extensions', 'categories' => ['Legs']],
-];
-```
-
-### Backend Changes
-
-**Controller Updates:**
-- `WorkoutController.php` - JSON-based filtering with `whereJsonContains()`
-  ```php
-  // Before (ENUM whereIn)
-  ->when(request('categories'), function ($query, $categories) {
-      $query->whereIn('category', $categories);
-  })
-
-  // After (JSON whereJsonContains)
-  ->when(request('categories'), function ($query, $categories) {
-      $query->where(function ($q) use ($categories) {
-          foreach ($categories as $category) {
-              $q->orWhereJsonContains('categories', $category);
-          }
-      });
-  })
-  ```
-
-**Validation Updates:**
-- `WorkoutRequest.php` - Array validation with enum checking
-  ```php
-  // Before (single category)
-  'category' => ['required', new Enum(Category::class)]
-
-  // After (array of categories)
-  'categories' => ['required', 'array', 'min:1'],
-  'categories.*' => [new Enum(Category::class)]
-  ```
-
-**Resource Updates:**
-- `WorkoutResource.php` - Returns categories as array
-  ```php
-  // Before
-  'category' => $this->category->value
-
-  // After
-  'categories' => $this->categories  // Already array from model cast
-  ```
-
-**Factory Updates:**
-- `WorkoutFactory.php` - Generates 1-3 random categories per workout
-  ```php
-  // Before (single category)
-  'category' => $this->faker->randomElement(Category::cases())
-
-  // After (1-3 categories)
-  'categories' => array_map(
-      fn($cat) => $cat->value,
-      $this->faker->randomElements(Category::cases(), count: $this->faker->numberBetween(1, 3))
-  )
-  ```
-
-### Frontend Changes
-
-**Workout Form (Create/Edit):**
-- Replaced single-select dropdown with checkbox group
-- Visual 2-column grid layout for all 9 categories
-- Multi-select capability for compound exercises
-- Real-time validation (minimum 1 category required)
-
-**Before:**
-```vue
-<SelectInput v-model="form.category" :options="categoryOptions" />
-```
-
-**After:**
-```vue
-<div class="grid grid-cols-2 gap-2">
-    <label v-for="cat in categories" class="flex items-center gap-2">
-        <Checkbox :value="cat" :checked="form.categories" />
-        <span>{{ cat }}</span>
-    </label>
-</div>
-```
+**New Components:**
+- `CircuitColumn.vue` - Circuit display container
+- `CircuitHeader.vue` - Circuit title with inline editing
+- `CircuitWorkoutCard.vue` - Workout card with sets display
+- `AddWorkoutModal.vue` - Create/edit workout modal
+- `AddWorkoutButton.vue` - Trigger for adding workouts
+- `AddCircuitButton.vue` - Trigger for creating circuits
 
 **Updated Components:**
-- `WorkoutForm.vue` - Checkbox group for category selection
-  - Added `Checkbox` and `InputLabel` components
-  - Removed `SelectInput` dependency
-  - Updated validation error handling
+- `Show.vue` - Redesigned as Trello-style board
+- Enhanced responsive design for mobile/desktop
 
-- `Create.vue` - Form initialization with empty array
-  ```js
-  const form = useForm({
-      name: null,
-      categories: []  // Changed from category: null
-  })
-  ```
+### Testing
 
-- `Edit.vue` - Form loads categories from workout
-  ```js
-  const form = useForm({
-      name: props.workout.name,
-      categories: props.workout.categories  // Now array
-  })
-  ```
+**15 Comprehensive Tests (All Passing):**
+- Circuit CRUD operations
+- Workout creation (weight-based and duration-based)
+- Validation testing
+- Authentication requirements
+- Cascading delete verification
 
-**Workout List Display:**
-- `Index.vue` - Table header changed to "Categories" (plural)
-- `WorkoutsList.vue` - Display categories as comma-separated values
-  ```vue
-  <!-- Desktop view -->
-  <td>{{ categories?.join(', ') }}</td>
+Test file: `tests/Feature/Admin/BookingSlotCircuitTest.php`
 
-  <!-- Mobile view -->
-  <div>{{ categories?.join(', ') }}</div>
-  ```
+## 🎨 UI/UX Improvements
 
-**Display Examples:**
-- "Chest, Triceps" (compound exercise)
-- "Legs, Glutes, Back" (multi-muscle exercise)
-- "Biceps" (isolation exercise)
+### Form Styling Consistency
 
-### Testing Updates
+**Black Accent Theme:**
+- Updated all checkboxes to use black accent (workout category selection)
+- Updated all radio buttons to use black accent (Weight/Duration type)
+- Replaced Jetstream's default indigo with black for consistency
+- Better visual hierarchy and professional appearance
 
-**Test Coverage (12 Tests - All Passing):**
-- ✅ Workout creation with multiple categories
-- ✅ Workout update with category changes
-- ✅ Validation requires array of categories
-- ✅ Validation requires minimum 1 category
-- ✅ Validation rejects invalid category values
-- ✅ Filter by single category (JSON contains)
-- ✅ Filter by multiple categories (JSON contains any)
-- ✅ Search combined with category filtering
-- ✅ Workout deletion
-- ✅ Authentication requirements
-- ✅ Index page rendering
-- ✅ Edit page rendering
+### Cleaner Workout Display
+**Color-Coded Categories:**
+- Category badges with distinct colors
+- Chest (amber), Back (green), Legs (red), etc.
+- Better visual identification
 
-**Updated Test File:**
-- `tests/Feature/Admin/WorkoutsTest.php`
-  - Updated all test data to use categories arrays
-  - Changed assertions from `category` to `categories`
-  - Updated filtering tests to use `whereJsonContains()`
-  - Added validation tests for array requirements
+## 🗃️ Database Schema Updates
 
-**Test Example:**
-```php
-test('it creates a workout with multiple categories', function () {
-    $data = [
-        'name' => 'Bench Press',
-        'categories' => ['Chest', 'Triceps'],
-    ];
+### Nullable Reps Column
 
-    actingAsAdmin()
-        ->post(route('admin.workouts.store'), $data)
-        ->assertSessionHasNoErrors();
+**Change:** Made `reps` column nullable in `booking_slot_circuit_workout_sets` table
 
-    $workout = Workout::where('name', 'Bench Press')->first();
-    expect($workout->categories)->toBe(['Chest', 'Triceps']);
-});
-```
+**Reason:**
+- Duration-based exercises (planks, holds) don't use reps
+- Previous schema forced meaningless default values
 
-## 🏗️ Technical Improvements
+**Solution:**
+- Weight workouts: store reps + weight
+- Duration workouts: store duration only (reps = null)
 
-**Database Efficiency:**
-- JSON column type optimized for MySQL 5.7+ JSON functions
-- `whereJsonContains()` provides efficient category filtering
-- Single column stores multiple values without additional tables
-- No many-to-many pivot table overhead
+**Migration Consolidation:**
+- Merged nullable change into original table creation migration
+- Cleaner migration history
 
-**Code Simplicity:**
-- Laravel's array cast handles JSON conversion automatically
-- No custom accessor/mutator code needed
-- Clean, maintainable codebase (3 lines vs 15+ lines for CSV approach)
-- Type-safe category validation with enum
+## 🔧 Technical Improvements
 
-**Query Performance:**
-- MySQL JSON indexes supported for faster queries
-- Efficient OR conditions with `whereJsonContains()`
-- No complex JOIN operations required
-- Direct column access maintains query speed
+**Route Organization:**
+- Added nested resource routes for circuits and circuit workouts
+- RESTful API structure
+- Proper route naming conventions
 
-**Future-Proof Design:**
-- Easy to add category-based analytics (most common combinations)
-- Supports advanced filtering (workouts with ALL categories)
-- Enables category frequency reports
-- Extensible for category-based recommendations
+**Seeder Updates:**
+- `BookingSlotCircuitWorkoutSeeder` - Creates realistic circuit data
+- 1-2 circuits per completed session
+- Random circuit names and workout selection
+- 70% weight-based, 30% duration-based workouts
+- Fixed bug: Updated JSON query from `where('category')` to `whereJsonContains('categories')`
 
-## 📝 Developer Notes
-
-**Production Deployment:**
-
-The migration requires manual SQL execution in production to preserve existing data:
-
-```bash
-# 1. Backup database first
-mysqldump -u [user] -p [database] > backup_$(date +%Y%m%d_%H%M%S).sql
-
-# 2. Run migration SQL (see Database Schema Updates section)
-
-# 3. Deploy code
-git pull origin workouts-categories
-composer install --no-dev --optimize-autoloader
-npm run build
-php artisan config:clear
-php artisan cache:clear
-php artisan view:clear
-php artisan route:clear
-php artisan queue:restart
-
-# 4. Verify in tinker
-php artisan tinker
-> Workout::first()->categories  // Should return array
-```
-
-**Testing Multi-Category Functionality:**
-```bash
-# Run all workout tests
-php artisan test --filter=WorkoutsTest
-
-# Run fresh migration with seeded data
-php artisan migrate:fresh --seed
-
-# Format code
-./vendor/bin/pint
-
-# View workout with categories
-php artisan tinker
-> Workout::where('name', 'Barbell Bench Press')->first()->categories
-// Returns: ["Chest", "Triceps"]
-```
-
-**API Response Format:**
-```json
-{
-  "workouts": [
-    {
-      "id": 1,
-      "name": "Barbell Bench Press",
-      "categories": ["Chest", "Triceps"]
-    },
-    {
-      "id": 2,
-      "name": "Romanian Deadlifts",
-      "categories": ["Legs", "Glutes", "Back"]
-    },
-    {
-      "id": 3,
-      "name": "Bicep Curls",
-      "categories": ["Biceps"]
-    }
-  ]
-}
-```
-
-**Category Filtering Examples:**
-```bash
-# Filter by single category
-GET /workouts?categories[]=Chest
-
-# Filter by multiple categories (shows workouts with ANY match)
-GET /workouts?categories[]=Chest&categories[]=Shoulders
-
-# Combine with search
-GET /workouts?search=press&categories[]=Chest
-```
-
-**Database Query Examples:**
-```php
-// Find workouts containing specific category
-Workout::whereJsonContains('categories', 'Chest')->get();
-
-// Find workouts containing any of multiple categories
-Workout::where(function($q) {
-    $q->whereJsonContains('categories', 'Chest')
-      ->orWhereJsonContains('categories', 'Triceps');
-})->get();
-
-// Count workouts by category frequency
-DB::table('workouts')
-    ->selectRaw('category_value, COUNT(*) as count')
-    ->crossJoin(DB::raw('JSON_TABLE(categories, "$[*]" COLUMNS(category_value VARCHAR(50) PATH "$")) as categories_table'))
-    ->groupBy('category_value')
-    ->get();
-```
-
-**Updating Seeder for Custom Workouts:**
-```php
-// Add your custom workouts with appropriate categories
-$workouts = [
-    // Your custom compound exercise
-    ['name' => 'Landmine Press', 'categories' => ['Chest', 'Shoulders', 'Core']],
-
-    // Your custom isolation exercise
-    ['name' => 'Reverse Curls', 'categories' => ['Biceps']],
-];
-```
+**Code Cleanup:**
+- Removed `BookingSlotWorkoutSeeder` (obsolete)
+- All code formatted with Laravel Pint
+- Comprehensive type hints and validation
+- Cascading deletes for data integrity
 
 ## 📊 Statistics
 
-**Implementation Metrics:**
-- **16 files modified** across backend and frontend
-- **100 workouts** seeded with appropriate categories
-- **42 compound exercises** assigned 2-3 categories
-- **58 isolation exercises** assigned single category
-- **12/12 tests passing** with comprehensive coverage
-- **Zero breaking changes** for end users
+**Implementation:**
+- 25+ files modified
+- 3 new database tables
+- 2 new controllers, 3 new models
+- 7 new Vue components
+- 15/15 tests passing
+- 2 obsolete tables removed
+- ~1500 lines of code added
 
-**Category Distribution:**
-- Legs: 22 exercises (highest volume)
-- Back: 17 exercises
-- Biceps: 16 exercises
-- Core/Abs: 12 exercises
-- Chest: 11 exercises
-- Shoulders: 11 exercises
-- Glutes: 11 exercises
-- Triceps: 9 exercises
+**Features:**
+- ✅ Unlimited circuits per session
+- ✅ Unlimited workouts per circuit
+- ✅ 1-10 sets per workout
+- ✅ Weight and duration exercise types
+- ✅ Inline editing
+- ✅ Cascading deletes
+- ✅ Responsive design
+- ✅ Real-time validation
 
-**Common Category Combinations:**
-- Legs + Glutes: 17 exercises (most common compound pairing)
-- Back + Biceps: 11 exercises
-- Chest + Triceps: 8 exercises
-- Core + Abs: 9 exercises
-- Shoulders + Chest: 3 exercises
+## 🎯 Breaking Changes
+
+**For End Users:**
+- None - Existing data preserved
+
+**For Developers:**
+- Removed `BookingSlotWorkout` model → Use `BookingSlotCircuitWorkout`
+- Removed `BookingSlotWorkoutSet` model → Use `BookingSlotCircuitWorkoutSet`
+- Removed `BookingSlotWorkoutController` → Use circuit controllers
+- Removed `BookingSlotWorkoutSeeder` → Use `BookingSlotCircuitWorkoutSeeder`
+- New relationship: `BookingSlot::circuits()`
+- Routes changed from `booking-slot-workout.*` to `bookings-slots.circuits.*`
 
 ## Summary
 
-This release transforms the workout categorization system from a restrictive single-category model to a flexible multi-category JSON-based approach. By accurately representing compound exercises with all engaged muscle groups, the system now better reflects real-world training principles. The implementation leverages Laravel's native JSON support for efficient querying while maintaining code simplicity. All 100 production workouts have been carefully categorized, with 42 compound exercises receiving appropriate multi-category assignments. The enhanced filtering capabilities and improved user interface provide trainers and members with more accurate workout discovery and better training program organization.
+This release transforms workout management with a circuit-based system and Trello-style interface. Trainers can now organize workouts into logical groups that reflect real-world training methodologies. The nullable reps column enables proper support for both weight-based and duration-based exercises. UI improvements include consistent black accent styling and cleaner workout displays. All changes maintain backward compatibility for end users while providing a modern, intuitive interface backed by comprehensive test coverage.

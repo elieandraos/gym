@@ -11,7 +11,7 @@ class WorkoutResource extends JsonResource
     /**
      * Convert the workout resource into an array suitable for API responses.
      *
-     * @param Request $request The incoming HTTP request instance.
+     * @param  Request  $request  The incoming HTTP request instance.
      * @return array Associative array with keys `id`, `name`, and `categories` representing the workout.
      */
     public function toArray(Request $request): array
