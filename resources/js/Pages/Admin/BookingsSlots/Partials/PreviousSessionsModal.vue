@@ -77,10 +77,14 @@ const fetchPreviousSessions = async () => {
                 limit: props.limit,
             })
         )
+        if (!response.ok) {
+            throw new Error(`HTTP error: ${response.status}`)
+        }
         const data = await response.json()
         previousSessions.value = data.previousSessions
     } catch (error) {
         console.error('Failed to fetch previous sessions:', error)
+        previousSessions.value = []
     } finally {
         loading.value = false
     }
