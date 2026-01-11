@@ -59,7 +59,7 @@ import { router } from '@inertiajs/vue3'
 import Badge from '@/Components/Layout/Badge.vue'
 
 const props = defineProps({
-    bookingSlots: { type: Array, required: true },
+    bookingSlots: { type: Array, default: () => [] },
     trainer: { type: Object, required: true },
 })
 

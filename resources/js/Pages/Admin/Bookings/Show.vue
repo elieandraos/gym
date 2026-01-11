@@ -7,7 +7,7 @@
 
             <p class="mb-8"> {{ description }}</p>
 
-            <BookingSessions :booking-slots="bookingSlots" :trainer="trainer"></BookingSessions>
+            <BookingSessions :booking-slots="props.bookingSlots" :trainer="trainer"></BookingSessions>
         </Container>
     </AppLayout>
 </template>
@@ -22,10 +22,11 @@ import MemberHeader from '@/Pages/Admin/Members/Partials/MemberHeader.vue'
 
 const props = defineProps({
     booking: { type: Object, required: true },
+    bookingSlots: { type: Array, required: true },
 })
 
 const {
-    member, trainer, bookingSlots, status, formatted_start_date, formatted_end_date
+    member, trainer, status, formatted_start_date, formatted_end_date
 } = props.booking
 
 const { first_name } = member
