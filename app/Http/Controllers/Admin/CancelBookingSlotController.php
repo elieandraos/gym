@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Enums\Status;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\BookingResource;
 use App\Http\Resources\BookingSlotResource;
 use App\Models\BookingSlot;
 use Illuminate\Http\RedirectResponse;
@@ -22,6 +23,7 @@ class CancelBookingSlotController extends Controller
 
         return Inertia::render('Admin/CancelBookingSlot/Index', [
             'bookingSlot' => BookingSlotResource::make($bookingSlot),
+            'booking' => BookingResource::make($bookingSlot->booking),
         ]);
     }
 

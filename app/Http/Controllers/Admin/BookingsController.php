@@ -76,14 +76,9 @@ class BookingsController extends Controller
             $query->orderBy('start_time');
         }]);
 
-        // Unset the booking relationship on each slot to prevent circular serialization
-        $bookingSlots = $booking->bookingSlots->each(function ($slot) {
-            $slot->unsetRelation('booking');
-        });
-
         return Inertia::render('Admin/Bookings/Show', [
             'booking' => BookingResource::make($booking),
-            'bookingSlots' => BookingSlotResource::collection($bookingSlots),
+            'bookingSlots' => BookingSlotResource::collection($booking->bookingSlots),
         ]);
     }
 }

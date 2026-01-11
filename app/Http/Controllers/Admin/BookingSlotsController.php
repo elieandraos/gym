@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\BookingResource;
 use App\Http\Resources\BookingSlotResource;
 use App\Http\Resources\WorkoutResource;
 use App\Models\BookingSlot;
@@ -29,6 +30,7 @@ class BookingSlotsController extends Controller
 
         return Inertia::render('Admin/BookingsSlots/Show', [
             'bookingSlot' => BookingSlotResource::make($bookingSlot),
+            'booking' => BookingResource::make($bookingSlot->booking),
             'bookingId' => request('booking_id'),
             'workouts' => WorkoutResource::collection($workouts),
         ]);

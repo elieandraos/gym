@@ -26,14 +26,9 @@ class UnfreezeBookingController extends Controller
             },
         ]);
 
-        // Unset the booking relationship on each slot to prevent circular serialization
-        $frozenSlots = $booking->bookingSlots->each(function ($slot) {
-            $slot->unsetRelation('booking');
-        });
-
         return Inertia::render('Admin/UnfreezeBooking/Index', [
             'booking' => BookingResource::make($booking),
-            'frozenSlots' => BookingSlotResource::collection($frozenSlots),
+            'frozenSlots' => BookingSlotResource::collection($booking->bookingSlots),
         ]);
     }
 

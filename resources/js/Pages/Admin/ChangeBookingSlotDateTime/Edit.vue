@@ -2,7 +2,7 @@
     <AppLayout title="New Training">
         <Container>
             <PageHeader :sticky="true">
-                <BookingSlotHeader :booking-slot="bookingSlot"></BookingSlotHeader>
+                <BookingSlotHeader :booking-slot="bookingSlot" :booking="booking"></BookingSlotHeader>
             </PageHeader>
 
             <FormSection title="Date" description="Update the session date.">
@@ -41,6 +41,7 @@ import AppLayout from '@/Layouts/AppLayout.vue'
 
 const props = defineProps({
     bookingSlot: { type: Object, required: true },
+    booking: { type: Object, required: true },
     suggestedDate: { type: String, default: null },
     suggestedTime: { type: String, default: null },
 })

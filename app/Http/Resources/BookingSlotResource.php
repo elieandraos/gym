@@ -29,7 +29,6 @@ class BookingSlotResource extends JsonResource
             'end_time' => $endTime->format('h:i A'),
             'status' => $this->status,
             'formatted_date' => $this->formatDateWithSuffix($startTime),
-            'booking' => new BookingResource($this->whenLoaded('booking')),
             'circuits' => $this->whenLoaded('circuits',
                 fn () => BookingSlotCircuitResource::collection($this->circuits)
             ),

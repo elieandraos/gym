@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Enums\Status;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ChangeBookingSlotDateTimeRequest;
+use App\Http\Resources\BookingResource;
 use App\Http\Resources\BookingSlotResource;
 use App\Models\BookingSlot;
 use App\Services\BookingManager;
@@ -40,6 +41,7 @@ class ChangeBookingSlotDateTimeController extends Controller
 
         return Inertia::render('Admin/ChangeBookingSlotDateTime/Edit', [
             'bookingSlot' => BookingSlotResource::make($bookingSlot),
+            'booking' => BookingResource::make($bookingSlot->booking),
             'suggestedDate' => $suggestedDate,
             'suggestedTime' => $suggestedTime,
         ]);
