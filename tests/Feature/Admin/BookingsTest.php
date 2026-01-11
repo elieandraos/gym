@@ -59,6 +59,8 @@ test('it shows booking information', function () {
         ->assertHasResource('booking', BookingResource::make($booking))
         ->assertInertia(fn (AssertableInertia $page) => $page
             ->has('bookingSlots')
+            ->has('bookingSlots', $booking->bookingSlots->count())
+            ->where('bookingSlots.0.id', $booking->bookingSlots->sortBy('start_time')->first()->id)
         )
         ->assertStatus(200);
 });
