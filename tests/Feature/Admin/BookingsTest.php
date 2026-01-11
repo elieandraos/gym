@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Services\BookingManager;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
+use Inertia\Testing\AssertableInertia;
 
 beforeEach(function () {
     setupUsersAndBookings();
@@ -56,6 +57,11 @@ test('it shows booking information', function () {
         ->get(route('admin.bookings.show', $booking))
         ->assertHasComponent('Admin/Bookings/Show')
         ->assertHasResource('booking', BookingResource::make($booking))
+        ->assertInertia(fn (AssertableInertia $page) => $page
+            ->has('bookingSlots')
+            ->has('bookingSlots', $booking->bookingSlots->count())
+            ->where('bookingSlots.0.id', $booking->bookingSlots->sortBy('start_time')->first()->id)
+        )
         ->assertStatus(200);
 });
 

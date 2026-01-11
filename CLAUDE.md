@@ -211,6 +211,41 @@ public function age(): Attribute
 }
 ```
 
+**API Resources (CRITICAL - Avoid Circular References):**
+- NEVER create circular references between resources (e.g., `BookingResource` including `BookingSlotResource::collection()` while `BookingSlotResource` includes `BookingResource`)
+- Circular references cause infinite recursion loops that exhaust memory/execution time, resulting in 502 Bad Gateway errors in production
+- When relationships are bidirectional, pass related data as separate props instead of nesting resources
+- Use `whenLoaded()` to conditionally include relationships, but ensure no circular loading patterns exist
+
+```php
+// ❌ AVOID - Circular reference that causes 502 errors
+// BookingResource.php
+'bookingSlots' => BookingSlotResource::collection($this->whenLoaded('bookingSlots')),
+
+// BookingSlotResource.php
+'booking' => new BookingResource($this->whenLoaded('booking')),
+// This creates: BookingSlot → Booking → BookingSlots → Booking → ... (infinite loop)
+
+// ✅ GOOD - Pass related collections as separate controller props
+// Controller
+return Inertia::render('Admin/Bookings/Show', [
+    'booking' => BookingResource::make($booking),
+    'bookingSlots' => BookingSlotResource::collection($booking->bookingSlots),
+]);
+
+// Vue Component
+defineProps({
+    booking: Object,
+    bookingSlots: Array,  // Separate prop, no circular reference
+})
+```
+
+**Why this matters:**
+- Works locally but fails in production due to stricter memory/timeout limits
+- PHP-FPM crashes → nginx returns 502 Bad Gateway
+- Difficult to debug because error happens at PHP process level, not application level
+- Always test resource relationships by loading them from both directions
+
 **Factories:**
 - Use state methods for different scenarios (`active()`, `completed()`, `scheduled()`)
 - Leverage realistic fake data that matches business logic

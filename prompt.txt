@@ -1,0 +1,97 @@
+# 502 Bad Gateway Issue on Production
+
+## Problem
+Production URL `https://lift-station.fitness/bookings-slots/1215/show` returns 502 Bad Gateway nginx error.
+Works fine locally, but fails on production.
+
+## Root Cause: Circular Reference in Resources
+
+There's an infinite recursion loop between `BookingSlotResource` and `BookingResource`:
+
+1. **BookingSlotResource.php:32** loads `BookingResource`:
+   ```php
+   'booking' => new BookingResource($this->whenLoaded('booking')),
+   ```
+
+2. **BookingResource.php:47** loads `BookingSlotResource::collection`:
+   ```php
+   'bookingSlots' => $slots->isNotEmpty() ? BookingSlotResource::collection($slots) : null,
+   ```
+
+This creates infinite loop:
+```
+BookingSlot → Booking → BookingSlots → Booking → BookingSlots → ...
+```
+
+## Why It Works Locally But Not Production
+- Local has higher `memory_limit` and `max_execution_time` in php.ini
+- Production has stricter PHP-FPM settings (lower memory/timeout limits)
+- Production may have more booking slot data, making recursion deeper
+- PHP runs out of memory or hits max execution time → PHP-FPM crashes → nginx returns 502
+
+## The Fix
+
+**Option 1 (Recommended): Remove circular reference**
+
+In `app/Http/Resources/BookingResource.php`, remove the line that includes `bookingSlots`:
+
+```php
+// REMOVE this line:
+'bookingSlots' => $slots->isNotEmpty() ? BookingSlotResource::collection($slots) : null,
+```
+
+This breaks the circular reference. When viewing a booking slot detail page, you don't need the full list of all booking slots nested within the booking resource - you only need the booking metadata (member, trainer, dates).
+
+**Option 2: Use a flag to prevent recursion**
+
+Create a `withoutSlots()` method on BookingResource to prevent loading slots when needed:
+
+```php
+class BookingResource extends JsonResource
+{
+    private bool $includeSlots = true;
+
+    public function withoutSlots(): self
+    {
+        $this->includeSlots = false;
+        return $this;
+    }
+
+    public function toArray(Request $request): array
+    {
+        // ... existing code ...
+
+        return [
+            // ... existing fields ...
+            'bookingSlots' => $this->when(
+                $this->includeSlots && $slots->isNotEmpty(),
+                BookingSlotResource::collection($slots)
+            ),
+            // ... rest of fields ...
+        ];
+    }
+}
+```
+
+Then in BookingSlotResource:
+```php
+'booking' => $this->whenLoaded('booking', function () {
+    return BookingResource::make($this->booking)->withoutSlots();
+}),
+```
+
+## Files Affected
+- `app/Http/Resources/BookingResource.php` (line 47)
+- `app/Http/Resources/BookingSlotResource.php` (line 32)
+
+## Testing After Fix
+1. Test locally: visit booking slot show page
+2. Check that booking metadata still displays (member name, trainer, dates)
+3. Deploy to production
+4. Test production URL: `https://lift-station.fitness/bookings-slots/1215/show`
+5. Verify no 502 error
+
+## Related Context
+- Booking slot ID 1215 has no circuits yet (confirmed by user)
+- Recent changes: Added workout history modal feature (see release_draft.md)
+- The circular reference existed before but only triggered when loading booking relationship on booking slot show page

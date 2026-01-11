@@ -6,6 +6,7 @@ use App\Enums\Status;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\BookingRequest;
 use App\Http\Resources\BookingResource;
+use App\Http\Resources\BookingSlotResource;
 use App\Http\Resources\MemberResource;
 use App\Http\Resources\TrainerResource;
 use App\Models\Booking;
@@ -77,6 +78,7 @@ class BookingsController extends Controller
 
         return Inertia::render('Admin/Bookings/Show', [
             'booking' => BookingResource::make($booking),
+            'bookingSlots' => BookingSlotResource::collection($booking->bookingSlots),
         ]);
     }
 }

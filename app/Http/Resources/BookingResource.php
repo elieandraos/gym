@@ -44,7 +44,6 @@ class BookingResource extends JsonResource
             'formatted_end_date' => Carbon::parse($this->end_date)->isoFormat('MMM Do'),
             'member' => new MemberResource($this->whenLoaded('member')),
             'trainer' => new TrainerResource($this->whenLoaded('trainer')),
-            'bookingSlots' => $slots->isNotEmpty() ? BookingSlotResource::collection($slots) : null,
             'upcoming_session_url' => $upcomingSlot ? route('admin.bookings-slots.show', $upcomingSlot->id) : null,
             'upcoming_session_date' => $upcomingSlot ? Carbon::parse($upcomingSlot->start_time)->isoFormat('ddd MMM Do') : null,
             'upcoming_session_time' => $upcomingSlot ? Carbon::parse($upcomingSlot->start_time)->format('h:i A') : null,
