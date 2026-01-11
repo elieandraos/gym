@@ -78,9 +78,7 @@ class BookingsController extends Controller
 
         return Inertia::render('Admin/Bookings/Show', [
             'booking' => BookingResource::make($booking),
-            'bookingSlots' => BookingSlotResource::collection(
-                $booking->bookingSlots->sortBy('start_time')->values()
-            ),
+            'bookingSlots' => BookingSlotResource::collection($booking->bookingSlots),
         ]);
     }
 }
