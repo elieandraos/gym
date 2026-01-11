@@ -215,7 +215,7 @@ public function age(): Attribute
 - NEVER create circular references between resources (e.g., `BookingResource` including `BookingSlotResource::collection()` while `BookingSlotResource` includes `BookingResource`)
 - Circular references cause infinite recursion loops that exhaust memory/execution time, resulting in 502 Bad Gateway errors in production
 - When relationships are bidirectional, pass related data as separate props instead of nesting resources
-- Use `whenLoaded()` to conditionally include relationships, but ensure no circular loading patterns exist
+- **CRITICAL:** Always unset inverse relationships before serializing collections to prevent large nested structures
 
 ```php
 // ❌ AVOID - Circular reference that causes 502 errors
@@ -226,11 +226,18 @@ public function age(): Attribute
 'booking' => new BookingResource($this->whenLoaded('booking')),
 // This creates: BookingSlot → Booking → BookingSlots → Booking → ... (infinite loop)
 
-// ✅ GOOD - Pass related collections as separate controller props
+// ✅ GOOD - Pass related collections as separate props AND unset inverse relationships
 // Controller
+$booking->load(['bookingSlots']);
+
+// Unset the inverse booking relationship to prevent nested serialization
+$bookingSlots = $booking->bookingSlots->each(function ($slot) {
+    $slot->unsetRelation('booking');
+});
+
 return Inertia::render('Admin/Bookings/Show', [
     'booking' => BookingResource::make($booking),
-    'bookingSlots' => BookingSlotResource::collection($booking->bookingSlots),
+    'bookingSlots' => BookingSlotResource::collection($bookingSlots),
 ]);
 
 // Vue Component
@@ -244,7 +251,9 @@ defineProps({
 - Works locally but fails in production due to stricter memory/timeout limits
 - PHP-FPM crashes → nginx returns 502 Bad Gateway
 - Difficult to debug because error happens at PHP process level, not application level
-- Always test resource relationships by loading them from both directions
+- Even if you remove the circular serialization, Laravel auto-loads inverse relationships which creates large nested structures in memory
+- Always unset inverse relationships before passing collections to resources
+- Apply this pattern everywhere you serialize collections of related models
 
 **Factories:**
 - Use state methods for different scenarios (`active()`, `completed()`, `scheduled()`)

@@ -31,6 +31,11 @@ class BookingSlotCircuitWorkoutHistoryController extends Controller
             ->limit($limit)
             ->get();
 
+        // Unset the booking relationship on each slot to prevent circular serialization
+        $previousSessions->each(function ($slot) {
+            $slot->unsetRelation('booking');
+        });
+
         return response()->json([
             'previousSessions' => BookingSlotResource::collection($previousSessions),
         ]);
