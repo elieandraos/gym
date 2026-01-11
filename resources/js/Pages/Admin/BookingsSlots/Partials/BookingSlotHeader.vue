@@ -64,13 +64,13 @@ const { route } = window
 
 const props = defineProps({
     bookingSlot: { type: Object, required: true },
+    booking: { type: Object, required: true },
     bookingId: { type: [Number, String], default: null },
     withMenu: { type: Boolean, default: false },
 })
 
 const {
     id,
-    booking,
     formatted_date,
     start_time,
     status,

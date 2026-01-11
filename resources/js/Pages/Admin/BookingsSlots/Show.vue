@@ -2,7 +2,7 @@
     <AppLayout title="Booking">
         <Container>
             <PageHeader :sticky="true">
-                <BookingSlotHeader :booking-slot="bookingSlot" :booking-id="bookingId" :with-menu="true"></BookingSlotHeader>
+                <BookingSlotHeader :booking-slot="bookingSlot" :booking="booking" :booking-id="bookingId" :with-menu="true"></BookingSlotHeader>
             </PageHeader>
 
             <!-- Trello-style Circuit Board -->
@@ -42,6 +42,7 @@ import AddCircuitButton from '@/Pages/Admin/BookingsSlots/Partials/AddCircuitBut
 
 const props = defineProps({
     bookingSlot: { type: Object, required: true },
+    booking: { type: Object, required: true },
     bookingId: { type: [Number, String], default: null },
     workouts: { type: Array, default: () => [] },
 })

@@ -2,7 +2,7 @@
     <AppLayout title="Cancel Session">
         <Container>
             <PageHeader :sticky="true">
-                <BookingSlotHeader :booking-slot="bookingSlot"></BookingSlotHeader>
+                <BookingSlotHeader :booking-slot="bookingSlot" :booking="booking"></BookingSlotHeader>
             </PageHeader>
 
             <div class="space-y-8">
@@ -31,6 +31,7 @@ import { Link, router } from '@inertiajs/vue3'
 
 const props = defineProps({
     bookingSlot: { type: Object, required: true },
+    booking: { type: Object, required: true },
 })
 
 const { id } = props.bookingSlot
