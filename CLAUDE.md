@@ -214,8 +214,8 @@ public function age(): Attribute
 **API Resources (CRITICAL - Avoid Circular References):**
 - NEVER create circular references between resources (e.g., `BookingResource` including `BookingSlotResource::collection()` while `BookingSlotResource` includes `BookingResource`)
 - Circular references cause infinite recursion loops that exhaust memory/execution time, resulting in 502 Bad Gateway errors in production
-- When relationships are bidirectional, pass related data as separate props instead of nesting resources
-- **CRITICAL:** Always unset inverse relationships before serializing collections to prevent large nested structures
+- **BEST PRACTICE:** Never serialize inverse relationships in resources - pass related data as separate Inertia props instead
+- This eliminates circular references at the source with no workarounds needed
 
 ```php
 // ❌ AVOID - Circular reference that causes 502 errors
@@ -226,24 +226,36 @@ public function age(): Attribute
 'booking' => new BookingResource($this->whenLoaded('booking')),
 // This creates: BookingSlot → Booking → BookingSlots → Booking → ... (infinite loop)
 
-// ✅ GOOD - Pass related collections as separate props AND unset inverse relationships
-// Controller
-$booking->load(['bookingSlots']);
+// ✅ BEST - Never serialize inverse relationships in resources
+// BookingSlotResource.php - NO booking relationship included
+public function toArray(Request $request): array {
+    return [
+        'id' => $this->id,
+        'date' => $this->start_time,
+        // ... other slot data
+        // NO 'booking' key - never serialize the inverse relationship
+    ];
+}
 
-// Unset the inverse booking relationship to prevent nested serialization
-$bookingSlots = $booking->bookingSlots->each(function ($slot) {
-    $slot->unsetRelation('booking');
-});
-
-return Inertia::render('Admin/Bookings/Show', [
-    'booking' => BookingResource::make($booking),
-    'bookingSlots' => BookingSlotResource::collection($bookingSlots),
+// Controllers pass parent and children as separate props when both are needed:
+// For single slot detail pages (needs booking context):
+$bookingSlot->load(['booking.member', 'booking.trainer', 'circuits']);
+return Inertia::render('Admin/BookingsSlots/Show', [
+    'bookingSlot' => BookingSlotResource::make($bookingSlot),  // No booking
+    'booking' => BookingResource::make($bookingSlot->booking), // Separate prop
 ]);
 
-// Vue Component
+// For booking detail pages (needs slots collection):
+$booking->load(['member', 'trainer', 'bookingSlots']);
+return Inertia::render('Admin/Bookings/Show', [
+    'booking' => BookingResource::make($booking),              // No slots
+    'bookingSlots' => BookingSlotResource::collection($booking->bookingSlots), // Separate prop
+]);
+
+// Vue components accept both as separate props:
 defineProps({
-    booking: Object,
-    bookingSlots: Array,  // Separate prop, no circular reference
+    booking: Object,        // Parent resource
+    bookingSlots: Array,    // Children collection (or single bookingSlot)
 })
 ```
 
@@ -252,8 +264,20 @@ defineProps({
 - PHP-FPM crashes → nginx returns 502 Bad Gateway
 - Difficult to debug because error happens at PHP process level, not application level
 - Even if you remove the circular serialization, Laravel auto-loads inverse relationships which creates large nested structures in memory
-- Always unset inverse relationships before passing collections to resources
-- Apply this pattern everywhere you serialize collections of related models
+
+**Key Architectural Benefits:**
+- ✅ Eliminates circular references completely at the source
+- ✅ Better separation of concerns - controllers control data flow, resources stay simple
+- ✅ More explicit about what data each page needs
+- ✅ Prevents future bugs - impossible to accidentally create circular references
+- ✅ Better performance - no unnecessary nested serialization
+- ✅ Zero database query overhead - same queries, just different serialization
+- ✅ Easier to maintain - clear, predictable data flow
+
+**When to use separate props:**
+- Parent-child bidirectional relationships (Booking ↔ BookingSlot)
+- Any resource that could be viewed both standalone and as part of a collection
+- When the same data might be needed in different contexts on the same page
 
 **Factories:**
 - Use state methods for different scenarios (`active()`, `completed()`, `scheduled()`)
