@@ -30,7 +30,21 @@ class BookingSlotsController extends Controller
 
         return Inertia::render('Admin/BookingsSlots/Show', [
             'bookingSlot' => BookingSlotResource::make($bookingSlot),
-            'booking' => BookingResource::make($bookingSlot->booking),
+            'booking' => array_merge(
+                BookingResource::make($bookingSlot->booking)->resolve(),
+                [
+                    'member' => [
+                        'id' => $bookingSlot->booking->member->id,
+                        'name' => $bookingSlot->booking->member->name,
+                        'profile_photo_url' => $bookingSlot->booking->member->profile_photo_url,
+                    ],
+                    'trainer' => [
+                        'id' => $bookingSlot->booking->trainer->id,
+                        'name' => $bookingSlot->booking->trainer->name,
+                        'profile_photo_url' => $bookingSlot->booking->trainer->profile_photo_url,
+                    ],
+                ]
+            ),
             'bookingId' => request('booking_id'),
             'workouts' => WorkoutResource::collection($workouts),
         ]);

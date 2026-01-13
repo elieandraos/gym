@@ -99,30 +99,21 @@ class User extends Authenticatable
     {
         return $this->hasOne(Booking::class, 'member_id')
             ->active()
-            ->orderBy('start_date')
-            ->with([
-                'trainer',
-                'bookingSlots' => fn ($query) => $query->orderBy('start_time'),
-            ]);
+            ->orderBy('start_date');
     }
 
     public function memberScheduledBookings(): HasMany
     {
         return $this->hasMany(Booking::class, 'member_id')
             ->scheduled()
-            ->orderBy('start_date')
-            ->with([
-                'trainer',
-                'bookingSlots' => fn ($query) => $query->orderBy('start_time'),
-            ]);
+            ->orderBy('start_date');
     }
 
     public function memberCompletedBookings(): HasMany
     {
         return $this->hasMany(Booking::class, 'member_id')
             ->history()
-            ->orderBy('start_date', 'desc')
-            ->with('trainer');
+            ->orderBy('start_date', 'desc');
     }
 
     public function bodyCompositions(): HasMany

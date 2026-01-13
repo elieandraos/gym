@@ -6,6 +6,7 @@ use App\Enums\Role;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\UpdateUserRequest;
 use App\Http\Requests\Admin\UserRequest;
+use App\Http\Resources\BookingResource;
 use App\Http\Resources\MemberResource;
 use App\Mail\Member\WelcomeEmail;
 use App\Mail\Owner\NewMemberEmail;
@@ -49,15 +50,20 @@ class MembersController extends Controller
     public function show(User $user): Response
     {
         $user->load([
+            'memberActiveBooking.trainer',
             'memberActiveBooking.bookingSlots' => function ($query) {
                 $query->orderBy('start_time');
             },
-            'memberScheduledBookings',
+            'memberScheduledBookings.trainer',
+            'memberCompletedBookings.trainer',
             'lastBodyComposition',
         ]);
 
         return Inertia::render('Admin/Members/Show', [
             'member' => MemberResource::make($user),
+            'activeBooking' => $user->memberActiveBooking ? BookingResource::make($user->memberActiveBooking) : null,
+            'scheduledBookings' => BookingResource::collection($user->memberScheduledBookings),
+            'completedBookings' => BookingResource::collection($user->memberCompletedBookings),
         ]);
     }
 
