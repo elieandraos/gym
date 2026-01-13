@@ -22,7 +22,7 @@ class DashboardController extends Controller
                     ->orWhere('start_date', '>', now());
             })
             ->with(['member', 'trainer'])
-            ->orderBy('start_date', 'asc')
+            ->orderBy('start_date')
             ->get();
 
         // Frozen bookings with member and trainer info
@@ -105,6 +105,54 @@ class DashboardController extends Controller
                 ];
             });
 
+        // Transform booking collections to include member/trainer data without using Resources (avoids circular refs)
+        $unpaidBookingsData = $unpaidBookings->map(function ($booking) {
+            return array_merge(
+                BookingResource::make($booking)->resolve(),
+                [
+                    'member' => [
+                        'id' => $booking->member->id,
+                        'name' => $booking->member->name,
+                        'profile_photo_url' => $booking->member->profile_photo_url,
+                    ],
+                ]
+            );
+        });
+
+        $frozenBookingsData = $frozenBookings->map(function ($booking) {
+            return array_merge(
+                BookingResource::make($booking)->resolve(),
+                [
+                    'member' => [
+                        'id' => $booking->member->id,
+                        'name' => $booking->member->name,
+                        'profile_photo_url' => $booking->member->profile_photo_url,
+                    ],
+                    'trainer' => [
+                        'id' => $booking->trainer->id,
+                        'name' => $booking->trainer->name,
+                    ],
+                ]
+            );
+        });
+
+        $expiringBookingsData = $expiringBookings->map(function ($booking) {
+            $completedCount = $booking->bookingSlots->where('status', Status::Complete)->count();
+            $nbRemaining = $booking->nb_sessions - $completedCount;
+
+            return array_merge(
+                BookingResource::make($booking)->resolve(),
+                [
+                    'member' => [
+                        'id' => $booking->member->id,
+                        'name' => $booking->member->name,
+                        'profile_photo_url' => $booking->member->profile_photo_url,
+                    ],
+                    'nb_remaining_sessions' => $nbRemaining.' '.\Illuminate\Support\Str::plural('session', $nbRemaining),
+                ]
+            );
+        });
+
         return Inertia::render('Admin/Dashboard/Index', [
             'stats' => [
                 'active_members' => $activeMembersCount,
@@ -114,9 +162,9 @@ class DashboardController extends Controller
                 'female_members' => $femaleCount,
             ],
             'bookings' => [
-                'unpaid' => BookingResource::collection($unpaidBookings),
-                'frozen' => BookingResource::collection($frozenBookings),
-                'expiring' => BookingResource::collection($expiringBookings),
+                'unpaid' => $unpaidBookingsData,
+                'frozen' => $frozenBookingsData,
+                'expiring' => $expiringBookingsData,
             ],
             'trainers' => $trainers,
         ]);

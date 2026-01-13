@@ -212,50 +212,149 @@ public function age(): Attribute
 ```
 
 **API Resources (CRITICAL - Avoid Circular References):**
-- NEVER create circular references between resources (e.g., `BookingResource` including `BookingSlotResource::collection()` while `BookingSlotResource` includes `BookingResource`)
+
+**The Golden Rules:**
+1. **Resources must NEVER serialize inverse relationships** (child → parent, user → booking, etc.)
+2. **Resources must NEVER access loaded relationships** (even for calculations)
+3. **Models must NEVER auto-eager load relationships** (no `->with()` in relationship definitions)
+4. **Controllers pass related data as separate Inertia props** (explicit data flow)
+5. **Vue components accept multiple separate props** (not nested objects)
+
+**Why This Matters:**
+- NEVER create circular references between resources - applies to ALL parent-child bidirectional relationships:
+  - `BookingSlotResource` ↔ `BookingResource` (parent-child)
+  - `MemberResource` ↔ `BookingResource` (user-booking)
+  - `BookingResource` ↔ `TrainerResource` (if trainer serializes bookings)
 - Circular references cause infinite recursion loops that exhaust memory/execution time, resulting in 502 Bad Gateway errors in production
-- **BEST PRACTICE:** Never serialize inverse relationships in resources - pass related data as separate Inertia props instead
-- This eliminates circular references at the source with no workarounds needed
+- Works locally but fails in production due to stricter memory/timeout limits - extremely hard to debug
+- This pattern eliminates circular references at the source with no workarounds needed
 
 ```php
-// ❌ AVOID - Circular reference that causes 502 errors
+// ❌ AVOID - Multiple Circular Reference Patterns
+
+// Pattern 1: Parent-Child Circular (BookingSlot ↔ Booking)
 // BookingResource.php
 'bookingSlots' => BookingSlotResource::collection($this->whenLoaded('bookingSlots')),
-
 // BookingSlotResource.php
 'booking' => new BookingResource($this->whenLoaded('booking')),
-// This creates: BookingSlot → Booking → BookingSlots → Booking → ... (infinite loop)
+// Creates: BookingSlot → Booking → BookingSlots → Booking → ∞
+
+// Pattern 2: User-Booking Circular (Member ↔ Booking)
+// MemberResource.php
+'active_booking' => new BookingResource($this->whenLoaded('memberActiveBooking')),
+// BookingResource.php
+'member' => new MemberResource($this->whenLoaded('member')),
+// Creates: Member → Booking → Member → Booking → ∞
+
+// Pattern 3: Resource accessing loaded relationships for calculations
+// BookingResource.php
+$slots = $this->relationLoaded('bookingSlots')
+    ? $this->bookingSlots->sortBy('start_time')->values()
+    : collect();
+$upcomingSlot = $slots->firstWhere('status', Status::Upcoming);
+// Still creates large nested structures in memory even without serialization
 
 // ✅ BEST - Never serialize inverse relationships in resources
-// BookingSlotResource.php - NO booking relationship included
+
+// BookingSlotResource.php - NO booking relationship
 public function toArray(Request $request): array {
     return [
         'id' => $this->id,
-        'date' => $this->start_time,
-        // ... other slot data
-        // NO 'booking' key - never serialize the inverse relationship
+        'start_time' => $this->start_time,
+        'status' => $this->status,
+        // NO 'booking' key - never serialize inverse relationship
     ];
 }
 
-// Controllers pass parent and children as separate props when both are needed:
-// For single slot detail pages (needs booking context):
-$bookingSlot->load(['booking.member', 'booking.trainer', 'circuits']);
-return Inertia::render('Admin/BookingsSlots/Show', [
-    'bookingSlot' => BookingSlotResource::make($bookingSlot),  // No booking
-    'booking' => BookingResource::make($bookingSlot->booking), // Separate prop
+// BookingResource.php - NO member/trainer/bookingSlots relationships
+public function toArray(Request $request): array {
+    return [
+        'id' => $this->id,
+        'nb_sessions' => $this->nb_sessions,
+        'start_date' => $this->start_date,
+        'end_date' => $this->end_date,
+        // NO 'member', 'trainer', or 'bookingSlots' keys
+    ];
+}
+
+// MemberResource.php - NO booking relationships
+public function toArray(Request $request): array {
+    return [
+        'id' => $this->id,
+        'name' => $this->name,
+        'email' => $this->email,
+        // NO 'active_booking', 'scheduled_bookings', or 'completed_bookings'
+    ];
+}
+
+// ✅ Controllers pass parent and children as SEPARATE props:
+
+// Example 1: Booking detail page (needs member, trainer, slots)
+public function show(Booking $booking): Response
+{
+    $booking->load(['member', 'trainer', 'bookingSlots' => fn($q) => $q->orderBy('start_time')]);
+
+    // Calculate stats in controller (not in Resource)
+    $slots = $booking->bookingSlots->sortBy('start_time')->values();
+    $upcomingSlot = $slots->firstWhere('status', Status::Upcoming);
+    $completedCount = $slots->where('status', Status::Complete)->count();
+
+    return Inertia::render('Admin/Bookings/Show', [
+        'booking' => BookingResource::make($booking),           // Pure booking data
+        'member' => MemberResource::make($booking->member),     // Separate prop
+        'trainer' => TrainerResource::make($booking->trainer),  // Separate prop
+        'bookingSlots' => BookingSlotResource::collection($booking->bookingSlots),
+        'bookingStats' => [                                     // Calculated in controller
+            'upcoming_session_url' => $upcomingSlot ? route('...', $upcomingSlot->id) : null,
+            'nb_completed_sessions' => $completedCount,
+            'nb_remaining_sessions' => $booking->nb_sessions - $completedCount,
+        ],
+    ]);
+}
+
+// Example 2: Member profile page (needs bookings)
+public function show(User $user): Response
+{
+    $user->load([
+        'memberActiveBooking.trainer',
+        'memberScheduledBookings.trainer',
+        'lastBodyComposition',
+    ]);
+
+    return Inertia::render('Admin/Members/Show', [
+        'member' => MemberResource::make($user),                    // Pure member data
+        'activeBooking' => $user->memberActiveBooking
+            ? BookingResource::make($user->memberActiveBooking) : null,  // Separate prop
+        'scheduledBookings' => BookingResource::collection($user->memberScheduledBookings),
+    ]);
+}
+
+// Example 3: Dashboard widgets (components need booking.member.name)
+// Use array_merge to add minimal member/trainer data WITHOUT using Resources
+$bookingsData = $bookings->map(function ($booking) {
+    return array_merge(
+        BookingResource::make($booking)->resolve(),
+        [
+            'member' => [
+                'id' => $booking->member->id,
+                'name' => $booking->member->name,
+                'profile_photo_url' => $booking->member->profile_photo_url,
+            ],
+        ]
+    );
+});
+
+return Inertia::render('Admin/Dashboard/Index', [
+    'bookings' => ['expiring' => $bookingsData],
 ]);
 
-// For booking detail pages (needs slots collection):
-$booking->load(['member', 'trainer', 'bookingSlots']);
-return Inertia::render('Admin/Bookings/Show', [
-    'booking' => BookingResource::make($booking),              // No slots
-    'bookingSlots' => BookingSlotResource::collection($booking->bookingSlots), // Separate prop
-]);
-
-// Vue components accept both as separate props:
+// Vue components accept separate props:
 defineProps({
-    booking: Object,        // Parent resource
-    bookingSlots: Array,    // Children collection (or single bookingSlot)
+    booking: { type: Object, required: true },     // Parent resource
+    member: { type: Object, required: true },      // Separate prop
+    trainer: { type: Object, required: true },     // Separate prop
+    bookingSlots: { type: Array, required: true }, // Children collection
+    bookingStats: { type: Object, required: true }, // Calculated stats
 })
 ```
 
@@ -275,9 +374,42 @@ defineProps({
 - ✅ Easier to maintain - clear, predictable data flow
 
 **When to use separate props:**
-- Parent-child bidirectional relationships (Booking ↔ BookingSlot)
+- Parent-child bidirectional relationships (Booking ↔ BookingSlot, Member ↔ Booking)
 - Any resource that could be viewed both standalone and as part of a collection
 - When the same data might be needed in different contexts on the same page
+- When components need data from related models (booking.member.name in dashboard widgets)
+
+**CRITICAL: Avoid Auto-Eager Loading in Model Relationships**
+Model relationships should NOT use `->with()` to auto-load nested data. This creates hidden dependencies and can trigger circular references.
+
+```php
+// ❌ AVOID - Auto-eager loading creates hidden dependencies
+public function memberActiveBooking(): HasOne
+{
+    return $this->hasOne(Booking::class, 'member_id')
+        ->active()
+        ->with(['trainer', 'bookingSlots' => fn($q) => $q->orderBy('start_time')]);
+        // Auto-loads bookingSlots even when you don't need them
+        // Creates large nested structures in memory
+        // If BookingSlotResource ever includes 'booking', instant circular reference
+}
+
+// ✅ BEST - Let controllers explicitly load what they need
+public function memberActiveBooking(): HasOne
+{
+    return $this->hasOne(Booking::class, 'member_id')
+        ->active()
+        ->orderBy('start_date');
+    // NO auto-eager loading
+    // Controllers decide what to load: $user->load(['memberActiveBooking.trainer', 'memberActiveBooking.bookingSlots'])
+}
+```
+
+**Why this matters:**
+- Auto-eager loading makes it impossible to control what data gets loaded
+- Creates hidden N+1 query "solutions" that actually hurt performance elsewhere
+- When combined with Resources that serialize relationships, creates circular references
+- Controllers should be in charge of data loading, not models
 
 **Factories:**
 - Use state methods for different scenarios (`active()`, `completed()`, `scheduled()`)

@@ -66,8 +66,12 @@ const { route } = window
 
 const props = defineProps({
     member: { type: Object, required: true },
+    activeBooking: { type: Object, default: null },
+    scheduledBookings: { type: Array, default: () => [] },
+    completedBookings: { type: Array, default: () => [] },
 })
 
-const { active_booking: activeBooking, scheduled_bookings: scheduledBookings, last_body_composition: lastBodyComposition } = props.member || {}
+const { activeBooking, scheduledBookings } = props
+const { last_body_composition: lastBodyComposition } = props.member || {}
 const isTraining = computed(() => !!activeBooking)
 </script>

@@ -1,298 +1,260 @@
-# Fix 502 Bad Gateway: Remove Circular Reference in BookingResource
+# Production 502 Error Debugging Plan
 
-## Problem Description
+## Status Update
 
-Production URL `https://lift-station.fitness/bookings-slots/1215/show` returns **502 Bad Gateway** nginx error.
+### ✅ Refactoring COMPLETED (2 commits)
+1. **Commit c82661b**: Updated CLAUDE.md with new architectural pattern
+2. **Commit e4734bc**: Removed circular reference - all code refactored
+   - Removed `booking` from `BookingSlotResource`
+   - Updated 3 controllers to pass `booking` as separate prop
+   - Removed all 3 `unsetRelation()` workarounds
+   - Updated 4 Vue components to accept `booking` as direct prop
+   - **All tests passing locally** ✅
 
-### Root Cause: Infinite Recursion Loop
+### ❌ Current Issue: Production Still Shows 502 Error
 
-There's a circular reference between `BookingSlotResource` and `BookingResource`:
+**Environment:**
+- Deployed via **Laravel Forge** (handles cache/restarts automatically)
+- **PHP Version**: 8.4.14
+- **Log Location**: `/var/log/php8.4-fpm.log`
+- **Laravel Log**: Empty (no errors) → error happening at PHP-FPM level
 
-1. **BookingSlotResource.php:32** loads `BookingResource`:
-   ```php
-   'booking' => new BookingResource($this->whenLoaded('booking')),
+---
+
+## Debugging Steps (Run on Production Server)
+
+### Step 1: Check PHP-FPM Error Log 🔥 MOST IMPORTANT
+
+```bash
+# SSH into production server
+ssh forge@Liftstation
+
+# Check PHP-FPM log for actual error
+sudo tail -200 /var/log/php8.4-fpm.log
+
+# Check nginx error log
+sudo tail -200 /var/log/nginx/error.log
+
+# Or check in real-time (run this, then trigger the 502 in browser)
+sudo tail -f /var/log/php8.4-fpm.log
+```
+
+**What to look for:**
+- "Maximum execution time exceeded"
+- "Allowed memory size exhausted"
+- "Undefined property" or "Undefined array key"
+- "Segmentation fault"
+- Stack traces mentioning any Resource classes
+
+---
+
+### Step 2: Identify Which Endpoint is Failing
+
+```bash
+# Test endpoints to find which one returns 502
+curl -I https://lift-station.fitness/dashboard
+curl -I https://lift-station.fitness/bookings
+curl -I https://lift-station.fitness/bookings/1
+curl -I https://lift-station.fitness/bookings-slots/1215
+```
+
+Note which URL returns `HTTP/2 502`
+
+---
+
+### Step 3: Verify Code Deployment
+
+```bash
+cd /home/forge/lift-station.fitness
+
+# Check if latest commits are deployed
+git log -2 --oneline
+# Should show:
+# e4734bc :recycle: Refactor circular reference handling in API resources
+# c82661b :memo: Update CLAUDE.md with better circular reference pattern
+
+# Verify BookingSlotResource was updated (should return NOTHING)
+grep -n "booking.*BookingResource" app/Http/Resources/BookingSlotResource.php
+
+# Verify controllers were updated (should show booking as separate prop)
+grep -n "BookingResource::make.*booking" app/Http/Controllers/Admin/BookingSlotsController.php
+```
+
+---
+
+### Step 4: Check Frontend Build Status
+
+```bash
+# Check if frontend assets were built after deployment
+ls -lh public/build/manifest.json
+# Check timestamp - should be recent (within last few hours)
+
+# Verify manifest exists and is not empty
+cat public/build/manifest.json | head -30
+```
+
+---
+
+### Step 5: Check Forge Deployment Log
+
+**Via Forge Dashboard:**
+1. Go to https://forge.laravel.com
+2. Select your site
+3. Click "Deployments" tab
+4. View latest deployment log
+5. Verify these steps ran successfully:
+   - `git pull` succeeded
+   - `composer install` succeeded
+   - **`npm ci` ran**
+   - **`npm run build` or `npm run production` ran**
+   - PHP-FPM restarted
+
+---
+
+### Step 6: Search for Other Circular References
+
+```bash
+cd /home/forge/lift-station.fitness
+
+# Check if any other resources might have circular references
+grep -r "BookingSlotResource" app/Http/Resources/
+
+# Check MemberResource (it has bookings relationship)
+grep -A 10 "active_booking\|scheduled_bookings\|completed_bookings" app/Http/Resources/MemberResource.php
+
+# Check if there are any other resource pairs that might circular reference
+find app/Http/Resources -name "*.php" -exec basename {} \; | sort
+```
+
+---
+
+## Most Likely Root Causes
+
+### 🎯 Cause 1: Frontend Not Rebuilt (MOST LIKELY)
+
+**Symptom:** Vue components still have old code expecting `bookingSlot.booking` nested property
+
+**Check:**
+```bash
+# Verify BookingSlotHeader has booking as direct prop
+grep -A 5 "defineProps" resources/js/Pages/Admin/BookingsSlots/Partials/BookingSlotHeader.vue
+# Should show: booking: { type: Object, required: true },
+```
+
+**Solution:**
+1. Ensure deployment script has npm build:
+   ```bash
+   npm ci
+   npm run build
    ```
-
-2. **BookingResource.php:47** loads `BookingSlotResource::collection`:
-   ```php
-   'bookingSlots' => $slots->isNotEmpty() ? BookingSlotResource::collection($slots) : null,
-   ```
-
-This creates infinite loop:
-```
-BookingSlot → Booking → BookingSlots → Booking → BookingSlots → ...
-```
-
-### Why It Works Locally But Not Production
-- Local has higher `memory_limit` and `max_execution_time` in php.ini
-- Production has stricter PHP-FPM settings (lower memory/timeout limits)
-- Production may have more booking slot data, making recursion deeper
-- PHP runs out of memory or hits max execution time → PHP-FPM crashes → nginx returns 502
+2. Trigger new deployment via Forge dashboard
+3. Clear browser cache and test
 
 ---
 
-## Impact Analysis: What Will Break
+### 🎯 Cause 2: Another Circular Reference Exists
 
-### ❌ WILL BREAK (1 Critical Place)
+**Symptom:** Different resource pair causing same infinite loop
 
-#### Booking Detail Page - `/admin/bookings/{id}`
-**Files:**
-- Controller: `app/Http/Controllers/Admin/BookingsController.php:79`
-- Page: `resources/js/Pages/Admin/Bookings/Show.vue:28-29`
-- Component: `resources/js/Pages/Admin/Bookings/Partials/BookingSessions.vue:62`
+**Check:**
+```bash
+# Check MemberResource for circular references
+cat app/Http/Resources/MemberResource.php | grep -A 3 "bookings"
 
-**Current Code:**
-```javascript
-// Show.vue - destructures bookingSlots from props.booking
-const {
-    member, trainer, bookingSlots, status, formatted_start_date, formatted_end_date
-} = props.booking
+# Check if any controller loads too many nested relationships
+grep -r "load\(\[" app/Http/Controllers/Admin/ | grep -i booking
 ```
 
-**Impact:** The entire booking sessions table won't render. Users can't see the list of all sessions (upcoming, completed, cancelled, frozen) for a booking.
+**Potential culprits:**
+- `MemberResource` → includes active/scheduled/completed bookings
+- Those bookings might auto-load `bookingSlots` (via eager loading in model)
+- Those slots might try to load `booking` → circular reference
 
 ---
 
-### ✅ WILL NOT BREAK (Safe Areas)
+### 🎯 Cause 3: Old Session Data Cached
 
-**Dashboard Cards:**
-- `ExpiringSoonCard.vue` - Only uses: `id`, `member.name`, `nb_remaining_sessions`, upcoming session data
-- `UnpaidCard.vue` - Only uses: `id`, `member.name`, `trainer.name`, `title`, `is_paid`
+**Symptom:** Inertia has old cached page data structure
 
-**Freeze/Unfreeze Pages:**
-- `FreezeBooking/Index.vue` - Only uses: `id`, `member` (for header)
-- `UnfreezeBooking/Index.vue` - Gets `frozenSlots` as separate prop, not from `booking.bookingSlots`
+**Solution:**
+```bash
+# Clear session cache
+php artisan session:clear
 
-**Booking Create/Renew Form:**
-- `Bookings/Create.vue` - Only uses: `member.id`, `trainer.id`, `nb_sessions`, `is_paid`, `schedule_days`, `end_date`
-
-**Emails:**
-- No email templates use `BookingResource` directly
-
----
-
-## Solution
-
-Remove the circular reference by removing `bookingSlots` from `BookingResource` and loading booking slots separately in the booking detail page.
-
----
-
-## Implementation Plan
-
-### Step 1: Remove Circular Reference in BookingResource
-**File:** `app/Http/Resources/BookingResource.php`
-
-**Action:** Remove line 47:
-```php
-// REMOVE THIS LINE:
-'bookingSlots' => $slots->isNotEmpty() ? BookingSlotResource::collection($slots) : null,
-```
-
-**Note:** Keep lines 16-21 that use `$slots` for calculations. They still work because they use `relationLoaded('bookingSlots')` internally and calculate:
-- `upcoming_session_*` fields (lines 48-50)
-- `nb_completed_sessions` and `nb_remaining_sessions` (lines 51-52)
-
----
-
-### Step 2: Fix Booking Detail Page (Show.vue)
-
-**Controller:** `app/Http/Controllers/Admin/BookingsController.php:79`
-
-**Change from:**
-```php
-public function show(Booking $booking): Response
-{
-    $booking->load([
-        'member.memberActiveBooking',
-        'trainer',
-        'bookingSlots',
-    ]);
-
-    return Inertia::render('Admin/Bookings/Show', [
-        'booking' => BookingResource::make($booking),
-    ]);
-}
-```
-
-**Change to:**
-```php
-public function show(Booking $booking): Response
-{
-    $booking->load([
-        'member.memberActiveBooking',
-        'trainer',
-        'bookingSlots',
-    ]);
-
-    return Inertia::render('Admin/Bookings/Show', [
-        'booking' => BookingResource::make($booking),
-        'bookingSlots' => BookingSlotResource::collection(
-            $booking->bookingSlots->sortBy('start_time')->values()
-        ),
-    ]);
-}
+# Or manually via Forge: Site > Commands > "session:clear"
 ```
 
 ---
 
-### Step 3: Update Vue Component
+### 🎯 Cause 4: OPcache Not Cleared
 
-**Vue Component:** `resources/js/Pages/Admin/Bookings/Show.vue`
+**Symptom:** PHP still executing old bytecode despite code being updated
 
-**Change from:**
-```vue
-<script setup>
-const props = defineProps({
-    booking: Object,
-})
+**Solution:**
+```bash
+# Restart PHP-FPM to clear OPcache
+sudo systemctl restart php8.4-fpm
 
-const {
-    member, trainer, bookingSlots, status, formatted_start_date, formatted_end_date
-} = props.booking
-</script>
-
-<template>
-    <BookingSessions :booking-slots="bookingSlots" :trainer="trainer"></BookingSessions>
-</template>
-```
-
-**Change to:**
-```vue
-<script setup>
-const props = defineProps({
-    booking: Object,
-    bookingSlots: Array,  // NEW: separate prop
-})
-
-const {
-    member, trainer, status, formatted_start_date, formatted_end_date
-} = props.booking
-</script>
-
-<template>
-    <BookingSessions :booking-slots="props.bookingSlots" :trainer="trainer"></BookingSessions>
-</template>
+# Or via Forge: Site > PHP > Restart
 ```
 
 ---
 
-### Step 4: Make BookingSessions Component Defensive
+## Quick Debug Script
 
-**Component:** `resources/js/Pages/Admin/Bookings/Partials/BookingSessions.vue`
+Run this all-in-one command:
 
-**Change from:**
-```vue
-<script setup>
-const props = defineProps({
-    bookingSlots: { type: Array, required: true },
-    trainer: Object,
-})
-</script>
-```
-
-**Change to:**
-```vue
-<script setup>
-const props = defineProps({
-    bookingSlots: { type: Array, default: () => [] },  // Make optional with default
-    trainer: Object,
-})
-</script>
+```bash
+cd /home/forge/lift-station.fitness && \
+echo "=== Git Status ===" && \
+git log -2 --oneline && \
+echo -e "\n=== BookingSlotResource Check ===" && \
+grep -c "booking.*BookingResource" app/Http/Resources/BookingSlotResource.php && \
+echo -e "\n=== Frontend Build ===" && \
+ls -lh public/build/manifest.json && \
+echo -e "\n=== PHP-FPM Log (last 30 lines) ===" && \
+sudo tail -30 /var/log/php8.4-fpm.log && \
+echo -e "\n=== Nginx Log (last 30 lines) ===" && \
+sudo tail -30 /var/log/nginx/error.log
 ```
 
 ---
 
-### Step 5: Remove Last Session Recap from Member Show Page
+## What to Share Back
 
-**Vue Component:** `resources/js/Pages/Admin/Members/Show.vue`
+When you return, share:
 
-**Remove import (line 70):**
-```vue
-import LastSessionRecap from '@/Pages/Admin/Members/Partials/LastSessionRecap.vue'
-```
+1. **Output from PHP-FPM log** (`sudo tail -200 /var/log/php8.4-fpm.log`)
+2. **Which endpoint fails** (from curl tests)
+3. **Frontend build timestamp** (`ls -lh public/build/manifest.json`)
+4. **Forge deployment log** (screenshot or copy/paste)
 
-**Remove table row (lines 24-29):**
-```vue
-<tr class="border-b border-zinc-100">
-    <td class="text-[#71717b] py-4">Last workouts</td>
-    <td class="py-4">
-        <LastSessionRecap :active-booking="activeBooking" />
-    </td>
-</tr>
-```
+With that info, we can pinpoint the exact issue!
 
 ---
 
-### Step 6: Update Tests
+## Expected Behavior After Fix
 
-**File:** `tests/Feature/Admin/BookingsTest.php:58`
+- ✅ `BookingSlotResource` does NOT include `booking` key
+- ✅ Controllers pass `booking` as separate Inertia prop when needed
+- ✅ Vue components receive `booking` directly as prop (not nested in `bookingSlot`)
+- ✅ No circular references anywhere
+- ✅ No 502 errors, all pages load successfully
 
-**Current test:**
-```php
-actingAsAdmin()
-    ->get(route('admin.bookings.show', $booking))
-    ->assertHasComponent('Admin/Bookings/Show')
-    ->assertHasResource('booking', BookingResource::make($booking))
-    ->assertStatus(200);
+---
+
+## Emergency Rollback Plan
+
+If needed, you can temporarily revert:
+
+```bash
+# Revert to before refactoring
+git revert e4734bc c82661b
+
+# Or checkout previous commit
+git checkout 9fe62a0  # Before the refactoring
+
+# Then deploy
 ```
 
-**Update to:**
-```php
-actingAsAdmin()
-    ->get(route('admin.bookings.show', $booking))
-    ->assertHasComponent('Admin/Bookings/Show')
-    ->assertHasResource('booking', BookingResource::make($booking))
-    ->assertInertia(fn (AssertableInertia $page) => $page
-        ->has('bookingSlots')
-    )
-    ->assertStatus(200);
-```
-
----
-
-## Files to Modify
-
-### Backend (PHP)
-1. `app/Http/Resources/BookingResource.php` - Remove line 47
-2. `app/Http/Controllers/Admin/BookingsController.php` - Add separate `bookingSlots` prop in `show()` method
-
-### Frontend (Vue)
-3. `resources/js/Pages/Admin/Bookings/Show.vue` - Accept `bookingSlots` as separate prop
-4. `resources/js/Pages/Admin/Bookings/Partials/BookingSessions.vue` - Make `bookingSlots` prop optional with default
-5. `resources/js/Pages/Admin/Members/Show.vue` - Remove LastSessionRecap component import and table row
-
-### Tests
-6. `tests/Feature/Admin/BookingsTest.php` - Update assertions for separate `bookingSlots` prop
-
----
-
-## Testing Checklist
-
-After implementing the fix:
-
-- [ ] **Booking Detail Page** (`/admin/bookings/{id}`):
-  - [ ] Sessions table displays correctly
-  - [ ] All session statuses visible (upcoming, completed, cancelled, frozen)
-  - [ ] Can click individual sessions to view details
-
-- [ ] **Dashboard** (`/`):
-  - [ ] "Expiring Soon" card displays correctly
-  - [ ] "Unpaid Bookings" card displays correctly
-  - [ ] No errors in browser console
-
-- [ ] **Production URL**:
-  - [ ] `https://lift-station.fitness/bookings-slots/1215/show` no longer returns 502
-  - [ ] Booking slot detail page loads successfully
-  - [ ] No PHP memory errors in logs
-
-- [ ] **Run Tests**:
-  - [ ] `php artisan test --filter=BookingsTest`
-  - [ ] All tests pass
-
----
-
-## Notes
-
-- The circular reference existed before but only triggered when loading booking relationship on booking slot show page
-- Booking slot ID 1215 has no circuits yet (confirmed by user)
-- After fix, verify no other places depend on `booking.bookingSlots` nested structure
+But this brings back the original circular reference issue, so only use as last resort.

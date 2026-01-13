@@ -37,9 +37,6 @@ class MemberResource extends JsonResource
             'emergency_contact' => $this->emergency_contact,
             'color' => $this->color,
             'role' => strtolower($this->role),
-            'active_booking' => new BookingResource($this->whenLoaded('memberActiveBooking')),
-            'scheduled_bookings' => BookingResource::collection($this->whenLoaded('memberScheduledBookings')),
-            'completed_bookings' => BookingResource::collection($this->whenLoaded('memberCompletedBookings')),
             'last_body_composition' => new BodyCompositionResource($this->whenLoaded('lastBodyComposition')),
         ];
     }

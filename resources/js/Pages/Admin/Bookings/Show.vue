@@ -22,13 +22,17 @@ import MemberHeader from '@/Pages/Admin/Members/Partials/MemberHeader.vue'
 
 const props = defineProps({
     booking: { type: Object, required: true },
+    member: { type: Object, required: true },
+    trainer: { type: Object, required: true },
     bookingSlots: { type: Array, required: true },
+    bookingStats: { type: Object, required: true },
 })
 
 const {
-    member, trainer, status, formatted_start_date, formatted_end_date
+    status, formatted_start_date, formatted_end_date
 } = props.booking
 
+const { member, trainer } = props
 const { first_name } = member
 
 const description = computed( () => {
