@@ -36,7 +36,9 @@ class BookingResource extends JsonResource
             'formatted_end_date' => Carbon::parse($this->end_date)->isoFormat('MMM Do'),
             'member' => MemberResource::make($this->whenLoaded('member')),
             'trainer' => TrainerResource::make($this->whenLoaded('trainer')),
-            'bookingSlots' => BookingSlotResource::collection($this->whenLoaded('bookingSlots')),
+            'bookingSlots' => $this->whenLoaded('bookingSlots',
+                fn () => BookingSlotResource::collection($this->bookingSlots)
+            ),
         ];
     }
 }
