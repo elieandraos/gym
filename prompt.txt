@@ -1,53 +1,47 @@
-resources/js/Pages/Admin/Members/Show.vue
-Comment on lines +74 to 76
-const { activeBooking, scheduledBookings } = props
-const { last_body_composition: lastBodyComposition } = props.member || {}
-const isTraining = computed(() => !!activeBooking)
-@coderabbitai
-coderabbitai bot
-8 minutes ago
-⚠️ Potential issue | 🟠 Major
 
-Reactivity issue: destructured activeBooking loses reactivity in computed.
+You are generating a new RELEASE_DRAFT.md file for a production release.
+Context
+- This project already has established release notes style, tone, and structure.
+- The previous release draft exists and should be used as a reference for formatting and voice, but must not be repeated or summarized.
+Your task
+- Generate a new release_draft.md that covers only the changes introduced since the last release.
+- Assume the previous release is already deployed.
+Style and Tone
+- Professional, clear, and product-oriented
+- Written for both stakeholders and developers
+- Confident but not verbose
+- Avoid excessive emojis (use them sparingly in section headers only)
+Level of Detail
+- Focus on macro-level changes, not implementation minutiae - Highlight:
+- New systems or major feature shifts
+- Architectural changes
+- Breaking changes developers must know about
+- Important database or model changes
+- Avoid:
+- Line-by-line code explanations
+- Full migration scripts
+- Seeder contents
+- Exhaustive test lists
+Required Structure
+Follow the same general organization as previous release drafts:
+1. Title and short intro
+- One paragraph summarizing the purpose and impact of the release
+2. Key Features / Major Changes
+- High-level description of new functionality or system changes - Focus on what changed and why it matters
+Page 1
 
-The activeBooking is destructured from props at line 74, then used in the computed at line 76. Since destructuring happens outside the computed function, if activeBooking changes, isTraining won't update.
-
-🔧 Proposed fix
--const { activeBooking, scheduledBookings } = props
--const { last_body_composition: lastBodyComposition } = props.member || {}
--const isTraining = computed(() => !!activeBooking)
-+const { last_body_composition: lastBodyComposition } = props.member || {}
-+const isTraining = computed(() => !!props.activeBooking)
-Then update template references to use props.activeBooking and props.scheduledBookings, or keep the destructuring only for non-reactive uses like passing to child components.
-
-
-
-resources/js/Pages/Admin/Members/Show.vue
-    member: { type: Object, required: true },
-    activeBooking: { type: Object, default: null },
-    scheduledBookings: { type: Array, default: () => [] },
-    completedBookings: { type: Array, default: () => [] },
-@coderabbitai
-coderabbitai bot
-8 minutes ago
-🧹 Nitpick | 🔵 Trivial
-
-Unused prop: completedBookings is defined but not used.
-
-The completedBookings prop is defined and passed from the controller but isn't referenced in the template or script. If it's intended for future use, consider adding a comment; otherwise, it can be removed from both the component and controller to reduce payload size.
-
-
-
-resources/js/Pages/Admin/Bookings/Show.vue
-    member: { type: Object, required: true },
-    trainer: { type: Object, required: true },
-    bookingSlots: { type: Array, required: true },
-    bookingStats: { type: Object, required: true },
-@coderabbitai
-coderabbitai bot
-9 minutes ago
-🧹 Nitpick | 🔵 Trivial
-
-Unused required prop: bookingStats is defined but not used.
-
-The bookingStats prop is marked as required: true but isn't referenced in the component. If it's intended for the BookingSessions child component, pass it down; otherwise, consider removing it or making it optional.
+3. Technical / Developer Notes
+- Major model, controller, route, or API changes
+- Database schema changes (described conceptually, not verbatim SQL) - Architectural refactors
+4. Breaking Changes
+- Explicit list of removals, renames, or required code updates - Keep this concise but precise
+5. Summary
+- Short wrap-up emphasizing stability, improvements, and readiness
+Constraints
+- Do NOT reference internal commit history
+- Do NOT include TODOs or future roadmap items
+- Do NOT restate features from earlier releases
+- Keep the total length significantly shorter than previous drafts
+Output
+- Markdown only
+- Filename assumed to be RELEASE_DRAFT.md - Ready to commit as-is
