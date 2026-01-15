@@ -31,11 +31,6 @@ class BookingSlotsController extends Controller
             ->get();
 
         // DEBUG: Return raw JSON to test serialization
-         $data = [
-                  'bookingSlot' => BookingSlotResource::make($bookingSlot)->toArray(request()),
-                 'booking' => BookingResource::make($bookingSlot->booking)->toArray(request()),
-                  'workouts' => WorkoutResource::collection($workouts)->toArray(request()),
-             ];
 
         return response()->json([
             'success' => true,
