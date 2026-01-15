@@ -39,6 +39,7 @@ class BookingSlotsController extends Controller
 
         return response()->json([
                  'success' => true,
+            'bookingSlot' => BookingSlotResource::make($bookingSlot)->toArray(request()),
                 'workouts' => WorkoutResource::collection($workouts)->toArray(request()),
             ]);
 
