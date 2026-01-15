@@ -24,17 +24,24 @@ class EventResource extends JsonResource
         $slot = $this->resource;
         $minutes = $slot->start_time->minute;
 
+        $member = $slot->booking->member;
+        $trainer = $slot->booking->trainer;
+        $memberName = explode(' ', $member->name)[0];
+        $trainerName = explode(' ', $trainer->name)[0];
+        $memberPhotoUrl = $member->profile_photo_url;
+        $trainerColor = $trainer->color;
+
         return [
             'id' => $slot->id,
             'start_time' => $slot->start_time->toIso8601String(),
             'end_time' => $slot->end_time->toIso8601String(),
-            'title' => explode(' ', $slot->booking->member->name)[0].' - '.explode(' ', $slot->booking->trainer->name)[0],
+            'title' => $memberName.' - '.$trainerName,
             'url' => route('admin.bookings-slots.show', $slot->id),
             'meta_data' => [
-                'member' => explode(' ', $slot->booking->member->name)[0],
-                'member_photo_url' => $slot->booking->member->profile_photo_url,
-                'trainer' => explode(' ', $slot->booking->trainer->name)[0],
-                'trainer_color' => $slot->booking->trainer->color,
+                'member' => $memberName,
+                'member_photo_url' => $memberPhotoUrl,
+                'trainer' => $trainerName,
+                'trainer_color' => $trainerColor,
                 'booking_id' => $slot->booking->id,
                 'duration' => $slot->start_time->diffInMinutes($slot->end_time),
                 'short_time' => $slot->start_time->format($minutes === 0 ? 'ga' : 'g:i a'),
