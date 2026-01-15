@@ -38,6 +38,15 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $user = $request->user();
+
+        // DEBUG: Check user serialization
+        dd('Checking user serialization', [
+            'user_id' => $user?->id,
+            'user_class' => $user ? get_class($user) : null,
+            'loaded_relations' => $user ? array_keys($user->getRelations()) : [],
+        ]);
+        
         return array_merge(parent::share($request), [
             'url' => $request->fullUrl(),
             'bloodTypes' => BloodType::values(),
