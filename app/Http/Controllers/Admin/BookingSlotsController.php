@@ -36,7 +36,9 @@ class BookingSlotsController extends Controller
                  'booking' => BookingResource::make($bookingSlot->booking)->toArray(request()),
                   'workouts' => WorkoutResource::collection($workouts)->toArray(request()),
              ];
-         
+
+        dd('bookingSlot', BookingSlotResource::make($bookingSlot)->toArray(request()));
+        
              return response()->json([
                  'success' => true,
                  'data_size' => strlen(json_encode($data)),
