@@ -2,12 +2,12 @@
     <AppLayout title="Booking">
         <Container>
             <PageHeader :sticky="true">
-                <MemberHeader :member="member" :bordered="true"></MemberHeader>
+                <MemberHeader :member="booking.member" :bordered="true"></MemberHeader>
             </PageHeader>
 
             <p class="mb-8"> {{ description }}</p>
 
-            <BookingSessions :booking-slots="props.bookingSlots" :trainer="trainer"></BookingSessions>
+            <BookingSessions :booking-slots="booking.bookingSlots" :trainer="booking.trainer"></BookingSessions>
         </Container>
     </AppLayout>
 </template>
@@ -21,18 +21,13 @@ import BookingSessions from '@/Pages/Admin/Bookings/Partials/BookingSessions.vue
 import MemberHeader from '@/Pages/Admin/Members/Partials/MemberHeader.vue'
 
 const props = defineProps({
-    booking: { type: Object, required: true },
-    member: { type: Object, required: true },
-    trainer: { type: Object, required: true },
-    bookingSlots: { type: Array, required: true },
-    bookingStats: { type: Object, required: true },
+    booking: { type: Object, required: true }, // Now includes nested member, trainer, bookingSlots
 })
 
 const {
-    status, formatted_start_date, formatted_end_date
+    status, formatted_start_date, formatted_end_date, member, trainer
 } = props.booking
 
-const { member, trainer } = props
 const { first_name } = member
 
 const description = computed( () => {

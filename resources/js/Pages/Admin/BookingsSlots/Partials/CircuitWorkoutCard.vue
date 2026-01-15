@@ -30,7 +30,7 @@
                 :key="index"
                 class="text-xs text-zinc-600 flex items-center gap-2"
             >
-                <span v-if="set.weight_in_kg">
+                <span v-if="set.weight_in_kg !== null">
                     {{ set.reps }} reps @ {{ set.weight_in_kg }}kg
                 </span>
                 <span v-else-if="set.duration_in_seconds">

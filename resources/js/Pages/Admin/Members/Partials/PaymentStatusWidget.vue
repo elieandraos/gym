@@ -12,14 +12,19 @@
                             {{ activeBooking.is_paid ? 'paid' : 'not paid' }}
                         </Badge>
                     </div>
-                    <a
-                        v-if="!activeBooking.is_paid"
-                        @click="markAsPaid"
-                        href="#"
-                        class="text-sky-500 hover:text-sky-700 font-[400]"
-                    >
-                        Mark as paid
-                    </a>
+                    <div v-if="!activeBooking.is_paid" class="flex items-center gap-2">
+                        <span>{{ activeBooking.amount }} USD</span>
+                        <a
+                            @click="markAsPaid"
+                            href="#"
+                            class="text-sky-500 hover:text-sky-700 font-[400]"
+                        >
+                            Mark as paid
+                        </a>
+                    </div>
+                    <div v-else>
+                        <span>{{ activeBooking.amount }} USD</span>
+                    </div>
                 </div>
                 <div v-else>
                     <p class="text-gray-500">No active training</p>

@@ -50,8 +50,11 @@
                 <div class="flex items-center gap-3">
                     <SwitchInput v-model="form.is_paid" />
                     <span class="text-[#71717b]">{{ form.is_paid ? 'Paid' : 'Unpaid' }}</span>
+                    <TextInput v-model="form.amount" class="w-20" type="number" step="0.01" min="0" />
+                    <span class="text-[#71717b]">$</span>
                 </div>
                 <InputError :message="form.errors.is_paid" />
+                <InputError :message="form.errors.amount" />
             </FormSection>
 
             <FormSection title="Schedule" description="Plan the training days for the upcoming weeks." :separator="false">
@@ -97,6 +100,7 @@ const form = useForm({
     start_date: new Date(),
     nb_sessions: 12,
     is_paid: true,
+    amount: 270,
     days: [],
 })
 
@@ -147,6 +151,7 @@ onMounted(() => {
         form.trainer_id = props.renewFromBooking.trainer.id
         form.nb_sessions = props.renewFromBooking.nb_sessions
         form.is_paid = props.renewFromBooking.is_paid
+        form.amount = props.renewFromBooking.amount ?? 270
 
         if (props.renewFromBooking.schedule_days && props.renewFromBooking.schedule_days.length > 0) {
             form.days = [...props.renewFromBooking.schedule_days]

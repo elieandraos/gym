@@ -220,7 +220,7 @@ const validate = () => {
     // Validate sets have values
     const hasEmptySets = sets.value.some(set => {
         if (type.value === 'weight') {
-            return !set.reps || !set.weight_in_kg
+            return !set.reps || set.weight_in_kg === null || set.weight_in_kg === ''
         } else {
             return !set.duration_in_seconds
         }

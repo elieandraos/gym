@@ -105,49 +105,18 @@ class DashboardController extends Controller
                 ];
             });
 
-        // Transform booking collections to include member/trainer data without using Resources (avoids circular refs)
-        $unpaidBookingsData = $unpaidBookings->map(function ($booking) {
-            return array_merge(
-                BookingResource::make($booking)->resolve(),
-                [
-                    'member' => [
-                        'id' => $booking->member->id,
-                        'name' => $booking->member->name,
-                        'profile_photo_url' => $booking->member->profile_photo_url,
-                    ],
-                ]
-            );
-        });
+        // Transform booking collections to include member/trainer data and calculated fields
+        $unpaidBookingsData = BookingResource::collection($unpaidBookings); // Now includes nested member, trainer
 
-        $frozenBookingsData = $frozenBookings->map(function ($booking) {
-            return array_merge(
-                BookingResource::make($booking)->resolve(),
-                [
-                    'member' => [
-                        'id' => $booking->member->id,
-                        'name' => $booking->member->name,
-                        'profile_photo_url' => $booking->member->profile_photo_url,
-                    ],
-                    'trainer' => [
-                        'id' => $booking->trainer->id,
-                        'name' => $booking->trainer->name,
-                    ],
-                ]
-            );
-        });
+        $frozenBookingsData = BookingResource::collection($frozenBookings); // Now includes nested member, trainer
 
         $expiringBookingsData = $expiringBookings->map(function ($booking) {
             $completedCount = $booking->bookingSlots->where('status', Status::Complete)->count();
             $nbRemaining = $booking->nb_sessions - $completedCount;
 
             return array_merge(
-                BookingResource::make($booking)->resolve(),
+                BookingResource::make($booking)->resolve(), // Now includes nested member, trainer
                 [
-                    'member' => [
-                        'id' => $booking->member->id,
-                        'name' => $booking->member->name,
-                        'profile_photo_url' => $booking->member->profile_photo_url,
-                    ],
                     'nb_remaining_sessions' => $nbRemaining.' '.\Illuminate\Support\Str::plural('session', $nbRemaining),
                 ]
             );

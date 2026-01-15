@@ -49,7 +49,7 @@ test('it validates request before creating a booking', function () {
 
 test('it shows booking information', function () {
     $booking = Booking::query()->first();
-    $booking->load(['member', 'member.memberActiveBooking', 'trainer', 'bookingSlots' => function ($query) {
+    $booking->load(['member', 'trainer', 'bookingSlots' => function ($query) {
         $query->orderBy('start_time');
     }]);
 
@@ -58,9 +58,9 @@ test('it shows booking information', function () {
         ->assertHasComponent('Admin/Bookings/Show')
         ->assertHasResource('booking', BookingResource::make($booking))
         ->assertInertia(fn (AssertableInertia $page) => $page
-            ->has('bookingSlots')
-            ->has('bookingSlots', $booking->bookingSlots->count())
-            ->where('bookingSlots.0.id', $booking->bookingSlots->sortBy('start_time')->first()->id)
+            ->has('booking.bookingSlots')
+            ->has('booking.bookingSlots', $booking->bookingSlots->count())
+            ->where('booking.bookingSlots.0.id', $booking->bookingSlots->sortBy('start_time')->first()->id)
         )
         ->assertStatus(200);
 });
@@ -75,6 +75,7 @@ test('it creates a booking and its booking slots', function () {
         'trainer_id' => $trainer->id,
         'nb_sessions' => 12,
         'is_paid' => true,
+        'amount' => 270,
         'days' => [
             ['day' => 'Monday', 'time' => '07:00 am'],
             ['day' => 'Wednesday', 'time' => '07:00 am'],
@@ -86,7 +87,7 @@ test('it creates a booking and its booking slots', function () {
         ->assertSessionHasNoErrors()
         ->assertRedirect(route('admin.members.show', ['user' => $member->id]));
 
-    $this->assertDatabaseHas(Booking::class, Arr::only($data, ['start_date', 'member_id', 'trainer_id', 'nb_sessions', 'is_paid']));
+    $this->assertDatabaseHas(Booking::class, Arr::only($data, ['start_date', 'member_id', 'trainer_id', 'nb_sessions', 'is_paid', 'amount']));
 
     // fetch the booking created
     $booking = Booking::query()->where('member_id', $member->id)
@@ -124,6 +125,7 @@ test('it creates an unpaid booking', function () {
         'trainer_id' => $trainer->id,
         'nb_sessions' => 8,
         'is_paid' => false,
+        'amount' => 270,
         'days' => [
             ['day' => 'Tuesday', 'time' => '08:00 am'],
         ],
