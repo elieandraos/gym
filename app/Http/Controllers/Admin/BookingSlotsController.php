@@ -37,12 +37,9 @@ class BookingSlotsController extends Controller
                   'workouts' => WorkoutResource::collection($workouts)->toArray(request()),
              ];
 
-        dd('workouts', WorkoutResource::collection($workouts)->toArray(request()));
-
         return response()->json([
                  'success' => true,
-                 'data_size' => strlen(json_encode($data)),
-                 'data' => $data,
+                'workouts' => WorkoutResource::collection($workouts)->toArray(request()),
             ]);
 
 //        return Inertia::render('Admin/BookingsSlots/Show', [
