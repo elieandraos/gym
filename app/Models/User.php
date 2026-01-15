@@ -61,8 +61,8 @@ class User extends Authenticatable
     ];
 
     protected $appends = [
-        'profile_photo_url',
-        'age',
+//        'profile_photo_url',
+//        'age',
     ];
 
     protected $casts = [
