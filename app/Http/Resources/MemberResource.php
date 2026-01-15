@@ -38,10 +38,12 @@ class MemberResource extends JsonResource
             'color' => $this->color,
             'role' => strtolower($this->role),
             'last_body_composition' => new BodyCompositionResource($this->whenLoaded('lastBodyComposition')),
-            // Minimal active booking reference for header (id and is_frozen only, no full BookingResource to avoid circular refs)
+            // Minimal active booking reference for header (no full BookingResource to avoid circular refs)
             'active_booking' => $this->whenLoaded('memberActiveBooking', fn () => $this->memberActiveBooking ? [
                 'id' => $this->memberActiveBooking->id,
                 'is_frozen' => $this->memberActiveBooking->is_frozen,
+                'is_paid' => $this->memberActiveBooking->is_paid,
+                'amount' => $this->memberActiveBooking->amount,
             ] : null),
         ];
     }

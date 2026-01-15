@@ -14,6 +14,7 @@ class BookingRequest extends FormRequest
     {
         return [
             'nb_sessions' => ['required', 'integer'],
+            'amount' => ['nullable', 'numeric', 'min:0'],
             'member_id' => ['required', 'exists:users,id'],
             'trainer_id' => ['required', 'exists:users,id'],
             'start_date' => ['required', 'date', new DoesNotOverlapWithOtherMemberBookings],

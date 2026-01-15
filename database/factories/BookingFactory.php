@@ -42,6 +42,7 @@ class BookingFactory extends Factory
             'start_date' => Carbon::today(),
             'end_date' => Carbon::today()->addDays(30),
             'is_paid' => $this->faker->boolean(80),
+            'amount' => 270.00,
             'schedule_days' => $scheduleDays,
             'is_frozen' => false,
             'frozen_at' => null,
