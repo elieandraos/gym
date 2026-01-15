@@ -126,6 +126,7 @@ MemberResource / TrainerResource {
 - Use form requests for validation
 - When adding model fields, update seeder/factory/tests
 - When feature/task is not working over 3 iterations, ask for debugging info
+- Always import namespaces at the top of files, never use inline fully qualified class names (e.g., `use Collection;` not `new \Illuminate\Support\Collection()`)
 
 ## Session Usage Optimization
 

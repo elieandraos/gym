@@ -101,8 +101,8 @@ class Booking extends Model
             'bookingSlots' => fn ($q) => $q->between($start, $end)
                 ->whereNot('status', Status::Cancelled)
                 ->whereNot('status', Status::Frozen),
-            'member:id,name',
-            'trainer:id,name,color',
+            'member',
+            'trainer',
         ])->between($start, $end);
     }
 }

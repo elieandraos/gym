@@ -7,6 +7,7 @@ use App\Http\Resources\Calendar\DayEventsCollection;
 use App\Models\Booking;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -42,6 +43,8 @@ class DailyCalendarController extends Controller
             ->filter(function ($slot) use ($startOfDay, $endOfDay) {
                 return $slot->start_time >= $startOfDay && $slot->start_time <= $endOfDay;
             });
+        $events = new EloquentCollection($events);
+        $events->load(['booking.member', 'booking.trainer']);
 
         $trainers = User::query()
             ->trainers()

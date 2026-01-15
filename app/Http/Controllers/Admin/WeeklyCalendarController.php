@@ -8,6 +8,7 @@ use App\Models\Booking;
 use App\Models\User;
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -49,7 +50,8 @@ class WeeklyCalendarController extends Controller
             })
             ->get();
 
-        $events = $bookings->flatMap->bookingSlots;
+        $events = new EloquentCollection($bookings->flatMap->bookingSlots);
+        $events->load(['booking.member', 'booking.trainer']);
 
         $trainers = User::query()
             ->trainers()
