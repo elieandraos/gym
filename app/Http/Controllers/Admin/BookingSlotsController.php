@@ -41,6 +41,7 @@ class BookingSlotsController extends Controller
                  'success' => true,
             'bookingSlot' => BookingSlotResource::make($bookingSlot)->toArray(request()),
                 'workouts' => WorkoutResource::collection($workouts)->toArray(request()),
+            'booking' => BookingResource::make($bookingSlot->booking)->toArray(request()),
             ]);
 
 //        return Inertia::render('Admin/BookingsSlots/Show', [
