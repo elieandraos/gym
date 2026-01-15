@@ -47,11 +47,15 @@
             </FormSection>
 
             <FormSection title="Payment status" description="Mark whether this training has been paid for.">
-                <div class="flex items-center gap-3">
-                    <SwitchInput v-model="form.is_paid" />
-                    <span class="text-[#71717b]">{{ form.is_paid ? 'Paid' : 'Unpaid' }}</span>
-                    <TextInput v-model="form.amount" class="w-20" type="number" step="0.01" min="0" />
-                    <span class="text-[#71717b]">$</span>
+                <div class="flex items-center gap-8">
+                    <div class="flex gap-3">
+                        <SwitchInput v-model="form.is_paid" />
+                        <span class="text-[#71717b]">{{ form.is_paid ? 'Paid' : 'Unpaid' }}</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <TextInput v-model="form.amount" :full-width="false" class="w-16" type="number" step="0.50" min="0" />
+                        <span class="text-[#71717b]">USD</span>
+                    </div>
                 </div>
                 <InputError :message="form.errors.is_paid" />
                 <InputError :message="form.errors.amount" />

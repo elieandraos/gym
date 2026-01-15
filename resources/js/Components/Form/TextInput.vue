@@ -2,12 +2,19 @@
     <input
         ref="input"
         v-bind="$attrs"
-        class="w-full p-2 border border-zinc-200 placeholder-zinc-400 hover:border-zinc-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-lg text-sm placeholder:font-normal"
+        :class="[
+            'p-2 border border-zinc-200 placeholder-zinc-400 hover:border-zinc-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-lg text-sm placeholder:font-normal',
+            { 'w-full': fullWidth }
+        ]"
         v-model="model"/>
 </template>
 
 <script setup>
 import { onMounted, ref } from 'vue'
+
+defineProps({
+    fullWidth: { type: Boolean, default: true },
+})
 
 const model = defineModel()
 

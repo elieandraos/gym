@@ -51,11 +51,10 @@ import AppLayout from '@/Layouts/AppLayout.vue'
 
 const props = defineProps({
     member: { type: Object, required: true },
+    bookings: { type: Array, required: true },
 })
 
-const {
-    completed_bookings: bookings,
-} = props.member
+const { member, bookings } = props
 
 const headers = ['Date', 'Trainer', '# Sessions']
 
