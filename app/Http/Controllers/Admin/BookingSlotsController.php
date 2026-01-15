@@ -32,8 +32,12 @@ class BookingSlotsController extends Controller
 
         // DEBUG: Return raw JSON to test serialization
         $bookingData = BookingResource::make($bookingSlot->booking)->toArray(request());
-        dd('trying json_encode', json_encode($bookingData));
-
+        $result = @json_encode($bookingData);
+        dd('json error', [
+            'result' => $result,
+            'error_code' => json_last_error(),
+            'error_msg' => json_last_error_msg(),
+        ]);
         return response()->json([
             'success' => true,
             'booking' => BookingResource::make($bookingSlot->booking)->toArray(request()),
