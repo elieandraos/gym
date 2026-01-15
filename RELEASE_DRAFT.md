@@ -1,171 +1,71 @@
 # Release Notes
 
-This release introduces a circuit-based workout management system with a Trello-style interface, replacing the previous flat workout list. Trainers can now organize exercises into logical circuits within each training session, providing better structure and reflecting real-world training methodologies.
+This release focuses on stability improvements and payment tracking. A major architectural refactor eliminates 502 errors caused by circular references in API resources, while a new payment amount field enables tracking booking costs directly in the system.
 
-## 🏋️ Circuit-Based Workout System
+## 💰 Payment Amount Tracking
 
-### Overview
+Bookings now include an `amount` field to track payment information.
 
-The workout management system has been redesigned around training circuits—groups of exercises performed together during a session. This replaces the flat workout list with a hierarchical structure.
+**What's New:**
+- Amount input on booking creation form
+- Default value of 270.00 USD
+- Payment status widget on member profiles displays booking amounts
+- Amount included in booking API responses
 
-**Previous Structure:**
-```
-BookingSlot → Workouts[] (flat list)
-```
+This enables trainers and admins to track payments alongside session bookings without relying on external tools.
 
-**New Structure:**
-```
-BookingSlot → Circuits[] → Workouts[] → Sets[]
-```
+## 🛡️ API Resource Architecture Refactor
 
-### Key Features
+A significant architectural change addresses 502 Bad Gateway errors that occurred due to circular references in API resources.
 
-**Trello-Style Interface:**
-- Visual column-based layout with horizontal scrolling
-- Each circuit displayed as a vertical column
-- Workout cards within each circuit
-- Responsive design (vertical on mobile, horizontal on desktop)
-- "Add Circuit" button for creating new workout groups
-
-**Circuit Management:**
-- Create unlimited circuits per session
-- Auto-generated names: "Circuit 1", "Circuit 2", etc.
-- Rename circuits: "Upper Body Circuit", "Core Circuit", "Cardio Circuit"
-- Delete entire circuits (removes all workouts/sets)
-- Inline click-to-edit functionality
-
-**Workout Organization:**
-- Add workouts to specific circuits via modal
-- Workout cards display:
-    - Exercise name with color-coded category badges
-    - All sets (reps/weight or duration)
-    - Edit and delete actions
-- Search workouts with autocomplete
-- Click any card to edit
-
-**Flexible Set Configuration:**
-- **Weight-based workouts**: Reps + Weight (e.g., "12 reps @ 25kg")
-- **Duration-based workouts**: Time only (e.g., "30s plank")
-- Radio button type selection
-- Add/remove sets dynamically (1-10 sets)
-- Clean display without "Set 1:", "Set 2:" labels
-
-### Database Changes
-
-**New Tables:**
-- `booking_slot_circuits` - Circuit groups
-- `booking_slot_circuit_workouts` - Workouts within circuits
-- `booking_slot_circuit_workout_sets` - Individual sets (reps/weight/duration)
-
-**Removed Tables:**
-- `booking_slot_workouts` (replaced by circuit workouts)
-- `workout_sets` (replaced by circuit workout sets)
-
-### Backend Implementation
-
-**New Controllers:**
-- `BookingSlotCircuitsController` - CRUD operations for circuits
-- `BookingSlotCircuitWorkoutsController` - Manage workouts within circuits
-
-**New Models:**
-- `BookingSlotCircuit` - Circuit model with relationships
-- `BookingSlotCircuitWorkout` - Circuit workout model
-- `BookingSlotCircuitWorkoutSet` - Set model with nullable reps
-
-**Validation:**
-- Circuit name validation
-- Workout type validation (weight/duration)
-- Sets array validation with reps/weight/duration checks
-
-### Frontend Components
-
-**New Components:**
-- `CircuitColumn.vue` - Circuit display container
-- `CircuitHeader.vue` - Circuit title with inline editing
-- `CircuitWorkoutCard.vue` - Workout card with sets display
-- `AddWorkoutModal.vue` - Create/edit workout modal
-- `AddWorkoutButton.vue` - Trigger for adding workouts
-- `AddCircuitButton.vue` - Trigger for creating circuits
-
-**Updated Components:**
-- `Show.vue` - Redesigned as Trello-style board
-- Enhanced responsive design for mobile/desktop
-
-### Testing
-
-**15 Comprehensive Tests (All Passing):**
-- Circuit CRUD operations
-- Workout creation (weight-based and duration-based)
-- Validation testing
-- Authentication requirements
-- Cascading delete verification
-
-Test file: `tests/Feature/Admin/BookingSlotCircuitTest.php`
-
-## 🎨 UI/UX Improvements
-
-### Form Styling Consistency
-
-**Black Accent Theme:**
-- Updated all checkboxes to use black accent (workout category selection)
-- Updated all radio buttons to use black accent (Weight/Duration type)
-- Replaced Jetstream's default indigo with black for consistency
-- Better visual hierarchy and professional appearance
-
-### Cleaner Workout Display
-**Color-Coded Categories:**
-- Category badges with distinct colors
-- Chest (amber), Back (green), Legs (red), etc.
-- Better visual identification
-
-## 🗃️ Database Schema Updates
-
-### Nullable Reps Column
-
-**Change:** Made `reps` column nullable in `booking_slot_circuit_workout_sets` table
-
-**Reason:**
-- Duration-based exercises (planks, holds) don't use reps
-- Previous schema forced meaningless default values
+**Problem:**
+User models with `$appends` attributes caused infinite recursion when serialized through nested relationships (e.g., Booking → Member → Bookings → Member...).
 
 **Solution:**
-- Weight workouts: store reps + weight
-- Duration workouts: store duration only (reps = null)
+- Established strict serialization rules for API resources
+- Resources serialize downward (parent → children) but never upward
+- Controllers now pass data via separate props instead of nested relationships
+- Calendar event serialization extracts values as plain strings before building response arrays
 
-**Migration Consolidation:**
-- Merged nullable change into original table creation migration
-- Cleaner migration history
+**Affected Areas:**
+- `BookingResource`, `MemberResource`, `TrainerResource`
+- Calendar controllers (daily and weekly views)
+- Member and booking show pages
 
-## 🔧 Technical Improvements
+## 🔧 Bug Fixes
 
-**Route Organization:**
-- Added nested resource routes for circuits and circuit workouts
-- RESTful API structure
-- Proper route naming conventions
+**Calendar 502 Errors:**
+- Fixed booking slot serialization in daily and weekly calendar views
+- Explicit relationship loading after flatMap operations ensures User models are complete for profile photo URL generation
 
-**Seeder Updates:**
-- `BookingSlotCircuitWorkoutSeeder` - Creates realistic circuit data
-- 1-2 circuits per completed session
-- Random circuit names and workout selection
-- 70% weight-based, 30% duration-based workouts
-- Fixed bug: Updated JSON query from `where('category')` to `whereJsonContains('categories')`
+**Member Booking History:**
+- Fixed booking history page not displaying by passing bookings as a separate prop rather than through the member resource
 
-**Code Cleanup:**
-- Removed `BookingSlotWorkoutSeeder` (obsolete)
-- All code formatted with Laravel Pint
-- Comprehensive type hints and validation
-- Cascading deletes for data integrity
+## 🎨 UI Improvements
 
-## 🎯 Breaking Changes
+**Booking Slot Workouts:**
+- Zero weight values now allowed for bodyweight exercises (bench dips, pull-ups, etc.)
+- Previous sessions modal includes a session limit selector (1-5 sessions)
+- Modal height locks during loading to prevent visual jumping
 
-**For Developers:**
-- Removed `BookingSlotWorkout` model → Use `BookingSlotCircuitWorkout`
-- Removed `BookingSlotWorkoutSet` model → Use `BookingSlotCircuitWorkoutSet`
-- Removed `BookingSlotWorkoutController` → Use circuit controllers
-- Removed `BookingSlotWorkoutSeeder` → Use `BookingSlotCircuitWorkoutSeeder`
-- New relationship: `BookingSlot::circuits()`
-- Routes changed from `booking-slot-workout.*` to `bookings-slots.circuits.*`
+**Form Components:**
+- TextInput component gains `fullWidth` prop (default true) for flexible width control
+- Improved payment status layout in booking creation form
+
+## 🔧 Technical Notes
+
+**Database Changes:**
+- Added `amount` decimal column to `bookings` table (precision 10, scale 2)
+
+**Model Updates:**
+- `Booking` model includes `amount` in fillable array
+- Booking factory generates random amounts for testing
+- Booking validation accepts nullable numeric amount values
+
+**CLAUDE.md Guidelines:**
+- Documented API resource serialization rules to prevent future circular reference issues
+- Added explicit relationship map showing allowed serialization directions
 
 ## Summary
 
-This release transforms workout management with a circuit-based system and Trello-style interface. Trainers can now organize workouts into logical groups that reflect real-world training methodologies. The nullable reps column enables proper support for both weight-based and duration-based exercises. UI improvements include consistent black accent styling and cleaner workout displays. All changes maintain backward compatibility for end users while providing a modern, intuitive interface backed by comprehensive test coverage.
+This release delivers critical stability fixes for the calendar and member pages while introducing payment tracking capabilities. The API resource refactor establishes architectural patterns that prevent circular reference issues going forward. All changes maintain the existing user experience while improving system reliability.

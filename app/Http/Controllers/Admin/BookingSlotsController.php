@@ -30,6 +30,13 @@ class BookingSlotsController extends Controller
             ->orderBy('name')
             ->get();
 
+        dd('Controller completed', [
+            'slot_id' => $bookingSlot->id,
+            'booking_id' => $bookingSlot->booking->id,
+            'circuits_count' => $bookingSlot->circuits->count(),
+            'workouts_count' => $workouts->count(),
+        ]);
+        
         return Inertia::render('Admin/BookingsSlots/Show', [
             'bookingSlot' => BookingSlotResource::make($bookingSlot), // Now includes nested circuits with workouts
             'booking' => BookingResource::make($bookingSlot->booking), // Now includes nested member, trainer
