@@ -37,7 +37,9 @@ class MemberResource extends JsonResource
             'emergency_contact' => $this->emergency_contact,
             'color' => $this->color,
             'role' => strtolower($this->role),
-            'last_body_composition' => new BodyCompositionResource($this->whenLoaded('lastBodyComposition')),
+            'last_body_composition' => $this->whenLoaded('lastBodyComposition',
+                fn () => new BodyCompositionResource($this->lastBodyComposition)
+            ),
             // Minimal active booking reference for header (no full BookingResource to avoid circular refs)
             'active_booking' => $this->whenLoaded('memberActiveBooking', fn () => $this->memberActiveBooking ? [
                 'id' => $this->memberActiveBooking->id,
