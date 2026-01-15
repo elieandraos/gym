@@ -16,7 +16,7 @@ class BookingSlotsController extends Controller
     /**
      * @throws \Throwable
      */
-    public function show(BookingSlot $bookingSlot): Response
+    public function show(BookingSlot $bookingSlot): \Illuminate\Http\JsonResponse
     {
         $bookingSlot->load([
             'booking.member',
@@ -30,11 +30,24 @@ class BookingSlotsController extends Controller
             ->orderBy('name')
             ->get();
 
-        return Inertia::render('Admin/BookingsSlots/Show', [
-            'bookingSlot' => BookingSlotResource::make($bookingSlot), // Now includes nested circuits with workouts
-            'booking' => BookingResource::make($bookingSlot->booking), // Now includes nested member, trainer
-            'bookingId' => request('booking_id'),
-            'workouts' => WorkoutResource::collection($workouts),
-        ]);
+        // DEBUG: Return raw JSON to test serialization
+         $data = [
+                  'bookingSlot' => BookingSlotResource::make($bookingSlot)->toArray(request()),
+                 'booking' => BookingResource::make($bookingSlot->booking)->toArray(request()),
+                  'workouts' => WorkoutResource::collection($workouts)->toArray(request()),
+             ];
+
+             return response()->json([
+                 'success' => true,
+                 'data_size' => strlen(json_encode($data)),
+                 'data' => $data,
+            ]);
+
+//        return Inertia::render('Admin/BookingsSlots/Show', [
+//            'bookingSlot' => BookingSlotResource::make($bookingSlot), // Now includes nested circuits with workouts
+//            'booking' => BookingResource::make($bookingSlot->booking), // Now includes nested member, trainer
+//            'bookingId' => request('booking_id'),
+//            'workouts' => WorkoutResource::collection($workouts),
+//        ]);
     }
 }
