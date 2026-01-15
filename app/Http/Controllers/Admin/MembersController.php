@@ -55,15 +55,32 @@ class MembersController extends Controller
                 $query->orderBy('start_time');
             },
             'memberScheduledBookings.trainer',
-            'memberCompletedBookings.trainer',
             'lastBodyComposition',
         ]);
 
+        // Calculate stats for active booking
+        $activeBookingData = null;
+        if ($user->memberActiveBooking) {
+            $slots = $user->memberActiveBooking->bookingSlots->sortBy('start_time')->values();
+            $upcomingSlot = $slots->firstWhere('status', \App\Enums\Status::Upcoming);
+            $completedCount = $slots->where('status', \App\Enums\Status::Complete)->count();
+            $remainingCount = $user->memberActiveBooking->nb_sessions - $completedCount;
+
+            $activeBookingData = array_merge(
+                BookingResource::make($user->memberActiveBooking)->resolve(),
+                [
+                    'upcoming_session_url' => $upcomingSlot ? route('admin.bookings-slots.show', $upcomingSlot->id) : null,
+                    'upcoming_session_date' => $upcomingSlot ? \Carbon\Carbon::parse($upcomingSlot->start_time)->isoFormat('ddd MMM Do') : null,
+                    'upcoming_session_time' => $upcomingSlot ? \Carbon\Carbon::parse($upcomingSlot->start_time)->format('h:i A') : null,
+                    'nb_remaining_sessions' => $remainingCount.' '.\Illuminate\Support\Str::plural('session', $remainingCount),
+                ]
+            );
+        }
+
         return Inertia::render('Admin/Members/Show', [
             'member' => MemberResource::make($user),
-            'activeBooking' => $user->memberActiveBooking ? BookingResource::make($user->memberActiveBooking) : null,
+            'activeBooking' => $activeBookingData,
             'scheduledBookings' => BookingResource::collection($user->memberScheduledBookings),
-            'completedBookings' => BookingResource::collection($user->memberCompletedBookings),
         ]);
     }
 

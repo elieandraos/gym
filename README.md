@@ -83,16 +83,16 @@ php artisan queue:work --once
   - Registration
   - Two-factor Authentication
 - Coding style
-  - [Pint](https://laravel.com/docs/11.x/pint) for php & Laravel.  
+  - [Pint](https://laravel.com/docs/11.x/pint) for php & Laravel.
   - [Es-lint](https://eslint.org/docs/latest/use/getting-started#quick-start) for Javascript and Vue.
- - Commands 
+ - Commands
  ```shell
     # run es lint
     npm run eslint
-  
+
     # run pint
     ./vendor/bin/pint
-  
+
     # run tests
     php artisan test
   ```
@@ -101,3 +101,85 @@ php artisan queue:work --once
 - `AppLayout`
   - `Container`
     - Headings: `PageHeader` `PageBackButton`
+
+---
+
+## Queue & Scheduler Guide
+
+For local development, run both queue worker and scheduler in separate terminals.
+
+### Testing Without Waiting
+
+```bash
+php artisan queue:work --once     # Process one job
+php artisan queue:failed          # View failed jobs
+php artisan schedule:run          # Run due tasks now
+php artisan schedule:list         # View scheduled tasks
+```
+
+### Troubleshooting
+
+**Queue not processing:**
+- Ensure `QUEUE_CONNECTION=database` in `.env`
+- Check `jobs` table and `failed_jobs` table
+
+**Scheduler not running:**
+- Use `schedule:work` (not `schedule:run`)
+- Check timezone: `APP_TIMEZONE=Asia/Beirut`
+
+**Both not working:**
+- Restart terminal processes
+- `php artisan cache:clear`
+- Check `storage/logs/laravel.log`
+
+---
+
+## Email System
+
+**Configuration:**
+- Mail driver: SMTP (Mailtrap for dev)
+- Queue connection: database
+- Owner emails: `OWNERS_EMAILS` env variable
+
+**Email Types:**
+1. **Member Welcome Email** - Sent on registration
+2. **Booking Slot Reminder** - Sent 9pm night before session
+3. **Owner Notification** - Sent when new member registers
+
+**Testing Emails:**
+```bash
+php artisan test --filter=MemberWelcomeEmailTest
+php artisan test --filter=BookingSlotReminderTest
+php artisan test --filter=OwnerNewMemberEmailTest
+```
+
+**Email Previews (dev only):**
+- `/preview-emails/member/welcome`
+- `/preview-emails/member/booking-slot-reminder`
+- `/preview-emails/owner`
+
+**Branding:**
+- Font: Inter | Logo: `public/logo.png`
+- Layout: `resources/views/emails/layouts/branded.blade.php`
+- Theme: `resources/views/vendor/mail/html/themes/liftstation.css`
+
+---
+
+## Scheduled Tasks
+
+**Timezone:** Asia/Beirut
+
+**Commands:**
+
+1. **Mark Booking Slots Complete** (`lift-station:mark-booking-slots-complete`)
+   - Runs hourly
+   - Updates past slots to "Complete" (preserves Cancelled/Frozen)
+
+2. **Send Booking Slot Reminders** (`lift-station:send-booking-slot-reminders`)
+   - Runs daily at 9pm
+   - Sends reminders for tomorrow's sessions
+
+**Production Setup:**
+```bash
+* * * * * cd /path-to-project && php artisan schedule:run >> /dev/null 2>&1
+```

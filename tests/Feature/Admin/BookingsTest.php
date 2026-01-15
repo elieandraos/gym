@@ -49,7 +49,7 @@ test('it validates request before creating a booking', function () {
 
 test('it shows booking information', function () {
     $booking = Booking::query()->first();
-    $booking->load(['member', 'member.memberActiveBooking', 'trainer', 'bookingSlots' => function ($query) {
+    $booking->load(['member', 'trainer', 'bookingSlots' => function ($query) {
         $query->orderBy('start_time');
     }]);
 
@@ -58,9 +58,9 @@ test('it shows booking information', function () {
         ->assertHasComponent('Admin/Bookings/Show')
         ->assertHasResource('booking', BookingResource::make($booking))
         ->assertInertia(fn (AssertableInertia $page) => $page
-            ->has('bookingSlots')
-            ->has('bookingSlots', $booking->bookingSlots->count())
-            ->where('bookingSlots.0.id', $booking->bookingSlots->sortBy('start_time')->first()->id)
+            ->has('booking.bookingSlots')
+            ->has('booking.bookingSlots', $booking->bookingSlots->count())
+            ->where('booking.bookingSlots.0.id', $booking->bookingSlots->sortBy('start_time')->first()->id)
         )
         ->assertStatus(200);
 });

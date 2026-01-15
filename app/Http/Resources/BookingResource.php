@@ -33,6 +33,9 @@ class BookingResource extends JsonResource
             'title' => Carbon::parse($this->start_date)->format('M j').' - '.Carbon::parse($this->end_date)->format('M j').', '.Carbon::parse($this->end_date)->format('Y'),
             'formatted_start_date' => Carbon::parse($this->start_date)->isoFormat('MMM Do'),
             'formatted_end_date' => Carbon::parse($this->end_date)->isoFormat('MMM Do'),
+            'member' => MemberResource::make($this->whenLoaded('member')),
+            'trainer' => TrainerResource::make($this->whenLoaded('trainer')),
+            'bookingSlots' => BookingSlotResource::collection($this->whenLoaded('bookingSlots')),
         ];
     }
 }

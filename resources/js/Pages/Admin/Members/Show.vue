@@ -2,7 +2,7 @@
     <AppLayout title="Profile">
         <Container>
             <PageHeader :sticky="true">
-                <MemberHeader :member="member"></MemberHeader>
+                <MemberHeader :member="member" :active-booking="activeBooking"></MemberHeader>
             </PageHeader>
 
             <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-6 mb-12">
@@ -68,10 +68,8 @@ const props = defineProps({
     member: { type: Object, required: true },
     activeBooking: { type: Object, default: null },
     scheduledBookings: { type: Array, default: () => [] },
-    completedBookings: { type: Array, default: () => [] },
 })
 
-const { activeBooking, scheduledBookings } = props
 const { last_body_composition: lastBodyComposition } = props.member || {}
-const isTraining = computed(() => !!activeBooking)
+const isTraining = computed(() => !!props.activeBooking)
 </script>

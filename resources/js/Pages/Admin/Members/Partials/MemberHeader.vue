@@ -64,11 +64,14 @@ const { route } = window
 
 const props = defineProps({
     member: { type: Object, required: true },
+    activeBooking: { type: Object, default: null },
 })
 
-const { id, name, first_name, profile_photo_url, age, since, active_booking } = props.member
+const { id, name, first_name, profile_photo_url, age, since } = props.member
+// Use activeBooking prop if passed (with calculated stats), otherwise use member.active_booking (minimal data)
+const active_booking = computed(() => props.activeBooking || props.member.active_booking)
 
-const isTraining = computed(() => !!active_booking)
+const isTraining = computed(() => !!active_booking.value)
 const isMemberShowPage = computed(() => route().current('admin.members.show'))
 const isBookingShowPage = computed(() => route().current('admin.bookings.show'))
 const isMemberHistoryPage = computed(() => route().current('admin.members.bookings.history'))

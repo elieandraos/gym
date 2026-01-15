@@ -1,97 +1,53 @@
-# 502 Bad Gateway Issue on Production
+resources/js/Pages/Admin/Members/Show.vue
+Comment on lines +74 to 76
+const { activeBooking, scheduledBookings } = props
+const { last_body_composition: lastBodyComposition } = props.member || {}
+const isTraining = computed(() => !!activeBooking)
+@coderabbitai
+coderabbitai bot
+8 minutes ago
+⚠️ Potential issue | 🟠 Major
 
-## Problem
-Production URL `https://lift-station.fitness/bookings-slots/1215/show` returns 502 Bad Gateway nginx error.
-Works fine locally, but fails on production.
+Reactivity issue: destructured activeBooking loses reactivity in computed.
 
-## Root Cause: Circular Reference in Resources
+The activeBooking is destructured from props at line 74, then used in the computed at line 76. Since destructuring happens outside the computed function, if activeBooking changes, isTraining won't update.
 
-There's an infinite recursion loop between `BookingSlotResource` and `BookingResource`:
+🔧 Proposed fix
+-const { activeBooking, scheduledBookings } = props
+-const { last_body_composition: lastBodyComposition } = props.member || {}
+-const isTraining = computed(() => !!activeBooking)
++const { last_body_composition: lastBodyComposition } = props.member || {}
++const isTraining = computed(() => !!props.activeBooking)
+Then update template references to use props.activeBooking and props.scheduledBookings, or keep the destructuring only for non-reactive uses like passing to child components.
 
-1. **BookingSlotResource.php:32** loads `BookingResource`:
-   ```php
-   'booking' => new BookingResource($this->whenLoaded('booking')),
-   ```
 
-2. **BookingResource.php:47** loads `BookingSlotResource::collection`:
-   ```php
-   'bookingSlots' => $slots->isNotEmpty() ? BookingSlotResource::collection($slots) : null,
-   ```
 
-This creates infinite loop:
-```
-BookingSlot → Booking → BookingSlots → Booking → BookingSlots → ...
-```
+resources/js/Pages/Admin/Members/Show.vue
+    member: { type: Object, required: true },
+    activeBooking: { type: Object, default: null },
+    scheduledBookings: { type: Array, default: () => [] },
+    completedBookings: { type: Array, default: () => [] },
+@coderabbitai
+coderabbitai bot
+8 minutes ago
+🧹 Nitpick | 🔵 Trivial
 
-## Why It Works Locally But Not Production
-- Local has higher `memory_limit` and `max_execution_time` in php.ini
-- Production has stricter PHP-FPM settings (lower memory/timeout limits)
-- Production may have more booking slot data, making recursion deeper
-- PHP runs out of memory or hits max execution time → PHP-FPM crashes → nginx returns 502
+Unused prop: completedBookings is defined but not used.
 
-## The Fix
+The completedBookings prop is defined and passed from the controller but isn't referenced in the template or script. If it's intended for future use, consider adding a comment; otherwise, it can be removed from both the component and controller to reduce payload size.
 
-**Option 1 (Recommended): Remove circular reference**
 
-In `app/Http/Resources/BookingResource.php`, remove the line that includes `bookingSlots`:
 
-```php
-// REMOVE this line:
-'bookingSlots' => $slots->isNotEmpty() ? BookingSlotResource::collection($slots) : null,
-```
+resources/js/Pages/Admin/Bookings/Show.vue
+    member: { type: Object, required: true },
+    trainer: { type: Object, required: true },
+    bookingSlots: { type: Array, required: true },
+    bookingStats: { type: Object, required: true },
+@coderabbitai
+coderabbitai bot
+9 minutes ago
+🧹 Nitpick | 🔵 Trivial
 
-This breaks the circular reference. When viewing a booking slot detail page, you don't need the full list of all booking slots nested within the booking resource - you only need the booking metadata (member, trainer, dates).
+Unused required prop: bookingStats is defined but not used.
 
-**Option 2: Use a flag to prevent recursion**
-
-Create a `withoutSlots()` method on BookingResource to prevent loading slots when needed:
-
-```php
-class BookingResource extends JsonResource
-{
-    private bool $includeSlots = true;
-
-    public function withoutSlots(): self
-    {
-        $this->includeSlots = false;
-        return $this;
-    }
-
-    public function toArray(Request $request): array
-    {
-        // ... existing code ...
-
-        return [
-            // ... existing fields ...
-            'bookingSlots' => $this->when(
-                $this->includeSlots && $slots->isNotEmpty(),
-                BookingSlotResource::collection($slots)
-            ),
-            // ... rest of fields ...
-        ];
-    }
-}
-```
-
-Then in BookingSlotResource:
-```php
-'booking' => $this->whenLoaded('booking', function () {
-    return BookingResource::make($this->booking)->withoutSlots();
-}),
-```
-
-## Files Affected
-- `app/Http/Resources/BookingResource.php` (line 47)
-- `app/Http/Resources/BookingSlotResource.php` (line 32)
-
-## Testing After Fix
-1. Test locally: visit booking slot show page
-2. Check that booking metadata still displays (member name, trainer, dates)
-3. Deploy to production
-4. Test production URL: `https://lift-station.fitness/bookings-slots/1215/show`
-5. Verify no 502 error
-
-## Related Context
-- Booking slot ID 1215 has no circuits yet (confirmed by user)
-- Recent changes: Added workout history modal feature (see release_draft.md)
-- The circular reference existed before but only triggered when loading booking relationship on booking slot show page
+The bookingStats prop is marked as required: true but isn't referenced in the component. If it's intended for the BookingSessions child component, pass it down; otherwise, consider removing it or making it optional.

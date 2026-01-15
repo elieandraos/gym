@@ -18,7 +18,7 @@ class UnfreezeBookingController extends Controller
     public function index(Booking $booking): Response
     {
         $booking->load([
-            'member',
+            'member.memberActiveBooking',
             'trainer',
             'bookingSlots' => function ($query) {
                 $query->where('status', Status::Frozen)
