@@ -40,7 +40,6 @@ class BookingSlotsController extends Controller
         return response()->json([
             'success' => true,
             'booking' => BookingResource::make($bookingSlot->booking)->toArray(request()),
-            'workouts' => WorkoutResource::collection($workouts)->toArray(request()),
         ]);
 
 //        return Inertia::render('Admin/BookingsSlots/Show', [
