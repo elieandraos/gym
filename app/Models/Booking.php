@@ -101,6 +101,7 @@ class Booking extends Model
         });
     }
 
+    /** @noinspection PhpUndefinedMethodInspection - Scope calling another scope, PhpStorm can't recognize it */
     #[AsScope]
     public function forCalendar(Builder $query, Carbon $start, Carbon $end): Builder
     {

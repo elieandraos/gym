@@ -7,6 +7,7 @@ use App\Http\Resources\Calendar\DayEventsCollection;
 use App\Models\Booking;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -16,6 +17,7 @@ class DailyCalendarController extends Controller
 {
     public function index(Request $request): Response
     {
+        /** @var User $user */
         $user = auth()->user();
         $today = Carbon::today();
 
@@ -32,10 +34,12 @@ class DailyCalendarController extends Controller
         $startOfDay = $date->copy()->startOfDay();
         $endOfDay = $date->copy()->endOfDay();
 
-        $bookings = Booking::query()
+        /** @var Builder|Booking $query */
+        $query = Booking::query();
+        $bookings = $query
             ->forCalendar($startOfDay, $endOfDay)
-            ->when(! empty($selectedTrainerIds), function ($query) use ($selectedTrainerIds) {
-                $query->whereIn('trainer_id', $selectedTrainerIds);
+            ->when(! empty($selectedTrainerIds), function ($q) use ($selectedTrainerIds) {
+                $q->whereIn('trainer_id', $selectedTrainerIds);
             })
             ->get();
 

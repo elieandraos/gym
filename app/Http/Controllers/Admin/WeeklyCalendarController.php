@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Calendar\WeekEventsCollection;
 use App\Models\Booking;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
@@ -44,7 +45,9 @@ class WeeklyCalendarController extends Controller
             ? array_map('intval', array_filter(explode(',', $request->get('trainers'))))
             : ($defaultTrainerId ? [$defaultTrainerId] : []);
 
-        $bookings = Booking::query()
+        /** @var Builder|Booking $query */
+        $query = Booking::query();
+        $bookings = $query
             ->forCalendar($start, $end)
             ->when(! empty($selectedTrainerIds), function ($query) use ($selectedTrainerIds) {
                 $query->whereIn('trainer_id', $selectedTrainerIds);
