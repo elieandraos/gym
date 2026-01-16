@@ -46,11 +46,18 @@ All routes require authentication: `/members/*`, `/trainers/*`, `/bookings/*`, `
 - Use form requests for validation
 - Explicit eager loading with `with()`
 
+** PHPStorm warnings **
+- For unused route model binding parameters (needed for nested routes), add `/** @noinspection PhpUnusedParameterInspection */` above the method
+- Use `/** @var ModelClass $variable */` to specify types and avoid polymorphic call warnings for: `auth()->user()`, `request()->user()`, relationship `create()` methods, `Collection::first()` / `firstWhere()`
+- Use `Model::query()->orderBy()` instead of `Model::orderBy()` to avoid "method not found" warnings in PhpStorm
+- Avoid unnecessary curly braces in string interpolation for simple property access (use `"$user->id"` not `"{$user->id}"`)
+
 **Models:**
 - Use `#[AsScope]` attribute for scopes
 - Type-hint Builder queries
 - Use `Attribute::make()` for accessors
 - Use enum values consistently
+- Add `@property` PHPDoc annotations for model attributes, and `@property-read` for relationships, to avoid "Property accessed via magic method" warnings in PhpStorm
 
 ### API Resources (CRITICAL)
 

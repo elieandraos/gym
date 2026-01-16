@@ -17,6 +17,7 @@ class WeeklyCalendarController extends Controller
 {
     public function index(Request $request): Response
     {
+        /** @var User $user */
         $user = auth()->user();
         $today = Carbon::today();
 

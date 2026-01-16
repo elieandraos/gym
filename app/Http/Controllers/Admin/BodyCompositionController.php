@@ -32,7 +32,7 @@ class BodyCompositionController extends Controller
 
         // Store in user-specific subfolder: body-compositions/{user_id}/filename
         $photoPath = $photo->storeAs(
-            "body-compositions/{$user->id}",
+            "body-compositions/$user->id",
             $filename,
             'public'
         );

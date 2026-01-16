@@ -14,8 +14,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * @property-read bool $is_paid
+ * @property bool $is_paid
+ * @property bool $is_frozen
  * @property array $schedule_days
+ *
+ * @method static Builder|Booking active()
+ * @method static Builder|Booking history()
+ * @method static Builder|Booking scheduled()
+ * @method static Builder|Booking between(DateTimeInterface $start, DateTimeInterface $end)
+ * @method static Builder|Booking forCalendar(Carbon $start, Carbon $end)
  */
 class Booking extends Model
 {

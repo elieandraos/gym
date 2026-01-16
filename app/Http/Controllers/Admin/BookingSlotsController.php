@@ -13,9 +13,6 @@ use Inertia\Response;
 
 class BookingSlotsController extends Controller
 {
-    /**
-     * @throws \Throwable
-     */
     public function show(BookingSlot $bookingSlot): Response
     {
         $bookingSlot->load([
@@ -33,7 +30,7 @@ class BookingSlotsController extends Controller
         return Inertia::render('Admin/BookingsSlots/Show', [
             'bookingSlot' => BookingSlotResource::make($bookingSlot),
             'booking' => BookingResource::make($bookingSlot->booking),
-            'bookingId' => request('booking_id'),
+            'bookingId' => request('booking_id'), // Used for conditional back navigation when user came from booking page
             'workouts' => WorkoutResource::collection($workouts),
         ]);
     }
