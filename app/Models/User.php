@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Attributes\Scope as AsScope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -19,12 +20,54 @@ use Illuminate\Support\Facades\Storage;
 use Laravel\Jetstream\HasProfilePhoto;
 
 /**
- * @property-read int                              id
- * @property \Illuminate\Support\Carbon|mixed|null $birthdate
- * @property \Illuminate\Support\Carbon|mixed|null $registration_date
- * @property-read mixed                            $memberCompletedBookings
+ * Fillable attributes
+ *
+ * @property string $name
+ * @property string $email
+ * @property string $password
+ * @property Carbon|null $registration_date
+ * @property LeadSource|null $lead_source
+ * @property string|null $gender
+ * @property float|null $weight
+ * @property float|null $height
+ * @property Carbon|null $birthdate
+ * @property string|null $blood_type
+ * @property string|null $phone_number
+ * @property string|null $instagram_handle
+ * @property string|null $address
+ * @property string|null $emergency_contact
+ * @property string $role
+ * @property string|null $color
+ * @property array $settings
+ *
+ * Auto-generated / Accessors
+ * @property-read int $id
+ * @property-read Carbon|null $created_at
+ * @property-read Carbon|null $updated_at
+ * @property string|null $profile_photo_path
+ * @property-read string $profile_photo_url
+ * @property-read string|null $age
+ * @property-read string $since
+ *
+ * Relationships
+ * @property-read Collection<Booking> $trainerBookings
+ * @property-read Collection<Booking> $trainerActiveBookings
+ * @property-read Collection<Booking> $memberBookings
+ * @property-read Booking|null $memberActiveBooking
+ * @property-read Collection<Booking> $memberScheduledBookings
+ * @property-read Collection<Booking> $memberCompletedBookings
+ * @property-read Collection<BodyComposition> $bodyCompositions
+ * @property-read BodyComposition|null $lastBodyComposition
+ *
+ * Scopes
+ *
+ * @method static Builder|User members()
+ * @method static Builder|User trainers()
+ * @method static Builder|User byRole(string $role)
  *
  * @mixin HasSettings
+ * @mixin HasProfilePhoto
+ * @mixin Notifiable
  */
 class User extends Authenticatable
 {
@@ -79,6 +122,7 @@ class User extends Authenticatable
         return $this->hasMany(Booking::class, 'trainer_id');
     }
 
+    /** @noinspection PhpUndefinedMethodInspection - Relationship calling Booking scope */
     public function trainerActiveBookings(): HasMany
     {
         return $this->hasMany(Booking::class, 'trainer_id')
@@ -95,6 +139,7 @@ class User extends Authenticatable
         return $this->hasMany(Booking::class, 'member_id');
     }
 
+    /** @noinspection PhpUndefinedMethodInspection - Relationship calling Booking scope */
     public function memberActiveBooking(): HasOne
     {
         return $this->hasOne(Booking::class, 'member_id')
@@ -102,6 +147,7 @@ class User extends Authenticatable
             ->orderBy('start_date');
     }
 
+    /** @noinspection PhpUndefinedMethodInspection - Relationship calling Booking scope */
     public function memberScheduledBookings(): HasMany
     {
         return $this->hasMany(Booking::class, 'member_id')
@@ -109,6 +155,7 @@ class User extends Authenticatable
             ->orderBy('start_date');
     }
 
+    /** @noinspection PhpUndefinedMethodInspection - Relationship calling Booking scope */
     public function memberCompletedBookings(): HasMany
     {
         return $this->hasMany(Booking::class, 'member_id')
@@ -164,9 +211,6 @@ class User extends Authenticatable
         );
     }
 
-    /**
-     * Update the user's profile photo with user-specific subfolder and unique filename.
-     */
     public function updateProfilePhoto(UploadedFile $photo, $storagePath = 'profile-photos'): void
     {
         tap($this->profile_photo_path, function ($previous) use ($photo, $storagePath) {
@@ -175,7 +219,7 @@ class User extends Authenticatable
 
             // Store in user-specific subfolder: profile-photos/{user_id}/filename
             $path = $photo->storeAs(
-                "{$storagePath}/{$this->id}",
+                "$storagePath/$this->id",
                 $filename,
                 ['disk' => $this->profilePhotoDisk()]
             );
@@ -191,9 +235,6 @@ class User extends Authenticatable
         });
     }
 
-    /**
-     * Delete the user's profile photo.
-     */
     public function deleteProfilePhoto(): void
     {
         if (is_null($this->profile_photo_path)) {

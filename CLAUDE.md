@@ -46,11 +46,23 @@ All routes require authentication: `/members/*`, `/trainers/*`, `/bookings/*`, `
 - Use form requests for validation
 - Explicit eager loading with `with()`
 
+** PHPStorm warnings **
+- For unused route model binding parameters (needed for nested routes), add `/** @noinspection PhpUnusedParameterInspection */` above the method
+- Use `/** @var ModelClass $variable */` to specify types and avoid polymorphic call warnings for: `auth()->user()`, `request()->user()`, relationship `create()` methods, `Collection::first()` / `firstWhere()`
+- Use `Model::query()->orderBy()` instead of `Model::orderBy()` to avoid "method not found" warnings in PhpStorm
+- For scope methods, separate the query into a typed variable: `/** @var Builder|Booking $query */ $query = Booking::query();` then call scopes on `$query`
+- When a scope calls another scope inside the model, use `/** @noinspection PhpUndefinedMethodInspection - Scope calling another scope, PhpStorm can't recognize it */`
+- When a relationship calls a scope from the related model, use `/** @noinspection PhpUndefinedMethodInspection - Relationship calling Model scope, PhpStorm can't recognize it */`
+- Avoid unnecessary curly braces in string interpolation for simple property access (use `"$user->id"` not `"{$user->id}"`)
+
 **Models:**
 - Use `#[AsScope]` attribute for scopes
 - Type-hint Builder queries
 - Use `Attribute::make()` for accessors
 - Use enum values consistently
+- Add `@property` PHPDoc annotations for model attributes, and `@property-read` for relationships, to avoid "Property accessed via magic method" warnings in PhpStorm
+- Add `@method static Builder|ModelClass scopeName()` annotations for scopes to enable autocomplete
+- Add `@mixin TraitName` in model PHPDoc when using traits for autocomplete and go-to-definition support
 
 ### API Resources (CRITICAL)
 
@@ -62,6 +74,8 @@ All routes require authentication: `/members/*`, `/trainers/*`, `/bookings/*`, `
 5. Models must **NEVER** auto-eager load relationships
 
 **Why:** Circular references cause 502 errors in production (infinite recursion).
+
+**PHPDoc:** Add `@mixin ModelClass` to resources to avoid "property accessed via magic method" warnings.
 
 **Allowed Relationship Map:**
 ```php

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Enums\Role;
+use App\Enums\Status;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\UpdateUserRequest;
 use App\Http\Requests\Admin\UserRequest;
@@ -11,11 +12,13 @@ use App\Http\Resources\MemberResource;
 use App\Mail\Member\WelcomeEmail;
 use App\Mail\Owner\NewMemberEmail;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -62,17 +65,17 @@ class MembersController extends Controller
         $activeBookingData = null;
         if ($user->memberActiveBooking) {
             $slots = $user->memberActiveBooking->bookingSlots->sortBy('start_time')->values();
-            $upcomingSlot = $slots->firstWhere('status', \App\Enums\Status::Upcoming);
-            $completedCount = $slots->where('status', \App\Enums\Status::Complete)->count();
+            $upcomingSlot = $slots->firstWhere('status', Status::Upcoming);
+            $completedCount = $slots->where('status', Status::Complete)->count();
             $remainingCount = $user->memberActiveBooking->nb_sessions - $completedCount;
 
             $activeBookingData = array_merge(
                 BookingResource::make($user->memberActiveBooking)->resolve(),
                 [
                     'upcoming_session_url' => $upcomingSlot ? route('admin.bookings-slots.show', $upcomingSlot->id) : null,
-                    'upcoming_session_date' => $upcomingSlot ? \Carbon\Carbon::parse($upcomingSlot->start_time)->isoFormat('ddd MMM Do') : null,
-                    'upcoming_session_time' => $upcomingSlot ? \Carbon\Carbon::parse($upcomingSlot->start_time)->format('h:i A') : null,
-                    'nb_remaining_sessions' => $remainingCount.' '.\Illuminate\Support\Str::plural('session', $remainingCount),
+                    'upcoming_session_date' => $upcomingSlot ? Carbon::parse($upcomingSlot->start_time)->isoFormat('ddd MMM Do') : null,
+                    'upcoming_session_time' => $upcomingSlot ? Carbon::parse($upcomingSlot->start_time)->format('h:i A') : null,
+                    'nb_remaining_sessions' => $remainingCount.' '.Str::plural('session', $remainingCount),
                 ]
             );
         }
@@ -106,6 +109,7 @@ class MembersController extends Controller
         Mail::to($member->email)->queue(new WelcomeEmail($member));
 
         // Send email to gym owner(s) based on admin settings
+        /** @var User $admin */
         $admin = auth()->user();
         $sendEmailToOwners = $admin->getSetting('notifications.new_member_email_to_owners', true);
 
@@ -160,8 +164,8 @@ class MembersController extends Controller
     public function destroy(User $user): RedirectResponse
     {
         // Delete storage files for body compositions and profile photos
-        Storage::disk('public')->deleteDirectory("body-compositions/{$user->id}");
-        Storage::disk('public')->deleteDirectory("profile-photos/{$user->id}");
+        Storage::disk('public')->deleteDirectory("body-compositions/$user->id");
+        Storage::disk('public')->deleteDirectory("profile-photos/$user->id");
 
         // Delete the user (CASCADE will handle bookings, booking_slots, booking_slot_workouts, and body_compositions)
         $user->delete();

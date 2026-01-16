@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 
 class BookingSlotCircuitWorkoutsController extends Controller
 {
+    /** @noinspection PhpUnusedParameterInspection */
     public function store(Request $request, BookingSlot $bookingSlot, BookingSlotCircuit $circuit): RedirectResponse
     {
         $validated = $request->validate([
@@ -22,7 +23,7 @@ class BookingSlotCircuitWorkoutsController extends Controller
             'sets.*.duration_in_seconds' => 'nullable|integer|min:1|max:7200',
         ]);
 
-        // Create the circuit workout
+        /** @var BookingSlotCircuitWorkout $circuitWorkout */
         $circuitWorkout = $circuit->circuitWorkouts()->create([
             'workout_id' => $validated['workout_id'],
         ]);
@@ -41,6 +42,7 @@ class BookingSlotCircuitWorkoutsController extends Controller
             ->with('flash.bannerStyle', 'success');
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     public function update(Request $request, BookingSlot $bookingSlot, BookingSlotCircuit $circuit, BookingSlotCircuitWorkout $circuitWorkout): RedirectResponse
     {
         $validated = $request->validate([
@@ -74,6 +76,7 @@ class BookingSlotCircuitWorkoutsController extends Controller
             ->with('flash.bannerStyle', 'success');
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     public function destroy(BookingSlot $bookingSlot, BookingSlotCircuit $circuit, BookingSlotCircuitWorkout $circuitWorkout): RedirectResponse
     {
         $circuitWorkout->delete();

@@ -8,6 +8,7 @@ use App\Models\Booking;
 use App\Models\User;
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -17,6 +18,7 @@ class WeeklyCalendarController extends Controller
 {
     public function index(Request $request): Response
     {
+        /** @var User $user */
         $user = auth()->user();
         $today = Carbon::today();
 
@@ -43,7 +45,9 @@ class WeeklyCalendarController extends Controller
             ? array_map('intval', array_filter(explode(',', $request->get('trainers'))))
             : ($defaultTrainerId ? [$defaultTrainerId] : []);
 
-        $bookings = Booking::query()
+        /** @var Builder|Booking $query */
+        $query = Booking::query();
+        $bookings = $query
             ->forCalendar($start, $end)
             ->when(! empty($selectedTrainerIds), function ($query) use ($selectedTrainerIds) {
                 $query->whereIn('trainer_id', $selectedTrainerIds);

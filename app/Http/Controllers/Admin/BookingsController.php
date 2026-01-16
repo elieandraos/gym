@@ -38,7 +38,7 @@ class BookingsController extends Controller
         return Inertia::render('Admin/Bookings/Create', [
             'trainers' => TrainerResource::collection(User::query()->trainers()->get()),
             'members' => MemberResource::collection(User::query()->members()->get()),
-            'renewFromBooking' => $renewFromBooking ? BookingResource::make($renewFromBooking) : null, // Now includes nested member, trainer
+            'renewFromBooking' => $renewFromBooking ? BookingResource::make($renewFromBooking) : null,
             'preSelectedMember' => $preSelectedMember ? MemberResource::make($preSelectedMember) : null,
         ]);
     }
@@ -76,7 +76,7 @@ class BookingsController extends Controller
         }]);
 
         return Inertia::render('Admin/Bookings/Show', [
-            'booking' => BookingResource::make($booking), // Now includes nested member, trainer, bookingSlots
+            'booking' => BookingResource::make($booking),
         ]);
     }
 }

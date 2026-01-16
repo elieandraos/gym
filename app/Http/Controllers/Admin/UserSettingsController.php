@@ -22,14 +22,18 @@ class UserSettingsController extends Controller
                 'label' => $trainer->name,
             ]);
 
+        /** @var User $user */
+        $user = auth()->user();
+
         return Inertia::render('Admin/Settings/Index', [
             'trainers' => $trainers,
-            'settings' => auth()->user()->getSetting(),
+            'settings' => $user->getSetting(),
         ]);
     }
 
     public function update(UserSettingsRequest $request): RedirectResponse
     {
+        /** @var User $user */
         $user = auth()->user();
 
         $user->updateSettings($request->validated());
