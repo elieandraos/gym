@@ -8,21 +8,45 @@ use Carbon\Carbon;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Attributes\Scope as AsScope;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
+ * Fillable attributes
+ *
+ * @property int $nb_sessions
+ * @property int $member_id
+ * @property int $trainer_id
+ * @property Carbon $start_date
+ * @property Carbon $end_date
  * @property bool $is_paid
- * @property bool $is_frozen
+ * @property string $amount
  * @property array $schedule_days
+ * @property bool $is_frozen
+ * @property Carbon|null $frozen_at
+ *
+ * Auto-generated
+ * @property-read int $id
+ * @property-read Carbon|null $created_at
+ * @property-read Carbon|null $updated_at
+ *
+ * Relationships
+ * @property-read User $member
+ * @property-read User $trainer
+ * @property-read Collection<BookingSlot> $bookingSlots
+ *
+ * Scopes
  *
  * @method static Builder|Booking active()
  * @method static Builder|Booking history()
  * @method static Builder|Booking scheduled()
  * @method static Builder|Booking between(DateTimeInterface $start, DateTimeInterface $end)
  * @method static Builder|Booking forCalendar(Carbon $start, Carbon $end)
+ *
+ * @mixin UpdatesBookingEndDate
  */
 class Booking extends Model
 {

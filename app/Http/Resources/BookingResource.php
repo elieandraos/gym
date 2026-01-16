@@ -2,11 +2,14 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Booking;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-/** @mixin \App\Models\Booking */
+/**
+ * @mixin Booking
+ */
 class BookingResource extends JsonResource
 {
     public function toArray(Request $request): array

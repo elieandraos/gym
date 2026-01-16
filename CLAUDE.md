@@ -75,6 +75,8 @@ All routes require authentication: `/members/*`, `/trainers/*`, `/bookings/*`, `
 
 **Why:** Circular references cause 502 errors in production (infinite recursion).
 
+**PHPDoc:** Add `@mixin ModelClass` to resources to avoid "property accessed via magic method" warnings.
+
 **Allowed Relationship Map:**
 ```php
 BookingResource {
