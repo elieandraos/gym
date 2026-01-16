@@ -167,9 +167,6 @@ class User extends Authenticatable
         );
     }
 
-    /**
-     * Update the user's profile photo with user-specific subfolder and unique filename.
-     */
     public function updateProfilePhoto(UploadedFile $photo, $storagePath = 'profile-photos'): void
     {
         tap($this->profile_photo_path, function ($previous) use ($photo, $storagePath) {
@@ -194,9 +191,6 @@ class User extends Authenticatable
         });
     }
 
-    /**
-     * Delete the user's profile photo.
-     */
     public function deleteProfilePhoto(): void
     {
         if (is_null($this->profile_photo_path)) {

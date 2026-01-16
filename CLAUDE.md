@@ -61,6 +61,7 @@ All routes require authentication: `/members/*`, `/trainers/*`, `/bookings/*`, `
 - Use enum values consistently
 - Add `@property` PHPDoc annotations for model attributes, and `@property-read` for relationships, to avoid "Property accessed via magic method" warnings in PhpStorm
 - Add `@method static Builder|ModelClass scopeName()` annotations for scopes to enable autocomplete
+- Add `@mixin TraitName` in model PHPDoc when using traits for autocomplete and go-to-definition support
 
 ### API Resources (CRITICAL)
 
