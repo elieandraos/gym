@@ -52,6 +52,7 @@ All routes require authentication: `/members/*`, `/trainers/*`, `/bookings/*`, `
 - Use `Model::query()->orderBy()` instead of `Model::orderBy()` to avoid "method not found" warnings in PhpStorm
 - For scope methods, separate the query into a typed variable: `/** @var Builder|Booking $query */ $query = Booking::query();` then call scopes on `$query`
 - When a scope calls another scope inside the model, use `/** @noinspection PhpUndefinedMethodInspection - Scope calling another scope, PhpStorm can't recognize it */`
+- When a relationship calls a scope from the related model, use `/** @noinspection PhpUndefinedMethodInspection - Relationship calling Model scope, PhpStorm can't recognize it */`
 - Avoid unnecessary curly braces in string interpolation for simple property access (use `"$user->id"` not `"{$user->id}"`)
 
 **Models:**
