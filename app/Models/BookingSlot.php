@@ -7,11 +7,32 @@ use Carbon\Carbon;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Attributes\Scope as AsScope;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * Fillable attributes
+ *
+ * @property int $booking_id
+ * @property Carbon $start_time
+ * @property Carbon $end_time
+ * @property Status $status
+ *
+ * Auto-generated
+ * @property-read int $id
+ * @property-read Carbon|null $created_at
+ * @property-read Carbon|null $updated_at
+ *
+ * Relationships
+ * @property-read Booking $booking
+ * @property-read Collection<BookingSlotCircuit> $circuits
+ *
+ * Scopes
+ * @method static Builder|BookingSlot between(DateTimeInterface $start, DateTimeInterface $end)
+ */
 class BookingSlot extends Model
 {
     use HasFactory;
