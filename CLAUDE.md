@@ -17,19 +17,23 @@ php artisan db:seed            # Run seeders
 ## Architecture Overview
 
 ### Tech Stack
-- **Backend**: Laravel 11 with Jetstream (without API, registration, 2FA, email verification)
-- **Frontend**: Inertia.js + Vue 3 + Tailwind CSS 4
-- **Testing**: Pest PHP
+- **Backend**: Laravel 12 with Jetstream 5 (without API, registration, 2FA, email verification)
+- **Frontend**: Inertia.js v2 + Vue 3 + Tailwind CSS 4
+- **Testing**: Pest PHP 3
 - **Database**: MySQL
+- **Frontend Libraries**: Chart.js, date-fns, VueUse, Heroicons
 
 ### Domain Model
 Gym management system for booking training sessions:
 
-- `User` - Members and trainers (role-based)
-- `Booking` - Training package (has multiple sessions)
-- `BookingSlot` - Individual training session
+- `User` - Members and trainers (role-based via `Role` enum), includes profile, settings, and body metrics
+- `Booking` - Training package assigned to member with trainer (has schedule days, payment info, freeze support)
+- `BookingSlot` - Individual training session with status tracking
+- `BookingSlotCircuit` - Named circuit grouping within a session (e.g., "Upper Body", "Circuit 1")
+- `BookingSlotCircuitWorkout` - Workout assigned to a circuit
+- `BookingSlotCircuitWorkoutSet` - Individual set (reps, weight, duration)
 - `Workout` - Exercise definition
-- `BookingSlotWorkout` / `BookingSlotWorkoutSet` - Workout tracking
+- `BodyComposition` - Member progress photos over time
 
 ### Routing Patterns
 All routes require authentication: `/members/*`, `/trainers/*`, `/bookings/*`, `/bookings-slots/*`, `/calendar`
