@@ -29,7 +29,8 @@ class BookingSlotCircuitsController extends Controller
             ->with('flash.bannerStyle', 'success');
     }
 
-    public function update(Request $request, BookingSlotCircuit $circuit): RedirectResponse
+    /** @noinspection PhpUnusedParameterInspection */
+    public function update(Request $request, BookingSlot $bookingSlot, BookingSlotCircuit $circuit): RedirectResponse
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -42,7 +43,8 @@ class BookingSlotCircuitsController extends Controller
             ->with('flash.bannerStyle', 'success');
     }
 
-    public function destroy(BookingSlotCircuit $circuit): RedirectResponse
+    /** @noinspection PhpUnusedParameterInspection */
+    public function destroy(BookingSlot $bookingSlot, BookingSlotCircuit $circuit): RedirectResponse
     {
         $circuit->delete();
 

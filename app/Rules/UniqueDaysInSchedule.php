@@ -25,7 +25,7 @@ class UniqueDaysInSchedule implements ValidationRule
             $duplicates = array_diff_assoc($days, $uniqueDays);
             $duplicateDay = reset($duplicates);
 
-            $fail("The day {$duplicateDay} appears more than once in the schedule.");
+            $fail("The day $duplicateDay appears more than once in the schedule.");
         }
     }
 }
