@@ -53,7 +53,7 @@
                         <span class="text-[#71717b]">{{ form.is_paid ? 'Paid' : 'Unpaid' }}</span>
                     </div>
                     <div class="flex items-center gap-2">
-                        <TextInput v-model="form.amount" :full-width="false" class="w-16" type="number" step="0.50" min="0" />
+                        <TextInput v-model="form.amount" :full-width="false" class="w-20" type="number" step="0.50" min="0" />
                         <span class="text-[#71717b]">USD</span>
                     </div>
                 </div>
