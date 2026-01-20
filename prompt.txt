@@ -1,3 +1,57 @@
+I want to refactor/restructure my tests. we will come up with the refactoring plan, but first, i want you to learn my testing approach/organization etc... and add it to claude.md (or maybe a separate file to reference testing)
+Here are some notes i have written down.
+
+Core Testing Approach
+When writing tests for Laravel applications, prioritize feature tests over unit tests. Feature tests provide the most value by testing the application as a whole, from HTTP request to database state.
+
+Feature Test Structure
+Feature tests should follow this pattern:
+- Send an HTTP request to the application
+- Assert the response is correct (returned data, redirects, validation errors)
+- Assert the database state matches expectations
+
+When to Write Unit Tests
+Unit tests should be the exception, not the rule. Only write unit tests when:
+- Testing isolated utility functions or helpers
+- Testing complex business logic that's decoupled from the framework
+- Testing specific edge cases that are difficult to trigger through feature tests
+
+Organization
+- Group by domain/feature area
+- Mirror the application's feature structure, not the code structure
+- Each test file focuses on one user-facing action or endpoint
+- Test files describe what is being tested: `CreateWorkoutTest.php` and Test methods describe the scenario: `test_authenticated_user_can_create_workout()`
+
+Structure:
+Under tests, there should be the testsuite folders (those should also have their configuration in phpunit.xml):
+- Http // previously Feature folder, use to test controllers
+- Console // used to tests commands
+- Unit
+
+- Prefer seeded data over factories (have one function in PestFile that seeds the data, especially the most commonly used across the feature tests)
+can still use factory for specific rare case. (check setupUsersAndBookings() in my case)
+- Since we are using Intertia, Use Inertia's `assertInertia()` assertions
+- Use custom macros: `assertHasComponent`, `assertHasProp`, `assertHasResource`, `assertHasPaginatedResource`
+
+Test Through HTTP - Send requests, assert responses, check database
+Minimal Unit Tests - Only for pure functions without dependencies
+Real Database Interactions - Use RefreshDatabase, avoid excessive mocking
+
+One Action Per Test File - CreateTest.php, not CreateMemberTest.php
+Enable Refactoring - Tests verify behavior, not implementation
+
+example:
+- Http
+   - Members
+      - ShowTest
+      - CreateTest
+   - Bookings
+      - CreateTest
+      - FreezeTest
+- Console
+   - MarkBookingSlotsCompleteTest
+- Unit
+   -  UserModelTest
 
 You are generating a new RELEASE_DRAFT.md file for a production release.
 Context
