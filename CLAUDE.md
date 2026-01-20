@@ -49,6 +49,7 @@ All routes require authentication: `/members/*`, `/trainers/*`, `/bookings/*`, `
 - Use `when()` for conditional queries
 - Use form requests for validation
 - Explicit eager loading with `with()`
+- `index()` and `show()` methods must always return API Resources (never raw models)
 
 ** PHPStorm warnings **
 - For unused route model binding parameters (needed for nested routes), add `/** @noinspection PhpUnusedParameterInspection */` above the method
@@ -132,8 +133,7 @@ MemberResource / TrainerResource {
 
 **Patterns:**
 - Prefer seeded data over factories
-- Use Inertia's `assertInertia()` assertions
-- Use custom macros: `assertHasComponent`, `assertHasProp`, `assertHasResource`, `assertHasPaginatedResource`
+- Always prefer custom Inertia macros over raw assertions: `assertHasComponent`, `assertHasProp`, `assertHasResource`, `assertHasPaginatedResource`
 - Minimal setup + test-specific helpers
 
 ### General Guidelines
