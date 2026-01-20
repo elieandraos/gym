@@ -40,7 +40,7 @@ Real Database Interactions - Use RefreshDatabase, avoid excessive mocking
 One Action Per Test File - CreateTest.php, not CreateMemberTest.php
 Enable Refactoring - Tests verify behavior, not implementation
 
-example:
+structure m thinking of for this app:
 - Http
    - Members
       - ShowTest
