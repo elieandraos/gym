@@ -126,15 +126,14 @@ MemberResource / TrainerResource {
 
 ### Testing (Pest)
 
-**Organization:**
-- `describe()` blocks for grouping
-- Descriptive test names
-- Test request → assert response + database changes
+Prioritize feature tests over unit tests. Test through HTTP requests, assert responses and database state. Avoid excessive mocking - use real database with RefreshDatabase. Tests verify behavior, not implementation.
 
-**Patterns:**
-- Prefer seeded data over factories
-- Always prefer custom Inertia macros over raw assertions: `assertHasComponent`, `assertHasProp`, `assertHasResource`, `assertHasPaginatedResource`
-- Minimal setup + test-specific helpers
+See [TESTING.md](learnings/TESTING.md) for comprehensive testing documentation.
+
+**Quick Reference:**
+- Run tests: `php artisan test`
+- Run specific: `php artisan test --filter=TestName`
+- Prefer custom Inertia macros: `assertHasComponent`, `assertHasProp`, `assertHasResource`, `assertHasPaginatedResource`
 
 ### General Guidelines
 
@@ -142,7 +141,7 @@ MemberResource / TrainerResource {
 - Type-hint all parameters and return types
 - Eager load to avoid N+1
 - Use form requests for validation
-- When adding model fields, update seeder/factory/tests
+- When adding model fields, update migrations/seeder/factory/tests. for migrations, ask if still in development mode. if dev mode, just update the initial migration and ask to run db refresh. if in production, also ask if prefer to create a new migration file or update the original and handle manually on production (give instructions like sql statements to execute)
 - When feature/task is not working over 3 iterations, ask for debugging info
 - Always import namespaces at the top of files, never use inline fully qualified class names (e.g., `use Collection;` not `new \Illuminate\Support\Collection()`)
 
