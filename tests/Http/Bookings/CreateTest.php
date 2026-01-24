@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\Role;
 use App\Http\Resources\BookingResource;
 use App\Models\Booking;
 use App\Models\BookingSlot;
@@ -291,7 +292,7 @@ test('it creates a renewed booking with inherited schedule_days', function () {
 
 test('it allows creating a new booking that starts after existing booking ends', function () {
     // Create a fresh member without any bookings from beforeEach
-    $member = User::factory()->create(['role' => \App\Enums\Role::Member]);
+    $member = User::factory()->create(['role' => Role::Member]);
     $trainer = User::query()->trainers()->first();
 
     // Create existing booking that ends on a specific date
@@ -347,7 +348,7 @@ test('it allows creating a new booking that starts after existing booking ends',
 
 test('it prevents creating a booking that overlaps with existing booking', function () {
     // Create a fresh member without any bookings from beforeEach
-    $member = User::factory()->create(['role' => \App\Enums\Role::Member]);
+    $member = User::factory()->create(['role' => Role::Member]);
     $trainer = User::query()->trainers()->first();
 
     // Create existing booking that is currently active
