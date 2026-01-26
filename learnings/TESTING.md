@@ -79,17 +79,60 @@ Each file should test a single user-facing action:
 - `DeleteTest.php` - Delete flow (confirmation, cascade)
 
 ### Rule 2: Use Subfolders for Sub-Features
-When a domain has distinct sub-features (often visible as dropdown menu items or separate pages), create subfolders:
-- `Members/PersonalInfo/IndexTest.php` - not `Members/PersonalInfoTest.php`
-- `Members/BookingHistory/IndexTest.php` - not `Members/BookingHistoryTest.php`
+When a domain has distinct sub-features with their own controllers, create subfolders that mirror the controller structure.
+
+**✅ DO** - Sub-feature has its own controller → Create subfolder:
+```
+# FreezeBookingController → subfolder
+tests/Http/Bookings/Freeze/CreateTest.php
+
+# BodyCompositionController (nested under members/{member}) → subfolder
+tests/Http/Members/BodyComposition/CreateTest.php
+
+# CircuitController (nested under booking-slots/{slot}) → subfolder
+tests/Http/BookingSlots/Circuits/CreateTest.php
+```
+
+**❌ DON'T** - Sub-feature as flat file:
+```
+tests/Http/Bookings/FreezeTest.php
+tests/Http/Members/BodyCompositionTest.php
+```
 
 This keeps the parent folder clean and allows sub-features to have their own CRUD tests if needed.
 
-### Rule 3: Mirror UI Structure
-Test organization should reflect the user-facing UI structure:
-- Dropdown menu items → Subfolders or dedicated test files
-- Modal actions → Include in parent action's test file
-- Separate pages → Separate test files
+### Rule 3: Mirror Controller Structure
+Test organization should reflect the controller structure (Action + Domain pattern).
+
+**✅ DO** - Same controller, multiple actions → Same folder, different files:
+```
+# TrainerController handles index, create, show, update
+tests/Http/Trainers/IndexTest.php
+tests/Http/Trainers/CreateTest.php
+tests/Http/Trainers/ShowTest.php
+tests/Http/Trainers/UpdateTest.php
+```
+
+**❌ DON'T** - All actions in one file:
+```
+tests/Http/Trainers/TrainerTest.php (with all CRUD tests inside)
+```
+
+**✅ DO** - Modal/inline actions handled by parent controller → Include in parent file:
+```
+# Profile photo upload is handled by TrainerController@update
+tests/Http/Trainers/UpdateTest.php
+  └── includes: photo upload tests, photo remove tests
+```
+
+**❌ DON'T** - Modal action as separate sub-feature:
+```
+tests/Http/Trainers/ProfilePhoto/UpdateTest.php
+```
+
+The key question is: **Does it have its own controller?**
+- Yes → Subfolder
+- No (same controller) → Same folder, action-based files
 
 ### Rule 4: Separate Notification Tests
 Notifications tests live in the `Notifications/` test suite, not in `Http/`:
