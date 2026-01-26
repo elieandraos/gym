@@ -6,7 +6,7 @@ beforeEach(function () {
     setupUsersAndBookings();
 });
 
-test('it requires authentication', function () {
+test('mark as paid route requires authentication', function () {
     $booking = Booking::query()->first();
 
     $this->patch(route('admin.bookings.mark-as-paid', $booking))
