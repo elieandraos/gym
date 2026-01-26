@@ -70,71 +70,40 @@ Only write unit tests when:
 
 ## Test Organization Rules
 
-### Rule 1: One Action Per File
-Each file should test a single user-facing action:
+### Rule 1: Mirror Controller Structure
+Test organization should reflect the controller structure. The key question: **Does it have its own controller?**
+
+**One action per file** - Each file tests a single user-facing action:
 - `IndexTest.php` - List, search, filter operations
 - `CreateTest.php` - Create flow (render form, store, validation, success page)
 - `ShowTest.php` - View/display single resource
 - `UpdateTest.php` - Edit/update flow (render form, update, validation)
 - `DeleteTest.php` - Delete flow (confirmation, cascade)
 
-### Rule 2: Use Subfolders for Sub-Features
-When a domain has distinct sub-features with their own controllers, create subfolders that mirror the controller structure.
-
-**✅ DO** - Sub-feature has its own controller → Create subfolder:
+**Separate controller → Subfolder with action-based files:**
 ```
-# FreezeBookingController → subfolder
+# FreezeBookingController → Bookings/Freeze/
 tests/Http/Bookings/Freeze/CreateTest.php
 
-# BodyCompositionController (nested under members/{member}) → subfolder
+# BodyCompositionController → Members/BodyComposition/
 tests/Http/Members/BodyComposition/CreateTest.php
-
-# CircuitController (nested under booking-slots/{slot}) → subfolder
-tests/Http/BookingSlots/Circuits/CreateTest.php
 ```
 
-**❌ DON'T** - Sub-feature as flat file:
+**Modal/inline actions (same controller) → Include in parent file:**
 ```
-tests/Http/Bookings/FreezeTest.php
-tests/Http/Members/BodyCompositionTest.php
-```
-
-This keeps the parent folder clean and allows sub-features to have their own CRUD tests if needed.
-
-### Rule 3: Mirror Controller Structure
-Test organization should reflect the controller structure (Action + Domain pattern).
-
-**✅ DO** - Same controller, multiple actions → Same folder, different files:
-```
-# TrainerController handles index, create, show, update
-tests/Http/Trainers/IndexTest.php
-tests/Http/Trainers/CreateTest.php
-tests/Http/Trainers/ShowTest.php
-tests/Http/Trainers/UpdateTest.php
-```
-
-**❌ DON'T** - All actions in one file:
-```
-tests/Http/Trainers/TrainerTest.php (with all CRUD tests inside)
-```
-
-**✅ DO** - Modal/inline actions handled by parent controller → Include in parent file:
-```
-# Profile photo upload is handled by TrainerController@update
+# Profile photo upload handled by TrainerController@update
 tests/Http/Trainers/UpdateTest.php
   └── includes: photo upload tests, photo remove tests
 ```
 
-**❌ DON'T** - Modal action as separate sub-feature:
+**❌ DON'T:**
 ```
-tests/Http/Trainers/ProfilePhoto/UpdateTest.php
+tests/Http/Bookings/FreezeTest.php          # Sub-feature as flat file
+tests/Http/Trainers/TrainerTest.php         # All actions in one file
+tests/Http/Trainers/ProfilePhoto/UpdateTest.php  # Modal as subfolder
 ```
 
-The key question is: **Does it have its own controller?**
-- Yes → Subfolder
-- No (same controller) → Same folder, action-based files
-
-### Rule 4: Separate Notification Tests
+### Rule 2: Separate Notification Tests
 Notifications tests live in the `Notifications/` test suite, not in `Http/`:
 - `tests/Notifications/Emails/Members/WelcomeEmailTest.php`
 - `tests/Notifications/Emails/Owners/NewMemberEmailTest.php`
@@ -142,7 +111,7 @@ Notifications tests live in the `Notifications/` test suite, not in `Http/`:
 - Don't duplicate email assertions in CRUD test files
 - Group by recipient - Easy to find all emails a recipient receives
 
-### Rule 5: Authentication Tests Per File
+### Rule 3: Authentication Tests Per File
 Each test file should have its own authentication test for the routes it covers:
 ```php
 test('create routes require authentication', function () {
