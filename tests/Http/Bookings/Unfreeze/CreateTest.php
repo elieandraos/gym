@@ -10,7 +10,7 @@ beforeEach(function () {
     setupUsersAndBookings();
 });
 
-test('it requires authentication', function () {
+test('unfreeze routes require authentication', function () {
     $booking = Booking::query()->first();
 
     $this->get(route('admin.bookings.unfreeze.index', $booking))

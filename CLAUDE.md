@@ -17,19 +17,23 @@ php artisan db:seed            # Run seeders
 ## Architecture Overview
 
 ### Tech Stack
-- **Backend**: Laravel 11 with Jetstream (without API, registration, 2FA, email verification)
-- **Frontend**: Inertia.js + Vue 3 + Tailwind CSS 4
-- **Testing**: Pest PHP
+- **Backend**: Laravel 12 with Jetstream 5 (without API, registration, 2FA, email verification)
+- **Frontend**: Inertia.js v2 + Vue 3 + Tailwind CSS 4
+- **Testing**: Pest PHP 3
 - **Database**: MySQL
+- **Frontend Libraries**: Chart.js, date-fns, VueUse, Heroicons
 
 ### Domain Model
 Gym management system for booking training sessions:
 
-- `User` - Members and trainers (role-based)
-- `Booking` - Training package (has multiple sessions)
-- `BookingSlot` - Individual training session
+- `User` - Members and trainers (role-based via `Role` enum), includes profile, settings, and body metrics
+- `Booking` - Training package assigned to member with trainer (has schedule days, payment info, freeze support)
+- `BookingSlot` - Individual training session with status tracking
+- `BookingSlotCircuit` - Named circuit grouping within a session (e.g., "Upper Body", "Circuit 1")
+- `BookingSlotCircuitWorkout` - Workout assigned to a circuit
+- `BookingSlotCircuitWorkoutSet` - Individual set (reps, weight, duration)
 - `Workout` - Exercise definition
-- `BookingSlotWorkout` / `BookingSlotWorkoutSet` - Workout tracking
+- `BodyComposition` - Member progress photos over time
 
 ### Routing Patterns
 All routes require authentication: `/members/*`, `/trainers/*`, `/bookings/*`, `/bookings-slots/*`, `/calendar`
@@ -45,6 +49,7 @@ All routes require authentication: `/members/*`, `/trainers/*`, `/bookings/*`, `
 - Use `when()` for conditional queries
 - Use form requests for validation
 - Explicit eager loading with `with()`
+- `index()` and `show()` methods must always return API Resources (never raw models)
 
 ** PHPStorm warnings **
 - For unused route model binding parameters (needed for nested routes), add `/** @noinspection PhpUnusedParameterInspection */` above the method
@@ -121,16 +126,14 @@ MemberResource / TrainerResource {
 
 ### Testing (Pest)
 
-**Organization:**
-- `describe()` blocks for grouping
-- Descriptive test names
-- Test request → assert response + database changes
+Prioritize feature tests over unit tests. Test through HTTP requests, assert responses and database state. Avoid excessive mocking - use real database with RefreshDatabase. Tests verify behavior, not implementation.
 
-**Patterns:**
-- Prefer seeded data over factories
-- Use Inertia's `assertInertia()` assertions
-- Use custom macros: `assertHasComponent`, `assertHasProp`, `assertHasResource`, `assertHasPaginatedResource`
-- Minimal setup + test-specific helpers
+See [TESTING.md](learnings/TESTING.md) for comprehensive testing documentation.
+
+**Quick Reference:**
+- Run tests: `php artisan test`
+- Run specific: `php artisan test --filter=TestName`
+- Prefer custom Inertia macros: `assertHasComponent`, `assertHasProp`, `assertHasResource`, `assertHasPaginatedResource`
 
 ### General Guidelines
 
@@ -138,7 +141,7 @@ MemberResource / TrainerResource {
 - Type-hint all parameters and return types
 - Eager load to avoid N+1
 - Use form requests for validation
-- When adding model fields, update seeder/factory/tests
+- When adding model fields, update migrations/seeder/factory/tests. for migrations, ask if still in development mode. if dev mode, just update the initial migration and ask to run db refresh. if in production, also ask if prefer to create a new migration file or update the original and handle manually on production (give instructions like sql statements to execute)
 - When feature/task is not working over 3 iterations, ask for debugging info
 - Always import namespaces at the top of files, never use inline fully qualified class names (e.g., `use Collection;` not `new \Illuminate\Support\Collection()`)
 

@@ -1,5 +1,0 @@
-<?php
-
-beforeEach(function () {
-    setupUsersAndBookings();
-});

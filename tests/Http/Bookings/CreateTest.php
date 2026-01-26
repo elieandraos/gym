@@ -1,22 +1,20 @@
 <?php
 
-use App\Http\Resources\BookingResource;
+use App\Enums\Role;
 use App\Models\Booking;
 use App\Models\BookingSlot;
 use App\Models\User;
 use App\Services\BookingManager;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
-use Inertia\Testing\AssertableInertia;
 
 beforeEach(function () {
     setupUsersAndBookings();
 });
 
-test('it requires authentication', function () {
-    $booking = Booking::query()->first();
-
-    $this->get(route('admin.bookings.show', $booking))->assertRedirect(route('login'));
+test('create routes require authentication', function () {
+    $this->get(route('admin.bookings.create'))->assertRedirect(route('login'));
+    $this->post(route('admin.bookings.store'))->assertRedirect(route('login'));
 });
 
 test('it renders the create booking page', function () {
@@ -45,24 +43,6 @@ test('it validates request before creating a booking', function () {
             'days',
         ])
         ->assertStatus(302);
-});
-
-test('it shows booking information', function () {
-    $booking = Booking::query()->first();
-    $booking->load(['member', 'trainer', 'bookingSlots' => function ($query) {
-        $query->orderBy('start_time');
-    }]);
-
-    actingAsAdmin()
-        ->get(route('admin.bookings.show', $booking))
-        ->assertHasComponent('Admin/Bookings/Show')
-        ->assertHasResource('booking', BookingResource::make($booking))
-        ->assertInertia(fn (AssertableInertia $page) => $page
-            ->has('booking.bookingSlots')
-            ->has('booking.bookingSlots', $booking->bookingSlots->count())
-            ->where('booking.bookingSlots.0.id', $booking->bookingSlots->sortBy('start_time')->first()->id)
-        )
-        ->assertStatus(200);
 });
 
 test('it creates a booking and its booking slots', function () {
@@ -150,29 +130,6 @@ test('it creates an unpaid booking', function () {
         ->first();
 
     expect($booking->is_paid)->toBeFalse();
-});
-
-test('it can mark a booking as paid', function () {
-    $member = User::query()->members()->inRandomOrder()->first();
-    $trainer = User::query()->trainers()->inRandomOrder()->first();
-
-    $booking = Booking::factory()
-        ->unpaid()
-        ->create([
-            'member_id' => $member->id,
-            'trainer_id' => $trainer->id,
-        ]);
-
-    expect($booking->is_paid)->toBeFalse();
-
-    actingAsAdmin()
-        ->patch(route('admin.bookings.mark-as-paid', $booking))
-        ->assertSessionHas('success')
-        ->assertRedirect();
-
-    $booking->refresh();
-
-    expect($booking->is_paid)->toBeTrue();
 });
 
 test('it loads create page with renew_from parameter and passes booking data', function () {
@@ -291,7 +248,7 @@ test('it creates a renewed booking with inherited schedule_days', function () {
 
 test('it allows creating a new booking that starts after existing booking ends', function () {
     // Create a fresh member without any bookings from beforeEach
-    $member = User::factory()->create(['role' => \App\Enums\Role::Member]);
+    $member = User::factory()->create(['role' => Role::Member]);
     $trainer = User::query()->trainers()->first();
 
     // Create existing booking that ends on a specific date
@@ -347,7 +304,7 @@ test('it allows creating a new booking that starts after existing booking ends',
 
 test('it prevents creating a booking that overlaps with existing booking', function () {
     // Create a fresh member without any bookings from beforeEach
-    $member = User::factory()->create(['role' => \App\Enums\Role::Member]);
+    $member = User::factory()->create(['role' => Role::Member]);
     $trainer = User::query()->trainers()->first();
 
     // Create existing booking that is currently active

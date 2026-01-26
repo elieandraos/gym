@@ -11,6 +11,10 @@ beforeEach(function () {
     setupUsersAndBookings();
 });
 
+test('daily calendar route requires authentication', function () {
+    $this->get(route('admin.daily-calendar.index'))->assertRedirect(route('login'));
+});
+
 test('daily calendar returns proper component', function () {
     $response = actingAsAdmin()->get(route('admin.daily-calendar.index'));
 

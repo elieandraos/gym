@@ -11,101 +11,11 @@ beforeEach(function () {
     setupUsersAndBookings();
 });
 
-test('trainers routes require authentication', function () {
+test('update routes require authentication', function () {
     $trainer = User::query()->trainers()->first();
 
-    $this->get(route('admin.trainers.index'))->assertRedirect(route('login'));
-    $this->get(route('admin.trainers.create'))->assertRedirect(route('login'));
-    $this->post(route('admin.trainers.store'))->assertRedirect(route('login'));
-    $this->get(route('admin.trainers.show', $trainer))->assertRedirect(route('login'));
     $this->get(route('admin.trainers.edit', $trainer))->assertRedirect(route('login'));
     $this->put(route('admin.trainers.update', $trainer))->assertRedirect(route('login'));
-});
-
-test('it lists all the trainers', function () {
-    $trainers = User::query()
-        ->trainers()
-        ->orderBy('registration_date', 'DESC')
-        ->paginate(10);
-
-    actingAsAdmin()
-        ->get(route('admin.trainers.index'))
-        ->assertHasComponent('Admin/Trainers/Index')
-        ->assertHasPaginatedResource('trainers', TrainerResource::collection($trainers))
-        ->assertStatus(200);
-});
-
-test('it renders the trainer create page', function () {
-    actingAsAdmin()
-        ->get(route('admin.trainers.create'))
-        ->assertHasComponent('Admin/Trainers/Create')
-        ->assertStatus(200);
-});
-
-test('it creates a trainer', function () {
-    $data = [
-        'name' => 'Elie Trainer',
-        'email' => 'elie.trainer@liftstation.fitness',
-        'registration_date' => '2024-02-01',
-        'gender' => Gender::Male->value,
-        'weight' => 80,
-        'height' => 180,
-        'birthdate' => '1980-01-01',
-        'blood_type' => BloodType::OPlus->value,
-        'phone_number' => '00961 3 000 000',
-        'instagram_handle' => 'elie.trainer',
-        'address' => 'somewhere',
-        'emergency_contact' => 'someone',
-        'color' => 'bg-blue-50',
-    ];
-
-    actingAsAdmin()
-        ->post(route('admin.trainers.store'), $data)
-        ->assertSessionHasNoErrors()
-        ->assertRedirect(route('admin.trainers.index'));
-
-    $this->assertDatabaseHas(User::class, $data);
-});
-
-test('it validates trainer creation', function () {
-    $data = [
-        'name' => null,
-        'email' => 'invalid-email',
-        'registration_date' => null,
-        'gender' => null,
-        'weight' => null,
-        'height' => null,
-        'birthdate' => null,
-        'blood_type' => null,
-        'phone_number' => null,
-        'instagram_handle' => '',
-        'address' => '',
-        'emergency_contact' => '',
-    ];
-
-    actingAsAdmin()
-        ->post(route('admin.trainers.store'), $data)
-        ->assertSessionHasErrors([
-            'name',
-            'email',
-            'registration_date',
-            'gender',
-            'weight',
-            'height',
-            'birthdate',
-            'blood_type',
-        ])
-        ->assertStatus(302);
-});
-
-test('it shows trainer information', function () {
-    $trainer = User::query()->trainers()->first();
-
-    actingAsAdmin()
-        ->get(route('admin.trainers.show', $trainer))
-        ->assertHasComponent('Admin/Trainers/Show')
-        ->assertHasResource('trainer', TrainerResource::make($trainer))
-        ->assertStatus(200);
 });
 
 test('it renders the trainer edit page', function () {
@@ -275,7 +185,7 @@ test('it uploads trainer profile photo', function () {
     $trainer->refresh();
 
     expect($trainer->profile_photo_path)->not->toBeNull()
-        ->and($trainer->profile_photo_path)->toContain("profile-photos/{$trainer->id}/");
+        ->and($trainer->profile_photo_path)->toContain("profile-photos/$trainer->id/");
     Storage::disk('public')->assertExists($trainer->profile_photo_path);
 });
 
@@ -322,31 +232,4 @@ test('it removes trainer profile photo', function () {
 
     expect($trainer->profile_photo_path)->toBeNull();
     Storage::disk('public')->assertMissing($photoPath);
-});
-
-test('it filters trainers by search', function () {
-    User::factory()->create([
-        'role' => \App\Enums\Role::Trainer->value,
-        'name' => 'John Trainer',
-    ]);
-    User::factory()->create([
-        'role' => \App\Enums\Role::Trainer->value,
-        'name' => 'Jane Coach',
-    ]);
-    User::factory()->create([
-        'role' => \App\Enums\Role::Trainer->value,
-        'name' => 'Mike Fitness',
-    ]);
-
-    $trainers = User::query()
-        ->trainers()
-        ->where('name', 'like', '%John%')
-        ->orderBy('registration_date', 'DESC')
-        ->paginate(10);
-
-    actingAsAdmin()
-        ->get(route('admin.trainers.index', ['search' => 'John']))
-        ->assertHasComponent('Admin/Trainers/Index')
-        ->assertHasPaginatedResource('trainers', TrainerResource::collection($trainers))
-        ->assertStatus(200);
 });

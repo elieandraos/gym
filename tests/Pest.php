@@ -21,7 +21,10 @@ use Tests\TestCase;
 |
 */
 
-uses(TestCase::class, LazilyRefreshDatabase::class)->in('Feature');
+uses(TestCase::class, LazilyRefreshDatabase::class)->in('Http');
+uses(TestCase::class, LazilyRefreshDatabase::class)->in('Console');
+uses(TestCase::class, LazilyRefreshDatabase::class)->in('Unit');
+uses(TestCase::class, LazilyRefreshDatabase::class)->in('Notifications');
 
 /*
 |--------------------------------------------------------------------------
