@@ -134,6 +134,20 @@ See [TESTING.md](learnings/TESTING.md) for comprehensive testing documentation.
 - Run tests: `php artisan test`
 - Run specific: `php artisan test --filter=TestName`
 - Prefer custom Inertia macros: `assertHasComponent`, `assertHasProp`, `assertHasResource`, `assertHasPaginatedResource`
+- Chain consecutive `expect()` calls using `->and()` instead of separate statements:
+  ```php
+  // Good
+  expect($booking)->not->toBeNull()
+      ->and($booking->id)->toBe(1)
+      ->and($booking->name)->toBe('Test');
+
+  // Bad
+  expect($booking)->not->toBeNull();
+  expect($booking->id)->toBe(1);
+  expect($booking->name)->toBe('Test');
+  ```
+- For "Unhandled JsonException" warnings on assertions like `assertSessionHasNoErrors()`, add file-level suppression: `/** @noinspection PhpUnhandledExceptionInspection */`
+- For "Potentially polymorphic call" warnings on `factory()->create()` results (returns `Model|ClassName`), add type hint before the assignment: `/** @var User $member */`
 
 ### General Guidelines
 
