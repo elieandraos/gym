@@ -1,6 +1,9 @@
 <?php
 
+/** @noinspection PhpUnhandledExceptionInspection */
+
 use App\Enums\Role;
+use App\Enums\Status;
 use App\Models\Booking;
 use App\Models\BookingSlot;
 use App\Models\User;
@@ -145,12 +148,12 @@ test('it loads create page with renew_from parameter and passes booking data', f
 
     $renewFromBooking = $response->viewData('page')['props']['renewFromBooking'];
 
-    expect($renewFromBooking)->not->toBeNull();
-    expect($renewFromBooking['id'])->toBe($expiringBooking->id);
-    expect($renewFromBooking['member']['id'])->toBe($member->id);
-    expect($renewFromBooking['trainer']['id'])->toBe($trainer->id);
-    expect($renewFromBooking['schedule_days'])->not->toBeNull();
-    expect($renewFromBooking['nb_sessions'])->toBe(12);
+    expect($renewFromBooking)->not->toBeNull()
+        ->and($renewFromBooking['id'])->toBe($expiringBooking->id)
+        ->and($renewFromBooking['member']['id'])->toBe($member->id)
+        ->and($renewFromBooking['trainer']['id'])->toBe($trainer->id)
+        ->and($renewFromBooking['schedule_days'])->not->toBeNull()
+        ->and($renewFromBooking['nb_sessions'])->toBe(12);
 });
 
 test('it loads create page with member_id parameter and passes pre-selected member', function () {
@@ -199,12 +202,12 @@ test('it saves schedule_days when creating a booking', function () {
         ->latest('created_at')
         ->firstOrFail();
 
-    expect($booking->schedule_days)->not->toBeNull();
-    expect($booking->schedule_days)->toBeArray();
-    expect($booking->schedule_days)->toHaveCount(3);
-    expect($booking->schedule_days[0]['day'])->toBe('Monday');
-    expect($booking->schedule_days[1]['day'])->toBe('Wednesday');
-    expect($booking->schedule_days[2]['day'])->toBe('Friday');
+    expect($booking->schedule_days)->not->toBeNull()
+        ->and($booking->schedule_days)->toBeArray()
+        ->and($booking->schedule_days)->toHaveCount(3)
+        ->and($booking->schedule_days[0]['day'])->toBe('Monday')
+        ->and($booking->schedule_days[1]['day'])->toBe('Wednesday')
+        ->and($booking->schedule_days[2]['day'])->toBe('Friday');
 });
 
 test('it creates a renewed booking with inherited schedule_days', function () {
@@ -239,11 +242,11 @@ test('it creates a renewed booking with inherited schedule_days', function () {
         ->latest('created_at')
         ->firstOrFail();
 
-    expect($renewedBooking->id)->not->toBe($expiringBooking->id);
-    expect($renewedBooking->schedule_days)->toEqual($originalScheduleDays);
-    expect($renewedBooking->member_id)->toBe($expiringBooking->member_id);
-    expect($renewedBooking->trainer_id)->toBe($expiringBooking->trainer_id);
-    expect($renewedBooking->nb_sessions)->toBe(12);
+    expect($renewedBooking->id)->not->toBe($expiringBooking->id)
+        ->and($renewedBooking->schedule_days)->toEqual($originalScheduleDays)
+        ->and($renewedBooking->member_id)->toBe($expiringBooking->member_id)
+        ->and($renewedBooking->trainer_id)->toBe($expiringBooking->trainer_id)
+        ->and($renewedBooking->nb_sessions)->toBe(12);
 });
 
 test('it allows creating a new booking that starts after existing booking ends', function () {
@@ -252,6 +255,7 @@ test('it allows creating a new booking that starts after existing booking ends',
     $trainer = User::query()->trainers()->first();
 
     // Create existing booking that ends on a specific date
+    /** @var Booking $existingBooking */
     $existingBooking = Booking::factory()->create([
         'member_id' => $member->id,
         'trainer_id' => $trainer->id,
@@ -269,7 +273,7 @@ test('it allows creating a new booking that starts after existing booking ends',
         'booking_id' => $existingBooking->id,
         'start_time' => Carbon::today()->subDays(10),
         'end_time' => Carbon::today()->subDays(10)->addHour(),
-        'status' => \App\Enums\Status::Complete,
+        'status' => Status::Complete,
     ]);
 
     // New booking starts AFTER the existing booking ends (no overlap)
@@ -298,8 +302,8 @@ test('it allows creating a new booking that starts after existing booking ends',
         ->latest('created_at')
         ->first();
 
-    expect($newBooking)->not->toBeNull();
-    expect($newBooking->id)->not->toBe($existingBooking->id);
+    expect($newBooking)->not->toBeNull()
+        ->and($newBooking->id)->not->toBe($existingBooking->id);
 });
 
 test('it prevents creating a booking that overlaps with existing booking', function () {
@@ -308,7 +312,7 @@ test('it prevents creating a booking that overlaps with existing booking', funct
     $trainer = User::query()->trainers()->first();
 
     // Create existing booking that is currently active
-    $existingBooking = Booking::factory()->create([
+    Booking::factory()->create([
         'member_id' => $member->id,
         'trainer_id' => $trainer->id,
         'start_date' => Carbon::today()->subDays(10),
