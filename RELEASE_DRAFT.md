@@ -1,71 +1,75 @@
 # Release Notes
 
-This release focuses on stability improvements and payment tracking. A major architectural refactor eliminates 502 errors caused by circular references in API resources, while a new payment amount field enables tracking booking costs directly in the system.
+This release focuses on test infrastructure and developer experience. A complete restructuring of the test suite introduces domain-based organization, making tests easier to locate and maintain. New testing documentation establishes patterns for the team to follow going forward.
 
-## 💰 Payment Amount Tracking
+## 🧪 Test Suite Restructuring
 
-Bookings now include an `amount` field to track payment information.
+The test suite has been reorganized from a flat structure to a domain-based hierarchy that mirrors the application's feature structure.
 
-**What's New:**
-- Amount input on booking creation form
-- Default value of 270.00 USD
-- Payment status widget on member profiles displays booking amounts
-- Amount included in booking API responses
+**New Directory Structure:**
+```
+tests/
+├── Http/                              # Feature tests organized by domain
+│   ├── Bookings/
+│   │   ├── IndexTest.php
+│   │   ├── CreateTest.php
+│   │   ├── Freeze/
+│   │   ├── Unfreeze/
+│   │   └── MarkAsPaid/
+│   ├── BookingSlots/
+│   │   └── Circuits/
+│   │       └── Workouts/
+│   ├── Members/
+│   │   ├── PersonalInfo/
+│   │   ├── BodyComposition/
+│   │   └── BookingHistory/
+│   ├── Trainers/
+│   ├── Workouts/
+│   ├── Calendar/
+│   └── Settings/
+├── Console/                           # Artisan command tests
+├── Notifications/                     # Email/SMS/Push tests
+└── Unit/                              # Pure unit tests (minimal)
+```
 
-This enables trainers and admins to track payments alongside session bookings without relying on external tools.
+**Key Principles:**
+- Tests organized by domain (what users interact with), not code structure
+- One file per user-facing action: `IndexTest.php`, `CreateTest.php`, `ShowTest.php`, `UpdateTest.php`, `DeleteTest.php`
+- Sub-features with their own controllers get subfolders (e.g., `Bookings/Freeze/`)
+- Test file location now predictable based on controller structure
 
-## 🛡️ API Resource Architecture Refactor
+## 📚 Testing Documentation
 
-A significant architectural change addresses 502 Bad Gateway errors that occurred due to circular references in API resources.
+A new comprehensive testing guide has been added at `learnings/TESTING.md`.
 
-**Problem:**
-User models with `$appends` attributes caused infinite recursion when serialized through nested relationships (e.g., Booking → Member → Bookings → Member...).
-
-**Solution:**
-- Established strict serialization rules for API resources
-- Resources serialize downward (parent → children) but never upward
-- Controllers now pass data via separate props instead of nested relationships
-- Calendar event serialization extracts values as plain strings before building response arrays
-
-**Affected Areas:**
-- `BookingResource`, `MemberResource`, `TrainerResource`
-- Calendar controllers (daily and weekly views)
-- Member and booking show pages
+**Documentation Includes:**
+- Core testing philosophy (feature tests over unit tests, test through HTTP)
+- Directory structure and naming conventions
+- Test organization rules with concrete examples
+- Data setup guidelines using Pest.php helpers
+- Custom Inertia assertion macros (`assertHasComponent`, `assertHasProp`, `assertHasResource`)
+- Common pitfalls to avoid
 
 ## 🔧 Bug Fixes
 
-**Calendar 502 Errors:**
-- Fixed booking slot serialization in daily and weekly calendar views
-- Explicit relationship loading after flatMap operations ensures User models are complete for profile photo URL generation
+**Booking Slot Circuit Operations:**
+- Fixed delete operation for booking slot circuits
+- Fixed update operation for booking slot circuits
 
-**Member Booking History:**
-- Fixed booking history page not displaying by passing bookings as a separate prop rather than through the member resource
-
-## 🎨 UI Improvements
-
-**Booking Slot Workouts:**
-- Zero weight values now allowed for bodyweight exercises (bench dips, pull-ups, etc.)
-- Previous sessions modal includes a session limit selector (1-5 sessions)
-- Modal height locks during loading to prevent visual jumping
-
-**Form Components:**
-- TextInput component gains `fullWidth` prop (default true) for flexible width control
-- Improved payment status layout in booking creation form
+**Validation Messages:**
+- Fixed unique days validation error message formatting
 
 ## 🔧 Technical Notes
 
-**Database Changes:**
-- Added `amount` decimal column to `bookings` table (precision 10, scale 2)
+**Test Code Improvements:**
+- Refactored tests to use type hints for factory-created models
+- Chained `expect()` assertions using `->and()` for cleaner test code
+- PHPDoc annotations added to suppress false-positive IDE warnings
 
-**Model Updates:**
-- `Booking` model includes `amount` in fillable array
-- Booking factory generates random amounts for testing
-- Booking validation accepts nullable numeric amount values
+**phpunit.xml Configuration:**
+Four test suites configured: `Http`, `Console`, `Unit`, `Notifications`
 
-**CLAUDE.md Guidelines:**
-- Documented API resource serialization rules to prevent future circular reference issues
-- Added explicit relationship map showing allowed serialization directions
 
 ## Summary
 
-This release delivers critical stability fixes for the calendar and member pages while introducing payment tracking capabilities. The API resource refactor establishes architectural patterns that prevent circular reference issues going forward. All changes maintain the existing user experience while improving system reliability.
+This release establishes a scalable foundation for the test suite. The domain-based organization makes it straightforward to find tests related to any feature, and the new documentation ensures consistent patterns across the codebase. These improvements in developer experience pay dividends as the application grows.
