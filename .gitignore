@@ -18,3 +18,7 @@ yarn-error.log
 /.idea
 /.vscode
 .DS_STORE
+
+# AI assistants
+/.claude/
+/.junie/
