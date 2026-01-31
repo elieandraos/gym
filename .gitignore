@@ -22,3 +22,4 @@ yarn-error.log
 # AI assistants
 /.claude/
 /.junie/
+/.ai/
