@@ -1,4 +1,166 @@
 <laravel-boost-guidelines>
+=== .ai/laravel rules ===
+
+# Laravel Guidelines
+
+## Closure Type Hints
+
+Always add type hints to closure parameters, especially in query builders:
+
+<!-- <code-snippet name="Closure Type Hints" lang="php"> -->
+```php
+// Before
+->where(function ($query) use ($date) {
+    $query->where('start_date', '<=', $date);
+});
+
+// After
+use Illuminate\Database\Eloquent\Builder;
+
+->where(function (Builder $query) use ($date) {
+    $query->where('start_date', '<=', $date);
+});
+```
+<!-- </code-snippet> -->
+
+Common closure parameter types:
+- Query callbacks: `Builder $query`
+- Collection callbacks: `mixed $item` or specific type
+- Array callbacks: `array $item` or specific type
+
+## Controllers
+
+- Single-purpose controllers for complex operations
+- Namespace under `App\Http\Controllers\Admin`
+- Use `when()` for conditional queries
+- Explicit eager loading with `with()`
+- `index()` and `show()` methods must always return API Resources (never raw models)
+
+## Imports
+
+Always import namespaces at the top of files, never use inline fully qualified class names:
+
+<!-- <code-snippet name="Namespace Imports" lang="php"> -->
+```php
+// Good
+use Illuminate\Support\Collection;
+$items = new Collection();
+
+// Bad
+$items = new \Illuminate\Support\Collection();
+```
+<!-- </code-snippet> -->
+
+## String Interpolation
+
+Avoid unnecessary curly braces for simple property access:
+
+<!-- <code-snippet name="String Interpolation" lang="php"> -->
+```php
+// Good
+"User ID: $user->id"
+
+// Bad (unnecessary braces)
+"User ID: {$user->id}"
+```
+<!-- </code-snippet> -->
+
+=== .ai/vue rules ===
+
+# Vue Guidelines
+
+## Component Naming in Templates
+
+Always use PascalCase when using components in Vue templates:
+
+<!-- <code-snippet name="Component PascalCase" lang="vue"> -->
+```vue
+<!-- Before (kebab-case) -->
+<members-search />
+<page-header />
+<primary-button />
+
+<!-- After (PascalCase) -->
+<MembersSearch />
+<PageHeader />
+<PrimaryButton />
+```
+<!-- </code-snippet> -->
+
+## Semantic HTML
+
+Use semantic HTML elements for their intended purpose:
+
+<!-- <code-snippet name="Semantic Buttons" lang="vue"> -->
+```vue
+<!-- Before (anchor as button) -->
+<a href="#" @click.prevent="doAction">Click me</a>
+
+<!-- After (proper button) -->
+<button type="button" @click="doAction">Click me</button>
+```
+<!-- </code-snippet> -->
+
+- Use `<button>` for actions/clicks
+- Use `<a>` only for navigation links
+- Use `<Link>` (Inertia) for SPA navigation
+
+## Script Setup
+
+Always use `<script setup>` syntax for Vue components.
+
+## Import Order
+
+Organize imports in this order:
+1. External libraries (vue, @inertiajs, etc.)
+2. Components
+3. Composables
+
+## File Organization
+
+- Pages in `/Pages/[Namespace]/` with index/show/create/edit pattern
+- Partials in `/Pages/Admin/[Module]/Partials/`
+
+## Template Structure
+
+- Keep templates flat - extract complex sections into Partials
+- Components own their UI (dropdowns, icons inside component)
+- Props down, events up
+- Name components by domain purpose (`MembersFilters` not `FilterDropdown`)
+
+## Active States
+
+Use Ziggy's `route().current()` for active states, never URL comparison:
+
+<!-- <code-snippet name="Active States" lang="vue"> -->
+```vue
+<!-- Good -->
+<Link :class="{ 'active': route().current('members.*') }">
+
+<!-- Bad -->
+<Link :class="{ 'active': $page.url.startsWith('/members') }">
+```
+<!-- </code-snippet> -->
+
+## Reactivity
+
+Don't destructure props outside computed/watch if used reactively:
+
+<!-- <code-snippet name="Props Reactivity" lang="vue"> -->
+```vue
+<script setup>
+const props = defineProps(['user'])
+
+// Good - reactive
+const fullName = computed(() => `${props.user.first} ${props.user.last}`)
+
+// Bad - loses reactivity
+const { user } = props
+const fullName = computed(() => `${user.first} ${user.last}`)
+</script>
+```
+<!-- </code-snippet> -->
+
 === foundation rules ===
 
 # Laravel Boost Guidelines
