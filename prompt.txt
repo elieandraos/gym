@@ -1,4 +1,15 @@
+inertia v3:
+- router optimistic usage
+- instant visits
+- layout props (if possible)
+- Error pages: InertiaHandleErrorUsing
+- Network errors
+- useHttp, dump axios if not used elsewhere
+
+
+
 You are generating a new RELEASE_DRAFT.md file for a production release.
+
 Context
 - This project already has established release notes style, tone, and structure.
 - The previous release draft exists and should be used as a reference for formatting and voice, but must not be repeated or summarized.
