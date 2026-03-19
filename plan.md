@@ -1,227 +1,202 @@
-# PhpStorm Annotation & Warning Fix Patterns
+# Inertia v3 Best Practices Audit
 
-## Purpose
-Reference document for building a `/annotate` custom command to automate PHPDoc annotations and warning fixes.
+## Summary
 
----
-
-## 1. Model Annotations
-
-### Pattern
-```php
-/**
- * Fillable attributes
- *
- * @property Type $attribute_name
- *
- * Auto-generated
- *
- * @property-read int $id
- * @property-read Carbon|null $created_at
- * @property-read Carbon|null $updated_at
- *
- * Relationships
- *
- * @property-read RelatedModel|null $belongsToRelation
- * @property-read Collection<RelatedModel> $hasManyRelation
- *
- * Scopes
- *
- * @method static Builder|ModelClass scopeName()
- * @method static Builder|ModelClass scopeWithParams(Type $param)
- *
- * @mixin TraitName
- */
-```
-
-### Rules
-| Element | Annotation | Example |
-|---------|------------|---------|
-| Fillable columns | `@property` | `@property string $name` |
-| Nullable fillable | `@property` | `@property string\|null $phone` |
-| id | `@property-read` | `@property-read int $id` |
-| Timestamps | `@property-read` | `@property-read Carbon\|null $created_at` |
-| Accessors | `@property-read` | `@property-read string $full_name` |
-| BelongsTo | `@property-read` | `@property-read User $member` |
-| HasOne | `@property-read` | `@property-read Profile\|null $profile` |
-| HasMany | `@property-read` | `@property-read Collection<Post> $posts` |
-| Scopes (no params) | `@method static` | `@method static Builder\|User active()` |
-| Scopes (with params) | `@method static` | `@method static Builder\|User byRole(string $role)` |
-| Traits | `@mixin` | `@mixin HasSettings` |
-
-### Type Mappings from $casts
-| Cast | PHPDoc Type |
-|------|-------------|
-| `'date'` | `Carbon` |
-| `'datetime'` | `Carbon` |
-| `'boolean'` | `bool` |
-| `'integer'` | `int` |
-| `'decimal:2'` | `string` |
-| `'array'` | `array` |
-| `EnumClass::class` | `EnumClass` |
+The codebase uses Inertia v3 but only the basics (`Inertia::render()`, `useForm`, `router`). Below are 6 concrete improvements using v3-specific features — ordered by impact.
 
 ---
 
-## 2. Controller Annotations
+## 1. Remove Axios (Dead Code)
 
-### Unused Route Model Binding Parameters
-```php
-/** @noinspection PhpUnusedParameterInspection */
-public function store(Request $request, ParentModel $parent, ChildModel $child): RedirectResponse
-```
-**When:** Parameter needed for route but not used in method body.
+**Why:** Axios is installed but never used in any Vue component. Only `bootstrap.js` sets it up as legacy boilerplate.
 
-### Typed Variables for Generic Returns
-```php
-/** @var User $user */
-$user = auth()->user();
-
-/** @var User $user */
-$user = request()->user();
-
-/** @var ModelClass $model */
-$model = $relationship->create([...]);
-
-/** @var ModelClass|null $item */
-$item = $collection->first();
-```
-**When:** Method returns generic type but you need specific type for IDE.
-
-### Scope Calls with Query Builder
-```php
-/** @var Builder|Booking $query */
-$query = Booking::query();
-$results = $query->scopeName()->get();
-```
-**When:** Calling scope methods on query builder.
-
-### Query Builder Method Calls
-```php
-// Use query() to start builder explicitly
-$items = Model::query()->orderBy('name')->get();
-
-// NOT: Model::orderBy('name')->get()
-```
-**When:** Calling builder methods directly on model class.
+**Files:**
+- `package.json` — remove `axios`
+- `resources/js/bootstrap.js` — remove the axios import + `window.axios` setup
 
 ---
 
-## 3. Model Internal Annotations
+## 2. Dashboard — Deferred Props
 
-### Scope Calling Another Scope
+**Why:** `DashboardController` runs 5+ heavy queries before the page renders, blocking initial load. The Vue template is **already ready** for this — it has null guards (`stats?.active_members || 0`) and `:loading="!stats"` on every card. Skeleton states are already wired up.
+
+**Backend:** `app/Http/Controllers/DashboardController.php`
 ```php
-/** @noinspection PhpUndefinedMethodInspection - Scope calling another scope, PhpStorm can't recognize it */
-#[AsScope]
-public function forCalendar(Builder $query, Carbon $start, Carbon $end): Builder
-{
-    return $query->with([...])->anotherScope($start, $end);
+return Inertia::render('Admin/Dashboard/Index', [
+    'stats'    => Inertia::defer(fn () => [...]),
+    'bookings' => Inertia::defer(fn () => [...]),
+    'trainers' => Inertia::defer(fn () => [...]),
+]);
+```
+
+**Frontend:** `resources/js/Pages/Admin/Dashboard/Index.vue`
+Wrap deferred sections with `<Deferred>` and `<template #fallback>` for correctness. The existing `:loading` props on child cards already handle the visual state.
+
+---
+
+## 3. Dashboard `markAsPaid` — Optimistic Update
+
+**Why:** Currently splices the booking from the list in `onSuccess` (after server responds). With optimistic updates, the removal is instant with automatic rollback on failure.
+
+**File:** `resources/js/Pages/Admin/Dashboard/Index.vue` (lines 140–151)
+
+```javascript
+const markAsPaid = (bookingId) => {
+    router.patch(route('admin.bookings.mark-as-paid', bookingId), {}, {
+        preserveScroll: true,
+        optimistic: (page) => ({
+            ...page,
+            props: {
+                ...page.props,
+                bookings: {
+                    ...page.props.bookings,
+                    unpaid: page.props.bookings.unpaid.filter(b => b.id !== bookingId),
+                },
+            },
+        }),
+    })
 }
 ```
-**When:** A scope method calls another scope from same model.
+Drop the `onSuccess` block entirely.
 
-### Relationship Calling Related Model's Scope
+---
+
+## 4. Sidebar Navigation — Prefetch + Instant Visits
+
+**Why:** Every sidebar link is a candidate for prefetching (hover triggers data preload). The dashboard logo link is a perfect `instant` candidate.
+
+**Files:**
+- `resources/js/Components/NavLink.vue` — add a `prefetch` prop forwarded to `<Link>`
+- `resources/js/Layouts/Sidebar.vue`:
+  - Logo `<Link>` (line 6): add `instant` — dashboard is the most-visited page
+  - Nav items: pass `prefetch` via `NavLink` prop
+
+---
+
+## 5. Error Pages
+
+**Why:** No Inertia-aware error handling. On 404/500 during SPA navigation, users get a broken response instead of a proper in-app error page.
+
+**a) `bootstrap/app.php`** — add renderer in `withExceptions`:
 ```php
-/** @noinspection PhpUndefinedMethodInspection - Relationship calling Model scope */
-public function activeItems(): HasMany
-{
-    return $this->hasMany(Item::class)->active();
-}
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Throwable;
+
+->withExceptions(function (Exceptions $exceptions) {
+    $exceptions->render(function (Throwable $e, Request $request) {
+        if ($request->inertia()) {
+            $status = method_exists($e, 'getStatusCode') ? $e->getStatusCode() : 500;
+            return Inertia::render('Error/Index', ['status' => $status])
+                ->toResponse($request)
+                ->setStatusCode($status);
+        }
+    });
+})
 ```
-**When:** Relationship definition calls a scope from the related model.
+
+**b) Create `resources/js/Pages/Error/Index.vue`**
+- Display the status code + human-readable message
+- Link back to dashboard via `<Link>`
+- Reuse `AppLayout` or a minimal layout
 
 ---
 
-## 4. API Resource Annotations
+## 6. Network Error Handling
 
-### Pattern
+**Why:** No fallback if the connection drops during a request. v3 renames the event from `exception` → `networkError`.
+
+**File:** `resources/js/app.js`
+```javascript
+import { router } from '@inertiajs/vue3'
+
+router.on('networkError', () => {
+    // Set a reactive flag → render a fixed banner in AppLayout
+})
+```
+Add a global reactive ref + a fixed banner in `AppLayout.vue` when the flag is true.
+
+---
+
+## 7. Members / Trainers / Workouts Lists — Conditional Defer + Skeleton
+
+> **Why not infinite scroll?** `Inertia::merge()` + infinite scroll works well for content feeds and activity logs. For these admin list pages, regular pagination is the right choice: admins search by name (debounced search already solves discovery), the dataset is bounded (~100–500 members), and pagination preserves the user's position in the list across refreshes and form submissions. Infinite scroll would add complexity without UX benefit here.
+
+**Why defer:** The list pages run paginated queries before render. Deferring them gives an instant initial page paint with a skeleton table, then the data appears. The trick: search/filter requests (`?search=`, `?trainingStatus=`) must NOT defer — otherwise every keystroke triggers the skeleton flash. We conditionally defer only on the clean initial load.
+
+**Additional bug fix:** Both `Members/Index.vue` (line 51) and `Trainers/Index.vue` (line 42) **destructure props statically** at setup time:
+```javascript
+const { data, meta } = props.members  // ← not reactive, breaks with defer
+```
+When `members` starts as `null` (deferred), `data` and `meta` are `undefined` forever — they don't update when the deferred response arrives. This needs to be converted to computed properties.
+
+### Backend changes (same pattern for Members, Trainers, Workouts)
+
+**`app/Http/Controllers/Admin/MembersController.php`** — `index()`:
 ```php
-use App\Models\ModelClass;
+// Only defer on the clean initial load (no active search/filter)
+$membersProp = request()->hasAny(['search', 'trainingStatus'])
+    ? MemberResource::collection($members)
+    : Inertia::defer(fn () => MemberResource::collection($members));
 
-/**
- * @mixin ModelClass
- */
-class ModelResource extends JsonResource
+return Inertia::render('Admin/Members/Index', [
+    'members' => $membersProp,
+    'search' => request('search'),
+    'trainingStatus' => $trainingStatus,
+]);
 ```
-**When:** Always add to resources to enable property autocomplete.
 
----
+Same pattern for `TrainersController::index()` (guard on `search`) and `WorkoutController::index()` (guard on `search` + `selectedCategories`).
 
-## 5. String Interpolation
+### Frontend changes
 
-### Avoid Unnecessary Curly Braces
-```php
-// Good - simple property access
-"path/$user->id/file"
+**`resources/js/Pages/Admin/Members/Index.vue`:**
+1. Import `Deferred` from `@inertiajs/vue3`
+2. Replace static destructuring with computed:
+```javascript
+import { computed, ref, watch } from 'vue'
+import { Deferred, Link, router } from '@inertiajs/vue3'
 
-// Bad - unnecessary braces
-"path/{$user->id}/file"
+const data = computed(() => props.members?.data ?? [])
+const meta = computed(() => props.members?.meta)
 ```
-**When:** Simple property or variable access in strings.
-
----
-
-## 6. Import Rules
-
-### Always Import, Never Inline
-```php
-// Good
-use App\Enums\Status;
-$status = Status::Active;
-
-// Bad
-$status = \App\Enums\Status::Active;
+3. Wrap `<MembersList>` in `<Deferred data="members">` with a skeleton fallback:
+```vue
+<Deferred data="members">
+    <template #fallback>
+        <!-- pulsing skeleton rows matching the table structure -->
+        <div class="animate-pulse space-y-3 p-4">
+            <div v-for="i in 5" :key="i" class="h-14 bg-zinc-100 rounded-lg" />
+        </div>
+    </template>
+    <MembersList :data="data" :headers="headers" :links="meta?.links ?? []" />
+</Deferred>
 ```
-**When:** Using any class reference.
+
+**`resources/js/Pages/Admin/Trainers/Index.vue`:** Same fix — computed `data`/`meta`, `<Deferred data="trainers">` wrapper, skeleton fallback. Note: current code has no null guard on `props.trainers` (line 42) which would crash if the prop starts null — this is a latent bug fixed by the computed approach.
+
+**Same for Workouts/Index.vue** once confirmed it follows the same pattern.
+
+**How `<Deferred>` handles search:** When the user searches, `members` is returned non-deferred in the Inertia response. `<Deferred>` detects this and renders the list immediately — no skeleton flash. Only the initial clean load shows the skeleton.
 
 ---
 
-## Command Implementation Notes
+## Files Changed
 
-### `/annotate Model`
-1. Read model file
-2. Extract from `$fillable` array → generate `@property`
-3. Extract from `$casts` array → determine types
-4. Find relationship methods (return BelongsTo/HasOne/HasMany) → generate `@property-read`
-5. Find scope methods (#[AsScope] attribute) → generate `@method static`
-6. Find `use Trait` statements → generate `@mixin`
-7. Add standard: `id`, `created_at`, `updated_at` as `@property-read`
-8. Check for scope-calling-scope patterns → add `@noinspection`
-9. Check for relationship-calling-scope patterns → add `@noinspection`
-
-### `/annotate Controller`
-1. Read controller file
-2. Find route model binding params not used in body → add `@noinspection PhpUnusedParameterInspection`
-3. Find `auth()->user()` / `request()->user()` calls → add `@var User`
-4. Find `->create()` on relationships → add `@var ModelClass`
-5. Find scope calls on `Model::query()` → add typed variable pattern
-6. Check for inline qualified names → suggest imports
-
-### `/annotate Resource`
-1. Read resource file
-2. Determine model from class name or usage
-3. Add `@mixin ModelClass` to class PHPDoc
-4. Add model import if missing
-
----
-
-## Files Reference
-
-### Models annotated this session:
-- `app/Models/User.php` ✅
-- `app/Models/Booking.php` ✅
-
-### Controllers fixed this session:
-- `app/Http/Controllers/Admin/BookingSlotCircuitWorkoutsController.php`
-- `app/Http/Controllers/Admin/BookingSlotsController.php`
-- `app/Http/Controllers/Admin/MembersController.php`
-- `app/Http/Controllers/Admin/UserSettingsController.php`
-- `app/Http/Controllers/Admin/WeeklyCalendarController.php`
-- `app/Http/Controllers/Admin/DailyCalendarController.php`
-
-### Resources annotated this session:
-- `app/Http/Resources/BookingResource.php` ✅
-
-### Pending (need annotation):
-- All other models in `app/Models/`
-- All other resources in `app/Http/Resources/`
-- All other controllers in `app/Http/Controllers/`
+| File | Change |
+|---|---|
+| `package.json` | Remove `axios` |
+| `resources/js/bootstrap.js` | Remove axios setup |
+| `app/Http/Controllers/DashboardController.php` | Wrap all 3 props with `Inertia::defer()` |
+| `resources/js/Pages/Admin/Dashboard/Index.vue` | Add `<Deferred>` wrappers; replace `onSuccess` splice with `optimistic` |
+| `resources/js/Components/NavLink.vue` | Add `prefetch` prop |
+| `resources/js/Layouts/Sidebar.vue` | Add `instant` to logo link; `prefetch` to nav items |
+| `bootstrap/app.php` | Add Inertia error renderer |
+| `resources/js/Pages/Error/Index.vue` | **New** error page component |
+| `resources/js/app.js` | Add `networkError` handler |
+| `app/Http/Controllers/Admin/MembersController.php` | Conditional defer on `members` prop |
+| `app/Http/Controllers/Admin/TrainersController.php` | Conditional defer on `trainers` prop |
+| `app/Http/Controllers/Admin/WorkoutController.php` | Conditional defer on `workouts` prop |
+| `resources/js/Pages/Admin/Members/Index.vue` | Computed props; `<Deferred>` + skeleton; fix latent bug |
+| `resources/js/Pages/Admin/Trainers/Index.vue` | Computed props; `<Deferred>` + skeleton; fix latent bug |
+| `resources/js/Pages/Admin/Workouts/Index.vue` | Computed props; `<Deferred>` + skeleton |

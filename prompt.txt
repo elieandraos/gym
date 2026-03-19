@@ -1,11 +1,15 @@
-inertia v3:
-- router optimistic usage
+I want you to audit my Inertia best practices usage, v3 has come out recently.
+it has new features like:
+"""
+- router optimistic
 - instant visits
-- layout props (if possible)
+- layout props
 - Error pages: InertiaHandleErrorUsing
 - Network errors
-- useHttp, dump axios if not used elsewhere
-
+- useHttp (dump axios if not used elsewhere)
+"""
+also, I want to explore prefetch and defer
+Tell me where can we apply those if possible, why it is better,makes code follow standards etc...
 
 
 You are generating a new RELEASE_DRAFT.md file for a production release.
