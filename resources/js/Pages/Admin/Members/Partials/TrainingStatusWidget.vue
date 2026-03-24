@@ -29,6 +29,13 @@
                 </div>
                 <div v-else>
                     <p>Currently not training</p>
+                    <Link
+                        v-if="lastCompletedBooking"
+                        :href="route('admin.bookings.create', { renew_from: lastCompletedBooking.id })"
+                        class="text-sky-500 hover:text-sky-700 font-[400]"
+                    >
+                        Renew Training
+                    </Link>
                 </div>
             </div>
         </div>
@@ -46,6 +53,7 @@ const { route } = window
 const props = defineProps({
     isTraining: { type: Boolean, required: true },
     activeBooking: { type: Object, default: null },
+    lastCompletedBooking: { type: Object, default: null },
 })
 
 const { formatted_end_date } = props.activeBooking || {}

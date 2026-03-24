@@ -80,10 +80,19 @@ class MembersController extends Controller
             );
         }
 
+        $lastCompletedBooking = null;
+        if (! $user->memberActiveBooking) {
+            $lastCompletedBooking = $user->memberCompletedBookings()
+                ->where('end_date', '>=', Carbon::today()->subWeeks(3))
+                ->with('trainer')
+                ->first();
+        }
+
         return Inertia::render('Admin/Members/Show', [
             'member' => MemberResource::make($user),
             'activeBooking' => $activeBookingData,
             'scheduledBookings' => BookingResource::collection($user->memberScheduledBookings),
+            'lastCompletedBooking' => $lastCompletedBooking ? BookingResource::make($lastCompletedBooking) : null,
         ]);
     }
 

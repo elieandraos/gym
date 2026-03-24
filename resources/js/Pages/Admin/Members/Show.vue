@@ -6,7 +6,7 @@
             </PageHeader>
 
             <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-6 mb-12">
-                <TrainingStatusWidget :is-training="isTraining" :active-booking="activeBooking" />
+                <TrainingStatusWidget :is-training="isTraining" :active-booking="activeBooking" :last-completed-booking="lastCompletedBooking" />
                 <PaymentStatusWidget :member="member" />
                 <RemainingSessionsWidget :is-training="isTraining" :active-booking="activeBooking" />
             </div>
@@ -68,6 +68,7 @@ const props = defineProps({
     member: { type: Object, required: true },
     activeBooking: { type: Object, default: null },
     scheduledBookings: { type: Array, default: () => [] },
+    lastCompletedBooking: { type: Object, default: null },
 })
 
 const { last_body_composition: lastBodyComposition } = props.member || {}
