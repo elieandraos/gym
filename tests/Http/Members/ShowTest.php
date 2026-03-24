@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Resources\BookingResource;
+use App\Enums\Role;
 use App\Http\Resources\MemberResource;
 use App\Models\Booking;
 use App\Models\User;
@@ -43,7 +43,7 @@ test('lastCompletedBooking is null when member has an active booking', function 
 
 test('lastCompletedBooking is present when no active booking and last booking ended within 3 weeks', function () {
     $trainer = User::query()->trainers()->first();
-    $member = User::factory()->create(['role' => \App\Enums\Role::Member]);
+    $member = User::factory()->create(['role' => Role::Member]);
 
     $recentBooking = Booking::factory()->create([
         'member_id' => $member->id,
@@ -59,7 +59,7 @@ test('lastCompletedBooking is present when no active booking and last booking en
 
 test('lastCompletedBooking is null when no active booking and last booking ended more than 3 weeks ago', function () {
     $trainer = User::query()->trainers()->first();
-    $member = User::factory()->create(['role' => \App\Enums\Role::Member]);
+    $member = User::factory()->create(['role' => Role::Member]);
 
     Booking::factory()->create([
         'member_id' => $member->id,
