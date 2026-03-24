@@ -6,12 +6,12 @@
 
         <div class="bg-zinc-100 text-black relative">
             <div class="flex">
-                <div class="h-screen w-60 hidden xl:block">
+                <div class="h-screen w-60 hidden xl:block shrink-0">
                     <sidebar :menu="menu"></sidebar>
                 </div>
 
-                <div class="h-screen xl:pt-2 grow">
-                    <main class="h-full overflow-y-scroll bg-white rounded-t-lg xl:ring-1 xl:ring-zinc-950/5 pb-16 xl:pb-0">
+                <div class="h-screen xl:pt-2 grow min-w-0">
+                    <main class="h-full overflow-y-scroll overflow-x-hidden bg-white rounded-t-lg xl:ring-1 xl:ring-zinc-950/5 pb-16 xl:pb-0">
                         <!-- main content -->
                         <slot />
                     </main>

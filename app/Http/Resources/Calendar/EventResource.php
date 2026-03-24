@@ -26,7 +26,8 @@ class EventResource extends JsonResource
 
         $member = $slot->booking->member;
         $trainer = $slot->booking->trainer;
-        $memberName = explode(' ', $member->name)[0];
+        $nameParts = explode(' ', $member->name);
+        $memberName = $nameParts[0].(isset($nameParts[1]) ? ' '.strtoupper($nameParts[1][0]).'.' : '');
         $trainerName = explode(' ', $trainer->name)[0];
         $memberPhotoUrl = $member->profile_photo_url;
         $trainerColor = $trainer->color;
