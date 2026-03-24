@@ -6,7 +6,7 @@
         "build": "vite build"
     },
     "devDependencies": {
-        "@inertiajs/vue3": "^2.0.5",
+        "@inertiajs/vue3": "^3.0.0-beta",
         "@tailwindcss/vite": "^4.0.17",
         "@vitejs/plugin-vue": "^5.2.3",
         "autoprefixer": "^10.4.21",
