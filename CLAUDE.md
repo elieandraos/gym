@@ -35,6 +35,8 @@ This project has domain-specific skills available. You MUST activate the relevan
 - `inertia-vue-development` — Develops Inertia.js v3 Vue client-side applications. Activates when creating Vue pages, forms, or navigation; using <Link>, <Form>, useForm, useHttp, useLayoutProps, or router; working with deferred props, prefetching, optimistic updates, instant visits, or polling; or when user mentions Vue with Inertia, Vue pages, Vue forms, or Vue navigation.
 - `tailwindcss-development` — Always invoke when the user's message includes 'tailwind' in any form. Also invoke for: building responsive grid layouts (multi-column card grids, product grids), flex/grid page structures (dashboards with sidebars, fixed topbars, mobile-toggle navs), styling UI components (cards, tables, navbars, pricing sections, forms, inputs, badges), adding dark mode variants, fixing spacing or typography, and Tailwind v3/v4 work. The core use case: writing or fixing Tailwind utility classes in HTML templates (Blade, JSX, Vue). Skip for backend PHP logic, database queries, API routes, JavaScript with no HTML/CSS component, CSS file audits, build tool configuration, and vanilla CSS.
 - `laravel-php-coding-conventions` — Activate when writing or editing any PHP file in this project. Covers import style, PHPStorm annotations, and other PHP coding conventions.
+- `testing-strategy` — Activate whenever working on a PHP test file — writing, editing, fixing, or refactoring tests. Covers testing conventions such as chaining expectations.
+- `phpstorm-conventions` — Activate ONLY when the user explicitly provides a PhpStorm warning or inspection description. Do NOT activate proactively. Covers @noinspection suppression comments and @var annotations.
 
 ## Conventions
 
