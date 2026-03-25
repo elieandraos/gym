@@ -13,6 +13,11 @@ enum Category: string
     case Core = 'Core';
     case Glutes = 'Glutes';
     case Abs = 'Abs';
+    case HIIT = 'HIIT';
+    case Cardio = 'Cardio';
+    case Functional = 'Functional';
+    case Training = 'Training';
+    case Stability = 'Stability';
 
     /**
      * Get all enum case values as an array of strings.
