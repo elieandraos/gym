@@ -16,10 +16,10 @@ class BookingSlotCircuitWorkoutHistoryController extends Controller
     public function __invoke(Request $request, BookingSlot $bookingSlot): JsonResponse
     {
         $limit = $request->integer('limit', 3);
+        $memberId = $bookingSlot->booking->member_id;
 
-        // Get the previous sessions for the same booking
         $previousSessions = BookingSlot::query()
-            ->where('booking_id', $bookingSlot->booking_id)
+            ->whereHas('booking', fn ($q) => $q->where('member_id', $memberId))
             ->where('id', '!=', $bookingSlot->id)
             ->where('start_time', '<', $bookingSlot->start_time)
             ->with([
