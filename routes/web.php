@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\BookingsController;
 use App\Http\Controllers\Admin\BookingSlotCircuitsController;
 use App\Http\Controllers\Admin\BookingSlotCircuitWorkoutHistoryController;
 use App\Http\Controllers\Admin\BookingSlotCircuitWorkoutsController;
+use App\Http\Controllers\Admin\BookingSlotLastWorkoutResultController;
 use App\Http\Controllers\Admin\BookingSlotsController;
 use App\Http\Controllers\Admin\CancelBookingSlotController;
 use App\Http\Controllers\Admin\ChangeBookingSlotDateTimeController;
@@ -123,6 +124,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     // Bookings slot
     Route::get('/bookings-slots/{bookingSlot}/show', [BookingSlotsController::class, 'show'])->name('admin.bookings-slots.show');
     Route::get('/bookings-slots/{bookingSlot}/circuit-workout-history', BookingSlotCircuitWorkoutHistoryController::class)->name('admin.bookings-slots.circuit-workout-history');
+    Route::get('/bookings-slots/{bookingSlot}/last-workout-result', BookingSlotLastWorkoutResultController::class)->name('admin.bookings-slots.last-workout-result');
     //  Bookings slot change date time
     Route::get('/bookings-slots/{bookingSlot}/change-date-time/edit', [ChangeBookingSlotDateTimeController::class, 'edit'])->name('admin.change-booking-slot-date-time.edit');
     Route::put('/bookings-slots/{bookingSlot}/change-date-time/update', [ChangeBookingSlotDateTimeController::class, 'update'])->name('admin.change-booking-slot-date-time.update');

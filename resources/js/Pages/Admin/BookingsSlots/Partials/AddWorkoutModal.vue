@@ -9,11 +9,23 @@
                     placeholder="Search workouts..."
                 />
                 <InputError v-if="errors.workout" :message="errors.workout" class="mt-1" />
+
+                <!-- Last results -->
+                <div v-if="lastResults && lastResults.length" class="flex flex-wrap gap-2 mt-1">
+                    <span class="text-xs text-zinc-400 italic">last results:</span>
+                    <span
+                        v-for="(set, i) in lastResults"
+                        :key="i"
+                        class="text-xs text-zinc-600 px-1"
+                    >
+                        {{ formatSet(set) }}
+                    </span>
+                </div>
             </div>
 
-            <!-- Type Selection -->
-            <div>
-                <div class="flex gap-4 mt-2">
+            <!-- Type + Add Set row -->
+            <div class="flex items-center justify-between mt-2">
+                <div class="flex gap-4">
                     <label class="flex items-center gap-2 cursor-pointer">
                         <input
                             type="radio"
@@ -33,21 +45,18 @@
                         <span class="text-sm text-zinc-700 cursor-pointer">Duration</span>
                     </label>
                 </div>
+                <button
+                    @click="addSet"
+                    type="button"
+                    class="text-sm text-indigo-600 hover:text-indigo-700 flex items-center gap-1 cursor-pointer"
+                >
+                    <PlusIcon class="w-4 h-4 cursor-pointer" />
+                    Add Set
+                </button>
             </div>
 
             <!-- Sets Section -->
             <div>
-                <div class="flex items-center justify-between mb-4">
-                    <button
-                        @click="addSet"
-                        type="button"
-                        class="text-sm text-indigo-600 hover:text-indigo-700 flex items-center gap-1 cursor-pointer ml-auto"
-                    >
-                        <PlusIcon class="w-4 h-4 cursor-pointer" />
-                        Add Set
-                    </button>
-                </div>
-
                 <div class="space-y-3">
                     <div
                         v-for="(set, index) in sets"
@@ -103,6 +112,16 @@
                 </div>
                 <InputError v-if="errors.sets" :message="errors.sets" class="mt-1" />
             </div>
+
+            <!-- Notes -->
+            <div>
+                <textarea
+                    v-model="note"
+                    placeholder="Notes (optional)..."
+                    rows="2"
+                    class="w-full rounded-md border-0 py-1.5 px-3 text-sm text-zinc-900 ring-1 ring-inset ring-zinc-300 placeholder:text-zinc-400 focus:ring-2 focus:ring-inset focus:ring-zinc-900 resize-none"
+                />
+            </div>
         </div>
 
         <template #footer>
@@ -141,12 +160,17 @@ const emit = defineEmits(['close'])
 // Form state
 const selectedWorkoutId = ref(null)
 const type = ref('weight')
+const note = ref(null)
 const sets = ref([
     { reps: 12, weight_in_kg: null, duration_in_seconds: null },
     { reps: 12, weight_in_kg: null, duration_in_seconds: null },
     { reps: 12, weight_in_kg: null, duration_in_seconds: null },
 ])
 const errors = ref({})
+
+// Last results state
+const lastResults = ref(null)
+const loadingLastResults = ref(false)
 
 // Transform workouts for InputAutocomplete
 const workoutOptions = computed(() => {
@@ -160,6 +184,56 @@ const workoutOptions = computed(() => {
 const selectedWorkout = computed(() => {
     return props.availableWorkouts.find(w => w.id === selectedWorkoutId.value)
 })
+
+const formatSet = (set) => {
+    if (set.weight_in_kg !== null) {
+        return `${set.weight_in_kg}kg x ${set.reps}`
+    }
+
+    return formatDuration(set.duration_in_seconds)
+}
+
+const formatDuration = (seconds) => {
+    if (!seconds) {
+        return '0s'
+    }
+
+    const mins = Math.floor(seconds / 60)
+    const secs = seconds % 60
+
+    if (mins > 0 && secs > 0) {
+        return `${mins}m ${secs}s`
+    }
+
+    if (mins > 0) {
+        return `${mins}m`
+    }
+
+    return `${secs}s`
+}
+
+const fetchLastResults = async (workoutId) => {
+    loadingLastResults.value = true
+    lastResults.value = null
+    try {
+        const response = await fetch(
+            route('admin.bookings-slots.last-workout-result', {
+                bookingSlot: props.bookingSlotId,
+                workout_id: workoutId,
+            })
+        )
+        if (!response.ok) {
+            throw new Error(`HTTP error: ${response.status}`)
+        }
+        const data = await response.json()
+        lastResults.value = data.sets
+    } catch (error) {
+        console.error('Failed to fetch last workout result:', error)
+        lastResults.value = null
+    } finally {
+        loadingLastResults.value = false
+    }
+}
 
 // Watch for editing workout changes
 watch(() => props.editingWorkout, (workout) => {
@@ -176,8 +250,19 @@ watch(() => props.editingWorkout, (workout) => {
         sets.value = workout.sets && workout.sets.length > 0
             ? workout.sets.map(set => ({ ...set }))
             : [{ reps: 12, weight_in_kg: null, duration_in_seconds: null }]
+
+        note.value = workout.notes || null
     }
 }, { immediate: true })
+
+// Watch selectedWorkoutId to fetch last results
+watch(selectedWorkoutId, (newId) => {
+    if (newId) {
+        fetchLastResults(newId)
+    } else {
+        lastResults.value = null
+    }
+})
 
 // Watch type changes and reset sets (only if not editing)
 watch(type, (newType) => {
@@ -241,6 +326,7 @@ const submit = () => {
     const workoutData = {
         workout_id: selectedWorkoutId.value,
         type: type.value,
+        notes: note.value || null,
         sets: sets.value.map(set => ({
             reps: type.value === 'weight' ? parseInt(set.reps) : null,
             weight_in_kg: type.value === 'weight' ? parseFloat(set.weight_in_kg) : null,
@@ -296,12 +382,14 @@ const submit = () => {
 const resetForm = () => {
     selectedWorkoutId.value = null
     type.value = 'weight'
+    note.value = null
     sets.value = [
         { reps: 12, weight_in_kg: null, duration_in_seconds: null },
         { reps: 12, weight_in_kg: null, duration_in_seconds: null },
         { reps: 12, weight_in_kg: null, duration_in_seconds: null },
     ]
     errors.value = {}
+    lastResults.value = null
 }
 
 const close = () => {

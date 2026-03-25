@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  *
  * @property int $booking_slot_circuit_id
  * @property int $workout_id
+ * @property string|null $notes
  *
  * Auto-generated
  * @property-read int $id
@@ -32,6 +33,7 @@ class BookingSlotCircuitWorkout extends Model
     protected $fillable = [
         'booking_slot_circuit_id',
         'workout_id',
+        'notes',
     ];
 
     public function circuit(): BelongsTo

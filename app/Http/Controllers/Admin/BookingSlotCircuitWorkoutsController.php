@@ -17,6 +17,7 @@ class BookingSlotCircuitWorkoutsController extends Controller
         $validated = $request->validate([
             'workout_id' => 'required|exists:workouts,id',
             'type' => 'required|in:weight,duration',
+            'notes' => 'nullable|string|max:1000',
             'sets' => 'required|array|min:1|max:10',
             'sets.*.reps' => 'nullable|integer|min:1|max:999',
             'sets.*.weight_in_kg' => 'nullable|numeric|min:0|max:999',
@@ -26,6 +27,7 @@ class BookingSlotCircuitWorkoutsController extends Controller
         /** @var BookingSlotCircuitWorkout $circuitWorkout */
         $circuitWorkout = $circuit->circuitWorkouts()->create([
             'workout_id' => $validated['workout_id'],
+            'notes' => $validated['notes'] ?? null,
         ]);
 
         // Create all sets
@@ -48,6 +50,7 @@ class BookingSlotCircuitWorkoutsController extends Controller
         $validated = $request->validate([
             'workout_id' => 'required|exists:workouts,id',
             'type' => 'required|in:weight,duration',
+            'notes' => 'nullable|string|max:1000',
             'sets' => 'required|array|min:1|max:10',
             'sets.*.reps' => 'nullable|integer|min:1|max:999',
             'sets.*.weight_in_kg' => 'nullable|numeric|min:0|max:999',
@@ -57,6 +60,7 @@ class BookingSlotCircuitWorkoutsController extends Controller
         // Update the workout
         $circuitWorkout->update([
             'workout_id' => $validated['workout_id'],
+            'notes' => $validated['notes'] ?? null,
         ]);
 
         // Delete existing sets and create new ones
