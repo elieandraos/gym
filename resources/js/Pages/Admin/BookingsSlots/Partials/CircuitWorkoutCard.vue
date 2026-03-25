@@ -37,6 +37,7 @@
                     {{ formatDuration(set.duration_in_seconds) }}
                 </span>
             </div>
+            <p v-if="workout.notes" class="text-xs text-zinc-400 italic pt-1">{{ workout.notes }}</p>
         </div>
     </div>
 </template>

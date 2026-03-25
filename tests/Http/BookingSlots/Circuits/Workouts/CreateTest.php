@@ -148,6 +148,60 @@ test('it validates sets is required and is an array', function () {
         ->assertSessionHasErrors(['sets']);
 });
 
+test('it saves notes when creating a workout', function () {
+    $bookingSlot = BookingSlot::query()->first();
+    $circuit = BookingSlotCircuit::factory()->create(['booking_slot_id' => $bookingSlot->id]);
+    $workout = Workout::query()->first();
+
+    $data = [
+        'workout_id' => $workout->id,
+        'type' => 'weight',
+        'notes' => 'Focus on slow negatives',
+        'sets' => [
+            ['reps' => 12, 'weight_in_kg' => 20, 'duration_in_seconds' => null],
+        ],
+    ];
+
+    actingAsAdmin()
+        ->post(route('admin.bookings-slots.circuits.workouts.store', [
+            'bookingSlot' => $bookingSlot,
+            'circuit' => $circuit,
+        ]), $data)
+        ->assertSessionHasNoErrors()
+        ->assertRedirect();
+
+    $this->assertDatabaseHas('booking_slot_circuit_workouts', [
+        'booking_slot_circuit_id' => $circuit->id,
+        'workout_id' => $workout->id,
+        'notes' => 'Focus on slow negatives',
+    ]);
+});
+
+test('it creates a workout without notes', function () {
+    $bookingSlot = BookingSlot::query()->first();
+    $circuit = BookingSlotCircuit::factory()->create(['booking_slot_id' => $bookingSlot->id]);
+    $workout = Workout::query()->first();
+
+    $data = [
+        'workout_id' => $workout->id,
+        'type' => 'weight',
+        'sets' => [
+            ['reps' => 12, 'weight_in_kg' => 20, 'duration_in_seconds' => null],
+        ],
+    ];
+
+    actingAsAdmin()
+        ->post(route('admin.bookings-slots.circuits.workouts.store', [
+            'bookingSlot' => $bookingSlot,
+            'circuit' => $circuit,
+        ]), $data)
+        ->assertSessionHasNoErrors()
+        ->assertRedirect();
+
+    $circuitWorkout = $circuit->circuitWorkouts()->latest()->first();
+    expect($circuitWorkout->notes)->toBeNull();
+});
+
 test('it requires authentication to create circuit workouts', function () {
     $bookingSlot = BookingSlot::query()->first();
     $circuit = BookingSlotCircuit::factory()->create(['booking_slot_id' => $bookingSlot->id]);

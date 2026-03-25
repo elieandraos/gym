@@ -103,6 +103,16 @@
                 </div>
                 <InputError v-if="errors.sets" :message="errors.sets" class="mt-1" />
             </div>
+
+            <!-- Notes -->
+            <div>
+                <textarea
+                    v-model="note"
+                    placeholder="Notes (optional)..."
+                    rows="2"
+                    class="w-full rounded-md border-0 py-1.5 px-3 text-sm text-zinc-900 ring-1 ring-inset ring-zinc-300 placeholder:text-zinc-400 focus:ring-2 focus:ring-inset focus:ring-zinc-900 resize-none"
+                />
+            </div>
         </div>
 
         <template #footer>
@@ -141,6 +151,7 @@ const emit = defineEmits(['close'])
 // Form state
 const selectedWorkoutId = ref(null)
 const type = ref('weight')
+const note = ref(null)
 const sets = ref([
     { reps: 12, weight_in_kg: null, duration_in_seconds: null },
     { reps: 12, weight_in_kg: null, duration_in_seconds: null },
@@ -176,6 +187,8 @@ watch(() => props.editingWorkout, (workout) => {
         sets.value = workout.sets && workout.sets.length > 0
             ? workout.sets.map(set => ({ ...set }))
             : [{ reps: 12, weight_in_kg: null, duration_in_seconds: null }]
+
+        note.value = workout.notes || null
     }
 }, { immediate: true })
 
@@ -241,6 +254,7 @@ const submit = () => {
     const workoutData = {
         workout_id: selectedWorkoutId.value,
         type: type.value,
+        notes: note.value || null,
         sets: sets.value.map(set => ({
             reps: type.value === 'weight' ? parseInt(set.reps) : null,
             weight_in_kg: type.value === 'weight' ? parseFloat(set.weight_in_kg) : null,
@@ -296,6 +310,7 @@ const submit = () => {
 const resetForm = () => {
     selectedWorkoutId.value = null
     type.value = 'weight'
+    note.value = null
     sets.value = [
         { reps: 12, weight_in_kg: null, duration_in_seconds: null },
         { reps: 12, weight_in_kg: null, duration_in_seconds: null },
