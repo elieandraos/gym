@@ -2,22 +2,19 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Enums\Role;
+use App\Actions\Admin\CreateMember;
+use App\Actions\Admin\DeleteMember;
+use App\Actions\Admin\UpdateMember;
 use App\Enums\Status;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\UpdateUserRequest;
 use App\Http\Requests\Admin\UserRequest;
 use App\Http\Resources\BookingResource;
 use App\Http\Resources\MemberResource;
-use App\Mail\Member\WelcomeEmail;
-use App\Mail\Owner\NewMemberEmail;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -101,40 +98,11 @@ class MembersController extends Controller
         return Inertia::render('Admin/Members/Create');
     }
 
-    public function store(UserRequest $request): RedirectResponse
+    public function store(UserRequest $request, CreateMember $createMember): RedirectResponse
     {
-        $request->merge([
-            'password' => Hash::make('password'),
-            'role' => Role::Member->value,
-        ]);
-
-        $member = User::query()->create($request->except(['photo', 'remove_photo']));
-
-        if ($request->hasFile('photo')) {
-            $member->updateProfilePhoto($request->file('photo'));
-        }
-
-        // Send email to the new member
-        Mail::to($member->email)->queue(new WelcomeEmail($member));
-
-        // Send email to gym owner(s) based on admin settings
         /** @var User $admin */
         $admin = auth()->user();
-        $sendEmailToOwners = $admin->getSetting('notifications.new_member_email_to_owners', true);
-
-        if ($sendEmailToOwners) {
-            // Get owner emails from admin settings, fallback to config
-            $ownersEmails = $admin->getSetting('notifications.owner_emails', config('mail.owners_emails'));
-
-            if ($ownersEmails) {
-                $emails = array_map('trim', explode(',', $ownersEmails));
-                foreach ($emails as $email) {
-                    if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                        Mail::to($email)->queue(new NewMemberEmail($member));
-                    }
-                }
-            }
-        }
+        $member = $createMember->handle($admin, $request->validated());
 
         return redirect()->route('admin.member-created', $member);
     }
@@ -146,17 +114,9 @@ class MembersController extends Controller
         ]);
     }
 
-    public function update(UpdateUserRequest $request, User $user): RedirectResponse
+    public function update(UpdateUserRequest $request, User $user, UpdateMember $updateMember): RedirectResponse
     {
-        if ($request->hasFile('photo')) {
-            $user->updateProfilePhoto($request->file('photo'));
-        }
-
-        if ($request->has('remove_photo') && $request->input('remove_photo') === true) {
-            $user->deleteProfilePhoto();
-        }
-
-        $user->update($request->except(['photo', 'remove_photo']));
+        $updateMember->handle($user, $request->validated());
 
         return redirect()->route('admin.members.show', $user)
             ->with('flash.banner', 'Member updated successfully')
@@ -170,14 +130,9 @@ class MembersController extends Controller
         ]);
     }
 
-    public function destroy(User $user): RedirectResponse
+    public function destroy(User $user, DeleteMember $deleteMember): RedirectResponse
     {
-        // Delete storage files for body compositions and profile photos
-        Storage::disk('public')->deleteDirectory("body-compositions/$user->id");
-        Storage::disk('public')->deleteDirectory("profile-photos/$user->id");
-
-        // Delete the user (CASCADE will handle bookings, booking_slots, booking_slot_workouts, and body_compositions)
-        $user->delete();
+        $deleteMember->handle($user);
 
         return redirect()->route('admin.members.index')
             ->with('flash.banner', 'Member and all associated data deleted successfully')

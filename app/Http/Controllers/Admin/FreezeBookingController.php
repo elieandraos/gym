@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Enums\Status;
+use App\Actions\Admin\FreezeBooking;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BookingResource;
 use App\Models\Booking;
-use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -25,7 +24,7 @@ class FreezeBookingController extends Controller
         ]);
     }
 
-    public function update(Booking $booking): RedirectResponse
+    public function update(Booking $booking, FreezeBooking $freezeBooking): RedirectResponse
     {
         if ($booking->is_frozen) {
             return back()
@@ -33,14 +32,7 @@ class FreezeBookingController extends Controller
                 ->with('flash.bannerStyle', 'danger');
         }
 
-        $booking->update([
-            'is_frozen' => true,
-            'frozen_at' => Carbon::now(),
-        ]);
-
-        $booking->bookingSlots()
-            ->where('status', Status::Upcoming)
-            ->update(['status' => Status::Frozen]);
+        $freezeBooking->handle($booking);
 
         return redirect()->route('admin.members.show', $booking->member_id)
             ->with('flash.banner', 'Booking frozen successfully')

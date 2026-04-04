@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Enums\Status;
+use App\Actions\Admin\ChangeBookingSlotDateTime;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ChangeBookingSlotDateTimeRequest;
 use App\Http\Resources\BookingResource;
@@ -47,19 +47,9 @@ class ChangeBookingSlotDateTimeController extends Controller
         ]);
     }
 
-    public function update(ChangeBookingSlotDateTimeRequest $request, BookingSlot $bookingSlot): RedirectResponse
+    public function update(ChangeBookingSlotDateTimeRequest $request, BookingSlot $bookingSlot, ChangeBookingSlotDateTime $changeBookingSlotDateTime): RedirectResponse
     {
-        $start = Carbon::createFromFormat('Y-m-d H:i:s', $request->validated('start_time'), 'Asia/Beirut');
-        $end = Carbon::createFromFormat('Y-m-d H:i:s', $request->validated('end_time'), 'Asia/Beirut');
-
-        $bookingSlot->update([
-            'start_time' => $start,
-            'end_time' => $end,
-            'status' => $start->isPast() ? Status::Complete : Status::Upcoming,
-        ]);
-
-        // Update booking end_date if this is the last slot
-        $bookingSlot->booking->updateEndDateToLastSlot();
+        $changeBookingSlotDateTime->handle($bookingSlot, $request->validated());
 
         return redirect()->route('admin.bookings-slots.show', [
             'bookingSlot' => $bookingSlot->id,

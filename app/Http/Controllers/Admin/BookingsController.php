@@ -2,16 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Enums\Status;
+use App\Actions\Admin\CreateBooking;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\BookingRequest;
 use App\Http\Resources\BookingResource;
 use App\Http\Resources\MemberResource;
 use App\Http\Resources\TrainerResource;
 use App\Models\Booking;
-use App\Models\BookingSlot;
 use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -43,26 +41,9 @@ class BookingsController extends Controller
         ]);
     }
 
-    public function store(BookingRequest $request): RedirectResponse
+    public function store(BookingRequest $request, CreateBooking $createBooking): RedirectResponse
     {
-        $bookingSlots = [];
-
-        // calculate booking slots dates
-        foreach ($request->input('booking_slots_dates') as $date) {
-            $startDate = Carbon::parse($date);
-            $bookingSlots[] = new BookingSlot([
-                'start_time' => $startDate,
-                'end_time' => $startDate->clone()->addHour(),
-                'status' => $startDate < Carbon::now() ? Status::Complete->value : Status::Upcoming->value,
-            ]);
-        }
-
-        // create the booking and its slots
-        $booking = Booking::query()->create($request->all());
-        $booking->bookingSlots()->saveMany($bookingSlots);
-
-        // set the booking end_date to the last session date
-        $booking->updateEndDateToLastSlot();
+        $booking = $createBooking->handle($request->all());
 
         return redirect(route('admin.members.show', [$booking->member_id]))
             ->with('flash.banner', 'Training created successfully')

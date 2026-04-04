@@ -2,27 +2,21 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Actions\Admin\CreateBookingSlotCircuit;
+use App\Actions\Admin\DeleteBookingSlotCircuit;
+use App\Actions\Admin\UpdateBookingSlotCircuit;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\BookingSlotCircuitRequest;
+use App\Http\Requests\Admin\UpdateBookingSlotCircuitRequest;
 use App\Models\BookingSlot;
 use App\Models\BookingSlotCircuit;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 
 class BookingSlotCircuitsController extends Controller
 {
-    public function store(Request $request, BookingSlot $bookingSlot): RedirectResponse
+    public function store(BookingSlotCircuitRequest $request, BookingSlot $bookingSlot, CreateBookingSlotCircuit $createBookingSlotCircuit): RedirectResponse
     {
-        $validated = $request->validate([
-            'name' => 'nullable|string|max:255',
-        ]);
-
-        // Auto-generate name if not provided
-        $circuitCount = $bookingSlot->circuits()->count();
-        $name = $validated['name'] ?? 'Circuit '.($circuitCount + 1);
-
-        $bookingSlot->circuits()->create([
-            'name' => $name,
-        ]);
+        $createBookingSlotCircuit->handle($bookingSlot, $request->validated());
 
         return redirect()->back()
             ->with('flash.banner', 'Circuit created successfully')
@@ -30,13 +24,9 @@ class BookingSlotCircuitsController extends Controller
     }
 
     /** @noinspection PhpUnusedParameterInspection */
-    public function update(Request $request, BookingSlot $bookingSlot, BookingSlotCircuit $circuit): RedirectResponse
+    public function update(UpdateBookingSlotCircuitRequest $request, BookingSlot $bookingSlot, BookingSlotCircuit $circuit, UpdateBookingSlotCircuit $updateBookingSlotCircuit): RedirectResponse
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-        ]);
-
-        $circuit->update($validated);
+        $updateBookingSlotCircuit->handle($circuit, $request->validated());
 
         return redirect()->back()
             ->with('flash.banner', 'Circuit updated successfully')
@@ -44,9 +34,9 @@ class BookingSlotCircuitsController extends Controller
     }
 
     /** @noinspection PhpUnusedParameterInspection */
-    public function destroy(BookingSlot $bookingSlot, BookingSlotCircuit $circuit): RedirectResponse
+    public function destroy(BookingSlot $bookingSlot, BookingSlotCircuit $circuit, DeleteBookingSlotCircuit $deleteBookingSlotCircuit): RedirectResponse
     {
-        $circuit->delete();
+        $deleteBookingSlotCircuit->handle($circuit);
 
         return redirect()->back()
             ->with('flash.banner', 'Circuit deleted successfully')

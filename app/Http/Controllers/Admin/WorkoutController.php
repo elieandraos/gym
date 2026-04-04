@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Actions\Admin\CreateWorkout;
+use App\Actions\Admin\DeleteWorkout;
+use App\Actions\Admin\UpdateWorkout;
 use App\Enums\Category;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\WorkoutRequest;
@@ -46,9 +49,9 @@ class WorkoutController extends Controller
         ]);
     }
 
-    public function store(WorkoutRequest $request): RedirectResponse
+    public function store(WorkoutRequest $request, CreateWorkout $createWorkout): RedirectResponse
     {
-        Workout::query()->create($request->validated());
+        $createWorkout->handle($request->validated());
 
         return redirect()->route('admin.workouts.index')
             ->with('flash.banner', 'Workout created successfully')
@@ -63,18 +66,18 @@ class WorkoutController extends Controller
         ]);
     }
 
-    public function update(WorkoutRequest $request, Workout $workout): RedirectResponse
+    public function update(WorkoutRequest $request, Workout $workout, UpdateWorkout $updateWorkout): RedirectResponse
     {
-        $workout->update($request->validated());
+        $updateWorkout->handle($workout, $request->validated());
 
         return redirect()->route('admin.workouts.index')
             ->with('flash.banner', 'Workout updated successfully')
             ->with('flash.bannerStyle', 'success');
     }
 
-    public function destroy(Workout $workout): RedirectResponse
+    public function destroy(Workout $workout, DeleteWorkout $deleteWorkout): RedirectResponse
     {
-        $workout->delete();
+        $deleteWorkout->handle($workout);
 
         return redirect()->route('admin.workouts.index')
             ->with('flash.banner', 'Workout deleted successfully')
