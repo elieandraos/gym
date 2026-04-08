@@ -2,7 +2,6 @@
 
 use App\Enums\BloodType;
 use App\Enums\Gender;
-use App\Http\Resources\MemberResource;
 use App\Models\User;
 
 beforeEach(function () {
@@ -46,16 +45,6 @@ test('it creates a member and redirects to celebration page', function () {
 
     $member = User::query()->where('email', 'elie@liftstation.fitness')->first();
     $response->assertRedirect(route('admin.member-created', $member));
-});
-
-test('it shows member creation celebration page', function () {
-    $member = User::query()->members()->first();
-
-    actingAsAdmin()
-        ->get(route('admin.member-created', $member))
-        ->assertHasComponent('Admin/MemberCreated/Index')
-        ->assertHasResource('member', MemberResource::make($member))
-        ->assertStatus(200);
 });
 
 test('it validates member creation', function () {

@@ -10,40 +10,11 @@ beforeEach(function () {
     setupUsersAndBookings();
 });
 
-test('unfreeze routes require authentication', function () {
+test('unfreeze update route requires authentication', function () {
     $booking = Booking::query()->first();
-
-    $this->get(route('admin.bookings.unfreeze.index', $booking))
-        ->assertRedirect(route('login'));
 
     $this->patch(route('admin.bookings.unfreeze.update', $booking))
         ->assertRedirect(route('login'));
-});
-
-test('it renders the unfreeze booking page with frozen slots', function () {
-    $member = User::query()->members()->inRandomOrder()->first();
-    $trainer = User::query()->trainers()->inRandomOrder()->first();
-
-    $booking = Booking::factory()->active()->create([
-        'member_id' => $member->id,
-        'trainer_id' => $trainer->id,
-        'is_frozen' => true,
-        'frozen_at' => Carbon::now()->subDays(5),
-    ]);
-
-    $frozenSlots = BookingSlot::factory()->count(3)->create([
-        'booking_id' => $booking->id,
-        'status' => Status::Frozen,
-        'start_time' => Carbon::now()->addDays(1),
-        'end_time' => Carbon::now()->addDays(1)->addHour(),
-    ]);
-
-    $booking->load(['member', 'trainer', 'bookingSlots']);
-
-    actingAsAdmin()
-        ->get(route('admin.bookings.unfreeze.index', $booking))
-        ->assertHasComponent('Admin/UnfreezeBooking/Index')
-        ->assertStatus(200);
 });
 
 test('it unfreezes a booking successfully', function () {

@@ -7,15 +7,6 @@ beforeEach(function () {
     setupUsersAndBookings();
 });
 
-test('it loads cancel booking slot page', function () {
-    $bookingSlot = BookingSlot::query()->first();
-
-    actingAsAdmin()
-        ->get(route('admin.bookings-slots.cancel.index', $bookingSlot))
-        ->assertHasComponent('Admin/CancelBookingSlot/Index')
-        ->assertStatus(200);
-});
-
 test('it cancels a booking slot', function () {
     $bookingSlot = BookingSlot::query()->first();
 

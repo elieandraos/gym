@@ -1,16 +1,5 @@
-I want to refactor my fat controllers to be thin controller. Use actions pattern.
-An action is a class that:
-It must be request/response agnostic. It doesn’t deal with the Request class, nor does it send a Response back. This responsibility is handled by the controller.
-It can have other actions as a dependency.
-It must enforce business rules by throwing an Exception if anything prevent it from executing and/or returning the expected value, and leave the caller (or the laravel’s ExceptionHandler) the responsibility of how to render/respond to the exception.
-Actions are stuff happens in the controller outside the http layer (send mail, delete photo physically etc..)
-It should only have one public method as an API. Ideally this should be always the same method name, like handle()
-An action class should have a name which is self-explanatory on what it does eg: CreateOrder, ConfirmCheckout, DeleteProduct, AddProductToCart, etc…
-it is functional programing benefiting from dependency injection
-Easy to test in isolation against a variety of scenarios
-
-Explain me to me what is the actions pattern in a 2mins-read blog post tutorial style (i added some thoughts above)
-and use the BodyCompositionController as example to refactor.
+now that we have refactored to actions, i have a feeling our tests have redundancies between unit actions tests and http controllers test ? can you check how the
+tests are structure and suggest improvements in conventions/structure ?
 
 
 
