@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Enums\Status;
+use App\Actions\Admin\CancelBookingSlot;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BookingResource;
 use App\Http\Resources\BookingSlotResource;
@@ -27,11 +27,9 @@ class CancelBookingSlotController extends Controller
         ]);
     }
 
-    public function destroy(BookingSlot $bookingSlot): RedirectResponse
+    public function destroy(BookingSlot $bookingSlot, CancelBookingSlot $cancelBookingSlot): RedirectResponse
     {
-        $bookingSlot->update([
-            'status' => Status::Cancelled,
-        ]);
+        $cancelBookingSlot->handle($bookingSlot);
 
         return redirect()->route('admin.bookings-slots.show', [
             'bookingSlot' => $bookingSlot->id,

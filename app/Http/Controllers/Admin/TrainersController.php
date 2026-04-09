@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Enums\Role;
+use App\Actions\Admin\CreateTrainer;
+use App\Actions\Admin\UpdateTrainer;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\UpdateUserRequest;
 use App\Http\Requests\Admin\UserRequest;
@@ -10,7 +11,6 @@ use App\Http\Resources\TrainerResource;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -42,21 +42,12 @@ class TrainersController extends Controller
 
     public function create(): Response
     {
-        return Inertia::render('Admin/Trainers/Create');
+        return Inertia::render('Admin/Trainers/Create', []);
     }
 
-    public function store(UserRequest $request): RedirectResponse
+    public function store(UserRequest $request, CreateTrainer $createTrainer): RedirectResponse
     {
-        $request->merge([
-            'password' => Hash::make('password'),
-            'role' => Role::Trainer->value,
-        ]);
-
-        $trainer = User::query()->create($request->except(['photo', 'remove_photo']));
-
-        if ($request->hasFile('photo')) {
-            $trainer->updateProfilePhoto($request->file('photo'));
-        }
+        $createTrainer->handle($request->validated());
 
         return redirect()->route('admin.trainers.index')
             ->with('flash.banner', 'Trainer created successfully')
@@ -70,17 +61,9 @@ class TrainersController extends Controller
         ]);
     }
 
-    public function update(UpdateUserRequest $request, User $user): RedirectResponse
+    public function update(UpdateUserRequest $request, User $user, UpdateTrainer $updateTrainer): RedirectResponse
     {
-        if ($request->hasFile('photo')) {
-            $user->updateProfilePhoto($request->file('photo'));
-        }
-
-        if ($request->has('remove_photo') && $request->input('remove_photo') === true) {
-            $user->deleteProfilePhoto();
-        }
-
-        $user->update($request->except(['photo', 'remove_photo']));
+        $updateTrainer->handle($user, $request->validated());
 
         return redirect()->route('admin.trainers.show', $user)
             ->with('flash.banner', 'Trainer updated successfully')

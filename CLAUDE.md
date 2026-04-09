@@ -38,6 +38,7 @@ This project has domain-specific skills available. You MUST activate the relevan
 - `laravel-php-coding-conventions` — Activate when writing or editing any PHP file in this project. Covers import style, PHPStorm annotations, and other PHP coding conventions.
 - `testing-strategy` — Activate whenever working on a PHP test file — writing, editing, fixing, or refactoring tests. Covers testing conventions such as chaining expectations.
 - `phpstorm-conventions` — Activate ONLY when the user explicitly provides a PhpStorm warning or inspection description. Do NOT activate proactively. Covers @noinspection suppression comments and @var annotations.
+- `actions-strategy` — Activate whenever writing or editing an Action class in app/Actions/.
 
 ## Conventions
 
