@@ -4,7 +4,7 @@ use App\Actions\Admin\CreateWorkout;
 use App\Models\Workout;
 
 test('it creates a workout in the database', function () {
-    $result = (new CreateWorkout)->handle([
+    $result = app(CreateWorkout::class)->handle([
         'name' => 'Bench Press',
         'categories' => ['chest'],
         'image' => 'https://example.com/image.jpg',

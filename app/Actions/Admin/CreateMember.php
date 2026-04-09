@@ -29,8 +29,8 @@ class CreateMember
             return $member;
         });
 
-        (new SendWelcomeEmailToMember)->handle($member);
-        (new SendNewMemberEmailToOwner)->handle($admin, $member);
+        app(SendWelcomeEmailToMember::class)->handle($member);
+        app(SendNewMemberEmailToOwner::class)->handle($admin, $member);
 
         return $member;
     }

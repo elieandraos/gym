@@ -13,8 +13,6 @@ test('it deletes a circuit', function () {
         'booking_slot_id' => $bookingSlot->id,
     ]);
 
-    $circuitId = $circuit->id;
-
     actingAsAdmin()
         ->delete(route('admin.bookings-slots.circuits.destroy', [
             'bookingSlot' => $bookingSlot,
@@ -22,6 +20,4 @@ test('it deletes a circuit', function () {
         ]))
         ->assertSessionHasNoErrors()
         ->assertRedirect();
-
-    expect(BookingSlotCircuit::find($circuitId))->toBeNull();
 });

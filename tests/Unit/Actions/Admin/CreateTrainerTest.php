@@ -18,7 +18,7 @@ function trainerAttributes(array $overrides = []): array
 }
 
 test('it creates a trainer with Role::Trainer and a hashed password', function () {
-    $result = (new CreateTrainer)->handle(trainerAttributes());
+    $result = app(CreateTrainer::class)->handle(trainerAttributes());
 
     expect($result)->toBeInstanceOf(User::class)
         ->and($result->role)->toBe(Role::Trainer->value);
@@ -30,7 +30,7 @@ test('it creates a trainer with Role::Trainer and a hashed password', function (
 test('it uploads a profile photo when provided', function () {
     Storage::fake('public');
 
-    $result = (new CreateTrainer)->handle(trainerAttributes([
+    $result = app(CreateTrainer::class)->handle(trainerAttributes([
         'photo' => UploadedFile::fake()->image('photo.jpg'),
     ]));
 
@@ -38,13 +38,13 @@ test('it uploads a profile photo when provided', function () {
 });
 
 test('it skips photo upload when no photo is provided', function () {
-    $result = (new CreateTrainer)->handle(trainerAttributes());
+    $result = app(CreateTrainer::class)->handle(trainerAttributes());
 
     expect($result->profile_photo_path)->toBeNull();
 });
 
 test('it returns the created User instance', function () {
-    $result = (new CreateTrainer)->handle(trainerAttributes(['name' => 'John Trainer']));
+    $result = app(CreateTrainer::class)->handle(trainerAttributes(['name' => 'John Trainer']));
 
     expect($result)->toBeInstanceOf(User::class)
         ->and($result->name)->toBe('John Trainer');

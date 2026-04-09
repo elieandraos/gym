@@ -32,7 +32,7 @@ test('it creates a member with Role::Member and a hashed password', function () 
 
     $admin = User::factory()->admin()->create();
 
-    $result = (new CreateMember)->handle($admin, memberAttributes());
+    $result = app(CreateMember::class)->handle($admin, memberAttributes());
 
     expect($result)->toBeInstanceOf(User::class)
         ->and($result->role)->toBe(Role::Member->value);
@@ -47,7 +47,7 @@ test('it uploads a profile photo when provided', function () {
 
     $admin = User::factory()->admin()->create();
 
-    $result = (new CreateMember)->handle($admin, memberAttributes([
+    $result = app(CreateMember::class)->handle($admin, memberAttributes([
         'photo' => UploadedFile::fake()->image('photo.jpg'),
     ]));
 
@@ -59,7 +59,7 @@ test('it skips photo upload when no photo is provided', function () {
 
     $admin = User::factory()->admin()->create();
 
-    $result = (new CreateMember)->handle($admin, memberAttributes());
+    $result = app(CreateMember::class)->handle($admin, memberAttributes());
 
     expect($result->profile_photo_path)->toBeNull();
 });
@@ -70,7 +70,7 @@ test('it queues a welcome email and owner notification', function () {
     $admin = User::factory()->admin()->create();
     $admin->setSetting('notifications.owner_emails', 'owner@gym.com');
 
-    $result = (new CreateMember)->handle($admin, memberAttributes());
+    $result = app(CreateMember::class)->handle($admin, memberAttributes());
 
     Mail::assertQueued(WelcomeEmail::class, function (WelcomeEmail $mail) use ($result) {
         return $mail->hasTo($result->email);
@@ -87,7 +87,7 @@ test('it returns the created User instance', function () {
     $admin = User::factory()->admin()->create();
     $attributes = memberAttributes(['name' => 'Jane Doe']);
 
-    $result = (new CreateMember)->handle($admin, $attributes);
+    $result = app(CreateMember::class)->handle($admin, $attributes);
 
     expect($result)->toBeInstanceOf(User::class)
         ->and($result->name)->toBe('Jane Doe');

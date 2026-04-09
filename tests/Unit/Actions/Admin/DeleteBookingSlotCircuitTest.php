@@ -6,7 +6,7 @@ use App\Models\BookingSlotCircuit;
 test('it deletes the circuit from the database', function () {
     $circuit = BookingSlotCircuit::factory()->create();
 
-    (new DeleteBookingSlotCircuit)->handle($circuit);
+    app(DeleteBookingSlotCircuit::class)->handle($circuit);
 
     $this->assertDatabaseMissing(BookingSlotCircuit::class, ['id' => $circuit->id]);
 });

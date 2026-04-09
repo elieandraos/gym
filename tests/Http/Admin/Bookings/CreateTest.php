@@ -7,9 +7,7 @@ use App\Enums\Status;
 use App\Models\Booking;
 use App\Models\BookingSlot;
 use App\Models\User;
-use App\Services\BookingManager;
 use Carbon\Carbon;
-use Illuminate\Support\Arr;
 
 beforeEach(function () {
     setupUsersAndBookings();
@@ -69,33 +67,6 @@ test('it creates a booking and its booking slots', function () {
         ->post(route('admin.bookings.store'), $data)
         ->assertSessionHasNoErrors()
         ->assertRedirect(route('admin.members.show', ['user' => $member->id]));
-
-    $this->assertDatabaseHas(Booking::class, Arr::only($data, ['start_date', 'member_id', 'trainer_id', 'nb_sessions', 'is_paid', 'amount']));
-
-    // fetch the booking created
-    $booking = Booking::query()->where('member_id', $member->id)
-        ->where('trainer_id', $trainer->id)
-        ->whereDate('start_date', Carbon::today()->addMonths(2))
-        ->latest('created_at')
-        ->firstOrFail();
-
-    $this->assertNotNull($booking);
-
-    // Generate expected session dates
-    $expectedSessionDates = BookingManager::generateDatesForward($data['start_date'], $data['nb_sessions'], $data['days']);
-
-    // Check that each expected session date is in the database
-    foreach ($expectedSessionDates as $sessionDate) {
-        $this->assertDatabaseHas('booking_slots', [
-            'booking_id' => $booking->id,
-            'start_time' => Carbon::parse($sessionDate)->format('Y-m-d H:i:s'),
-        ]);
-    }
-
-    // check that the booking end date is equal to the last booking slot date
-    $lastBookingSlot = $booking->bookingSlots()->orderBy('start_time', 'desc')->first();
-    $this->assertNotNull($lastBookingSlot);
-    $this->assertEquals($lastBookingSlot->start_time->toDateString(), $booking->end_date->toDateString());
 });
 
 test('it creates an unpaid booking', function () {
@@ -118,21 +89,6 @@ test('it creates an unpaid booking', function () {
         ->post(route('admin.bookings.store'), $data)
         ->assertSessionHasNoErrors()
         ->assertRedirect(route('admin.members.show', ['user' => $member->id]));
-
-    $this->assertDatabaseHas(Booking::class, [
-        'member_id' => $data['member_id'],
-        'trainer_id' => $data['trainer_id'],
-        'nb_sessions' => $data['nb_sessions'],
-        'is_paid' => 0, // Database stores boolean as integer
-    ]);
-
-    $booking = Booking::query()->where('member_id', $member->id)
-        ->where('trainer_id', $trainer->id)
-        ->whereDate('start_date', Carbon::today()->addMonths(3))
-        ->latest('created_at')
-        ->first();
-
-    expect($booking->is_paid)->toBeFalse();
 });
 
 test('it loads create page with renew_from parameter and passes booking data', function () {
@@ -194,20 +150,6 @@ test('it saves schedule_days when creating a booking', function () {
         ->post(route('admin.bookings.store'), $data)
         ->assertSessionHasNoErrors()
         ->assertRedirect(route('admin.members.show', ['user' => $member->id]));
-
-    $booking = Booking::query()
-        ->where('member_id', $member->id)
-        ->where('trainer_id', $trainer->id)
-        ->whereDate('start_date', Carbon::today()->addMonths(2))
-        ->latest('created_at')
-        ->firstOrFail();
-
-    expect($booking->schedule_days)->not->toBeNull()
-        ->and($booking->schedule_days)->toBeArray()
-        ->and($booking->schedule_days)->toHaveCount(3)
-        ->and($booking->schedule_days[0]['day'])->toBe('Monday')
-        ->and($booking->schedule_days[1]['day'])->toBe('Wednesday')
-        ->and($booking->schedule_days[2]['day'])->toBe('Friday');
 });
 
 test('it creates a renewed booking with inherited schedule_days', function () {
@@ -234,19 +176,6 @@ test('it creates a renewed booking with inherited schedule_days', function () {
         ->post(route('admin.bookings.store'), $renewalData)
         ->assertSessionHasNoErrors()
         ->assertRedirect(route('admin.members.show', ['user' => $member->id]));
-
-    $renewedBooking = Booking::query()
-        ->where('member_id', $member->id)
-        ->where('trainer_id', $trainer->id)
-        ->whereDate('start_date', '>=', Carbon::parse($expiringBooking->end_date)->addMonth())
-        ->latest('created_at')
-        ->firstOrFail();
-
-    expect($renewedBooking->id)->not->toBe($expiringBooking->id)
-        ->and($renewedBooking->schedule_days)->toEqual($originalScheduleDays)
-        ->and($renewedBooking->member_id)->toBe($expiringBooking->member_id)
-        ->and($renewedBooking->trainer_id)->toBe($expiringBooking->trainer_id)
-        ->and($renewedBooking->nb_sessions)->toBe(12);
 });
 
 test('it allows creating a new booking that starts after existing booking ends', function () {
@@ -293,17 +222,6 @@ test('it allows creating a new booking that starts after existing booking ends',
         ->post(route('admin.bookings.store'), $newBookingData)
         ->assertSessionHasNoErrors()
         ->assertRedirect(route('admin.members.show', ['user' => $member->id]));
-
-    // Verify the new booking was created
-    $newBooking = Booking::query()
-        ->where('member_id', $member->id)
-        ->where('trainer_id', $trainer->id)
-        ->whereDate('start_date', Carbon::today()->addDay())
-        ->latest('created_at')
-        ->first();
-
-    expect($newBooking)->not->toBeNull()
-        ->and($newBooking->id)->not->toBe($existingBooking->id);
 });
 
 test('it prevents creating a booking that overlaps with existing booking', function () {

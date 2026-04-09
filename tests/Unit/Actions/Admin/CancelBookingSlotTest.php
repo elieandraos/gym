@@ -7,7 +7,7 @@ use App\Models\BookingSlot;
 test('it sets the booking slot status to Cancelled', function () {
     $bookingSlot = BookingSlot::factory()->create(['status' => Status::Upcoming]);
 
-    (new CancelBookingSlot)->handle($bookingSlot);
+    app(CancelBookingSlot::class)->handle($bookingSlot);
 
     expect($bookingSlot->fresh()->status)->toBe(Status::Cancelled);
 });

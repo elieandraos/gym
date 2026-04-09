@@ -10,7 +10,7 @@ test('it queues a welcome email to the member', function () {
 
     $member = User::factory()->member()->create();
 
-    (new SendWelcomeEmailToMember)->handle($member);
+    app(SendWelcomeEmailToMember::class)->handle($member);
 
     Mail::assertQueued(WelcomeEmail::class, function (WelcomeEmail $mail) use ($member) {
         return $mail->hasTo($member->email);

@@ -20,8 +20,6 @@ test('it deletes a circuit workout', function () {
         'duration_in_seconds' => null,
     ]);
 
-    $circuitWorkoutId = $circuitWorkout->id;
-
     actingAsAdmin()
         ->delete(route('admin.bookings-slots.circuits.workouts.destroy', [
             'bookingSlot' => $bookingSlot,
@@ -30,6 +28,4 @@ test('it deletes a circuit workout', function () {
         ]))
         ->assertSessionHasNoErrors()
         ->assertRedirect();
-
-    $this->assertDatabaseMissing('booking_slot_circuit_workouts', ['id' => $circuitWorkoutId]);
 });

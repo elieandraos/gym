@@ -4,8 +4,6 @@ use App\Enums\BloodType;
 use App\Enums\Gender;
 use App\Http\Resources\MemberResource;
 use App\Models\User;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
 
 beforeEach(function () {
     setupUsersAndBookings();
@@ -52,15 +50,6 @@ test('it updates a member', function () {
         ->put(route('admin.members.update', $member), $updatedData)
         ->assertSessionHasNoErrors()
         ->assertRedirect(route('admin.members.show', $member));
-
-    $this->assertDatabaseHas(User::class, [
-        'id' => $member->id,
-        'name' => 'Updated Name',
-        'email' => 'updated@liftstation.fitness',
-        'gender' => Gender::Female->value,
-        'weight' => 65,
-        'height' => 170,
-    ]);
 });
 
 test('it validates member update', function () {
@@ -116,12 +105,6 @@ test('it allows updating member with same email', function () {
         ->put(route('admin.members.update', $member), $updatedData)
         ->assertSessionHasNoErrors()
         ->assertRedirect(route('admin.members.show', $member));
-
-    $this->assertDatabaseHas(User::class, [
-        'id' => $member->id,
-        'name' => 'Updated Name',
-        'email' => $member->email,
-    ]);
 });
 
 test('it prevents updating member with duplicate email', function () {
@@ -149,86 +132,4 @@ test('it prevents updating member with duplicate email', function () {
         ->put(route('admin.members.update', $member1), $updatedData)
         ->assertSessionHasErrors(['email'])
         ->assertStatus(302);
-});
-
-test('it uploads member profile photo', function () {
-    Storage::fake('public');
-
-    $member = User::query()->members()->first();
-    $photo = UploadedFile::fake()->image('profile.jpg');
-
-    $updatedData = [
-        'name' => $member->name,
-        'email' => $member->email,
-        'registration_date' => $member->registration_date,
-        'in_house' => $member->in_house,
-        'gender' => $member->gender,
-        'weight' => $member->weight,
-        'height' => $member->height,
-        'birthdate' => $member->birthdate,
-        'blood_type' => $member->blood_type,
-        'phone_number' => $member->phone_number,
-        'instagram_handle' => $member->instagram_handle,
-        'address' => $member->address,
-        'emergency_contact' => $member->emergency_contact,
-        'color' => $member->color,
-        'photo' => $photo,
-    ];
-
-    actingAsAdmin()
-        ->from(route('admin.members.edit', $member))
-        ->post(route('admin.members.update', $member), array_merge($updatedData, ['_method' => 'PUT']))
-        ->assertSessionHasNoErrors()
-        ->assertRedirect(route('admin.members.show', $member));
-
-    $member->refresh();
-
-    expect($member->profile_photo_path)->not->toBeNull()
-        ->and($member->profile_photo_path)->toContain("profile-photos/$member->id/");
-    Storage::disk('public')->assertExists($member->profile_photo_path);
-});
-
-test('it removes member profile photo', function () {
-    Storage::fake('public');
-
-    $member = User::query()->members()->first();
-
-    // First upload a photo
-    $photo = UploadedFile::fake()->image('profile.jpg');
-    $member->updateProfilePhoto($photo);
-    $member->refresh();
-
-    expect($member->profile_photo_path)->not->toBeNull();
-    $photoPath = $member->profile_photo_path;
-    Storage::disk('public')->assertExists($photoPath);
-
-    // Now remove the photo
-    $updatedData = [
-        'name' => $member->name,
-        'email' => $member->email,
-        'registration_date' => $member->registration_date,
-        'in_house' => $member->in_house,
-        'gender' => $member->gender,
-        'weight' => $member->weight,
-        'height' => $member->height,
-        'birthdate' => $member->birthdate,
-        'blood_type' => $member->blood_type,
-        'phone_number' => $member->phone_number,
-        'instagram_handle' => $member->instagram_handle,
-        'address' => $member->address,
-        'emergency_contact' => $member->emergency_contact,
-        'color' => $member->color,
-        'remove_photo' => true,
-    ];
-
-    actingAsAdmin()
-        ->from(route('admin.members.edit', $member))
-        ->post(route('admin.members.update', $member), array_merge($updatedData, ['_method' => 'PUT']))
-        ->assertSessionHasNoErrors()
-        ->assertRedirect(route('admin.members.show', $member));
-
-    $member->refresh();
-
-    expect($member->profile_photo_path)->toBeNull();
-    Storage::disk('public')->assertMissing($photoPath);
 });

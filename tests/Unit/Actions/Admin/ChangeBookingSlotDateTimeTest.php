@@ -10,7 +10,7 @@ test('it sets slot status to Upcoming when start time is in the future', functio
 
     $future = Carbon::now()->addDays(3)->setTime(10, 0);
 
-    (new ChangeBookingSlotDateTime)->handle($bookingSlot, [
+    app(ChangeBookingSlotDateTime::class)->handle($bookingSlot, [
         'start_time' => $future->format('Y-m-d H:i:s'),
         'end_time' => $future->clone()->addHour()->format('Y-m-d H:i:s'),
     ]);
@@ -23,7 +23,7 @@ test('it sets slot status to Complete when start time is in the past', function 
 
     $past = Carbon::now()->subDays(3)->setTime(10, 0);
 
-    (new ChangeBookingSlotDateTime)->handle($bookingSlot, [
+    app(ChangeBookingSlotDateTime::class)->handle($bookingSlot, [
         'start_time' => $past->format('Y-m-d H:i:s'),
         'end_time' => $past->clone()->addHour()->format('Y-m-d H:i:s'),
     ]);
@@ -35,7 +35,7 @@ test('it updates the booking end_date to the last slot', function () {
     $bookingSlot = BookingSlot::factory()->create();
     $future = Carbon::now()->addDays(5)->setTime(10, 0);
 
-    (new ChangeBookingSlotDateTime)->handle($bookingSlot, [
+    app(ChangeBookingSlotDateTime::class)->handle($bookingSlot, [
         'start_time' => $future->format('Y-m-d H:i:s'),
         'end_time' => $future->clone()->addHour()->format('Y-m-d H:i:s'),
     ]);

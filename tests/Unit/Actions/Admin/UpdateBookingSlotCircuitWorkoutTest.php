@@ -10,7 +10,7 @@ test('it updates the workout and replaces sets', function () {
 
     $newWorkout = Workout::factory()->create();
 
-    (new UpdateBookingSlotCircuitWorkout)->handle($circuitWorkout, [
+    app(UpdateBookingSlotCircuitWorkout::class)->handle($circuitWorkout, [
         'workout_id' => $newWorkout->id,
         'notes' => 'Updated notes',
         'sets' => [

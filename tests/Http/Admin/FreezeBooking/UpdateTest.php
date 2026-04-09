@@ -40,78 +40,11 @@ test('it freezes a booking successfully', function () {
         'end_time' => Carbon::now()->subDays(3)->addHour(),
     ]);
 
-    expect($booking->is_frozen)->toBeFalse();
-    expect($booking->frozen_at)->toBeNull();
-
     actingAsAdmin()
         ->patch(route('admin.bookings.freeze.update', $booking))
         ->assertSessionHas('flash.banner', 'Booking frozen successfully')
         ->assertSessionHas('flash.bannerStyle', 'success')
         ->assertRedirect(route('admin.members.show', $member->id));
-
-    $booking->refresh();
-
-    expect($booking->is_frozen)->toBeTrue();
-    expect($booking->frozen_at)->not->toBeNull();
-    expect($booking->frozen_at)->toBeInstanceOf(Carbon::class);
-});
-
-test('it updates upcoming slots to frozen status', function () {
-    $member = User::query()->members()->inRandomOrder()->first();
-    $trainer = User::query()->trainers()->inRandomOrder()->first();
-
-    $booking = Booking::factory()->active()->create([
-        'member_id' => $member->id,
-        'trainer_id' => $trainer->id,
-    ]);
-
-    $upcomingSlots = BookingSlot::factory()->count(3)->create([
-        'booking_id' => $booking->id,
-        'status' => Status::Upcoming,
-        'start_time' => Carbon::now()->addDays(1),
-        'end_time' => Carbon::now()->addDays(1)->addHour(),
-    ]);
-
-    actingAsAdmin()
-        ->patch(route('admin.bookings.freeze.update', $booking));
-
-    foreach ($upcomingSlots as $slot) {
-        $slot->refresh();
-        expect($slot->status)->toBe(Status::Frozen);
-    }
-});
-
-test('it does not update completed or cancelled slots', function () {
-    $member = User::query()->members()->inRandomOrder()->first();
-    $trainer = User::query()->trainers()->inRandomOrder()->first();
-
-    $booking = Booking::factory()->active()->create([
-        'member_id' => $member->id,
-        'trainer_id' => $trainer->id,
-    ]);
-
-    $completedSlot = BookingSlot::factory()->create([
-        'booking_id' => $booking->id,
-        'status' => Status::Complete,
-        'start_time' => Carbon::now()->subDays(3),
-        'end_time' => Carbon::now()->subDays(3)->addHour(),
-    ]);
-
-    $cancelledSlot = BookingSlot::factory()->create([
-        'booking_id' => $booking->id,
-        'status' => Status::Cancelled,
-        'start_time' => Carbon::now()->addDays(2),
-        'end_time' => Carbon::now()->addDays(2)->addHour(),
-    ]);
-
-    actingAsAdmin()
-        ->patch(route('admin.bookings.freeze.update', $booking));
-
-    $completedSlot->refresh();
-    $cancelledSlot->refresh();
-
-    expect($completedSlot->status)->toBe(Status::Complete);
-    expect($cancelledSlot->status)->toBe(Status::Cancelled);
 });
 
 test('it cannot freeze an already frozen booking', function () {

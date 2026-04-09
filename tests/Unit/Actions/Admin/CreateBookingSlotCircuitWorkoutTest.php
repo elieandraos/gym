@@ -9,7 +9,7 @@ test('it creates a circuit workout with all sets', function () {
     $circuit = BookingSlotCircuit::factory()->create();
     $workout = Workout::factory()->create();
 
-    (new CreateBookingSlotCircuitWorkout)->handle($circuit, [
+    app(CreateBookingSlotCircuitWorkout::class)->handle($circuit, [
         'workout_id' => $workout->id,
         'notes' => 'Focus on form',
         'sets' => [

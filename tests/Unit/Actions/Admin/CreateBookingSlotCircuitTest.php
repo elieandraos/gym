@@ -7,7 +7,7 @@ use App\Models\BookingSlotCircuit;
 test('it creates a circuit with the provided name', function () {
     $bookingSlot = BookingSlot::factory()->create();
 
-    (new CreateBookingSlotCircuit)->handle($bookingSlot, ['name' => 'My Circuit']);
+    app(CreateBookingSlotCircuit::class)->handle($bookingSlot, ['name' => 'My Circuit']);
 
     $this->assertDatabaseHas(BookingSlotCircuit::class, [
         'booking_slot_id' => $bookingSlot->id,
@@ -19,7 +19,7 @@ test('it auto-generates a name when none is provided', function () {
     $bookingSlot = BookingSlot::factory()->create();
     BookingSlotCircuit::factory()->for($bookingSlot, 'bookingSlot')->create();
 
-    (new CreateBookingSlotCircuit)->handle($bookingSlot, []);
+    app(CreateBookingSlotCircuit::class)->handle($bookingSlot, []);
 
     $this->assertDatabaseHas(BookingSlotCircuit::class, [
         'booking_slot_id' => $bookingSlot->id,

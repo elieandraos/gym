@@ -41,8 +41,6 @@ test('it creates a member and redirects to celebration page', function () {
         ->post(route('admin.members.store'), $data)
         ->assertSessionHasNoErrors();
 
-    $this->assertDatabaseHas(User::class, $data);
-
     $member = User::query()->where('email', 'elie@liftstation.fitness')->first();
     $response->assertRedirect(route('admin.member-created', $member));
 });

@@ -46,15 +46,6 @@ test('it uploads body composition photo successfully', function () {
         ->post(route('admin.members.body-composition.store', $member), $data)
         ->assertSessionHasNoErrors()
         ->assertRedirect(route('admin.members.show', $member));
-
-    $this->assertDatabaseHas(BodyComposition::class, [
-        'user_id' => $member->id,
-        'taken_at' => $takenAt,
-    ]);
-
-    $bodyComposition = BodyComposition::query()->where('user_id', $member->id)->first();
-    expect($bodyComposition->photo_path)->toContain("body-compositions/{$member->id}/");
-    Storage::disk('public')->assertExists($bodyComposition->photo_path);
 });
 
 test('it validates body composition photo is required', function () {

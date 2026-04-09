@@ -2,7 +2,6 @@
 
 use App\Enums\BloodType;
 use App\Enums\Gender;
-use App\Models\User;
 
 beforeEach(function () {
     setupUsersAndBookings();
@@ -41,8 +40,6 @@ test('it creates a trainer', function () {
         ->post(route('admin.trainers.store'), $data)
         ->assertSessionHasNoErrors()
         ->assertRedirect(route('admin.trainers.index'));
-
-    $this->assertDatabaseHas(User::class, $data);
 });
 
 test('it validates trainer creation', function () {

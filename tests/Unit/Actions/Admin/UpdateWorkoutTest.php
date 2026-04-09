@@ -6,7 +6,7 @@ use App\Models\Workout;
 test('it updates the workout fields in the database', function () {
     $workout = Workout::factory()->create(['name' => 'Original']);
 
-    (new UpdateWorkout)->handle($workout, ['name' => 'Updated']);
+    app(UpdateWorkout::class)->handle($workout, ['name' => 'Updated']);
 
     $this->assertDatabaseHas(Workout::class, ['id' => $workout->id, 'name' => 'Updated']);
 });
@@ -14,7 +14,7 @@ test('it updates the workout fields in the database', function () {
 test('it returns the updated Workout instance', function () {
     $workout = Workout::factory()->create(['name' => 'Before']);
 
-    $result = (new UpdateWorkout)->handle($workout, ['name' => 'After']);
+    $result = app(UpdateWorkout::class)->handle($workout, ['name' => 'After']);
 
     expect($result)->toBeInstanceOf(Workout::class)
         ->and($result->name)->toBe('After');

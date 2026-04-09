@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Storage;
 test('it updates the trainer profile fields in the database', function () {
     $user = User::factory()->trainer()->create(['name' => 'Original Name']);
 
-    (new UpdateTrainer)->handle($user, ['name' => 'Updated Name']);
+    app(UpdateTrainer::class)->handle($user, ['name' => 'Updated Name']);
 
     $this->assertDatabaseHas(User::class, ['id' => $user->id, 'name' => 'Updated Name']);
 });
@@ -18,7 +18,7 @@ test('it uploads a new profile photo when provided', function () {
 
     $user = User::factory()->trainer()->create();
 
-    $result = (new UpdateTrainer)->handle($user, [
+    $result = app(UpdateTrainer::class)->handle($user, [
         'photo' => UploadedFile::fake()->image('photo.jpg'),
     ]);
 
@@ -31,7 +31,7 @@ test('it removes the profile photo when remove_photo is true', function () {
     $user = User::factory()->trainer()->create();
     $user->updateProfilePhoto(UploadedFile::fake()->image('photo.jpg'));
 
-    $result = (new UpdateTrainer)->handle($user, ['remove_photo' => true]);
+    $result = app(UpdateTrainer::class)->handle($user, ['remove_photo' => true]);
 
     expect($result->profile_photo_path)->toBeNull();
 });
@@ -43,7 +43,7 @@ test('it leaves the existing photo unchanged when neither photo nor remove_photo
     $user->updateProfilePhoto(UploadedFile::fake()->image('photo.jpg'));
     $originalPath = $user->fresh()->profile_photo_path;
 
-    $result = (new UpdateTrainer)->handle($user, ['name' => 'New Name']);
+    $result = app(UpdateTrainer::class)->handle($user, ['name' => 'New Name']);
 
     expect($result->profile_photo_path)->toBe($originalPath);
 });
@@ -51,7 +51,7 @@ test('it leaves the existing photo unchanged when neither photo nor remove_photo
 test('it returns the updated User instance', function () {
     $user = User::factory()->trainer()->create(['name' => 'Before']);
 
-    $result = (new UpdateTrainer)->handle($user, ['name' => 'After']);
+    $result = app(UpdateTrainer::class)->handle($user, ['name' => 'After']);
 
     expect($result)->toBeInstanceOf(User::class)
         ->and($result->name)->toBe('After');

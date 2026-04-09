@@ -13,7 +13,7 @@ test('it uploads the photo and creates the body composition record', function ()
     $user = User::factory()->create();
     $takenAt = Carbon::today()->format('Y-m-d');
 
-    $result = (new CreateBodyComposition)->handle($user, [
+    $result = app(CreateBodyComposition::class)->handle($user, [
         'photo' => UploadedFile::fake()->image('photo.jpg'),
         'taken_at' => $takenAt,
     ]);
@@ -30,7 +30,7 @@ test('it generates a filename with the correct extension', function () {
 
     $user = User::factory()->create();
 
-    $result = (new CreateBodyComposition)->handle($user, [
+    $result = app(CreateBodyComposition::class)->handle($user, [
         'photo' => UploadedFile::fake()->image('photo.jpg'),
         'taken_at' => Carbon::today()->format('Y-m-d'),
     ]);

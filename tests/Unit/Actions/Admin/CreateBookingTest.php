@@ -30,7 +30,7 @@ function bookingAttributes(array $overrides = []): array
 test('it creates a booking with its slots in the database', function () {
     $attributes = bookingAttributes();
 
-    $booking = (new CreateBooking)->handle($attributes);
+    $booking = app(CreateBooking::class)->handle($attributes);
 
     $this->assertDatabaseHas(Booking::class, ['id' => $booking->id]);
     expect($booking->bookingSlots)->toHaveCount(2);
@@ -41,7 +41,7 @@ test('it sets slot status to Upcoming for future dates', function () {
         'booking_slots_dates' => [Carbon::today()->addDays(7)->format('Y-m-d H:i:s')],
     ]);
 
-    $booking = (new CreateBooking)->handle($attributes);
+    $booking = app(CreateBooking::class)->handle($attributes);
 
     expect($booking->bookingSlots->first()->status)->toBe(Status::Upcoming);
 });
@@ -51,7 +51,7 @@ test('it sets slot status to Complete for past dates', function () {
         'booking_slots_dates' => [Carbon::today()->subDays(7)->format('Y-m-d H:i:s')],
     ]);
 
-    $booking = (new CreateBooking)->handle($attributes);
+    $booking = app(CreateBooking::class)->handle($attributes);
 
     expect($booking->bookingSlots->first()->status)->toBe(Status::Complete);
 });
@@ -65,13 +65,13 @@ test('it sets end_date to the last slot date', function () {
         ],
     ]);
 
-    $booking = (new CreateBooking)->handle($attributes);
+    $booking = app(CreateBooking::class)->handle($attributes);
 
     expect($booking->fresh()->end_date->toDateString())->toBe($lastDate->toDateString());
 });
 
 test('it returns the created Booking instance', function () {
-    $result = (new CreateBooking)->handle(bookingAttributes());
+    $result = app(CreateBooking::class)->handle(bookingAttributes());
 
     expect($result)->toBeInstanceOf(Booking::class);
 });

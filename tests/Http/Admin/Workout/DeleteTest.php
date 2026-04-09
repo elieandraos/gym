@@ -18,6 +18,4 @@ test('it deletes a workout', function () {
     actingAsAdmin()
         ->delete(route('admin.workouts.destroy', $workout))
         ->assertRedirect(route('admin.workouts.index'));
-
-    $this->assertDatabaseMissing(Workout::class, ['id' => $workout->id]);
 });

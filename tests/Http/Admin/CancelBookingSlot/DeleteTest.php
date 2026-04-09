@@ -1,6 +1,5 @@
 <?php
 
-use App\Enums\Status;
 use App\Models\BookingSlot;
 
 beforeEach(function () {
@@ -16,8 +15,4 @@ test('it cancels a booking slot', function () {
             'bookingSlot' => $bookingSlot->id,
             'booking_id' => $bookingSlot->booking_id,
         ]));
-
-    $bookingSlot->refresh();
-
-    expect($bookingSlot->status)->toBe(Status::Cancelled);
 });
