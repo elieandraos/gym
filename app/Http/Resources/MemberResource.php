@@ -2,12 +2,13 @@
 
 namespace App\Http\Resources;
 
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * @mixin \App\Models\User
+ * @mixin User
  */
 class MemberResource extends JsonResource
 {
@@ -36,7 +37,7 @@ class MemberResource extends JsonResource
             'address' => $this->address,
             'emergency_contact' => $this->emergency_contact,
             'color' => $this->color,
-            'role' => strtolower($this->role),
+            'role' => $this->role->value,
             'last_body_composition' => $this->whenLoaded('lastBodyComposition',
                 fn () => new BodyCompositionResource($this->lastBodyComposition)
             ),

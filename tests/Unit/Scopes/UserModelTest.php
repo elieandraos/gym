@@ -11,7 +11,7 @@ describe('members scope', function () {
         $results = User::query()->members()->get();
 
         expect($results)->toHaveCount(2)
-            ->and($results->every(fn ($user) => $user->role === Role::Member->value))->toBeTrue();
+            ->and($results->every(fn ($user) => $user->role === Role::Member))->toBeTrue();
     });
 
     it('returns no users when there are no members', function () {
@@ -31,7 +31,7 @@ describe('trainers scope', function () {
         $results = User::query()->trainers()->get();
 
         expect($results)->toHaveCount(3)
-            ->and($results->every(fn ($user) => $user->role === Role::Trainer->value))->toBeTrue();
+            ->and($results->every(fn ($user) => $user->role === Role::Trainer))->toBeTrue();
     });
 
     it('returns no users when there are no trainers', function () {
@@ -51,7 +51,7 @@ describe('byRole scope', function () {
         $results = User::query()->byRole(Role::Member->value)->get();
 
         expect($results)->toHaveCount(2)
-            ->and($results->every(fn ($user) => $user->role === Role::Member->value))->toBeTrue();
+            ->and($results->every(fn ($user) => $user->role === Role::Member))->toBeTrue();
     });
 
     it('returns users by trainer role', function () {
@@ -61,7 +61,7 @@ describe('byRole scope', function () {
         $results = User::query()->byRole(Role::Trainer->value)->get();
 
         expect($results)->toHaveCount(3)
-            ->and($results->every(fn ($user) => $user->role === Role::Trainer->value))->toBeTrue();
+            ->and($results->every(fn ($user) => $user->role === Role::Trainer))->toBeTrue();
     });
 
     it('returns all users if role is unknown', function () {

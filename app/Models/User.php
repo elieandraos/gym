@@ -36,7 +36,7 @@ use Laravel\Jetstream\HasProfilePhoto;
  * @property string|null $instagram_handle
  * @property string|null $address
  * @property string|null $emergency_contact
- * @property string $role
+ * @property Role $role
  * @property string|null $color
  * @property array $settings
  *
@@ -112,6 +112,7 @@ class User extends Authenticatable
         'birthdate' => 'date',
         'registration_date' => 'date',
         'lead_source' => LeadSource::class,
+        'role' => Role::class,
         'password' => 'hashed',
         'email_verified_at' => 'datetime',
         'settings' => 'array',

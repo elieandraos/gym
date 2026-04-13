@@ -35,7 +35,7 @@ test('it creates a member with Role::Member and a hashed password', function () 
     $result = app(CreateMember::class)->handle($admin, memberAttributes());
 
     expect($result)->toBeInstanceOf(User::class)
-        ->and($result->role)->toBe(Role::Member->value);
+        ->and($result->role)->toBe(Role::Member);
 
     expect(Hash::check('password', $result->password))->toBeTrue();
     $this->assertDatabaseHas(User::class, ['id' => $result->id, 'role' => Role::Member->value]);

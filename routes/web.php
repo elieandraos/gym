@@ -66,83 +66,85 @@ Route::prefix('preview-emails')->group(function () {
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function () {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
 
-    // Members
-    Route::prefix('members')->name('admin.members.')->group(function () {
-        Route::get('/', [MembersController::class, 'index'])->name('index');
-        Route::get('/create', [MembersController::class, 'create'])->name('create');
-        Route::post('/store', [MembersController::class, 'store'])->name('store');
-        Route::get('/{user}', [MembersController::class, 'show'])->name('show');
-        Route::get('/{user}/edit', [MembersController::class, 'edit'])->name('edit');
-        Route::match(['put', 'post'], '/{user}', [MembersController::class, 'update'])->name('update');
-        Route::get('/{user}/delete', [MembersController::class, 'delete'])->name('delete');
-        Route::delete('/{user}', [MembersController::class, 'destroy'])->name('destroy');
-        Route::get('/{user}/personal-info', [MemberPersonalInfoController::class, 'index'])->name('personal-info');
-        Route::get('/{user}/bookings/history', [MemberBookingHistoryController::class, 'index'])->name('bookings.history');
-        Route::get('/{user}/body-composition/create', [BodyCompositionController::class, 'create'])->name('body-composition.create');
-        Route::post('/{user}/body-composition/store', [BodyCompositionController::class, 'store'])->name('body-composition.store');
-    });
+    Route::middleware('role:admin')->group(function () {
+        // Members
+        Route::prefix('members')->name('admin.members.')->group(function () {
+            Route::get('/', [MembersController::class, 'index'])->name('index');
+            Route::get('/create', [MembersController::class, 'create'])->name('create');
+            Route::post('/store', [MembersController::class, 'store'])->name('store');
+            Route::get('/{user}', [MembersController::class, 'show'])->name('show');
+            Route::get('/{user}/edit', [MembersController::class, 'edit'])->name('edit');
+            Route::match(['put', 'post'], '/{user}', [MembersController::class, 'update'])->name('update');
+            Route::get('/{user}/delete', [MembersController::class, 'delete'])->name('delete');
+            Route::delete('/{user}', [MembersController::class, 'destroy'])->name('destroy');
+            Route::get('/{user}/personal-info', [MemberPersonalInfoController::class, 'index'])->name('personal-info');
+            Route::get('/{user}/bookings/history', [MemberBookingHistoryController::class, 'index'])->name('bookings.history');
+            Route::get('/{user}/body-composition/create', [BodyCompositionController::class, 'create'])->name('body-composition.create');
+            Route::post('/{user}/body-composition/store', [BodyCompositionController::class, 'store'])->name('body-composition.store');
+        });
 
-    // Member Created Success
-    Route::get('/members/{user}/created', MemberCreatedController::class)->name('admin.member-created');
+        // Member Created Success
+        Route::get('/members/{user}/created', MemberCreatedController::class)->name('admin.member-created');
 
-    // Trainers
-    Route::prefix('trainers')->name('admin.trainers.')->group(function () {
-        Route::get('/', [TrainersController::class, 'index'])->name('index');
-        Route::get('/create', [TrainersController::class, 'create'])->name('create');
-        Route::post('/store', [TrainersController::class, 'store'])->name('store');
-        Route::get('/{user}', [TrainersController::class, 'show'])->name('show');
-        Route::get('/{user}/edit', [TrainersController::class, 'edit'])->name('edit');
-        Route::match(['put', 'post'], '/{user}', [TrainersController::class, 'update'])->name('update');
-    });
+        // Trainers
+        Route::prefix('trainers')->name('admin.trainers.')->group(function () {
+            Route::get('/', [TrainersController::class, 'index'])->name('index');
+            Route::get('/create', [TrainersController::class, 'create'])->name('create');
+            Route::post('/store', [TrainersController::class, 'store'])->name('store');
+            Route::get('/{user}', [TrainersController::class, 'show'])->name('show');
+            Route::get('/{user}/edit', [TrainersController::class, 'edit'])->name('edit');
+            Route::match(['put', 'post'], '/{user}', [TrainersController::class, 'update'])->name('update');
+        });
 
-    // Settings
-    Route::get('/settings', [UserSettingsController::class, 'edit'])->name('admin.settings.edit');
-    Route::patch('/settings', [UserSettingsController::class, 'update'])->name('admin.settings.update');
+        // Settings
+        Route::get('/settings', [UserSettingsController::class, 'edit'])->name('admin.settings.edit');
+        Route::patch('/settings', [UserSettingsController::class, 'update'])->name('admin.settings.update');
 
-    // Workouts
-    Route::prefix('workouts')->name('admin.workouts.')->group(function () {
-        Route::get('/', [WorkoutController::class, 'index'])->name('index');
-        Route::get('/create', [WorkoutController::class, 'create'])->name('create');
-        Route::post('/store', [WorkoutController::class, 'store'])->name('store');
-        Route::get('/{workout}/edit', [WorkoutController::class, 'edit'])->name('edit');
-        Route::put('/{workout}', [WorkoutController::class, 'update'])->name('update');
-        Route::delete('/{workout}', [WorkoutController::class, 'destroy'])->name('destroy');
-    });
+        // Workouts
+        Route::prefix('workouts')->name('admin.workouts.')->group(function () {
+            Route::get('/', [WorkoutController::class, 'index'])->name('index');
+            Route::get('/create', [WorkoutController::class, 'create'])->name('create');
+            Route::post('/store', [WorkoutController::class, 'store'])->name('store');
+            Route::get('/{workout}/edit', [WorkoutController::class, 'edit'])->name('edit');
+            Route::put('/{workout}', [WorkoutController::class, 'update'])->name('update');
+            Route::delete('/{workout}', [WorkoutController::class, 'destroy'])->name('destroy');
+        });
 
-    // Bookings
-    Route::get('/bookings/create', [BookingsController::class, 'create'])->name('admin.bookings.create');
-    Route::post('/bookings/store', [BookingsController::class, 'store'])->name('admin.bookings.store');
-    Route::get('/bookings/{booking}', [BookingsController::class, 'show'])->name('admin.bookings.show');
-    // Mark booking as paid
-    Route::patch('/bookings/{booking}/mark-as-paid', MarkBookingAsPaidController::class)->name('admin.bookings.mark-as-paid');
-    // Freeze/Unfreeze booking
-    Route::get('/bookings/{booking}/freeze', [FreezeBookingController::class, 'index'])->name('admin.bookings.freeze.index');
-    Route::patch('/bookings/{booking}/freeze', [FreezeBookingController::class, 'update'])->name('admin.bookings.freeze.update');
-    Route::get('/bookings/{booking}/unfreeze', [UnfreezeBookingController::class, 'index'])->name('admin.bookings.unfreeze.index');
-    Route::patch('/bookings/{booking}/unfreeze', [UnfreezeBookingController::class, 'update'])->name('admin.bookings.unfreeze.update');
+        // Bookings
+        Route::get('/bookings/create', [BookingsController::class, 'create'])->name('admin.bookings.create');
+        Route::post('/bookings/store', [BookingsController::class, 'store'])->name('admin.bookings.store');
+        Route::get('/bookings/{booking}', [BookingsController::class, 'show'])->name('admin.bookings.show');
+        // Mark booking as paid
+        Route::patch('/bookings/{booking}/mark-as-paid', MarkBookingAsPaidController::class)->name('admin.bookings.mark-as-paid');
+        // Freeze/Unfreeze booking
+        Route::get('/bookings/{booking}/freeze', [FreezeBookingController::class, 'index'])->name('admin.bookings.freeze.index');
+        Route::patch('/bookings/{booking}/freeze', [FreezeBookingController::class, 'update'])->name('admin.bookings.freeze.update');
+        Route::get('/bookings/{booking}/unfreeze', [UnfreezeBookingController::class, 'index'])->name('admin.bookings.unfreeze.index');
+        Route::patch('/bookings/{booking}/unfreeze', [UnfreezeBookingController::class, 'update'])->name('admin.bookings.unfreeze.update');
 
-    // Bookings slot
-    Route::get('/bookings-slots/{bookingSlot}/show', [BookingSlotsController::class, 'show'])->name('admin.bookings-slots.show');
-    Route::get('/bookings-slots/{bookingSlot}/circuit-workout-history', BookingSlotCircuitWorkoutHistoryController::class)->name('admin.bookings-slots.circuit-workout-history');
-    Route::get('/bookings-slots/{bookingSlot}/last-workout-result', BookingSlotLastWorkoutResultController::class)->name('admin.bookings-slots.last-workout-result');
-    //  Bookings slot change date time
-    Route::get('/bookings-slots/{bookingSlot}/change-date-time/edit', [ChangeBookingSlotDateTimeController::class, 'edit'])->name('admin.change-booking-slot-date-time.edit');
-    Route::put('/bookings-slots/{bookingSlot}/change-date-time/update', [ChangeBookingSlotDateTimeController::class, 'update'])->name('admin.change-booking-slot-date-time.update');
-    // Bookings slot cancel
-    Route::get('/bookings-slots/{bookingSlot}/cancel', [CancelBookingSlotController::class, 'index'])->name('admin.bookings-slots.cancel.index');
-    Route::delete('/bookings-slots/{bookingSlot}/cancel', [CancelBookingSlotController::class, 'destroy'])->name('admin.bookings-slots.cancel.destroy');
-    // Bookings slot circuits
-    Route::post('/bookings-slots/{bookingSlot}/circuits', [BookingSlotCircuitsController::class, 'store'])->name('admin.bookings-slots.circuits.store');
-    Route::patch('/bookings-slots/{bookingSlot}/circuits/{circuit}', [BookingSlotCircuitsController::class, 'update'])->name('admin.bookings-slots.circuits.update');
-    Route::delete('/bookings-slots/{bookingSlot}/circuits/{circuit}', [BookingSlotCircuitsController::class, 'destroy'])->name('admin.bookings-slots.circuits.destroy');
-    // Bookings slot circuit workouts
-    Route::post('/bookings-slots/{bookingSlot}/circuits/{circuit}/workouts', [BookingSlotCircuitWorkoutsController::class, 'store'])->name('admin.bookings-slots.circuits.workouts.store');
-    Route::put('/bookings-slots/{bookingSlot}/circuits/{circuit}/workouts/{circuitWorkout}', [BookingSlotCircuitWorkoutsController::class, 'update'])->name('admin.bookings-slots.circuits.workouts.update');
-    Route::delete('/bookings-slots/{bookingSlot}/circuits/{circuit}/workouts/{circuitWorkout}', [BookingSlotCircuitWorkoutsController::class, 'destroy'])->name('admin.bookings-slots.circuits.workouts.destroy');
+        // Bookings slot
+        Route::get('/bookings-slots/{bookingSlot}/show', [BookingSlotsController::class, 'show'])->name('admin.bookings-slots.show');
+        Route::get('/bookings-slots/{bookingSlot}/circuit-workout-history', BookingSlotCircuitWorkoutHistoryController::class)->name('admin.bookings-slots.circuit-workout-history');
+        Route::get('/bookings-slots/{bookingSlot}/last-workout-result', BookingSlotLastWorkoutResultController::class)->name('admin.bookings-slots.last-workout-result');
+        //  Bookings slot change date time
+        Route::get('/bookings-slots/{bookingSlot}/change-date-time/edit', [ChangeBookingSlotDateTimeController::class, 'edit'])->name('admin.change-booking-slot-date-time.edit');
+        Route::put('/bookings-slots/{bookingSlot}/change-date-time/update', [ChangeBookingSlotDateTimeController::class, 'update'])->name('admin.change-booking-slot-date-time.update');
+        // Bookings slot cancel
+        Route::get('/bookings-slots/{bookingSlot}/cancel', [CancelBookingSlotController::class, 'index'])->name('admin.bookings-slots.cancel.index');
+        Route::delete('/bookings-slots/{bookingSlot}/cancel', [CancelBookingSlotController::class, 'destroy'])->name('admin.bookings-slots.cancel.destroy');
+        // Bookings slot circuits
+        Route::post('/bookings-slots/{bookingSlot}/circuits', [BookingSlotCircuitsController::class, 'store'])->name('admin.bookings-slots.circuits.store');
+        Route::patch('/bookings-slots/{bookingSlot}/circuits/{circuit}', [BookingSlotCircuitsController::class, 'update'])->name('admin.bookings-slots.circuits.update');
+        Route::delete('/bookings-slots/{bookingSlot}/circuits/{circuit}', [BookingSlotCircuitsController::class, 'destroy'])->name('admin.bookings-slots.circuits.destroy');
+        // Bookings slot circuit workouts
+        Route::post('/bookings-slots/{bookingSlot}/circuits/{circuit}/workouts', [BookingSlotCircuitWorkoutsController::class, 'store'])->name('admin.bookings-slots.circuits.workouts.store');
+        Route::put('/bookings-slots/{bookingSlot}/circuits/{circuit}/workouts/{circuitWorkout}', [BookingSlotCircuitWorkoutsController::class, 'update'])->name('admin.bookings-slots.circuits.workouts.update');
+        Route::delete('/bookings-slots/{bookingSlot}/circuits/{circuit}/workouts/{circuitWorkout}', [BookingSlotCircuitWorkoutsController::class, 'destroy'])->name('admin.bookings-slots.circuits.workouts.destroy');
 
-    // Weekly Calendar
-    Route::get('/weekly-calendar', [WeeklyCalendarController::class, 'index'])->name('admin.weekly-calendar.index');
+        // Weekly Calendar
+        Route::get('/weekly-calendar', [WeeklyCalendarController::class, 'index'])->name('admin.weekly-calendar.index');
 
-    // Daily Calendar
-    Route::get('/daily-calendar', [DailyCalendarController::class, 'index'])->name('admin.daily-calendar.index');
+        // Daily Calendar
+        Route::get('/daily-calendar', [DailyCalendarController::class, 'index'])->name('admin.daily-calendar.index');
+    }); // end role:admin
 });

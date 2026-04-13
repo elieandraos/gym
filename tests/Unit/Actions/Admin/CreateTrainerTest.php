@@ -21,7 +21,7 @@ test('it creates a trainer with Role::Trainer and a hashed password', function (
     $result = app(CreateTrainer::class)->handle(trainerAttributes());
 
     expect($result)->toBeInstanceOf(User::class)
-        ->and($result->role)->toBe(Role::Trainer->value);
+        ->and($result->role)->toBe(Role::Trainer);
 
     expect(Hash::check('password', $result->password))->toBeTrue();
     $this->assertDatabaseHas(User::class, ['id' => $result->id, 'role' => Role::Trainer->value]);

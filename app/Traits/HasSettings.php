@@ -23,8 +23,7 @@ trait HasSettings
      */
     public function getSetting(?string $key = null, mixed $default = null): mixed
     {
-        // Convert role to string if it's an enum
-        $role = is_string($this->role) ? $this->role : $this->role->value;
+        $role = $this->role->value;
 
         // Merge defaults with saved settings
         $settings = array_replace_recursive(
