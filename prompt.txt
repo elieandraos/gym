@@ -1,3 +1,8 @@
+Currently, when a member is created (CreateMember action), a welcome email is sent to the member. and one to the owner.
+Eventually, i want to have preferences for the members, like toggle to receive emails or whatsapp notification.
+what is the best way to implement this ? a job ?
+
+
 You are generating a new RELEASE_DRAFT.md file for a production release.
 
 Context
