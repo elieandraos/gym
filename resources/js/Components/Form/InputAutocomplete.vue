@@ -13,9 +13,9 @@
         </div>
 
         <div v-if="showResults" class="absolute z-10 bg-white border border-zinc-100 rounded-lg mt-0.5 w-full shadow-sm">
-            <ul>
-                <slot name="list-item-preview" :options="filteredOptions.slice(0, maxResults)" :selectOption="selectOption" :highlightSearch="highlightSearch" :searchString="model">
-                    <li v-for="option in filteredOptions.slice(0, maxResults)" :key="option.value"
+            <ul class="max-h-[180px] overflow-y-auto">
+                <slot name="list-item-preview" :options="filteredOptions" :selectOption="selectOption" :highlightSearch="highlightSearch" :searchString="model">
+                    <li v-for="option in filteredOptions" :key="option.value"
                         class="cursor-pointer p-2 hover:bg-zinc-200"
                         @mousedown.prevent="selectOption(option)">
                         <span v-html="highlightSearch(option.label, model)" class="text-zinc-400"></span>
@@ -44,7 +44,6 @@ const model = defineModel()
 const filteredOptions = ref([])
 const selectedOption = ref(null)
 const textInput = ref(null)
-const maxResults = 5
 
 const filterOptions = () => {
     const inputValue = model.value ? model.value.toString() : ''
