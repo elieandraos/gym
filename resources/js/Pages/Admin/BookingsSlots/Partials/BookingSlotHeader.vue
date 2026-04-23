@@ -45,6 +45,7 @@
         <PreviousSessionsModal
             :show="showPreviousSessionsModal"
             :booking-slot-id="id"
+            :current-circuits="bookingSlot.circuits || []"
             @close="showPreviousSessionsModal = false"
         />
     </div>
