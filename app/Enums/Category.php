@@ -19,6 +19,7 @@ enum Category: string
     case Training = 'Training';
     case Stability = 'Stability';
     case Mobility = 'Mobility';
+    case Arms = 'Arms';
 
     /**
      * Get all enum case values as an array of strings.

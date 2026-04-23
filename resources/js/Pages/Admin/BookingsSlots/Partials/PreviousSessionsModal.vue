@@ -52,6 +52,8 @@
                                 v-for="circuit in session.circuits"
                                 :key="circuit.id"
                                 :circuit="circuit"
+                                @clone-circuit="handleCloneCircuit"
+                                @clone-workout="handleCloneWorkout"
                             />
                         </div>
 
@@ -64,18 +66,30 @@
             </div>
         </div>
     </Modal>
+
+    <CloneWorkoutModal
+        :show="showCloneWorkoutModal"
+        :workout="workoutToClone"
+        :current-circuits="currentCircuits"
+        :booking-slot-id="bookingSlotId"
+        @close="showCloneWorkoutModal = false"
+        @cloned="handleClose"
+    />
 </template>
 
 <script setup>
 import { ref, watch, computed } from 'vue'
+import { router } from '@inertiajs/vue3'
 import { CalendarIcon, ClockIcon } from '@heroicons/vue/24/outline'
 import Modal from '@/Components/Layout/Modal.vue'
 import ReadOnlyCircuitColumn from './ReadOnlyCircuitColumn.vue'
+import CloneWorkoutModal from './CloneWorkoutModal.vue'
 
 const props = defineProps({
     show: { type: Boolean, required: true },
     bookingSlotId: { type: Number, required: true },
     limit: { type: Number, default: 2 },
+    currentCircuits: { type: Array, default: () => [] },
 })
 
 const emit = defineEmits(['close'])
@@ -85,6 +99,8 @@ const previousSessions = ref([])
 const selectedLimit = ref(3)
 const contentContainer = ref(null)
 const lockedHeight = ref(null)
+const showCloneWorkoutModal = ref(false)
+const workoutToClone = ref(null)
 
 const containerStyle = computed(() => {
     return lockedHeight.value ? { minHeight: `${lockedHeight.value}px` } : {}
@@ -120,6 +136,19 @@ const fetchPreviousSessions = async () => {
 
 const handleClose = () => {
     emit('close')
+}
+
+const handleCloneCircuit = (circuit) => {
+    router.post(
+        route('admin.bookings-slots.clone-circuit', { bookingSlot: props.bookingSlotId }),
+        { source_circuit_id: circuit.id },
+        { onSuccess: () => handleClose() }
+    )
+}
+
+const handleCloneWorkout = (workout) => {
+    workoutToClone.value = workout
+    showCloneWorkoutModal.value = true
 }
 
 // Fetch data when modal opens

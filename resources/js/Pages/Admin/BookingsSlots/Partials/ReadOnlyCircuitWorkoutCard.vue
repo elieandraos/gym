@@ -14,6 +14,14 @@
                     </span>
                 </div>
             </div>
+            <button
+                type="button"
+                @click="$emit('clone-workout', workout)"
+                class="ml-2 flex-shrink-0 p-1 rounded hover:bg-zinc-100 text-zinc-400 hover:text-zinc-600 transition-colors cursor-pointer"
+                title="Clone workout"
+            >
+                <DocumentDuplicateIcon class="w-4 h-4" />
+            </button>
         </div>
 
         <!-- Sets Display -->
@@ -35,9 +43,13 @@
 </template>
 
 <script setup>
+import { DocumentDuplicateIcon } from '@heroicons/vue/24/outline'
+
 defineProps({
     workout: { type: Object, required: true },
 })
+
+defineEmits(['clone-workout'])
 
 const getCategoryClass = (category) => {
     const classes = {

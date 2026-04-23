@@ -9,6 +9,8 @@ use App\Http\Controllers\Admin\BookingSlotLastWorkoutResultController;
 use App\Http\Controllers\Admin\BookingSlotsController;
 use App\Http\Controllers\Admin\CancelBookingSlotController;
 use App\Http\Controllers\Admin\ChangeBookingSlotDateTimeController;
+use App\Http\Controllers\Admin\CloneBookingSlotCircuitController;
+use App\Http\Controllers\Admin\CloneBookingSlotCircuitWorkoutController;
 use App\Http\Controllers\Admin\DailyCalendarController;
 use App\Http\Controllers\Admin\FreezeBookingController;
 use App\Http\Controllers\Admin\MarkBookingAsPaidController;
@@ -135,6 +137,9 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     Route::post('/bookings-slots/{bookingSlot}/circuits', [BookingSlotCircuitsController::class, 'store'])->name('admin.bookings-slots.circuits.store');
     Route::patch('/bookings-slots/{bookingSlot}/circuits/{circuit}', [BookingSlotCircuitsController::class, 'update'])->name('admin.bookings-slots.circuits.update');
     Route::delete('/bookings-slots/{bookingSlot}/circuits/{circuit}', [BookingSlotCircuitsController::class, 'destroy'])->name('admin.bookings-slots.circuits.destroy');
+    // Bookings slot clone
+    Route::post('/bookings-slots/{bookingSlot}/clone-circuit', CloneBookingSlotCircuitController::class)->name('admin.bookings-slots.clone-circuit');
+    Route::post('/bookings-slots/{bookingSlot}/clone-circuit-workout', CloneBookingSlotCircuitWorkoutController::class)->name('admin.bookings-slots.clone-circuit-workout');
     // Bookings slot circuit workouts
     Route::post('/bookings-slots/{bookingSlot}/circuits/{circuit}/workouts', [BookingSlotCircuitWorkoutsController::class, 'store'])->name('admin.bookings-slots.circuits.workouts.store');
     Route::put('/bookings-slots/{bookingSlot}/circuits/{circuit}/workouts/{circuitWorkout}', [BookingSlotCircuitWorkoutsController::class, 'update'])->name('admin.bookings-slots.circuits.workouts.update');
