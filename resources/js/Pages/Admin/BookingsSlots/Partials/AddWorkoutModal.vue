@@ -12,7 +12,7 @@
 
                 <!-- Last results -->
                 <div v-if="lastResults && lastResults.length" class="flex flex-wrap gap-2 mt-1">
-                    <span class="text-xs text-zinc-400 italic">last results:</span>
+                    <span class="text-xs text-zinc-400 italic">{{ lastResultsDate }}:</span>
                     <span
                         v-for="(set, i) in lastResults"
                         :key="i"
@@ -20,6 +20,12 @@
                     >
                         {{ formatSet(set) }}
                     </span>
+                </div>
+
+                <!-- Personal best -->
+                <div v-if="personalBest" class="flex flex-wrap gap-2 mt-0.5">
+                    <span class="text-xs text-zinc-400 italic">personal best:</span>
+                    <span class="text-xs text-zinc-600 px-1">{{ formatSet(personalBest) }}</span>
                 </div>
             </div>
 
@@ -170,6 +176,8 @@ const errors = ref({})
 
 // Last results state
 const lastResults = ref(null)
+const lastResultsDate = ref(null)
+const personalBest = ref(null)
 const loadingLastResults = ref(false)
 
 // Transform workouts for InputAutocomplete
@@ -227,9 +235,13 @@ const fetchLastResults = async (workoutId) => {
         }
         const data = await response.json()
         lastResults.value = data.sets
+        lastResultsDate.value = data.slot_date
+        personalBest.value = data.personal_best
     } catch (error) {
         console.error('Failed to fetch last workout result:', error)
         lastResults.value = null
+        lastResultsDate.value = null
+        personalBest.value = null
     } finally {
         loadingLastResults.value = false
     }
@@ -261,6 +273,8 @@ watch(selectedWorkoutId, (newId) => {
         fetchLastResults(newId)
     } else {
         lastResults.value = null
+        lastResultsDate.value = null
+        personalBest.value = null
     }
 })
 
@@ -390,6 +404,8 @@ const resetForm = () => {
     ]
     errors.value = {}
     lastResults.value = null
+    lastResultsDate.value = null
+    personalBest.value = null
 }
 
 const close = () => {
